@@ -489,6 +489,34 @@ package.json
 tsconfig.json
 nest-cli.json</code></pre><p>Bu fayllar varsa, NestJS uğurla qurulub.</p>
 </div>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ TƏLƏ: «node_modules» LAYİHƏ KÖKÜNDƏ DEYİL</span>
+  <p><code>node_modules</code> <strong>harada</strong> yaradılır? <code>npm install</code>-u hansı
+  qovluqda işlətsəniz, orada. Biz isə onu <code>DS_Backend</code> içində işlədirik.</p>
+  <table>
+    <tr><th>Qovluq</th><th><code>node_modules</code> var?</th></tr>
+    <tr><td><code>~/Deepseek_ARTI/</code></td><td>❌ <strong>YOXDUR</strong> (düzgündür)</td></tr>
+    <tr><td><code>~/Deepseek_ARTI/DS_Backend/</code></td><td>✅ <strong>VAR</strong> (burada olmalıdır)</td></tr>
+  </table>
+  <p>Yanlış qovluqdan yoxlasanız belə xəta alırsınız:</p>
+  <pre><code>$ cd ~/Deepseek_ARTI
+$ ls node_modules/@prisma/adapter-pg
+ls: node_modules/@prisma/adapter-pg: No such file or directory</code></pre>
+  <p><strong>Səbəb:</strong> qovluq səhvdir, paket isə yerindədir. Düzgün yoxlama:</p>
+  <pre><code>cd ~/Deepseek_ARTI/DS_Backend     # &lt;-- ƏVVƏLCƏ BURAYA
+pwd                               # .../Deepseek_ARTI/DS_Backend olmalıdır
+ls node_modules/@prisma/adapter-pg/package.json</code></pre>
+  <p><strong>Qayda:</strong> hər npm/nest/prisma əmri <code>package.json</code>-un olduğu
+  qovluqda işlədilməlidir.</p>
+</div>
+<div class="block block-ipucu">
+  <span class="block-title">💡 «pwd» — HƏR ADDIMDAN ƏVVƏL YOXLA</span>
+  <p>Əmin olmaq üçün:</p>
+  <pre><code>pwd && ls package.json</code></pre>
+  <p><code>package.json</code> görünmürsə — səhv qovluqdasınız. Hər sessiyanın əvvəlində:</p>
+  <pre><code>cd ~/Deepseek_ARTI/DS_Backend
+unset DATABASE_URL PGHOST</code></pre>
+</div>
 <h2 id="b5">5. Paketlərin qurulması</h2>
 <div class="block block-ne">
   <span class="block-title">NƏ EDƏCƏYİK</span>
