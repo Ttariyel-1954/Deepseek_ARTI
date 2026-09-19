@@ -2,34 +2,32 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module.js';
+import { AllExceptionsFilter } from './common/filters/all-exceptions.filter.js';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // 1) Butun endpoint-ler /api/v1 ile baslayir
   app.setGlobalPrefix('api/v1');
-
-  // 2) DTO validasiyasi + tip cevrilmesi
   app.useGlobalPipes(
-    new ValidationPipe({ whitelist: true, transform: true }),
+    new ValidationPipe({
+      whitelist: true,            // DTO-da olmayan saheleri sil
+      forbidNonWhitelisted: true, // ...ve xeta ver
+      transform: true,            // '5' -> 5
+      transformOptions: { enableImplicitConversion: false },
+    }),
   );
-
-  // 3) Frontend (baska port) muraciet ede bilsin
   app.enableCors();
+  app.useGlobalFilters(new AllExceptionsFilter());
 
-  // 4) Swagger
-  const config = new DocumentBuilder()
+  const cfg = new DocumentBuilder()
     .setTitle('Deepseek ARTI API')
-    .setDescription('Azerbaycan Respublikasinin Tehsil Institutu — ERP backend')
     .setVersion('1.0')
     .addBearerAuth()
     .build();
-  SwaggerModule.setup('docs', app, SwaggerModule.createDocument(app, config));
+  SwaggerModule.setup('docs', app, SwaggerModule.createDocument(app, cfg));
 
   const port = process.env.PORT ?? 4000;
   await app.listen(port);
-  console.log('API hazirdir: http://localhost:' + port + '/api/v1');
-  console.log('Senedler:    http://localhost:' + port + '/docs');
+  console.log('API: http://localhost:' + port + '/api/v1');
 }
-
 bootstrap();

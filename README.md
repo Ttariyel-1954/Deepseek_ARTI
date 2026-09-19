@@ -72,7 +72,8 @@ Deepseek_ARTI/
 │       ├── 11_funksiya.sql     10 funksiya
 │       └── 12_trigger.sql      5 trigger
 ├── DS_Backend/                 NestJS 12 + Prisma 7
-│   ├── qur.sh                  tam qurulma skripti (bir əmrlə)
+│   ├── qur.sh                  Backend-1 tam qurulma skripti
+│   ├── backend2_qur.sh         Backend-2 fayllarini bir əmrlə yaradir
 │   └── ders2_yarat.py          Backend-2 dərs generatoru
 ├── DS_Frontend/                Next.js 16 + React 19 (plan)
 ├── DS_Web/                     xarici veb təqdimat (real məlumat gözlənilir)
@@ -89,6 +90,13 @@ unset DATABASE_URL PGHOST
 npm run start:dev                 # :4000
 curl http://localhost:4000/api/v1/struktur/merkezler
 open http://localhost:4000/docs
+```
+
+### Backend-2 fayllarını yaratmaq
+
+```bash
+cd ~/Deepseek_ARTI/DS_Backend
+bash backend2_qur.sh          # 21 fayl + qovluqlar + build
 ```
 
 ### API göstəriciləri

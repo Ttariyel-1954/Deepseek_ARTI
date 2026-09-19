@@ -45,8 +45,14 @@ def yoxlama(n: int, basliq: str, govde: str) -> None:
     blok("block-yox", "YOXLAMA %d — %s" % (n, basliq), govde)
 
 def fayl_yaz(yol: str, dil: str = "typescript") -> None:
-    """«cat > fayl <<'EOF'» bloku — dərsin standart formati."""
-    bash("cat > ~/Deepseek_ARTI/DS_Backend/%s <<'EOF'\n%s\nEOF" % (yol, fayl(yol)))
+    """«mkdir -p + cat > fayl <<'EOF'» bloku.
+
+    mkdir -p MÜTLƏQDİR: cat > qovluq movcud olmadan fayl yarada bilmir.
+    """
+    qovluq = str(Path(yol).parent).replace(".", "")
+    bash("mkdir -p ~/Deepseek_ARTI/DS_Backend/%s\n\n"
+         "cat > ~/Deepseek_ARTI/DS_Backend/%s <<'EOF'\n%s\nEOF"
+         % (qovluq, yol, fayl(yol)))
 
 # ══════════════════════════════════════════════════════════════════
 A('<!DOCTYPE html>')

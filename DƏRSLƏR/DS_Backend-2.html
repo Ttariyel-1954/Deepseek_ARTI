@@ -455,7 +455,9 @@ limit: number = 20;</code></pre>
   <span class="block-title">NİYƏ ORTAQ?</span>
   <p>11 modulun hər birində eyni 5 sahəni təkrar yazmaq lazım gəlməsin. <code>extends SehifeDto</code> kifayət edir.</p>
 </div>
-<pre data-lang="bash"><code>cat &gt; ~/Deepseek_ARTI/DS_Backend/src/common/dto/sehife.dto.ts &lt;&lt;'EOF'
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/common/dto
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/common/dto/sehife.dto.ts &lt;&lt;'EOF'
 import { Type } from 'class-transformer';
 import {
   IsIn, IsInt, IsOptional, IsString, Max, MaxLength, Min,
@@ -533,7 +535,9 @@ EOF</code></pre>
   <span class="block-title">NƏ EDƏCƏYİK</span>
   <p><code>main.ts</code>-də validasiyanı <strong>sərtləşdirəcəyik</strong>.</p>
 </div>
-<pre data-lang="bash"><code>cat &gt; ~/Deepseek_ARTI/DS_Backend/src/main.ts &lt;&lt;'EOF'
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/main.ts &lt;&lt;'EOF'
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -591,7 +595,9 @@ EOF</code></pre>
   <span class="block-title">NƏ EDƏCƏYİK</span>
   <p>Yeni mərkəz yaratmaq üçün DTO yazacağıq — 8 sahə, hər biri öz qaydası ilə.</p>
 </div>
-<pre data-lang="bash"><code>cat &gt; ~/Deepseek_ARTI/DS_Backend/src/struktur/dto/create-merkez.dto.ts &lt;&lt;'EOF'
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/struktur/dto
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/struktur/dto/create-merkez.dto.ts &lt;&lt;'EOF'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsBoolean, IsEmail, IsIn, IsOptional, IsString,
@@ -668,7 +674,9 @@ EOF</code></pre>
   <span class="block-title">NƏ EDƏCƏYİK</span>
   <p>Yeniləmə üçün DTO. Bütün sahələr <strong>opsional</strong> olmalıdır — istifadəçi yalnız telefonu dəyişmək istəyə bilər.</p>
 </div>
-<pre data-lang="bash"><code>cat &gt; ~/Deepseek_ARTI/DS_Backend/src/struktur/dto/update-merkez.dto.ts &lt;&lt;'EOF'
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/struktur/dto
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/struktur/dto/update-merkez.dto.ts &lt;&lt;'EOF'
 import { PartialType } from '@nestjs/swagger';
 import { CreateMerkezDto } from './create-merkez.dto.js';
 
@@ -701,7 +709,9 @@ EOF</code></pre>
    +-- MerkezFiltrDto      + tip, aktiv
    +-- EmekdasFiltrDto     + merkez_id, shobe_id, vezife_id, min_maas, max_maas
    +-- ... (gelecek modullar)</code></pre>
-<pre data-lang="bash"><code>cat &gt; ~/Deepseek_ARTI/DS_Backend/src/struktur/dto/merkez-filtr.dto.ts &lt;&lt;'EOF'
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/struktur/dto
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/struktur/dto/merkez-filtr.dto.ts &lt;&lt;'EOF'
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsBoolean, IsIn, IsOptional } from 'class-validator';
@@ -770,7 +780,9 @@ EOF</code></pre>
   <p><code>mesaj</code> azərbaycan dilindədir və dəyişə bilər. <code>kod</code> isə <strong>maşın oxuyan</strong> sabit dəyərdir:</p><table><tr><th>kod</th><th>HTTP</th><th>Frontend nə edir</th></tr><tr><td><code>YANLIS_SORGU</code></td><td>400</td><td>Formada səhvləri göstərir</td></tr><tr><td><code>AUTENTIFIKASIYA_LAZIM</code></td><td>401</td><td>Login səhifəsinə yönləndirir</td></tr><tr><td><code>ICAZE_YOXDUR</code></td><td>403</td><td>'İcazəniz yoxdur' mesajı</td></tr><tr><td><code>TAPILMADI</code></td><td>404</td><td>'Tapılmadı' səhifəsi</td></tr><tr><td><code>TOQQUSMA</code></td><td>409</td><td>'Bu ad artıq var' xəbərdarlığı</td></tr></table>
 </div>
 <h3><span class="step-num">1</span> Fil tri yaz</h3>
-<pre data-lang="bash"><code>cat &gt; ~/Deepseek_ARTI/DS_Backend/src/common/filters/all-exceptions.filter.ts &lt;&lt;'EOF'
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/common/filters
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/common/filters/all-exceptions.filter.ts &lt;&lt;'EOF'
 import {
   ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, Logger,
 } from '@nestjs/common';
@@ -944,7 +956,9 @@ curl -s "$B?siralama_sah=id;DROP%20TABLE%20struktur.shobeler--" | python3 -m jso
   <tr><td><code>sil(id)</code></td><td>DELETE</td><td>Sil — bağlı şöbə varsa 409</td></tr>
   <tr><td><code>merkezStatistikasi()</code></td><td>GET</td><td>Mərkəz üzrə şöbə və əməkdaş sayı</td></tr>
 </table>
-<pre data-lang="bash"><code>cat &gt; ~/Deepseek_ARTI/DS_Backend/src/struktur/struktur.service.ts &lt;&lt;'EOF'
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/struktur
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/struktur/struktur.service.ts &lt;&lt;'EOF'
 import {
   BadRequestException, ConflictException, Injectable, NotFoundException,
 } from '@nestjs/common';
@@ -1178,7 +1192,9 @@ EOF</code></pre>
   <span class="block-title">NƏ EDƏCƏYİK</span>
   <p>Controller-i 6 endpoint ilə yazacağıq.</p>
 </div>
-<pre data-lang="bash"><code>cat &gt; ~/Deepseek_ARTI/DS_Backend/src/struktur/struktur.controller.ts &lt;&lt;'EOF'
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/struktur
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/struktur/struktur.controller.ts &lt;&lt;'EOF'
 import {
   Body, Controller, Delete, Get, HttpCode, HttpStatus, Param,
   ParseIntPipe, Patch, Post, Query,
@@ -1277,7 +1293,9 @@ yarat(@Body() dto: CreateMerkezDto): Promise&lt;Merkez&gt; { ... }</code></pre>
   <span class="block-title">NƏ EDƏCƏYİK</span>
   <p>Ən böyük modulu quracağıq: <strong>6 cədvəlli birləşmə</strong>, 9 filtr sahəsi, axtarış və səhifələmə.</p>
 </div>
-<pre data-lang="bash"><code>cat &gt; ~/Deepseek_ARTI/DS_Backend/src/kadrlar/dto/emekdas-filtr.dto.ts &lt;&lt;'EOF'
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/kadrlar/dto
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/kadrlar/dto/emekdas-filtr.dto.ts &lt;&lt;'EOF'
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
@@ -1346,7 +1364,9 @@ EOF</code></pre>
   <p>Filtri <strong>dinamik SQL</strong>-ə çevirəcəyik. Bu, ən mürəkkəb hissədir.</p>
 </div>
 <h3><span class="step-num">1</span> Servisi yaz</h3>
-<pre data-lang="bash"><code>cat &gt; ~/Deepseek_ARTI/DS_Backend/src/kadrlar/kadrlar.service.ts &lt;&lt;'EOF'
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/kadrlar
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/kadrlar/kadrlar.service.ts &lt;&lt;'EOF'
 import {
   BadRequestException, Injectable, NotFoundException,
 } from '@nestjs/common';
@@ -1609,7 +1629,9 @@ const cem = await this.prisma.$queryRawUnsafe(
   <span class="block-title">NƏ EDƏCƏYİK</span>
   <p>Controller və modulu yazıb canlı sınayacağıq.</p>
 </div>
-<pre data-lang="bash"><code>cat &gt; ~/Deepseek_ARTI/DS_Backend/src/kadrlar/kadrlar.controller.ts &lt;&lt;'EOF'
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/kadrlar
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/kadrlar/kadrlar.controller.ts &lt;&lt;'EOF'
 import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { KadrlarService, EmekdasTam } from './kadrlar.service.js';
@@ -1645,7 +1667,9 @@ export class KadrlarController {
   }
 }
 EOF</code></pre>
-<pre data-lang="bash"><code>cat &gt; ~/Deepseek_ARTI/DS_Backend/src/kadrlar/kadrlar.module.ts &lt;&lt;'EOF'
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/kadrlar
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/kadrlar/kadrlar.module.ts &lt;&lt;'EOF'
 import { Module } from '@nestjs/common';
 import { KadrlarService } from './kadrlar.service.js';
 import { KadrlarController } from './kadrlar.controller.js';
@@ -1684,7 +1708,9 @@ EOF</code></pre>
   <table><tr><th>Növ</th><th>Nəticə</th></tr><tr><td><code>JOIN</code> (INNER)</td><td>Uyğunluq yoxdursa sətir <strong>itir</strong></td></tr><tr><td><code>LEFT JOIN</code></td><td>Uyğunluq yoxdursa <code>NULL</code> qaytarır</td></tr></table><p>Şöbəsi təyin olunmamış əməkdaş <code>JOIN</code> ilə siyahıdan <strong>tamamilə yox olar</strong>. Axtarış nəticəsində 'itkin əməkdaş' problemi belə yaranır.</p>
 </div>
 <h3><span class="step-num">1</span> Modulu qeyd et</h3>
-<pre data-lang="bash"><code>cat &gt; ~/Deepseek_ARTI/DS_Backend/src/app.module.ts &lt;&lt;'EOF'
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/app.module.ts &lt;&lt;'EOF'
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './prisma/prisma.module.js';
@@ -1766,7 +1792,9 @@ cem: 3
   <span class="block-title">NİYƏ VIEW-LARI İSTİFADƏ EDİRİK?</span>
   <p>Bazada artıq hazır JOIN-lar var. Onları yenidən yazmaq:</p><ul><li>Kod təkrarı yaradır;</li><li>İki yerdə məntiq — biri dəyişsə, digəri köhnələr;</li><li>Optimallaşdırma imkanı itir.</li></ul>
 </div>
-<pre data-lang="bash"><code>cat &gt; ~/Deepseek_ARTI/DS_Backend/src/hesabatlar/hesabatlar.service.ts &lt;&lt;'EOF'
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/hesabatlar
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/hesabatlar/hesabatlar.service.ts &lt;&lt;'EOF'
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 
@@ -1911,7 +1939,9 @@ EOF</code></pre>
   <span class="block-title">⚠️ FUNKSİYA NƏTİCƏSİ CAST EDİLMƏLİDİR</span>
   <p><code>numeric</code> qaytaran funksiya JavaScript-də <strong>sətir</strong> olur:</p><pre><code>"maas_fondu": "33000.00"     ❌ setir</code></pre><p><code>::float8</code> əlavə etməsək, frontend toplama əvəzinə <strong>birləşdirmə</strong> edər: <code>"33000.00" + 1000 = "33000.001000"</code>.</p>
 </div>
-<pre data-lang="bash"><code>cat &gt; ~/Deepseek_ARTI/DS_Backend/src/hesabatlar/hesabatlar.controller.ts &lt;&lt;'EOF'
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/hesabatlar
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/hesabatlar/hesabatlar.controller.ts &lt;&lt;'EOF'
 import { Controller, Get, Query, ParseIntPipe } from '@nestjs/common';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { HesabatlarService } from './hesabatlar.service.js';
@@ -1964,7 +1994,9 @@ export class HesabatlarController {
   }
 }
 EOF</code></pre>
-<pre data-lang="bash"><code>cat &gt; ~/Deepseek_ARTI/DS_Backend/src/hesabatlar/hesabatlar.module.ts &lt;&lt;'EOF'
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/hesabatlar
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/hesabatlar/hesabatlar.module.ts &lt;&lt;'EOF'
 import { Module } from '@nestjs/common';
 import { HesabatlarService } from './hesabatlar.service.js';
 import { HesabatlarController } from './hesabatlar.controller.js';
@@ -2015,7 +2047,9 @@ EOF</code></pre>
   <span class="block-title">HARA</span>
   <p><code>src/saglamliq/</code></p>
 </div>
-<pre data-lang="bash"><code>cat &gt; ~/Deepseek_ARTI/DS_Backend/src/saglamliq/saglamliq.controller.ts &lt;&lt;'EOF'
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/saglamliq
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/saglamliq/saglamliq.controller.ts &lt;&lt;'EOF'
 import { Controller, Get } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PrismaService } from '../prisma/prisma.service.js';
@@ -2059,7 +2093,9 @@ export class SaglamliqController {
   }
 }
 EOF</code></pre>
-<pre data-lang="bash"><code>cat &gt; ~/Deepseek_ARTI/DS_Backend/src/saglamliq/saglamliq.module.ts &lt;&lt;'EOF'
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/saglamliq
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/saglamliq/saglamliq.module.ts &lt;&lt;'EOF'
 import { Module } from '@nestjs/common';
 import { SaglamliqController } from './saglamliq.controller.js';
 
@@ -2134,7 +2170,9 @@ EOF</code></pre>
   <table><tr><th>Qat</th><th>Nə yoxlanılır</th><th>Sürət</th></tr><tr><td>DTO</td><td>Qaydalar düzgün işləyirmi?</td><td>Çox sürətli</td></tr><tr><td>Servis</td><td>SQL qurulması, xəta atılması</td><td>Sürətli (saxta Prisma)</td></tr><tr><td>e2e</td><td>Bütün zəncir — HTTP-dən bazaya</td><td>Yavaş</td></tr></table><p>Aşağı qat sınsa, yuxarı qatı işlətməyə ehtiyac yoxdur — xətanı <strong>dərhal</strong> görürsünüz.</p>
 </div>
 <h3><span class="step-num">1</span> DTO testi</h3>
-<pre data-lang="bash"><code>cat &gt; ~/Deepseek_ARTI/DS_Backend/src/common/dto/sehife.dto.spec.ts &lt;&lt;'EOF'
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/common/dto
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/common/dto/sehife.dto.spec.ts &lt;&lt;'EOF'
 import { describe, it, expect } from 'vitest';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
@@ -2207,7 +2245,9 @@ const xetalar = await validate(dto);                      // qaydalari yoxla
   <p><code>new SehifeDto()</code> yalnız default dəyərləri qoyur — <code>@Type()</code> çevrilməsi <strong>işləmir</strong>.</p><p><code>plainToInstance</code> isə <code>ValidationPipe</code>-un etdiyi işi təkrarlayır: tip çevrilməsi + sinifə yığılma.</p>
 </div>
 <h3><span class="step-num">2</span> Servis testi</h3>
-<pre data-lang="bash"><code>cat &gt; ~/Deepseek_ARTI/DS_Backend/src/struktur/struktur.service.spec.ts &lt;&lt;'EOF'
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/struktur
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/struktur/struktur.service.spec.ts &lt;&lt;'EOF'
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { BadRequestException, ConflictException, NotFoundException } from '@nestjs/common';
 import { StrukturService } from './struktur.service.js';
@@ -2447,7 +2487,9 @@ export default defineConfig({
   <table><tr><th>Fayl</th><th>Nə götürür</th><th>Əmr</th></tr><tr><td><code>vitest.config.ts</code></td><td><code>*.spec.ts</code></td><td><code>npm test</code></td></tr><tr><td><code>vitest.config.e2e.ts</code></td><td><code>*.e2e-spec.ts</code></td><td><code>npx vitest run --config vitest.config.e2e.ts</code></td></tr></table>
 </div>
 <h3><span class="step-num">2</span> e2e testini yaz</h3>
-<pre data-lang="bash"><code>cat &gt; ~/Deepseek_ARTI/DS_Backend/test/backend2.e2e-spec.ts &lt;&lt;'EOF'
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/test
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/test/backend2.e2e-spec.ts &lt;&lt;'EOF'
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
