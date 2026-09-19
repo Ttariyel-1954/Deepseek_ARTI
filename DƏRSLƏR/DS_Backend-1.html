@@ -789,6 +789,33 @@ Validation Error Count: 5</code></pre><p><strong>Doğru yol</strong> — hamıs�
   <span class="block-title">💡 NİYƏ 12 SXEMİN HAMISI?</span>
   <p>Yalnız istifadə etdiyiniz sxemləri yazmaq da mümkündür. Lakin hamısını yazsaq, gələcəkdə yeni modul əlavə edəndə sxemi dəyişmək lazım gəlmir.</p>
 </div>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ «grep -c» SƏTİR SAYIR, TƏKRAR YOX</span>
+  <p>Sxem sayını yoxlamaq üçün <code>grep -c 'schemas'</code> yazsanız, nəticə
+  <strong>1</strong> olacaq — halbuki sxem <strong>12</strong>-dir:</p>
+  <pre><code>$ grep -c 'schemas' prisma/schema.prisma
+1                    &lt;-- bir SƏTİRDƏ 12 sxem var</code></pre>
+  <p><strong>Səbəb:</strong> <code>grep -c</code> uyğun gələn <strong>sətirlərin</strong>
+  sayını verir, uyğunluqların sayını yox. Bütün massiv bir sətirdə olduğu üçün
+  nəticə 1-dir.</p>
+  <table>
+    <tr><th>Əmr</th><th>Nə sayır</th><th>Nəticə</th></tr>
+    <tr><td><code>grep -c 'schemas' fayl</code></td><td>Uyğun <strong>sətir</strong></td><td>1 ❌</td></tr>
+    <tr><td><code>grep -o 'schemas' fayl | wc -l</code></td><td>Uyğun <strong>hissə</strong></td><td>1 ❌</td></tr>
+    <tr><td><code>grep 'schemas' fayl | tr ',' '\n' | wc -l</code></td><td>Vergüllə ayrılmış <strong>element</strong></td><td><strong>12</strong> ✅</td></tr>
+  </table>
+  <p>Düzgün əmr — vergülləri sətir sonuna çevir, sonra say:</p>
+  <pre><code>grep 'schemas' prisma/schema.prisma | tr ',' '\n' | wc -l
+# 12
+
+# Sxem adlarını görmək üçün:
+grep 'schemas' prisma/schema.prisma | tr ',' '\n' \
+  | sed 's/.*\[//; s/\].*//; s/[" ]//g' | grep -v '^$'</code></pre>
+  <p><strong>Ümumi qayda:</strong> <code>grep -c</code> yalnız o zaman düzgün sayır ki,
+  hər uyğunluq <strong>ayrı sətirdə</strong> olsun. Çoxsətirli və ya vergüllə
+  ayrılmış siyahılarda <code>-o</code> + <code>wc -l</code>, ya da
+  <code>tr</code> + <code>wc -l</code> işlədin.</p>
+</div>
 <h2 id="b10">10. prisma.config.ts — url buraya köçüb</h2>
 <div class="block block-ne">
   <span class="block-title">NƏ EDƏCƏYİK</span>
@@ -1535,6 +1562,16 @@ EOF
 npx prisma db pull
 npx prisma generate
 
+echo "════ 6.5/8  Yoxlama ════"
+MODEL_SAYI=$(grep -c '^model ' prisma/schema.prisma)
+SXEM_SAYI=$(grep 'schemas' prisma/schema.prisma | tr ',' '\n' | wc -l | tr -d ' ')
+echo "Model sayi : $MODEL_SAYI  (gozlenilen: 48)"
+echo "Sxem sayi  : $SXEM_SAYI  (gozlenilen: 12)"
+if [ "$MODEL_SAYI" -ne 48 ] || [ "$SXEM_SAYI" -ne 12 ]; then
+  echo "XETA: model ve ya sxem sayi gozlenilenden ferqlidir!"
+  exit 1
+fi
+
 echo "════ 7/8  Struktur ════"
 mkdir -p src/prisma src/struktur
 
@@ -2050,7 +2087,7 @@ gh repo create Deepseek_ARTI --private --source=. --push</code></pre><p>Bu, repo
     <tr><td>4</td><td><code>.env</code> var</td><td><code>ls -la .env</code></td></tr>
     <tr><td>5</td><td><code>.gitignore</code>-da <code>.env</code></td><td><code>grep '^\.env$' .gitignore</code></td></tr>
     <tr><td>6</td><td><code>tsconfig.build.json</code> var</td><td><code>cat tsconfig.build.json</code></td></tr>
-    <tr><td>7</td><td>Prisma sxemi 12 sxem</td><td><code>grep -c 'schemas' prisma/schema.prisma</code></td></tr>
+    <tr><td>7</td><td>Prisma sxemi 12 sxem</td><td><code>grep 'schemas' prisma/schema.prisma | tr ',' '\n' | wc -l</code> → 12</td></tr>
     <tr><td>8</td><td><code>prisma.config.ts</code> var</td><td><code>ls prisma.config.ts</code></td></tr>
     <tr><td>9</td><td>48 model oxundu</td><td><code>grep -c '^model ' prisma/schema.prisma</code> → 48</td></tr>
     <tr><td>10</td><td>Müştəri yaradıldı</td><td><code>ls src/generated/prisma/</code></td></tr>
