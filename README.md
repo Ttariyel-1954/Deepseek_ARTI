@@ -50,7 +50,7 @@ open ~/Deepseek_ARTI/DƏRSLƏR/Deepseek_Baza.html
 | # | Dərs | Sətir | Vəziyyət |
 |---|---|---|---|
 | 1 | `Deepseek_Baza.html` | 2261 | ✅ hazır |
-| 2 | `DS_Backend-1.html` | 1839 | ✅ hazır |
+| 2 | `DS_Backend-1.html` | 2080 | ✅ hazır |
 | 3-5 | `DS_Backend-2..4.html` | — | ⏳ növbəti |
 | 6-8 | `DS_Frontend-1..3.html` | — | ⏳ plan |
 | 9-10 | `DS_Web-1..2.html` | — | ⏳ real məlumat gözlənilir |
@@ -59,23 +59,24 @@ open ~/Deepseek_ARTI/DƏRSLƏR/Deepseek_Baza.html
 
 ```
 Deepseek_ARTI/
-├── DS_Baza/
-│   ├── sql/
-│   │   ├── 00_TAM_DDL.sql      bütün strukturu yenidən qurur
-│   │   ├── 10_sorgular.sql     40 vacib sorğu
-│   │   ├── 10_view.sql         8 görünüş
-│   │   ├── 11_funksiya.sql     10 funksiya
-│   │   └── 12_trigger.sql      5 trigger
-│   └── ders_yarat.py           dərs generatoru
-├── DS_Backend/                NestJS 12 + Prisma 7
-│   ├── ders1_yarat.py
-│   └── qur.sh                 (dərsdən çıxarılan tam qurulma skripti)
-├── DS_Frontend/
-├── DS_Web/
+Deepseek_ARTI/
+├── DS_Baza/                    baza bloku — PostgreSQL 18
+│   ├── ders_yarat.py           dərs generatoru
+│   └── sql/
+│       ├── 00_TAM_DDL.sql      struktur: 12 sxem, 48 cədvəl, 8 view, 10 fn, 5 trigger
+│       ├── 20_veriler.sql      məlumat: bütün sətirlər (INSERT formatında)
+│       ├── BERPA_ET.md         bazanı sıfırdan bərpa təlimatı
+│       ├── 10_sorgular.sql     40 vacib sorğu
+│       ├── 10_view.sql         8 görünüş
+│       ├── 11_funksiya.sql     10 funksiya
+│       └── 12_trigger.sql      5 trigger
+├── DS_Backend/                 NestJS 12 + Prisma 7
+│   └── qur.sh                  tam qurulma skripti (bir əmrlə)
+├── DS_Frontend/                Next.js 16 + React 19 (plan)
+├── DS_Web/                     xarici veb təqdimat (real məlumat gözlənilir)
 ├── DƏRSLƏR/                    bütün HTML dərslər
-├── _arxiV/                     ehtiyat nüsxələr
-├── _hesabat/                   hesabatlar
-└── _log/
+├── _hesabat/                   sınaq nəticələri
+└── yoxla.sh                    sürətli vəziyyət yoxlaması
 ```
 
 ## Backend
@@ -98,14 +99,32 @@ Backend-1 təlimatı real sınaqdan keçirilmişdir: 48 model, 3 marshrut,
 3. **Backend import** — `.js` MƏCBURİ; frontend-də YOX.
 4. **Özünü təsdiqləmə** — "yəqin işləyir" yox, real sınaq.
 
+## Baza bərpası
+
+Repo-da bazanın tam bərpası üçün hər şey var:
+
+```bash
+psql -U postgres -c "CREATE ROLE arti_user WITH LOGIN PASSWORD 'arti_secret_2025';"
+psql -U postgres -c "CREATE DATABASE arti_baza OWNER arti_user;"
+export PGPASSWORD=arti_secret_2025
+psql -U arti_user -d arti_baza -f DS_Baza/sql/00_TAM_DDL.sql
+psql -U arti_user -d arti_baza -f DS_Baza/sql/20_veriler.sql
+```
+
+Ətraflı: [`DS_Baza/sql/BERPA_ET.md`](DS_Baza/sql/BERPA_ET.md)
+
 ## Git
+
+Repo: <https://github.com/Ttariyel-1954/Deepseek_ARTI>
 
 ```bash
 cd ~/Deepseek_ARTI
-git init && git symbolic-ref HEAD refs/heads/main
 git add -A
-git commit -m "baza: Deepseek_ARTI layihəsi — DS_Baza və Deepseek_Baza dərsi"
+git commit -m "<qat>: <qısa təsvir>"
+git push
 ```
+
+Commit mesajı formatı: `baza:` · `backend:` · `frontend:` · `ders:` · `sened:`
 
 Push-dan əvvəl **mütləq** yoxla:
 
