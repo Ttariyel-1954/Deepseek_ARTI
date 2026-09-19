@@ -1,0 +1,2081 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DS Backend 1 — NestJS 12 + Prisma 7 qurulumu və ilk endpoint</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #eef2f7; color: #1e293b; line-height: 1.85;
+    padding: 2rem 1rem; font-size: 16.5px;
+  }
+  .container {
+    max-width: 1150px; margin: 0 auto; background: #fff;
+    border-radius: 22px; box-shadow: 0 15px 40px -15px rgba(15,23,42,.25);
+    padding: 3rem 3rem 4rem;
+  }
+  header {
+    border-bottom: 5px solid #7c2d12; padding-bottom: 1.8rem;
+    margin-bottom: 2.5rem; position: relative;
+  }
+  header::after {
+    content: ''; position: absolute; bottom: -5px; left: 0;
+    width: 120px; height: 5px; background: #f59e0b;
+  }
+  .lesson-badge {
+    display: inline-block; background: linear-gradient(135deg,#7c2d12,#ea580c);
+    color: #fff; font-size: .75rem; font-weight: 800;
+    padding: .5rem 1.2rem; border-radius: 30px; letter-spacing: 2px;
+    margin-bottom: 1.2rem; text-transform: uppercase;
+  }
+  h1 { font-size: 2.25rem; font-weight: 800; color: #0f172a; line-height: 1.15; margin-bottom: .7rem; }
+  .subtitle { font-size: 1.12rem; color: #64748b; margin-bottom: 1.3rem; }
+  .meta { display: flex; gap: .8rem; flex-wrap: wrap; }
+  .meta span {
+    background: #ffedd5; color: #9a3412; padding: .4rem 1rem;
+    border-radius: 20px; font-weight: 700; font-size: .82rem;
+  }
+  h2 {
+    font-size: 1.8rem; font-weight: 800; color: #7c2d12;
+    margin-top: 3.2rem; margin-bottom: 1.1rem;
+    padding: .8rem 0 .8rem 1.2rem; border-left: 7px solid #ea580c;
+    background: linear-gradient(to right,#fff7ed,transparent);
+  }
+  h3 {
+    font-size: 1.28rem; font-weight: 700; color: #9a3412;
+    margin-top: 2.3rem; margin-bottom: .9rem;
+    display: flex; align-items: center; gap: .7rem;
+  }
+  h4 { font-size: 1.08rem; font-weight: 700; color: #334155; margin-top: 1.6rem; margin-bottom: .7rem; }
+  p { margin-bottom: 1rem; }
+  .step-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg,#ea580c,#7c2d12); color: #fff;
+    min-width: 36px; height: 36px; border-radius: 50%;
+    font-weight: 800; font-size: .9rem; flex-shrink: 0; padding: 0 .5rem;
+  }
+  .block {
+    border-radius: 14px; padding: 1.25rem 1.5rem; margin: 1.1rem 0;
+    border-left: 6px solid; position: relative;
+  }
+  .block-ne     { border-color:#3b82f6; background:#eff6ff; }
+  .block-niye   { border-color:#8b5cf6; background:#f5f3ff; }
+  .block-sade   { border-color:#14b8a6; background:#f0fdfa; }
+  .block-olmaz  { border-color:#ef4444; background:#fef2f2; }
+  .block-evez   { border-color:#f59e0b; background:#fffbeb; }
+  .block-nece   { border-color:#10b981; background:#ecfdf5; }
+  .block-yox    { border-color:#ec4899; background:#fdf2f8; }
+  .block-izah   { border-color:#06b6d4; background:#ecfeff; }
+  .block-xeber  { border-color:#dc2626; background:#fef2f2; }
+  .block-ipucu  { border-color:#84cc16; background:#f7fee7; }
+  .block-hara   { border-color:#0ea5e9; background:#f0f9ff; }
+  .block-title {
+    font-weight: 800; font-size: .76rem; text-transform: uppercase;
+    letter-spacing: 1.6px; margin-bottom: .6rem; display: block;
+  }
+  .block-ne    .block-title { color:#1d4ed8; }
+  .block-niye  .block-title { color:#7c3aed; }
+  .block-sade  .block-title { color:#0d9488; }
+  .block-olmaz .block-title { color:#dc2626; }
+  .block-evez  .block-title { color:#d97706; }
+  .block-nece  .block-title { color:#059669; }
+  .block-yox   .block-title { color:#db2777; }
+  .block-izah  .block-title { color:#0891b2; }
+  .block-xeber .block-title { color:#b91c1c; }
+  .block-ipucu .block-title { color:#4d7c0f; }
+  .block-hara  .block-title { color:#0284c7; }
+  pre {
+    background: #0f172a; color: #e2e8f0; padding: 1.3rem 1.5rem;
+    border-radius: 14px; overflow-x: auto; margin: 1.1rem 0;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: .83rem; line-height: 1.7;
+    border: 1px solid #334155; position: relative;
+  }
+  pre::before {
+    content: attr(data-lang); position: absolute; top: .7rem; right: .9rem;
+    font-size: .6rem; font-weight: 800; color: #64748b;
+    letter-spacing: 2px; background: #1e293b; padding: .2rem .7rem;
+    border-radius: 5px; text-transform: uppercase;
+  }
+  pre code { background: transparent; color: inherit; padding: 0; font-size: inherit; }
+  code {
+    font-family: 'SF Mono', Menlo, monospace; background: #e2e8f0;
+    color: #0f172a; padding: .15rem .5rem; border-radius: 5px; font-size: .87em;
+  }
+  table {
+    width: 100%; border-collapse: collapse; margin: 1.3rem 0;
+    background: #fff; border-radius: 12px; overflow: hidden;
+    box-shadow: 0 3px 12px rgba(0,0,0,.06); font-size: .9rem;
+  }
+  th {
+    background: linear-gradient(135deg,#7c2d12,#9a3412); color: #fff;
+    padding: .85rem 1rem; text-align: left; font-weight: 700; font-size: .82rem;
+  }
+  td { padding: .75rem 1rem; border-top: 1px solid #e2e8f0; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8fafc; }
+  ul, ol { margin: .8rem 0 1.2rem 1.9rem; }
+  li { margin-bottom: .5rem; }
+  .toc {
+    background: linear-gradient(135deg,#fff7ed,#ffedd5);
+    border: 2px solid #fdba74; border-radius: 16px;
+    padding: 1.7rem 2rem; margin: 2.3rem 0;
+  }
+  .toc h3 { margin-top: 0; color: #7c2d12; font-size: 1.25rem; }
+  .toc ol { margin-left: 1.2rem; }
+  .toc a { color: #c2410c; text-decoration: none; font-weight: 600; }
+  .toc a:hover { text-decoration: underline; }
+  .success-box {
+    background: linear-gradient(135deg,#d1fae5,#a7f3d0);
+    border: 2px solid #10b981; border-radius: 14px;
+    padding: 1.25rem 1.5rem; margin: 1.4rem 0;
+    font-weight: 600; color: #065f46;
+  }
+  .success-box::before { content: '✅ '; font-size: 1.25rem; margin-right: .3rem; }
+  .sozluq {
+    background: #fffbeb; border: 2px dashed #f59e0b;
+    border-radius: 14px; padding: 1.2rem 1.5rem; margin: 1.3rem 0;
+  }
+  .sozluq .soz { font-weight: 800; color: #b45309; }
+  .mektub {
+    background: #fffdf7; border: 2px solid #d6d3d1;
+    border-radius: 10px; padding: 2rem 2.3rem; margin: 1.5rem 0;
+    font-family: 'Times New Roman', Georgia, serif;
+    font-size: 1rem; line-height: 1.9; color: #1c1917;
+    box-shadow: 0 4px 18px rgba(0,0,0,.07);
+  }
+  .mektub .basliq { text-align: center; font-weight: 700; margin-bottom: 1.6rem; }
+  .mektub .sag { text-align: right; margin-bottom: 1.6rem; }
+  .mektub .imza { margin-top: 2.2rem; }
+  .mektub ol { margin-left: 1.6rem; }
+  .excel {
+    background: #f8fafc; border: 2px solid #94a3b8; border-radius: 10px;
+    padding: 0; margin: 1.2rem 0; overflow-x: auto;
+  }
+  .excel table { margin: 0; border-radius: 0; box-shadow: none; font-size: .82rem; }
+  .excel th { background: linear-gradient(135deg,#166534,#14532d); padding: .6rem .7rem; }
+  .excel td { padding: .5rem .7rem; }
+  .excel-basliq {
+    background: #1e293b; color: #e2e8f0; padding: .6rem 1rem;
+    font-family: 'SF Mono', Menlo, monospace; font-size: .8rem;
+    font-weight: 700; letter-spacing: 1px;
+  }
+  footer {
+    margin-top: 4.5rem; padding-top: 2rem;
+    border-top: 3px dashed #cbd5e1; text-align: center;
+    color: #64748b; font-size: .9rem;
+  }
+  @media (max-width: 700px) {
+    .container { padding: 1.5rem 1.2rem; }
+    h1 { font-size: 1.6rem; } h2 { font-size: 1.35rem; }
+    pre { font-size: .72rem; padding: 1rem; }
+    .mektub { padding: 1.2rem; font-size: .9rem; }
+  }
+  pre { position: relative; }
+  .copy-btn {
+    position: absolute; top: .7rem; right: .9rem;
+    background: #1e293b; color: #cbd5e1; border: 1px solid #475569;
+    border-radius: 6px; padding: .3rem .7rem; font-size: .68rem;
+    font-weight: 700; cursor: pointer; z-index: 10; opacity: .75;
+  }
+  .copy-btn:hover { background: #334155; color: #fff; opacity: 1; }
+  .copy-btn.copied { background: #059669 !important; color: #fff !important; }
+  pre::before { right: auto !important; left: .9rem !important; }
+  pre code { display: block; padding-top: .2rem; }
+
+  /* ─── REDAKTƏ OLUNA BİLƏN MƏKTUB ─── */
+  .mektub-alet {
+    background: #f0fdf4; border: 2px solid #16a34a;
+    border-radius: 12px; padding: 1.2rem 1.4rem; margin: 1.3rem 0;
+  }
+  .mektub-alet .alet-basliq {
+    font-weight: 800; font-size: .82rem; color: #15803d;
+    text-transform: uppercase; letter-spacing: 1.4px;
+    margin-bottom: .8rem; display: block;
+  }
+  textarea.mektub-metni {
+    width: 100%; min-height: 420px; padding: 1.1rem 1.3rem;
+    border: 2px solid #94a3b8; border-radius: 10px;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: .82rem; line-height: 1.75; color: #0f172a;
+    background: #fffdf7; resize: vertical;
+  }
+  textarea.mektub-metni:focus {
+    outline: none; border-color: #16a34a;
+    box-shadow: 0 0 0 3px rgba(22,163,74,.15);
+  }
+  .duyme-sira { display: flex; gap: .6rem; flex-wrap: wrap; margin-top: .8rem; }
+  .duyme {
+    background: linear-gradient(135deg,#16a34a,#15803d); color: #fff;
+    border: none; border-radius: 8px; padding: .55rem 1.1rem;
+    font-size: .78rem; font-weight: 700; cursor: pointer;
+    font-family: inherit; letter-spacing: .3px;
+  }
+  .duyme:hover { opacity: .88; }
+  .duyme.mavi { background: linear-gradient(135deg,#2563eb,#1d4ed8); }
+  .duyme.boz  { background: linear-gradient(135deg,#475569,#334155); }
+  .duyme.narinci { background: linear-gradient(135deg,#ea580c,#c2410c); }
+  .duyme.kicik { padding: .35rem .8rem; font-size: .7rem; }
+
+  /* ─── EXCEL ALƏT PANELİ ─── */
+  .excel-alet {
+    display: flex; gap: .5rem; align-items: center;
+    background: #1e293b; padding: .55rem .9rem;
+    border-radius: 10px 10px 0 0; flex-wrap: wrap;
+  }
+  .excel-alet .fayl-adi {
+    color: #94a3b8; font-family: 'SF Mono', Menlo, monospace;
+    font-size: .76rem; font-weight: 700; margin-right: auto;
+  }
+  .excel-alet .duyme { padding: .35rem .8rem; font-size: .7rem; }
+
+  /* ─── İNTERAKTİV MƏKTUB GENERATORU ─── */
+  .generator {
+    background: #eff6ff; border: 2px solid #3b82f6;
+    border-radius: 14px; padding: 1.4rem 1.6rem; margin: 1.4rem 0;
+  }
+  .generator .sahe-sira {
+    display: grid; grid-template-columns: 180px 1fr; gap: .7rem 1rem;
+    align-items: center; margin-bottom: .7rem;
+  }
+  .generator label {
+    font-weight: 700; font-size: .84rem; color: #1e40af;
+  }
+  .generator input, .generator select {
+    padding: .5rem .8rem; border: 2px solid #93c5fd;
+    border-radius: 8px; font-family: inherit; font-size: .84rem;
+    background: #fff; color: #0f172a; width: 100%;
+  }
+  .generator input:focus, .generator select:focus {
+    outline: none; border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+  }
+  @media (max-width: 700px) {
+    .generator .sahe-sira { grid-template-columns: 1fr; }
+  }
+
+  /* ─── FAYL AĞACI ─── */
+  .fayl-agaci {
+    background: #0f172a; color: #e2e8f0; padding: 1.5rem 1.7rem;
+    border-radius: 14px; overflow-x: auto; margin: 1.3rem 0;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: .8rem; line-height: 1.75;
+    border: 1px solid #334155;
+  }
+  .fayl-agaci .geden  { color: #fbbf24; font-weight: 700; }
+  .fayl-agaci .gelen  { color: #4ade80; font-weight: 700; }
+  .fayl-agaci .kod    { color: #60a5fa; font-weight: 700; }
+  .fayl-agaci .qeyd   { color: #64748b; font-style: italic; }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <div class="lesson-badge">DS_Backend · Hissə 1/4</div>
+  <h1>Backend 1 — NestJS 12 + Prisma 7 qurulumu</h1>
+  <p class="subtitle">Layihənin qurulması, <code>arti_baza</code>-ya qoşulma və ilk işlək endpoint</p>
+  <p class="meta">Layihə: <strong>Deepseek_ARTI</strong> · Blok: <code>DS_Backend</code> · Node 22+ · NestJS 12 · Prisma 7 · TypeScript 5.7</p>
+</header>
+<div class="toc">
+  <h3>📚 Bu dərsdə nələr öyrənəcəksiniz</h3>
+  <ol>
+    <li><a href="#b1">Backend nədir və bu dərs nə verir</a></li>
+    <li><a href="#b2">Üçqat memarlıq və backend-in yeri</a></li>
+    <li><a href="#b3">Mühitin yoxlanması — Node, npm, PostgreSQL</a></li>
+    <li><a href="#b4">Layihənin qurulması — DS_Backend</a></li>
+    <li><a href="#b5">Paketlərin qurulması</a></li>
+    <li><a href="#b6">Mühit dəyişənləri — .env</a></li>
+    <li><a href="#b7">TypeScript konfiqurasiyası — tsconfig.build.json</a></li>
+    <li><a href="#b8">Prisma 7 — dörd vacib dəyişiklik</a></li>
+    <li><a href="#b9">prisma/schema.prisma — arti_baza-ya bağlanma</a></li>
+    <li><a href="#b10">prisma.config.ts — url buraya köçüb</a></li>
+    <li><a href="#b11">prisma db pull — 48 cədvəli avtomatik oxumaq</a></li>
+    <li><a href="#b12">PrismaService və PrismaModule</a></li>
+    <li><a href="#b13">İlk modul — struktur/merkezler</a></li>
+    <li><a href="#b14">app.module.ts — modul qeydiyyatı</a></li>
+    <li><a href="#b15">main.ts — global konfiqurasiya</a></li>
+    <li><a href="#b16">Serveri işə salmaq və ilk curl sınağı</a></li>
+    <li><a href="#b17">CAST qaydası — BigInt, Numeric, Date</a></li>
+    <li><a href="#b18">İmport qaydası — backend-də .js MƏCBURİDİR</a></li>
+    <li><a href="#b19">Swagger — avtomatik sənədləşmə</a></li>
+    <li><a href="#b20">Tam qurulma skripti — bir əmrlə</a></li>
+    <li><a href="#b21">Vitest — ilk avtomatik test</a></li>
+    <li><a href="#b22">package.json skriptləri</a></li>
+    <li><a href="#b23">Git — ilk commit və GitHub</a></li>
+    <li><a href="#b24">Xəta kitabçası</a></li>
+    <li><a href="#b25">Yoxlama siyahısı və növbəti dərs</a></li>
+  </ol>
+</div>
+<h2 id="b1">1. Backend nədir və bu dərs nə verir</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Bu dərsdə <strong>sıfırdan işlək bir backend</strong> quracağıq: NestJS 12 layihəsi yaradacaq, Prisma 7 ilə <code>arti_baza</code>-ya bağlayacaq və ilk endpoint-i <code>curl</code> ilə sınayacağıq.</p>
+</div>
+<div class="block block-niye">
+  <span class="block-title">NİYƏ LAZIMDIR</span>
+  <p>Baza birbaşa brauzerdən əlçatan deyil — və <strong>olmamalıdır</strong>. Əgər brauzer birbaşa PostgreSQL-ə qoşulsaydı, bazanın şifrəsi hər istifadəçinin brauzerində olardı. Backend bu işi öz üzərinə götürür:</p><table><tr><th>Problem</th><th>Backend necə həll edir</th></tr><tr><td>Baza şifrəsi açıq düşər</td><td>Şifrə yalnız serverdə qalır</td></tr><tr><td>Hər kəs hər şeyi silə bilər</td><td>Rol yoxlaması (RBAC)</td></tr><tr><td>Məlumat formatsız gələr</td><td>Validasiya (DTO)</td></tr><tr><td>Dəyişikliyin izi qalmaz</td><td>Audit jurnalı</td></tr><tr><td>3 tətbiq (veb, mobil, AI) ayrı-ayrı SQL yazar</td><td>Bir API — hamı onu işlədir</td></tr></table>
+</div>
+<div class="block block-olmaz">
+  <span class="block-title">OLMASA NƏ OLAR</span>
+  <p>Frontend birbaşa bazaya qoşulmalı olardı. Nəticədə:</p><ul><li>Baza şifrəsi <code>localStorage</code>-da və ya JavaScript faylında görünərdi;</li><li>Hər istifadəçi bazanın <strong>bütün</strong> cədvəllərini görərdi;</li><li>Validasiya yox olardı — istənilən zibil məlumat bazaya düşərdi;</li><li>Mobil tətbiq üçün hər şey sıfırdan yazılmalı olardı.</li></ul>
+</div>
+<div class="block block-izah">
+  <span class="block-title">İZAH — NestJS nədir?</span>
+  <p>NestJS — Node.js üçün <strong>strukturlu</strong> backend framework-üdür. Express sadədir, lakin böyük layihədə kod qarışır. NestJS əvvəlcədən qurulmuş arxitektura verir: modul, servis, controller, guard, interceptor.</p><table><tr><th>Anlayış</th><th>Nədir</th><th>Bənzətmə</th></tr><tr><td><strong>Controller</strong></td><td>HTTP sorğunu qəbul edir</td><td>Qapıçı</td></tr><tr><td><strong>Service</strong></td><td>Biznes məntiqi, bazaya müraciət</td><td>Aşpaz</td></tr><tr><td><strong>Module</strong></td><td>Onları bir yerə yığır</td><td>Şöbə</td></tr><tr><td><strong>Guard</strong></td><td>İcazəni yoxlayır</td><td>Mühafizəçi</td></tr><tr><td><strong>Pipe</strong></td><td>Məlumatı yoxlayır/çevirir</td><td>Keyfiyyət nəzarəti</td></tr><tr><td><strong>Interceptor</strong></td><td>Əvvəl/sonra işləyir</td><td>Jurnalist</td></tr></table>
+</div>
+<div class="success-box">Bu dərsin sonunda <code>http://localhost:4000/api/v1/struktur/merkezler</code> ünvanı <strong>real bazadan real məlumat</strong> qaytaracaq.</div>
+<h2 id="b2">2. Üçqat memarlıq və backend-in yeri</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Layihənin üç qatını və onların necə danışdığını görəcəyik.</p>
+</div>
+<pre data-lang="sxem"><code>┌──────────────────────────────────────────────────────────┐
+│  1. DS_Frontend      Next.js 16 + React 19 + Tailwind 4  │  :3000
+│     İstifadəçi bunu görür                                │
+└────────────────────────┬─────────────────────────────────┘
+                         │  HTTP + Bearer JWT
+                         ▼
+┌──────────────────────────────────────────────────────────┐
+│  2. DS_Backend       NestJS 12 + Prisma 7                │  :4000/api/v1
+│     ← BU DƏRSİN MÖVZUSU                                  │
+└────────────────────────┬─────────────────────────────────┘
+                         │  SQL ($queryRaw)
+                         ▼
+┌──────────────────────────────────────────────────────────┐
+│  3. DS_Baza          PostgreSQL 18 · arti_baza           │  :5432
+│     12 sxem · 48 cədvəl · 8 view · 10 fn · 5 trigger     │
+└──────────────────────────────────────────────────────────┘</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — niyə məhz üç qat?</span>
+  <p>Hər qatın <strong>bir</strong> vəzifəsi var. Bu 'tək məsuliyyət prinsipi'dir (single responsibility). Nəticədə:</p><ul><li>Frontend-i dəyişmək bazaya toxunmur;</li><li>Bazanı dəyişmək (məsələn, cədvəl adı) yalnız backend-də düzəliş tələb edir;</li><li>Mobil tətbiq eyni API-ni işlədir — heç nə dəyişmir;</li><li>Hər qatı ayrıca test etmək mümkündür.</li></ul>
+</div>
+<div class="block block-evez">
+  <span class="block-title">ƏVƏZİNDƏ — başqa yanaşmalar</span>
+  <table><tr><th>Yanaşma</th><th>Üstünlük</th><th>Çatışmazlıq</th></tr><tr><td>Next.js API Routes</td><td>Bir layihə, az kod</td><td>Böyük layihədə qarışır</td></tr><tr><td>Supabase / Firebase</td><td>Backend yazmaq lazım deyil</td><td>Məlumat xaricdə, tam nəzarət yox</td></tr><tr><td>Express + əllə struktur</td><td>Yüngül</td><td>Konvensiya yox — hər komanda fərqli yazır</td></tr><tr><td><strong>NestJS</strong></td><td>Struktur, TypeScript, DI, testlər</td><td>Öyrənmə əyrisi var</td></tr></table>
+</div>
+<h2 id="b3">3. Mühitin yoxlanması — Node, npm, PostgreSQL</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>İşə başlamazdan əvvəl hər şeyin yerində olduğunu yoxlayacağıq.</p>
+</div>
+<h3><span class="step-num">1</span> Node.js versiyası</h3>
+<pre data-lang="bash"><code>node --version
+npm --version
+
+# Gözlənilən: v22 və ya daha yeni</code></pre>
+<div class="block block-yox">
+  <span class="block-title">YOXLAMA 1 — Node versiyası</span>
+  <pre><code>v26.7.0
+11.19.0</code></pre><p>Node 22-dən aşağıdırsa, NestJS 12 işləməyəcək. Yeniləyin: <code>brew install node@22</code></p>
+</div>
+<div class="block block-olmaz">
+  <span class="block-title">OLMASA NƏ OLAR — Node yoxdursa</span>
+  <p><code>node: command not found</code> xətası alınar.</p><pre><code>brew install node
+# və ya rəsmi saytdan: https://nodejs.org</code></pre>
+</div>
+<h3><span class="step-num">2</span> PostgreSQL və baza</h3>
+<pre data-lang="bash"><code>unset DATABASE_URL PGHOST
+export PGPASSWORD=arti_secret_2025
+
+# PostgreSQL işləyir?
+lsof -ti :5432
+
+# Baza əlçatandır?
+psql -U arti_user -d arti_baza -c "SELECT count(*) FROM struktur.merkezler;"</code></pre>
+<pre data-lang="çıxış"><code>5432
+ count
+-------
+    10
+(1 row)</code></pre>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ «unset DATABASE_URL PGHOST» — MÜTLƏQ</span>
+  <p>macOS-da qlobal <code>DATABASE_URL</code> ola bilər (başqa layihədən). O, <code>.env</code> faylını <strong>üstələyir</strong> və server səhv bazaya qoşulur. Nəticədə: <code>relation "struktur.merkezler" does not exist</code>.</p><p>Hər terminal sessiyasının əvvəlində bu əmri işlədin.</p>
+</div>
+<h3><span class="step-num">3</span> Köhnə proseslərin yoxlanması</h3>
+<pre data-lang="bash"><code># 4000 portu tutulubsa, server köhnə versiyanı işlədir
+lsof -ti :4000
+
+# Tutulubsa — azad et
+lsof -ti :4000 | xargs kill -9</code></pre>
+<div class="block block-ipucu">
+  <span class="block-title">💡 NİYƏ BU VACİBDİR?</span>
+  <p>Köhnə server işləyirsə, yeni kod dəyişikliyi <strong>təsir etmir</strong> — siz saatlarla 'niyə işləmir?' deyə axtarırsınız. Halbuki sadəcə köhnə proses dayanmır. <code>EADDRINUSE :::4000</code> xətası da bunun əlamətidir.</p>
+</div>
+<h2 id="b4">4. Layihənin qurulması — DS_Backend</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>NestJS layihəsini <code>~/Deepseek_ARTI/DS_Backend</code> qovluğunda yaradacağıq.</p>
+</div>
+<div class="block block-hara">
+  <span class="block-title">HARA</span>
+  <p><code>~/Deepseek_ARTI/DS_Backend/</code></p>
+</div>
+<h3><span class="step-num">1</span> Qovluğu hazırla və NestJS qur</h3>
+<pre data-lang="bash"><code>cd ~/Deepseek_ARTI
+
+# ⚠️ DİQQƏT: DS_Backend artıq varsa, aşağıdaki əmr onu TAM SİLİR!
+# Əvvəlcə içində nə olduğuna bax:
+ls -la DS_Backend 2>/dev/null
+
+# Lazımlı fayl varsa — ehtiyat nüsxə götür:
+cp -r DS_Backend /tmp/DS_Backend_backup 2>/dev/null
+
+# Yalnız bundan sonra sil:
+rm -rf DS_Backend
+
+# NestJS layihəsi yarat
+npx @nestjs/cli@12 new ds_backend --package-manager npm --skip-git
+
+# DİQQƏT: NestJS CLI adı kiçik hərfə çevirir (ds_backend).
+# Bizə isə DS_Backend lazımdır. Ona görə iki addımlı ad dəyişmə:
+mv ds_backend ds_backend_tmp
+mv ds_backend_tmp DS_Backend
+
+cd DS_Backend</code></pre>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ «rm -rf DS_Backend» — TƏHLÜKƏLİ ƏMR</span>
+  <p>Bu əmr qovluğu <strong>bütün məzmunu ilə</strong> silir. Əgər <code>DS_Backend</code>
+  içində əvvəldən yazdığınız fayllar varsa (qeydlər, köməkçi skriptlər), onlar da silinəcək.</p>
+  <table>
+    <tr><th>Vəziyyət</th><th>Nə etməli</th></tr>
+    <tr><td>Qovluq yoxdur</td><td>Birbaşa davam edin</td></tr>
+    <tr><td>Boş qovluqdur</td><td><code>rm -rf</code> təhlükəsizdir</td></tr>
+    <tr><td><strong>İçində fayllar var</strong></td><td>Əvvəlcə <code>cp -r</code> ilə ehtiyat götürün</td></tr>
+  </table>
+  <p><strong>Alternativ:</strong> heç silməyin — NestJS CLI mövcud qovluğa yazmaqdan imtina edəcək,
+  o zaman başqa ad seçin:</p>
+  <pre><code>npx @nestjs/cli@12 new ds_backend_yeni --package-manager npm --skip-git</code></pre>
+</div>
+<div class="block block-ipucu">
+  <span class="block-title">💡 package.json ADINI DÜZƏLT (opsional)</span>
+  <p>NestJS CLI <code>package.json</code>-da adı <code>ds_backend</code> yazır. Qovluq isə <code>DS_Backend</code>-dir. Bu, işləməyə mane olmur, lakin səliqə üçün düzəldə bilərsiniz:</p>
+</div>
+<pre data-lang="bash"><code>cd ~/Deepseek_ARTI/DS_Backend
+
+python3 - &lt;&lt;'PYEOF'
+import json
+p = 'package.json'
+d = json.load(open(p))
+d['name'] = 'ds-backend'
+d['description'] = 'Deepseek_ARTI — ARTİ ERP backend (NestJS + Prisma)'
+json.dump(d, open(p, 'w'), indent=2, ensure_ascii=False)
+print('package.json adi: ds-backend')
+PYEOF
+
+grep '"name"' package.json</code></pre>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ NİYƏ İKİ ADDIMLI «mv»?</span>
+  <p>macOS-un fayl sistemi <strong>hərf böyüklüyünə həssas deyil</strong>. Ona görə <code>mv ds_backend DS_Backend</code> bəzən <code>No such file or directory</code> xətası verir — sistem hər iki adı eyni fayl sayır.</p><p>Aralıq ad (<code>ds_backend_tmp</code>) bu problemi həll edir və <strong>hər platformada</strong> işləyir.</p>
+</div>
+<div class="block block-izah">
+  <span class="block-title">İZAH — bu əmr nə edir?</span>
+  <table><tr><th>Hissə</th><th>Mənası</th></tr><tr><td><code>npx @nestjs/cli@12</code></td><td>NestJS CLI-ın 12-ci versiyasını müvəqqəti yükləyir</td></tr><tr><td><code>new DS_Backend</code></td><td>Yeni layihə yaradır</td></tr><tr><td><code>--package-manager npm</code></td><td>npm işlədir (yarn/pnpm yox)</td></tr><tr><td><code>--skip-git</code></td><td>Alt qovluqda git başlatmır — biz yuxarıda başladacağıq</td></tr></table>
+</div>
+<div class="block block-olmaz">
+  <span class="block-title">OLMASA NƏ OLAR — --skip-git unudulsa</span>
+  <p><code>DS_Backend/.git</code> yaranar. Sonra <code>git add .</code> edəndə NestJS <strong>submodule</strong> kimi qeyd olunar və fayllar repoya düşməz.</p><p>Düzəltmək üçün:</p><pre><code>rm -rf ~/Deepseek_ARTI/DS_Backend/.git</code></pre>
+</div>
+<h3><span class="step-num">2</span> Strukturun yoxlanması</h3>
+<pre data-lang="bash"><code>ls -la
+
+# Gözlənilən qovluqlar: src/  test/  node_modules/  package.json  tsconfig.json</code></pre>
+<div class="block block-yox">
+  <span class="block-title">YOXLAMA 2 — NestJS quruldu?</span>
+  <pre><code>src/
+test/
+node_modules/
+package.json
+tsconfig.json
+nest-cli.json</code></pre><p>Bu fayllar varsa, NestJS uğurla qurulub.</p>
+</div>
+<h2 id="b5">5. Paketlərin qurulması</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Prisma 7, konfiqurasiya, validasiya və Swagger paketlərini quraşdıracağıq.</p>
+</div>
+<h3><span class="step-num">1</span> Əsas paketlər</h3>
+<pre data-lang="bash"><code>cd ~/Deepseek_ARTI/DS_Backend
+
+npm install \
+  @prisma/client@^7.10.0 \
+  @prisma/adapter-pg@^7.10.0 \
+  @nestjs/config@^12.0.0 \
+  @nestjs/swagger@^12.0.0 \
+  class-validator@^0.14.1 \
+  class-transformer@^0.5.1 \
+  dotenv@^16.6.1 \
+  pg@^8.13.0</code></pre>
+<h3><span class="step-num">2</span> İnkişaf paketləri</h3>
+<pre data-lang="bash"><code>npm install -D \
+  prisma@^7.10.0 \
+  tsx@^4.19.0 \
+  vitest@^4.0.0</code></pre>
+<h3><span class="step-num">3</span> ⚠️ VERSİYANI YOXLA — MÜTLƏQ ADDIM</h3>
+<pre data-lang="bash"><code>cd ~/Deepseek_ARTI/DS_Backend
+npx prisma --version</code></pre>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ ƏN BÖYÜK TƏLƏ: QLOBAL PRISMA 4</span>
+  <p>Əgər maşında <strong>qlobal Prisma</strong> quraşdırılıbsa (məsələn Homebrew və ya
+  <code>npm install -g prisma</code> ilə köhnə versiya), <code>npx prisma</code>
+  <strong>lokal paketi tapmır</strong> və qlobal olanı işlədir:</p>
+  <pre><code>$ npx prisma --version
+prisma                  : 4.15.0        ← KÖHNƏ!
+@prisma/client          : 7.10.0
+Query Engine (Node-API) : ... /opt/homebrew/lib/node_modules/prisma/...</code></pre>
+  <p>Nəticədə <code>db pull</code> belə xəta verir:</p>
+  <pre><code>Prisma schema validation - (get-config wasm)
+Error code: P1012
+error: Argument "url" is missing in data source block "db".
+  --&gt;  schema.prisma:9
+   |
+ 9 | datasource db {
+10 |   provider = "postgresql"
+11 |   schemas  = ["ortaq", "struktur", ...]
+12 | }
+   |
+Validation Error Count: 1
+[Context: getConfig]
+
+Prisma CLI Version : 4.15.0        ← DİQQƏT: BURADA!</code></pre>
+  <p><strong>Səbəb:</strong> Prisma 4-də <code>url</code> sxemdə MÜTLƏQ olmalıdır.
+  Prisma 7-də isə o, <code>prisma.config.ts</code>-ə köçüb. Yəni sxeminiz
+  <strong>düzgündür</strong> — sadəcə köhnə CLI onu başa düşmür.</p>
+  <p><strong>Xəta mesajında həmişə ən alt sətri oxuyun:</strong>
+  <code>Prisma CLI Version : 4.15.0</code> — bu, problemi dərhal göstərir.</p>
+</div>
+<div class="block block-olmaz">
+  <span class="block-title">HƏLL — üç variant</span>
+  <table>
+    <tr><th>#</th><th>Həll</th><th>Nə vaxt</th></tr>
+    <tr><td>1</td><td><code>npm install -D prisma@^7.10.0</code></td>
+        <td>Ən doğru yol — lokal paket qurulur (tövsiyə olunur)</td></tr>
+    <tr><td>2</td><td><code>./node_modules/.bin/prisma db pull</code></td>
+        <td>Lokal binary-ni birbaşa çağırmaq (müvəqqəti)</td></tr>
+    <tr><td>3</td><td><code>npm uninstall -g prisma</code></td>
+        <td>Qlobal köhnə versiyanı tam silmək</td></tr>
+  </table>
+</div>
+<pre data-lang="bash"><code># HƏLL 1 — lokal prisma 7 qur (tövsiyə olunur)
+cd ~/Deepseek_ARTI/DS_Backend
+npm install -D prisma@^7.10.0
+
+# Yoxla — 7.x görməlisiniz
+npx prisma --version
+
+# HƏLL 3 — qlobal köhnə prisma varsa, sil
+npm uninstall -g prisma 2&gt;/dev/null || true
+
+# Haradan gəldiyini tapmaq üçün:
+which prisma
+npm ls -g --depth=0 | grep -i prisma</code></pre>
+<pre data-lang="çıxış"><code>prisma                  : 7.10.0
+@prisma/client          : 7.10.0
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma/schema.prisma.</code></pre>
+<div class="block block-ipucu">
+  <span class="block-title">💡 NİYƏ «npx» LOKAL PAKETİ TAPMADI?</span>
+  <p><code>npx</code> əvvəlcə <code>node_modules/.bin/</code>-ə baxır. Lakin
+  <code>prisma</code> <code>devDependencies</code>-də yox idisə, orada
+  <strong>heç nə yoxdur</strong> — və npx qlobal olana keçir.</p>
+  <p>Yoxlamaq üçün:</p>
+  <pre><code>ls node_modules/.bin/prisma
+# "No such file"        -&gt; prisma lokal qurulmayıb
+# /Users/.../node_modules/.bin/prisma  -&gt; lokal var, yaxşıdır</code></pre>
+  <p><strong>Ümumi qayda:</strong> qlobal alətlər (<code>prisma</code>, <code>nest</code>,
+  <code>tsc</code>) həmişə lokal versiyadan istifadə etməlidir. Layihəyə aid hər alət
+  <code>devDependencies</code>-də olmalıdır.</p>
+</div>
+<div class="block block-ipucu">
+  <span class="block-title">💡 npm «install scripts» XƏBƏRDARLIĞI</span>
+  <p>Yeni npm versiyaları təhlükəsizlik üçün paketlərin <code>postinstall</code>
+  skriptlərini <strong>icazəsiz işlətməyə bilər</strong>:</p>
+  <pre><code>npm warn install-scripts   prisma@7.10.0 (preinstall: node scripts/preinstall-entry.js)
+npm warn install-scripts   @prisma/engines@7.10.0 (postinstall: node scripts/postinstall.js)
+npm warn install-scripts Run `npm install-scripts approve &lt;pkg&gt;` to allow.</code></pre>
+  <p>Bu xəbərdarlıq <strong>problem deyil</strong> — Prisma mühərrikləri onsuz da işləyir.
+  Lakin <code>db pull</code> <code>Query engine not found</code> xətası verərsə, icazə verin:</p>
+  <pre><code>npm install-scripts approve prisma
+npm install-scripts approve @prisma/engines</code></pre>
+</div>
+<div class="block block-izah">
+  <span class="block-title">İZAH — hər paket nə üçündür?</span>
+  <table><tr><th>Paket</th><th>Nə edir</th><th>Olmazsa</th></tr><tr><td><code>@prisma/client</code></td><td>Bazaya müraciət üçün müştəri</td><td>SQL-i əl ilə yazmalı olardıq</td></tr><tr><td><code>@prisma/adapter-pg</code></td><td>Prisma 7 üçün PostgreSQL adapteri (MƏCBURİ)</td><td><code>PrismaClient</code> işə düşmür</td></tr><tr><td><code>@nestjs/config</code></td><td><code>.env</code> oxuyur</td><td><code>ConfigModule</code> tapılmır</td></tr><tr><td><code>@nestjs/swagger</code></td><td>Avtomatik API sənədləşmə</td><td>Frontend komandası endpoint-ləri bilməz</td></tr><tr><td><code>class-validator</code></td><td>DTO validasiyası</td><td>Yanlış məlumat bazaya düşər</td></tr><tr><td><code>class-transformer</code></td><td>Tip çevrilməsi (<code>'5'</code> → <code>5</code>)</td><td><code>transform: true</code> işləməz</td></tr><tr><td><code>pg</code></td><td>PostgreSQL drayveri</td><td>Adapter qoşula bilməz</td></tr><tr><td><code>prisma</code> (dev)</td><td>CLI — generate, db pull, migrate</td><td>Model yarada bilməzsiniz</td></tr></table>
+</div>
+<div class="block block-evez">
+  <span class="block-title">ƏVƏZİNDƏ — TypeORM / Drizzle</span>
+  <table><tr><th>Alət</th><th>Üstünlük</th><th>Çatışmazlıq</th></tr><tr><td>TypeORM</td><td>NestJS ilə ənənəvi</td><td>Type təhlükəsizliyi zəif</td></tr><tr><td>Drizzle</td><td>Yüngül, SQL-ə yaxın</td><td>Ekosistem kiçik</td></tr><tr><td>Xam SQL (<code>pg</code>)</td><td>Tam nəzarət, ən sürətli</td><td>Tip yoxdur, əl ilə yazılır</td></tr><tr><td><strong>Prisma</strong></td><td>Tip təhlükəsizliyi, miqrasiya, studio</td><td>Mürəkkəb SQL-də məhdudiyyət</td></tr></table><p>Biz <strong>hibrid</strong> yanaşma işlədəcəyik: sadə əməliyyatlar Prisma API ilə, mürəkkəb analitika isə <code>$queryRaw</code> ilə.</p>
+</div>
+<h2 id="b6">6. Mühit dəyişənləri — .env</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Baza bağlantısı məlumatlarını <code>.env</code> faylına yazacağıq. Bu fayl <strong>heç vaxt</strong> git-ə getmir.</p>
+</div>
+<div class="block block-hara">
+  <span class="block-title">HARA</span>
+  <p><code>~/Deepseek_ARTI/DS_Backend/.env</code></p>
+</div>
+<pre data-lang="bash"><code>cat &gt; ~/Deepseek_ARTI/DS_Backend/.env &lt;&lt;'EOF'
+# ── Baza ──
+DATABASE_URL="postgresql://arti_user:arti_secret_2025@localhost:5432/arti_baza"
+
+# ── Server ──
+PORT=4000
+NODE_ENV=development
+
+# ── JWT (Backend-3-də istifadə olunacaq) ──
+JWT_SECRET="deepseek-arti-gizli-acar-2026"
+JWT_MUDDET="8h"
+EOF
+
+cat ~/Deepseek_ARTI/DS_Backend/.env</code></pre>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ .env FAYLI GİZLİDİR</span>
+  <p><code>.env</code> faylında baza şifrəsi var. Onu <strong>heç vaxt</strong> git-ə əlavə etməyin. <code>.gitignore</code> faylında olmalıdır:</p>
+</div>
+<pre data-lang="bash"><code>cat &gt; ~/Deepseek_ARTI/DS_Backend/.gitignore &lt;&lt;'EOF'
+.env
+.env.*
+node_modules/
+dist/
+src/generated/
+*.log
+EOF</code></pre>
+<div class="block block-olmaz">
+  <span class="block-title">OLMASA NƏ OLAR — .env git-ə düşsə</span>
+  <p>GitHub <strong>secret scanning</strong> işə düşür və push rədd olunur:</p><pre><code>remote: push declined due to repository rule violations
+remote: — Secret detected: PostgreSQL connection string</code></pre><p>Şifrə düşübsə, onu <strong>dəyişmək lazımdır</strong> — tarixçədən silmək kifayət etmir. Səbəb: şifrə artıq açıq şəkildə yayımlanıb.</p><pre><code># Tarixçədən təmizləmək (push etməzdən əvvəl)
+git commit --amend
+git gc --prune=now</code></pre>
+</div>
+<div class="block block-ipucu">
+  <span class="block-title">💡 .env.example FAYLI YARAT</span>
+  <p>Komanda yoldaşları üçün şifrəsiz nümunə saxlayın:</p>
+</div>
+<pre data-lang="bash"><code>cat &gt; ~/Deepseek_ARTI/DS_Backend/.env.example &lt;&lt;'EOF'
+DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/arti_baza"
+PORT=4000
+NODE_ENV=development
+JWT_SECRET="deyisdirin"
+JWT_MUDDET="8h"
+EOF</code></pre>
+<h2 id="b7">7. TypeScript konfiqurasiyası — tsconfig.build.json</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>NestJS-in standart <code>tsconfig.json</code>-u kifayət etmir. <code>tsconfig.build.json</code> yaradacağıq.</p>
+</div>
+<div class="block block-niye">
+  <span class="block-title">NİYƏ LAZIMDIR</span>
+  <p><code>rootDir</code> göstərilməsə, TypeScript kompilyasiya zamanı qovluq strukturunu <strong>dəyişir</strong>: çıxış <code>dist/main.js</code> yerinə <code>dist/src/main.js</code> olur. Nəticədə <code>npm start</code> <code>Cannot find module dist/main.js</code> xətası verir.</p>
+</div>
+<div class="block block-hara">
+  <span class="block-title">HARA</span>
+  <p><code>~/Deepseek_ARTI/DS_Backend/tsconfig.build.json</code></p>
+</div>
+<pre data-lang="bash"><code>cat &gt; ~/Deepseek_ARTI/DS_Backend/tsconfig.build.json &lt;&lt;'EOF'
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "./src"
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "test", "dist", "**/*spec.ts"]
+}
+EOF</code></pre>
+<pre data-lang="json"><code>{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "./src"
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "test", "dist", "**/*spec.ts"]
+}</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — hər sətir nə edir?</span>
+  <table><tr><th>Sətir</th><th>Mənası</th></tr><tr><td><code>extends</code></td><td>Əsas <code>tsconfig.json</code>-u götürür, yalnız fərqi yazırıq</td></tr><tr><td><code>rootDir: "./src"</code></td><td>Mənbə kökü <code>src</code>-dir → çıxış <code>dist/main.js</code></td></tr><tr><td><code>include: ["src"]</code></td><td>Yalnız <code>src</code> kompilyasiya olunur</td></tr><tr><td><code>exclude: [..., "**/*spec.ts"]</code></td><td>Testlər <code>dist</code>-ə düşmür</td></tr></table>
+</div>
+<div class="block block-evez">
+  <span class="block-title">ƏVƏZİNDƏ — bu fayl olmadan</span>
+  <p>Alternativ: <code>package.json</code>-dakı <code>build</code> skriptini <code>nest build -p tsconfig.build.json</code> etmək. Lakin NestJS CLI bu faylı <strong>avtomatik</strong> axtarır — ona görə onu yaratmaq daha təmizdir.</p>
+</div>
+<h2 id="b8">8. Prisma 7 — dörd vacib dəyişiklik</h2>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ PRISMA 7 PRISMA 6-DAN FƏRQLİDİR</span>
+  <p>İnternetdəki köhnə nümunələr işləməyəcək. Prisma 7-də dörd əsaslı dəyişiklik var:</p>
+</div>
+<table>
+  <tr><th>#</th><th>Nə dəyişdi</th><th>Prisma 6</th><th>Prisma 7</th></tr>
+  <tr><td>1</td><td>Generator adı</td><td><code>prisma-client-js</code></td><td><code>prisma-client</code></td></tr>
+  <tr><td>2</td><td>Çıxış yolu</td><td>Avtomatik (<code>node_modules</code>)</td><td><code>output</code> MƏCBURİDİR</td></tr>
+  <tr><td>3</td><td>Bağlantı sətri</td><td>Sxemdə <code>url</code></td><td><code>prisma.config.ts</code>-də</td></tr>
+  <tr><td>4</td><td>Adapter</td><td>Lazım deyil</td><td><code>PrismaPg</code> MƏCBURİDİR</td></tr>
+</table>
+<div class="block block-olmaz">
+  <span class="block-title">OLMASA NƏ OLAR — hər dəyişiklik unudulsa</span>
+  <table><tr><th>Unudulan</th><th>Xəta</th></tr><tr><td><code>provider = "prisma-client-js"</code></td><td>Deprecated warning, gələcəkdə işləməyəcək</td></tr><tr><td><code>output</code> yoxdur</td><td><code>PrismaClient</code> yeri bilinmir, import xətası</td></tr><tr><td><code>url</code> sxemdə qalıb</td><td><code>P1012: The datasource property `url` is no longer supported</code></td></tr><tr><td><code>schemas</code> yoxdur</td><td><code>This schema is not defined in the datasource</code></td></tr><tr><td>Adapter yoxdur</td><td><code>PrismaClientInitializationError</code></td></tr></table>
+</div>
+<h2 id="b9">9. prisma/schema.prisma — arti_baza-ya bağlanma</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Prisma sxemini yaradacağıq. Əvvəlcə yalnız <strong>generator</strong> və <strong>datasource</strong> bloklarını yazırıq — modelləri isə Prisma özü bazadan oxuyacaq (növbəti bölmə).</p>
+</div>
+<div class="block block-hara">
+  <span class="block-title">HARA</span>
+  <p><code>~/Deepseek_ARTI/DS_Backend/prisma/schema.prisma</code></p>
+</div>
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/prisma
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/prisma/schema.prisma &lt;&lt;'EOF'
+// Prisma 7 sxemi — Deepseek_ARTI
+// Baza: arti_baza (12 sxem, 48 cədvəl)
+
+generator client {
+  provider = "prisma-client"          // Prisma 7: prisma-client-js YOX
+  output   = "../src/generated/prisma" // MƏCBURİ: öz qovluğuna yazır
+}
+
+datasource db {
+  provider = "postgresql"
+  schemas  = ["ortaq", "struktur", "kadrlar", "elm", "tehsil", "qiymetlendirme", "metodika", "maliyye", "logistika", "sened", "audit", "ai"]
+  // DİQQƏT: url BURADA YOXDUR — prisma.config.ts-dədir!
+}
+EOF
+
+cat ~/Deepseek_ARTI/DS_Backend/prisma/schema.prisma</code></pre>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ «schemas» BİR SƏTİRDƏ YAZILMALIDIR</span>
+  <p>Prisma <code>schemas = [...]</code> massivini <strong>sətirə bölməyi qəbul etmir</strong>. Aşağıdaki yazılış xəta verir:</p><pre><code>datasource db {
+  provider = "postgresql"
+  schemas  = [
+    "ortaq", "struktur"
+  ]
+}</code></pre><pre><code>error: Error validating: This line is not a valid definition within a datasource.
+Validation Error Count: 5</code></pre><p><strong>Doğru yol</strong> — hamısı bir sətirdə:</p><pre><code>schemas  = ["ortaq", "struktur", "kadrlar", "elm", "tehsil", "qiymetlendirme", "metodika", "maliyye", "logistika", "sened", "audit", "ai"]</code></pre><p>Bu, Prisma-nın xüsusiyyətidir: <code>datasource</code> blokunda sətir bölməsi dəstəklənmir.</p>
+</div>
+<div class="block block-izah">
+  <span class="block-title">İZAH — schemas siyahısı nə üçündür?</span>
+  <p>Prisma hər modelin hansı sxemdə olduğunu <code>@@schema("struktur")</code> ilə öyrənir. Lakin <strong>hansı sxemlərin mövcud olduğunu</strong> bilmək üçün <code>schemas</code> siyahısına ehtiyac duyur.</p><p>Bu siyahı olmasa: <code>Error: This schema is not defined in the datasource</code></p>
+</div>
+<div class="block block-ipucu">
+  <span class="block-title">💡 NİYƏ 12 SXEMİN HAMISI?</span>
+  <p>Yalnız istifadə etdiyiniz sxemləri yazmaq da mümkündür. Lakin hamısını yazsaq, gələcəkdə yeni modul əlavə edəndə sxemi dəyişmək lazım gəlmir.</p>
+</div>
+<h2 id="b10">10. prisma.config.ts — url buraya köçüb</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Prisma 7-də bağlantı sətri sxemdən çıxarılıb konfiqurasiya faylına köçüb.</p>
+</div>
+<div class="block block-niye">
+  <span class="block-title">NİYƏ BELƏ EDİLDİ?</span>
+  <p>Əvvəl <code>url</code> sxemdə idi və <code>.env</code>-dən oxunurdu. Bu, iki problemi yaradırdı:</p><ol><li>Sxem faylı <strong>sirr</strong> daşıyırdı — onu paylaşmaq riskli idi;</li><li>Eyni sxemi müxtəlif mühitlərdə (development, test, production) işlətmək çətin idi.</li></ol><p>İndi konfiqurasiya ayrı fayldadır — sxem təmiz qalır.</p>
+</div>
+<div class="block block-hara">
+  <span class="block-title">HARA</span>
+  <p><code>~/Deepseek_ARTI/DS_Backend/prisma.config.ts</code></p>
+</div>
+<pre data-lang="bash"><code>cat &gt; ~/Deepseek_ARTI/DS_Backend/prisma.config.ts &lt;&lt;'EOF'
+import 'dotenv/config';
+import { defineConfig, env } from 'prisma/config';
+
+export default defineConfig({
+  schema: 'prisma/schema.prisma',
+  migrations: {
+    path: 'prisma/migrations',
+  },
+  datasource: {
+    url: env('DATABASE_URL'),
+  },
+});
+EOF</code></pre>
+<pre data-lang="typescript"><code>import 'dotenv/config';
+import { defineConfig, env } from 'prisma/config';
+
+export default defineConfig({
+  schema: 'prisma/schema.prisma',
+  migrations: {
+    path: 'prisma/migrations',
+  },
+  datasource: {
+    url: env('DATABASE_URL'),      // ← .env-dən oxuyur
+  },
+});</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — hər sətir</span>
+  <table><tr><th>Sətir</th><th>Nə edir</th></tr><tr><td><code>import 'dotenv/config'</code></td><td><code>.env</code> faylını yükləyir</td></tr><tr><td><code>defineConfig</code></td><td>Tip təhlükəsiz konfiqurasiya obyekti</td></tr><tr><td><code>schema</code></td><td>Prisma sxem faylının yolu</td></tr><tr><td><code>migrations.path</code></td><td>Miqrasiya fayllarının saxlanacağı qovluq</td></tr><tr><td><code>env('DATABASE_URL')</code></td><td>Dəyişəni oxuyur; yoxdursa <strong>xəta verir</strong> (sükutla keçmir)</td></tr></table>
+</div>
+<div class="block block-olmaz">
+  <span class="block-title">OLMASA NƏ OLAR — dotenv unudulsa</span>
+  <pre><code>Error: Environment variable not found: DATABASE_URL.</code></pre><p>Səbəb: Prisma CLI <code>.env</code>-i avtomatik oxumur (Prisma 7-də). Mütləq <code>import 'dotenv/config'</code> lazımdır.</p>
+</div>
+<h2 id="b11">11. prisma db pull — 48 cədvəli avtomatik oxumaq</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Prisma bazanı oxuyub bütün 48 cədvəl üçün model yaradacaq. 48 modeli əl ilə yazmaq həm uzun, həm də səhvə açıqdır.</p>
+</div>
+<div class="block block-hara">
+  <span class="block-title">HARA</span>
+  <p>Terminal — <code>~/Deepseek_ARTI/DS_Backend</code></p>
+</div>
+<pre data-lang="bash"><code>cd ~/Deepseek_ARTI/DS_Backend
+unset DATABASE_URL PGHOST
+
+npx prisma db pull</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — db pull nə edir?</span>
+  <p><code>db pull</code> bazanın strukturunu oxuyur və <code>schema.prisma</code> faylına <strong>modellər</strong> əlavə edir. Bu, 'introspection' adlanır.</p><table><tr><th>Əmr</th><th>İstiqamət</th><th>Nə vaxt</th></tr><tr><td><code>db pull</code></td><td>Baza → Sxem</td><td>Mövcud baza var (bizim hal)</td></tr><tr><td><code>db push</code></td><td>Sxem → Baza</td><td>Yeni layihə, prototip</td></tr><tr><td><code>migrate dev</code></td><td>Sxem → Baza + miqrasiya faylı</td><td>İstehsalat layihəsi</td></tr></table>
+</div>
+<pre data-lang="çıxış"><code>Prisma schema loaded from prisma/schema.prisma
+Datasource "db": PostgreSQL database "arti_baza", schemas (12) at "localhost:5432"
+
+✔ Introspected 48 models and wrote them into prisma/schema.prisma
+  in 842ms
+
+Run prisma generate to generate Prisma Client.</code></pre>
+<h3><span class="step-num">1</span> Nəticəni yoxla</h3>
+<pre data-lang="bash"><code># Model sayı
+grep -c '^model ' ~/Deepseek_ARTI/DS_Backend/prisma/schema.prisma
+
+# Nümunə modellər
+grep -A 12 '^model Merkez' ~/Deepseek_ARTI/DS_Backend/prisma/schema.prisma</code></pre>
+<pre data-lang="typescript"><code>model Merkez {
+  id               Int       @id @default(autoincrement())
+  ad               String
+  tip              String?
+  tesvir           String?
+  unvan            String?
+  telefon          String?
+  email            String?
+  yaradilma_tarixi DateTime? @db.Date
+  aktiv            Boolean   @default(true)
+
+  Shobe      Shobe[]
+  Emekdas    Emekdas[]
+  Rehberlik  Rehberlik[]
+
+  @@map("merkezler")
+  @@schema("struktur")
+}</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — model nədir?</span>
+  <p>Prisma modeli = bazadakı cədvəlin TypeScript təsviri.</p><table><tr><th>Prisma</th><th>PostgreSQL</th></tr><tr><td><code>model Merkez</code></td><td>Cədvəl <code>struktur.merkezler</code></td></tr><tr><td><code>id Int @id</code></td><td><code>id integer PRIMARY KEY</code></td></tr><tr><td><code>ad String</code></td><td><code>ad text NOT NULL</code></td></tr><tr><td><code>tip String?</code></td><td><code>tip text</code> (NULL ola bilər)</td></tr><tr><td><code>@default(true)</code></td><td><code>DEFAULT true</code></td></tr><tr><td><code>@@map("merkezler")</code></td><td>Cədvəlin həqiqi adı</td></tr><tr><td><code>@@schema("struktur")</code></td><td>Sxemin adı</td></tr></table>
+</div>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ SORĞU (?) İŞARƏSİ</span>
+  <p>Prisma <code>String?</code> yazır — bu 'NULL ola bilər' deməkdir. Lakin TypeScript-də bu tip <code>string | null</code> olur. Ona görə <code>$queryRaw</code> işlədəndə öz <code>interface</code>-imizi yazırıq.</p>
+</div>
+<div class="block block-evez">
+  <span class="block-title">ƏVƏZİNDƏ — db pull yerinə</span>
+  <table><tr><th>Yol</th><th>Nə vaxt</th></tr><tr><td><code>prisma db pull</code></td><td>Baza hazırdır, model lazımdır ← bizim hal</td></tr><tr><td>Modelləri əl ilə yazmaq</td><td>Az sayda cədvəl (5-10)</td></tr><tr><td><code>prisma migrate dev</code></td><td>Sxem əvvəl yazılır, baza sonra qurulur</td></tr></table>
+</div>
+<h2 id="b12">12. PrismaService və PrismaModule</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Prisma-nın bazaya bağlantısını NestJS-ə 'aşılayacağıq'. İki fayl lazımdır: <code>PrismaService</code> və <code>PrismaModule</code>.</p>
+</div>
+<div class="block block-niye">
+  <span class="block-title">NİYƏ LAZIMDIR</span>
+  <p>Prisma özü NestJS-dən xəbərsizdir. NestJS isə 'dependency injection' işlədir — yəni servislər öz asılılıqlarını <strong>konstruktorda</strong> alır. Bu iki dünyanı birləşdirmək üçün wrapper yazırıq.</p>
+</div>
+<div class="block block-hara">
+  <span class="block-title">HARA</span>
+  <p><code>src/prisma/prisma.service.ts</code> və <code>src/prisma/prisma.module.ts</code></p>
+</div>
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/prisma
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/prisma/prisma.service.ts &lt;&lt;'EOF'
+import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import { PrismaClient } from '../generated/prisma/client.js';
+import { PrismaPg } from '@prisma/adapter-pg';
+
+@Injectable()
+export class PrismaService
+  extends PrismaClient
+  implements OnModuleInit, OnModuleDestroy
+{
+  constructor() {
+    const adapter = new PrismaPg({
+      connectionString: process.env.DATABASE_URL!,
+    });
+    super({ adapter });
+  }
+
+  async onModuleInit() {
+    await this.$connect();
+    console.log('Baza baglantisi acildi');
+  }
+
+  async onModuleDestroy() {
+    await this.$disconnect();
+  }
+}
+EOF
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/prisma/prisma.module.ts &lt;&lt;'EOF'
+import { Global, Module } from '@nestjs/common';
+import { PrismaService } from './prisma.service.js';
+
+@Global()
+@Module({
+  providers: [PrismaService],
+  exports: [PrismaService],
+})
+export class PrismaModule {}
+EOF</code></pre>
+<pre data-lang="typescript"><code>import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import { PrismaClient } from '../generated/prisma/client.js';
+import { PrismaPg } from '@prisma/adapter-pg';
+
+@Injectable()
+export class PrismaService
+  extends PrismaClient
+  implements OnModuleInit, OnModuleDestroy
+{
+  constructor() {
+    const adapter = new PrismaPg({
+      connectionString: process.env.DATABASE_URL!,
+    });
+    super({ adapter });
+  }
+
+  async onModuleInit() {
+    await this.$connect();
+  }
+
+  async onModuleDestroy() {
+    await this.$disconnect();
+  }
+}</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — sətir-sətir</span>
+  <table><tr><th>Kod</th><th>Nə edir</th></tr><tr><td><code>extends PrismaClient</code></td><td>Bütün Prisma metodlarını miras alır</td></tr><tr><td><code>implements OnModuleInit</code></td><td>Modul yüklənəndə <code>onModuleInit</code> çağırılır</td></tr><tr><td><code>implements OnModuleDestroy</code></td><td>Server dayananda <code>onModuleDestroy</code> çağırılır</td></tr><tr><td><code>new PrismaPg({...})</code></td><td>Prisma 7-də MƏCBURİ olan PostgreSQL adapteri</td></tr><tr><td><code>process.env.DATABASE_URL!</code></td><td><code>!</code> — 'bu dəyər mütləq var' bildirir TypeScript-ə</td></tr><tr><td><code>super({ adapter })</code></td><td>Valideyn konstruktora adapteri ötürür</td></tr><tr><td><code>$connect()</code></td><td>Bağlantı hovuzunu açır</td></tr><tr><td><code>$disconnect()</code></td><td>Bağlantıları bağlayır (yaddaş sızmasının qarşısı)</td></tr></table>
+</div>
+<div class="block block-olmaz">
+  <span class="block-title">OLMASA NƏ OLAR — $disconnect unudulsa</span>
+  <p>Server hər yenidən başladıqda köhnə bağlantılar açıq qalar. PostgreSQL-in <code>max_connections</code> limiti (adətən 100) dolur:</p><pre><code>FATAL: sorry, too many clients already</code></pre>
+</div>
+<div class="block block-ipucu">
+  <span class="block-title">💡 @Global() NƏ EDİR?</span>
+  <p><code>@Global()</code> dekoratoru <code>PrismaModule</code>-u <strong>qlobal</strong> edir. Yəni hər modulda <code>imports: [PrismaModule]</code> yazmaq lazım deyil — <code>PrismaService</code> hər yerdə əlçatandır.</p><p>Bu olmasa, 11 modulun hamısında təkrar import yazmalı olardıq.</p>
+</div>
+<h2 id="b13">13. İlk modul — struktur/merkezler</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>İlk işlək modulu yaradacağıq: <code>struktur</code>. Üç fayl lazımdır — service, controller, module.</p>
+</div>
+<div class="block block-niye">
+  <span class="block-title">NİYƏ ÜÇ FAYL?</span>
+  <table><tr><th>Fayl</th><th>Vəzifəsi</th><th>Bazaya toxunur?</th></tr><tr><td><code>*.service.ts</code></td><td>Biznes məntiqi, SQL</td><td>✅ Bəli</td></tr><tr><td><code>*.controller.ts</code></td><td>HTTP yönləndirmə</td><td>❌ Xeyr</td></tr><tr><td><code>*.module.ts</code></td><td>Onları birləşdirir</td><td>❌ Xeyr</td></tr></table><p>Bu ayrılıq vacibdir: controller-i dəyişmədən servisi başqa yerdə işlədə bilərsiniz (məsələn, cron tapşırığında və ya AI agentində).</p>
+</div>
+<div class="block block-hara">
+  <span class="block-title">HARA</span>
+  <p><code>src/struktur/</code></p>
+</div>
+<h3><span class="step-num">1</span> Service</h3>
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/struktur
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/struktur/struktur.service.ts &lt;&lt;'EOF'
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service.js';
+
+/** Bazadan gelen setir — TypeScript tipi */
+export interface Merkez {
+  id: number;
+  ad: string;
+  tip: string | null;
+  unvan: string | null;
+  telefon: string | null;
+  email: string | null;
+  aktiv: boolean;
+}
+
+@Injectable()
+export class StrukturService {
+  constructor(private readonly prisma: PrismaService) {}
+
+  /** Butun merkezler */
+  async merkezler(): Promise&lt;Merkez[]&gt; {
+    return this.prisma.$queryRaw&lt;Merkez[]&gt;`
+      SELECT id::int, ad, tip, unvan, telefon, email, aktiv
+      FROM struktur.merkezler
+      ORDER BY id
+    `;
+  }
+
+  /** Bir merkez — tapilmasa 404 */
+  async merkez(id: number): Promise&lt;Merkez&gt; {
+    const setirler = await this.prisma.$queryRaw&lt;Merkez[]&gt;`
+      SELECT id::int, ad, tip, unvan, telefon, email, aktiv
+      FROM struktur.merkezler
+      WHERE id = ${id}
+    `;
+    if (!setirler.length) {
+      throw new NotFoundException(`Merkez tapilmadi: id=${id}`);
+    }
+    return setirler[0];
+  }
+
+  /** Merkez uzre shobe sayi */
+  async merkezStatistikasi() {
+    return this.prisma.$queryRaw&lt;
+      { merkez: string; shobe_sayi: number }[]
+    &gt;`
+      SELECT m.ad AS merkez, count(s.id)::int AS shobe_sayi
+      FROM struktur.merkezler m
+      LEFT JOIN struktur.shobeler s ON s.merkez_id = m.id
+      GROUP BY m.ad
+      ORDER BY shobe_sayi DESC
+    `;
+  }
+}
+EOF</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — service-in əsas məqamları</span>
+  <table><tr><th>Kod</th><th>Nə edir</th></tr><tr><td><code>@Injectable()</code></td><td>NestJS bu sinfi 'inyeksiya edilə bilən' kimi tanıyır</td></tr><tr><td><code>constructor(private readonly prisma)</code></td><td>PrismaService avtomatik verilir</td></tr><tr><td><code>$queryRaw&lt;Merkez[]&gt;</code></td><td>Xam SQL icra edir, nəticəni tipə bağlayır</td></tr><tr><td><code>${id}</code></td><td>Parametrləşdirilmiş sorğu — SQL injection-dan qoruyur</td></tr><tr><td><code>id::int</code></td><td>BIGINT→int cast (bölmə 17)</td></tr><tr><td><code>NotFoundException</code></td><td>HTTP 404 qaytarır</td></tr></table>
+</div>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ ${id} — SQL İNJECTION-DAN QORUNMA</span>
+  <p><strong>Səhv yol:</strong></p><pre><code>const sql = `SELECT * FROM merkezler WHERE id = ${id}`;  // TƏHLÜKƏLİ!
+// id = '1 OR 1=1' olsa, butun cedvel gelir</code></pre><p><strong>Doğru yol</strong> (Prisma <code>$queryRaw</code> template literal):</p><pre><code>this.prisma.$queryRaw`SELECT * FROM merkezler WHERE id = ${id}`;  // TƏHLÜKƏSİZ</code></pre><p>Prisma <code>${...}</code> ifadəsini avtomatik olaraq <code>$1</code> parametrinə çevirir.</p>
+</div>
+<h3><span class="step-num">2</span> Controller</h3>
+<pre data-lang="bash"><code>cat &gt; ~/Deepseek_ARTI/DS_Backend/src/struktur/struktur.controller.ts &lt;&lt;'EOF'
+import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { StrukturService, Merkez } from './struktur.service.js';
+
+@ApiTags('struktur')
+@Controller('struktur/merkezler')
+export class StrukturController {
+  constructor(private readonly struktur: StrukturService) {}
+
+  @Get()
+  @ApiOperation({ summary: 'Butun merkezlerin siyahisi' })
+  siyahi(): Promise&lt;Merkez[]&gt; {
+    return this.struktur.merkezler();
+  }
+
+  @Get('statistika')
+  @ApiOperation({ summary: 'Merkez uzre shobe sayi' })
+  statistika() {
+    return this.struktur.merkezStatistikasi();
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Bir merkez — id ile' })
+  bir(@Param('id', ParseIntPipe) id: number): Promise&lt;Merkez&gt; {
+    return this.struktur.merkez(id);
+  }
+}
+EOF</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — controller dekoratorları</span>
+  <table><tr><th>Dekorator</th><th>Nə edir</th></tr><tr><td><code>@Controller('struktur/merkezler')</code></td><td>Bu sinfin bütün endpoint-ləri həmin yoldan başlayır</td></tr><tr><td><code>@Get()</code></td><td>GET sorğusunu qarşılayır</td></tr><tr><td><code>@Get(':id')</code></td><td><code>:id</code> — URL parametri</td></tr><tr><td><code>@Param('id', ParseIntPipe)</code></td><td>Parametri oxuyur və <strong>rəqəmə çevirir</strong></td></tr><tr><td><code>@ApiTags / @ApiOperation</code></td><td>Swagger sənədləşməsi üçün</td></tr></table>
+</div>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ MARSHRUT SIRASI VACİBDİR</span>
+  <p><code>@Get('statistika')</code> <code>@Get(':id')</code>-dən <strong>ƏVVƏL</strong> yazılmalıdır. Əks halda <code>/statistika</code> sorğusu <code>:id = 'statistika'</code> kimi şərh olunar və <code>Validation failed (numeric string is expected)</code> xətası alınar.</p>
+</div>
+<div class="block block-olmaz">
+  <span class="block-title">OLMASA NƏ OLAR — ParseIntPipe olmasa</span>
+  <p><code>@Param('id') id: string</code> gələr və SQL-də <code>WHERE id = 'abc'</code> yazılar:</p><pre><code>ERROR: invalid input syntax for type integer: "abc"</code></pre><p><code>ParseIntPipe</code> bunun qarşısını alır və <strong>400 Bad Request</strong> qaytarır.</p>
+</div>
+<h3><span class="step-num">3</span> Module</h3>
+<pre data-lang="bash"><code>cat &gt; ~/Deepseek_ARTI/DS_Backend/src/struktur/struktur.module.ts &lt;&lt;'EOF'
+import { Module } from '@nestjs/common';
+import { StrukturService } from './struktur.service.js';
+import { StrukturController } from './struktur.controller.js';
+
+@Module({
+  controllers: [StrukturController],
+  providers: [StrukturService],
+})
+export class StrukturModule {}
+EOF</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — module nə edir?</span>
+  <p>Modul <strong>qeydiyyat vərəqidir</strong>: hansı controller və hansı service bu modula aiddir. NestJS modulu yükləyəndə onları tanıyır.</p><p><code>PrismaModule</code> burada <code>imports</code>-da yoxdur — çünki <code>@Global()</code> edilib (bölmə 12).</p>
+</div>
+<h2 id="b14">14. app.module.ts — modul qeydiyyatı</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Yaratdığımız modulu əsas modula qeyd edəcəyik.</p>
+</div>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ ƏN ÇOX EDİLƏN SƏHV</span>
+  <p>Modulu yaradıb <code>app.module.ts</code>-ə əlavə etməyi unutmaq. Nəticədə server işləyir, lakin endpoint <strong>404</strong> qaytarır və saatla axtarış başlayır.</p>
+</div>
+<div class="block block-hara">
+  <span class="block-title">HARA</span>
+  <p><code>src/app.module.ts</code></p>
+</div>
+<pre data-lang="bash"><code>cat &gt; ~/Deepseek_ARTI/DS_Backend/src/app.module.ts &lt;&lt;'EOF'
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { PrismaModule } from './prisma/prisma.module.js';
+import { StrukturModule } from './struktur/struktur.module.js';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),   // .env oxuyur
+    PrismaModule,                                // @Global() — baza
+    StrukturModule,                              // &lt;- YENI MODUL
+  ],
+})
+export class AppModule {}
+EOF</code></pre>
+<pre data-lang="typescript"><code>import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { PrismaModule } from './prisma/prisma.module.js';
+import { StrukturModule } from './struktur/struktur.module.js';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    PrismaModule,
+    StrukturModule,
+  ],
+})
+export class AppModule {}</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — ConfigModule.forRoot({ isGlobal: true })</span>
+  <p><code>isGlobal: true</code> olmasa, hər modulda <code>ConfigModule</code>-u təkrar import etməli olardıq. Global etməklə <code>ConfigService</code> hər yerdə əlçatan olur.</p>
+</div>
+<div class="block block-evez">
+  <span class="block-title">ƏVƏZİNDƏ — .env-i əl ilə oxumaq</span>
+  <pre><code>import * as dotenv from 'dotenv';
+dotenv.config();</code></pre><p>Bu işləyir, lakin <code>ConfigService</code> vasitəsilə <strong>testdə dəyişəni əvəz etmək</strong> mümkün olmur. Ona görə <code>@nestjs/config</code> üstündür.</p>
+</div>
+<h2 id="b15">15. main.ts — global konfiqurasiya</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Serverin giriş faylını yazacağıq: global prefiks, validasiya, CORS, Swagger.</p>
+</div>
+<div class="block block-hara">
+  <span class="block-title">HARA</span>
+  <p><code>src/main.ts</code></p>
+</div>
+<pre data-lang="bash"><code>cat &gt; ~/Deepseek_ARTI/DS_Backend/src/main.ts &lt;&lt;'EOF'
+import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { AppModule } from './app.module.js';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  // 1) Butun endpoint-ler /api/v1 ile baslayir
+  app.setGlobalPrefix('api/v1');
+
+  // 2) DTO validasiyasi + tip cevrilmesi
+  app.useGlobalPipes(
+    new ValidationPipe({ whitelist: true, transform: true }),
+  );
+
+  // 3) Frontend (baska port) muraciet ede bilsin
+  app.enableCors();
+
+  // 4) Swagger
+  const config = new DocumentBuilder()
+    .setTitle('Deepseek ARTI API')
+    .setDescription('Azerbaycan Respublikasinin Tehsil Institutu — ERP backend')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+  SwaggerModule.setup('docs', app, SwaggerModule.createDocument(app, config));
+
+  const port = process.env.PORT ?? 4000;
+  await app.listen(port);
+  console.log('API hazirdir: http://localhost:' + port + '/api/v1');
+  console.log('Senedler:    http://localhost:' + port + '/docs');
+}
+
+bootstrap();
+EOF</code></pre>
+<pre data-lang="typescript"><code>import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { AppModule } from './app.module.js';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  app.setGlobalPrefix('api/v1');
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+  app.enableCors();
+
+  const config = new DocumentBuilder()
+    .setTitle('Deepseek ARTI API')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+  SwaggerModule.setup('docs', app, SwaggerModule.createDocument(app, config));
+
+  const port = process.env.PORT ?? 4000;
+  await app.listen(port);
+}
+
+bootstrap();</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — dörd konfiqurasiya</span>
+  <table><tr><th>Konfiqurasiya</th><th>Nə edir</th><th>Olmazsa</th></tr><tr><td><code>setGlobalPrefix('api/v1')</code></td><td>Bütün yollar <code>/api/v1</code> ilə başlayır</td><td><code>404 Cannot GET /struktur/merkezler</code></td></tr><tr><td><code>ValidationPipe</code></td><td>DTO-ları yoxlayır, tipləri çevirir</td><td>Yanlış məlumat bazaya düşər</td></tr><tr><td><code>enableCors()</code></td><td>Başqa portdan gələn sorğuya icazə</td><td>Brauzerdə <code>Failed to fetch</code></td></tr><tr><td><code>addBearerAuth()</code></td><td>Swagger-də 'Authorize' düyməsi</td><td>Token daxil edə bilməzsiniz</td></tr></table>
+</div>
+<div class="block block-olmaz">
+  <span class="block-title">OLMASA NƏ OLAR — whitelist nədir?</span>
+  <p><code>whitelist: true</code> — DTO-da <strong>olmayan</strong> sahələri silir. Məsələn istifadəçi <code>{"ad": "X", "aktiv": false}</code> göndərsə, <code>aktiv</code> DTO-da yoxdursa, susmaya görə atılır.</p><p>Bu, kütləvi təyinat (mass assignment) hücumunun qarşısını alır: istifadəçi <code>{"rol": "admin"}</code> göndərib özünə admin hüququ verə bilməz.</p>
+</div>
+<div class="block block-ipucu">
+  <span class="block-title">💡 PORT=4000 NİYƏ?</span>
+  <p>Next.js 3000 portunda işləyir. Backend 4000-də olsa, hər ikisi eyni maşında rahat işləyir və qarışmır.</p>
+</div>
+<h2 id="b16">16. Serveri işə salmaq və ilk curl sınağı</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Serveri işə salıb ilk real sorğunu göndərəcəyik.</p>
+</div>
+<h3><span class="step-num">1</span> Prisma müştərisini yarat</h3>
+<pre data-lang="bash"><code>cd ~/Deepseek_ARTI/DS_Backend
+unset DATABASE_URL PGHOST
+
+npx prisma generate</code></pre>
+<pre data-lang="çıxış"><code>✔ Generated Prisma Client (v7.10.0) to ./src/generated/prisma in 312ms</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — nə üçün generate lazımdır?</span>
+  <p><code>schema.prisma</code> sadəcə <strong>tərifdir</strong>. <code>prisma generate</code> ondan TypeScript kodunu yaradır — <code>src/generated/prisma/</code> qovluğuna.</p><p>Sxemi dəyişdikdən sonra həmişə bu əmri işlədin, əks halda TypeScript köhnə tipləri görür.</p>
+</div>
+<h3><span class="step-num">2</span> Serveri işə sal</h3>
+<pre data-lang="bash"><code>npm run start:dev</code></pre>
+<pre data-lang="çıxış"><code>[Nest] 41234  - 09/19/2026, 11:02:14 AM     LOG [NestFactory] Starting Nest application...
+[Nest] 41234  - 09/19/2026, 11:02:14 AM     LOG [InstanceLoader] PrismaModule dependencies initialized
+[Nest] 41234  - 09/19/2026, 11:02:15 AM     LOG [RoutesResolver] StrukturController {/api/v1/struktur/merkezler}:
+[Nest] 41234  - 09/19/2026, 11:02:15 AM     LOG [RouterExplorer] Mapped {/api/v1/struktur/merkezler, GET} route
+[Nest] 41234  - 09/19/2026, 11:02:15 AM     LOG [RouterExplorer] Mapped {/api/v1/struktur/merkezler/statistika, GET} route
+[Nest] 41234  - 09/19/2026, 11:02:15 AM     LOG [RouterExplorer] Mapped {/api/v1/struktur/merkezler/:id, GET} route
+[Nest] 41234  - 09/19/2026, 11:02:15 AM     LOG [NestApplication] Nest application successfully started
+API hazirdir: http://localhost:4000/api/v1
+Senedler:    http://localhost:4000/docs</code></pre>
+<div class="block block-yox">
+  <span class="block-title">YOXLAMA 16 — server işləyir?</span>
+  <p>Logda <strong>üç</strong> <code>Mapped</code> sətri görməlisiniz. Əgər <code>StrukturController</code> yoxdursa — modul qeydiyyatı unudulub (bölmə 14).</p>
+</div>
+<h3><span class="step-num">3</span> İlk sorğu — başqa terminalda</h3>
+<pre data-lang="bash"><code>curl -s http://localhost:4000/api/v1/struktur/merkezler | head -c 400</code></pre>
+<pre data-lang="çıxış"><code>[{"id":1,"ad":"Elmi katiblik","tip":"elmi","unvan":"Zerife Eliyeva 96, Baki",
+  "telefon":"+994 12 599 08 08","email":"elmi.katib@arti.edu.az","aktiv":true},
+ {"id":2,"ad":"Elmi-pedaqoji tedqiqatlar merkezi","tip":"elmi",
+  "unvan":"Zerife Eliyeva 96, Baki","telefon":"+994 12 599 08 08",
+  "email":"tedqiqat@arti.edu.az","aktiv":true}]</code></pre>
+<h3><span class="step-num">4</span> Digər endpoint-lər</h3>
+<pre data-lang="bash"><code># Statistika
+curl -s http://localhost:4000/api/v1/struktur/merkezler/statistika
+
+# Bir merkez
+curl -s http://localhost:4000/api/v1/struktur/merkezler/2
+
+# Olmayan id -&gt; 404
+curl -s -o /dev/null -w "%{http_code}\n" \
+  http://localhost:4000/api/v1/struktur/merkezler/9999
+
+# Yanlish id -&gt; 400
+curl -s -o /dev/null -w "%{http_code}\n" \
+  http://localhost:4000/api/v1/struktur/merkezler/abc</code></pre>
+<pre data-lang="çıxış"><code>[{"merkez":"Funksional sobeler","shobe_sayi":8},
+ {"merkez":"Elmi-pedaqoji tedqiqatlar merkezi","shobe_sayi":7},
+ {"merkez":"Tehsilverenlerin pesekar inkisafi merkezi","shobe_sayi":6}]
+
+{"id":2,"ad":"Elmi-pedaqoji tedqiqatlar merkezi","tip":"elmi", ...}
+
+404
+400</code></pre>
+<div class="block block-yox">
+  <span class="block-title">YOXLAMA 16b — HTTP kodları</span>
+  <table><tr><th>Sorğu</th><th>Gözlənilən</th><th>Nə deməkdir</th></tr><tr><td><code>/merkezler</code></td><td>200</td><td>Uğurlu</td></tr><tr><td><code>/merkezler/2</code></td><td>200</td><td>Uğurlu</td></tr><tr><td><code>/merkezler/9999</code></td><td>404</td><td>Tapılmadı</td></tr><tr><td><code>/merkezler/abc</code></td><td>400</td><td>Yanlış format</td></tr></table>
+</div>
+<div class="block block-olmaz">
+  <span class="block-title">OLMASA NƏ OLAR — 404 gəlirsə</span>
+  <table><tr><th>Səbəb</th><th>Yoxlama</th></tr><tr><td>Yanlış yol</td><td><code>/api/v1/...</code> ilə başlayır?</td></tr><tr><td>Modul qeydiyyatsız</td><td><code>app.module.ts</code>-də <code>StrukturModule</code> var?</td></tr><tr><td>Server köhnə kodu işlədir</td><td><code>lsof -ti :4000 | xargs kill -9</code></td></tr><tr><td>Controller faylı yoxdur</td><td><code>ls src/struktur/</code></td></tr></table>
+</div>
+<h2 id="b17">17. CAST qaydası — BigInt, Numeric, Date</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>PostgreSQL və JavaScript tipləri <strong>üst-üstə düşmür</strong>. Bunu düzəltmək üçün SQL-də cast edəcəyik.</p>
+</div>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ BU, ƏN ÇOX RASTLANAN BACKEND XƏTASIDIR</span>
+  <pre><code>TypeError: Do not know how to serialize a BigInt</code></pre><p>PostgreSQL <code>BIGINT</code> qaytarır, JavaScript-də isə o <code>BigInt</code> tipinə çevrilir — və <code>JSON.stringify()</code> onu serializasiya edə bilmir.</p>
+</div>
+<table>
+  <tr><th>PG tipi</th><th>JS-də problem</th><th>Cast</th><th>Nəticə</th></tr>
+  <tr><td><code>BIGINT</code></td><td>BigInt — JSON-a çevrilmir</td><td><code>id::int</code></td><td>Adi number</td></tr>
+  <tr><td><code>NUMERIC</code></td><td>Sətir kimi gəlir: <code>"3500.00"</code></td><td><code>maas::float8</code></td><td>Rəqəm</td></tr>
+  <tr><td><code>COUNT(*)</code></td><td>BIGINT qaytarır</td><td><code>count(*)::int</code></td><td>Adi number</td></tr>
+  <tr><td><code>DATE</code></td><td>Obyekt kimi gəlir</td><td><code>tarix::text</code></td><td><code>"2026-09-19"</code></td></tr>
+  <tr><td><code>TIMESTAMPTZ</code></td><td>Obyekt + saat qurşağı</td><td><code>vaxt::text</code></td><td>Oxunaqlı mətn</td></tr>
+</table>
+<h3><span class="step-num">1</span> Səhv nümunə</h3>
+<pre data-lang="sql"><code>-- SƏHV: cast yoxdur
+SELECT id, ad, maas FROM kadrlar.emekdaslar;
+-- Nəticə: id BigInt, maas "3500.00" (sətir!)</code></pre>
+<h3><span class="step-num">2</span> Doğru nümunə</h3>
+<pre data-lang="sql"><code>-- DOĞRU: hamısı cast edilib
+SELECT id::int                AS id,
+       ad,
+       maas::float8           AS maas,
+       ise_baslama::text      AS ise_baslama
+FROM kadrlar.emekdaslar
+ORDER BY id;</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — niyə ::float8?</span>
+  <p><code>NUMERIC</code> tipi PostgreSQL-də <strong>dəqiq</strong> onluq ədəddir — pul hesablamaları üçün idealdır. JavaScript-də isə belə tip yoxdur, ona görə drayver onu <strong>sətir</strong> kimi ötürür (dəqiqliyi itirməmək üçün).</p><p><code>::float8</code> onu IEEE 754 ədədinə çevirir. <strong>Diqqət:</strong> çox böyük məbləğlərdə dəqiqlik itə bilər. Maliyyə hesabatlarında <code>numeric</code> saxlayıb sətir kimi ötürmək daha doğrudur.</p>
+</div>
+<div class="block block-evez">
+  <span class="block-title">ƏVƏZİNDƏ — Prisma-nın öz API-si</span>
+  <p>Prisma modeli ilə işlədikdə cast lazım deyil — Prisma tipləri özü idarə edir:</p><pre><code>const merkezler = await this.prisma.merkez.findMany();
+// id artıq number, tarixler artıq Date obyektidir</code></pre><p>Lakin <code>$queryRaw</code> işlədəndə cast <strong>mütləqdir</strong>, çünki Prisma xam SQL-in tipini bilmir.</p>
+</div>
+<div class="block block-ipucu">
+  <span class="block-title">💡 HANSI YANAŞMA?</span>
+  <table><tr><th>Hal</th><th>Yanaşma</th></tr><tr><td>Sadə CRUD</td><td>Prisma API (<code>findMany</code>, <code>create</code>)</td></tr><tr><td>Mürəkkəb JOIN, aqreqasiya, window</td><td><code>$queryRaw</code> + cast</td></tr><tr><td>Toplu əməliyyat</td><td><code>$executeRaw</code></td></tr></table>
+</div>
+<h2 id="b18">18. İmport qaydası — backend-də .js MƏCBURİDİR</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Backend və frontend-də import qaydası <strong>fərqlidir</strong>. Bunu dəqiq öyrənəcəyik.</p>
+</div>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ BU, ƏN ÇOX QARIŞDIRILAN MƏQAMDIR</span>
+  <table><tr><th>Mühit</th><th>Düzgün</th><th>Səhv</th></tr><tr><td><strong>Backend</strong> (NestJS, ESM + nodenext)</td><td><code>import { X } from './x.js'</code></td><td><code>import { X } from './x'</code></td></tr><tr><td><strong>Frontend</strong> (Next.js, bundler)</td><td><code>import { X } from './x'</code></td><td><code>import { X } from './x.js'</code></td></tr></table>
+</div>
+<div class="block block-niye">
+  <span class="block-title">NİYƏ BELƏDİR?</span>
+  <p>TypeScript kodu kompilyasiya olunanda <code>x.ts</code> faylı <code>x.js</code> olur. Node.js-in ESM rejimi import yolunu <strong>hərfi</strong> axtarır — yəni faylın həqiqi adını istəyir.</p><p>Next.js isə bundler (webpack/turbopack) işlədir — o, <code>.ts</code> fayllarını özü tapır və uzantıya ehtiyac qalmır.</p>
+</div>
+<h3><span class="step-num">1</span> Düzgün nümunə — backend</h3>
+<pre data-lang="typescript"><code>// ✅ DOĞRU — backend
+import { PrismaService } from '../prisma/prisma.service.js';
+import { StrukturService } from './struktur.service.js';
+import { AppModule } from './app.module.js';
+
+// ❌ SƏHV — Node ESM tapmır
+import { PrismaService } from '../prisma/prisma.service';</code></pre>
+<h3><span class="step-num">2</span> Düzgün nümunə — frontend (müqayisə üçün)</h3>
+<pre data-lang="typescript"><code>// ✅ DOĞRU — frontend (Next.js)
+import { apiGet } from '@/lib/api';
+import { Sidebar } from '../components/Sidebar';
+
+// ❌ SƏHV — bundler belə fayl axtarmır
+import { apiGet } from '@/lib/api.js';</code></pre>
+<div class="block block-olmaz">
+  <span class="block-title">OLMASA NƏ OLAR — .js unudulsa</span>
+  <pre><code>Error [ERR_MODULE_NOT_FOUND]: Cannot find module
+'/Users/.../dist/prisma/prisma.service' imported from
+'/Users/.../dist/app.module.js'</code></pre><p>Diqqət yetirin: xəta <strong>kompilyasiya zamanı deyil</strong>, işləmə zamanı çıxır. Ona görə <code>npm run build</code> uğurlu ola bilər, lakin server başlamaz.</p>
+</div>
+<div class="block block-ipucu">
+  <span class="block-title">💡 YADDA SAXLAMA QAYDASI</span>
+  <p><strong>Backend → .js yaz. Frontend → yazma.</strong></p><p>Şübhə edirsinizsə, faylın hansı qovluqda olduğuna baxın: <code>DS_Backend/</code> → <code>.js</code>; <code>DS_Frontend/</code> → yox.</p>
+</div>
+<h2 id="b19">19. Swagger — avtomatik sənədləşmə</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Swagger artıq qurulub (<code>main.ts</code>-də). Onu brauzerdə açacağıq.</p>
+</div>
+<pre data-lang="bash"><code>open http://localhost:4000/docs</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — Swagger nə verir?</span>
+  <table><tr><th>İmkan</th><th>Faydası</th></tr><tr><td>Bütün endpoint-lərin siyahısı</td><td>Kod oxumadan API-ni öyrənmək</td></tr><tr><td>'Try it out' düyməsi</td><td>Brauzerdən birbaşa sorğu göndərmək</td></tr><tr><td>Parametr təsvirləri</td><td>Hansı tip, hansı format</td></tr><tr><td>JSON sxemi</td><td>Frontend komandası tip yarada bilər</td></tr><tr><td>Authorize düyməsi</td><td>JWT token daxil etmək</td></tr></table>
+</div>
+<div class="block block-olmaz">
+  <span class="block-title">OLMASA NƏ OLAR</span>
+  <p>Frontend komandası hər endpoint üçün soruşmalı olar: 'bu hansı yoldur?', 'nə qaytarır?', 'hansı parametr lazımdır?'. Sənədləşmə olmasa, yazışma ilə vaxt itir.</p>
+</div>
+<div class="block block-evez">
+  <span class="block-title">ƏVƏZİNDƏ — digər alətlər</span>
+  <table><tr><th>Alət</th><th>Üstünlük</th></tr><tr><td><strong>Swagger</strong> (OpenAPI)</td><td>NestJS ilə daxili inteqrasiya</td></tr><tr><td>Postman Collection</td><td>Əl ilə hazırlanır, komanda paylaşımı yaxşı</td></tr><tr><td>Bruno / Insomnia</td><td>Yerli fayl, git-də saxlanılır</td></tr><tr><td>REST Client (.http fayl)</td><td>VS Code-da birbaşa işləyir</td></tr></table>
+</div>
+<h3><span class="step-num">1</span> Frontend üçün tip ixracı</h3>
+<pre data-lang="bash"><code># Swagger JSON-unu yüklə — frontend tipləri üçün
+curl -s http://localhost:4000/docs-json &gt; /tmp/openapi.json
+python3 -c "import json; d=json.load(open('/tmp/openapi.json')); print('Endpoint sayi:', len(d['paths']))"</code></pre>
+<pre data-lang="çıxış"><code>Endpoint sayi: 3</code></pre>
+<h2 id="b20">20. Tam qurulma skripti — bir əmrlə</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Bütün addımları <strong>bir skriptdə</strong> toplayacağıq. Layihəni sıfırdan qurmaq və ya başqa maşına köçürmək üçün.</p>
+</div>
+<div class="block block-niye">
+  <span class="block-title">NİYƏ LAZIMDIR</span>
+  <p>Əl ilə 20 addım keçmək həm uzun, həm də səhvə açıqdır. Skript <strong>təkrarlana bilən</strong> (repeatable) qurulma təmin edir: hər dəfə eyni nəticə.</p>
+</div>
+<div class="block block-hara">
+  <span class="block-title">HARA</span>
+  <p><code>~/Deepseek_ARTI/DS_Backend/qur.sh</code></p>
+</div>
+<pre data-lang="bash"><code>cat &gt; ~/Deepseek_ARTI/DS_Backend/qur.sh &lt;&lt;'SKRIPT'
+#!/bin/bash
+# DS_Backend — tam qurulma skripti
+# İstifadə: bash qur.sh
+set -e
+
+echo "════ 1/8  Mühit ════"
+unset DATABASE_URL PGHOST
+node --version
+npm --version
+
+echo "════ 2/8  NestJS layihəsi ════"
+cd ~/Deepseek_ARTI
+if [ ! -d DS_Backend ]; then
+  npx @nestjs/cli@12 new ds_backend --package-manager npm --skip-git
+  mv ds_backend ds_backend_tmp
+  mv ds_backend_tmp DS_Backend
+fi
+cd DS_Backend
+
+echo "════ 3/8  Paketlər ════"
+npm install \
+  @prisma/client@^7.10.0 @prisma/adapter-pg@^7.10.0 \
+  @nestjs/config@^12.0.0 @nestjs/swagger@^12.0.0 \
+  class-validator@^0.14.1 class-transformer@^0.5.1 \
+  dotenv@^16.6.1 pg@^8.13.0
+
+npm install -D prisma@^7.10.0 tsx@^4.19.0 vitest@^4.0.0
+
+echo "════ 3.5/8  Prisma versiyasi ════"
+npx prisma --version
+PRISMA_VER=$(npx prisma --version | grep '^prisma' | awk '{print $3}')
+case "$PRISMA_VER" in
+  7.*) echo "OK — Prisma $PRISMA_VER" ;;
+  *)   echo "XETA: Prisma $PRISMA_VER — 7.x lazimdir!"
+       echo "Həll: npm install -D prisma@^7.10.0"
+       echo "      npm uninstall -g prisma"
+       exit 1 ;;
+esac
+
+echo "════ 4/8  .env ════"
+cat &gt; .env &lt;&lt;'EOF'
+DATABASE_URL="postgresql://arti_user:arti_secret_2025@localhost:5432/arti_baza"
+PORT=4000
+NODE_ENV=development
+JWT_SECRET="deepseek-arti-gizli-acar-2026"
+JWT_MUDDET="8h"
+EOF
+
+cat &gt; .gitignore &lt;&lt;'EOF'
+.env
+.env.*
+node_modules/
+dist/
+src/generated/
+*.log
+EOF
+
+echo "════ 5/8  tsconfig.build.json ════"
+cat &gt; tsconfig.build.json &lt;&lt;'EOF'
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": { "rootDir": "./src" },
+  "include": ["src"],
+  "exclude": ["node_modules", "test", "dist", "**/*spec.ts"]
+}
+EOF
+
+echo "════ 6/8  Prisma ════"
+mkdir -p prisma
+cat &gt; prisma/schema.prisma &lt;&lt;'EOF'
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  schemas  = ["ortaq", "struktur", "kadrlar", "elm", "tehsil", "qiymetlendirme", "metodika", "maliyye", "logistika", "sened", "audit", "ai"]
+}
+EOF
+
+cat &gt; prisma.config.ts &lt;&lt;'EOF'
+import 'dotenv/config';
+import { defineConfig, env } from 'prisma/config';
+
+export default defineConfig({
+  schema: 'prisma/schema.prisma',
+  migrations: { path: 'prisma/migrations' },
+  datasource: { url: env('DATABASE_URL') },
+});
+EOF
+
+npx prisma db pull
+npx prisma generate
+
+echo "════ 7/8  Struktur ════"
+mkdir -p src/prisma src/struktur
+
+cat &gt; src/prisma/prisma.service.ts &lt;&lt;'EOF'
+import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import { PrismaClient } from '../generated/prisma/client.js';
+import { PrismaPg } from '@prisma/adapter-pg';
+
+@Injectable()
+export class PrismaService
+  extends PrismaClient
+  implements OnModuleInit, OnModuleDestroy
+{
+  constructor() {
+    const adapter = new PrismaPg({
+      connectionString: process.env.DATABASE_URL!,
+    });
+    super({ adapter });
+  }
+  async onModuleInit() { await this.$connect(); }
+  async onModuleDestroy() { await this.$disconnect(); }
+}
+EOF
+
+cat &gt; src/prisma/prisma.module.ts &lt;&lt;'EOF'
+import { Global, Module } from '@nestjs/common';
+import { PrismaService } from './prisma.service.js';
+
+@Global()
+@Module({ providers: [PrismaService], exports: [PrismaService] })
+export class PrismaModule {}
+EOF
+
+cat &gt; src/struktur/struktur.service.ts &lt;&lt;'EOF'
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service.js';
+
+export interface Merkez {
+  id: number; ad: string; tip: string | null;
+  unvan: string | null; telefon: string | null;
+  email: string | null; aktiv: boolean;
+}
+
+@Injectable()
+export class StrukturService {
+  constructor(private readonly prisma: PrismaService) {}
+
+  async merkezler(): Promise&lt;Merkez[]&gt; {
+    return this.prisma.$queryRaw&lt;Merkez[]&gt;`
+      SELECT id::int, ad, tip, unvan, telefon, email, aktiv
+      FROM struktur.merkezler ORDER BY id`;
+  }
+
+  async merkez(id: number): Promise&lt;Merkez&gt; {
+    const s = await this.prisma.$queryRaw&lt;Merkez[]&gt;`
+      SELECT id::int, ad, tip, unvan, telefon, email, aktiv
+      FROM struktur.merkezler WHERE id = ${id}`;
+    if (!s.length) throw new NotFoundException(`Merkez tapilmadi: id=${id}`);
+    return s[0];
+  }
+}
+EOF
+
+cat &gt; src/struktur/struktur.controller.ts &lt;&lt;'EOF'
+import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
+import { StrukturService, Merkez } from './struktur.service.js';
+
+@Controller('struktur/merkezler')
+export class StrukturController {
+  constructor(private readonly struktur: StrukturService) {}
+
+  @Get()
+  siyahi(): Promise&lt;Merkez[]&gt; { return this.struktur.merkezler(); }
+
+  @Get(':id')
+  bir(@Param('id', ParseIntPipe) id: number): Promise&lt;Merkez&gt; {
+    return this.struktur.merkez(id);
+  }
+}
+EOF
+
+cat &gt; src/struktur/struktur.module.ts &lt;&lt;'EOF'
+import { Module } from '@nestjs/common';
+import { StrukturService } from './struktur.service.js';
+import { StrukturController } from './struktur.controller.js';
+
+@Module({
+  controllers: [StrukturController],
+  providers: [StrukturService],
+})
+export class StrukturModule {}
+EOF
+
+cat &gt; src/app.module.ts &lt;&lt;'EOF'
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { PrismaModule } from './prisma/prisma.module.js';
+import { StrukturModule } from './struktur/struktur.module.js';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    PrismaModule,
+    StrukturModule,
+  ],
+})
+export class AppModule {}
+EOF
+
+cat &gt; src/main.ts &lt;&lt;'EOF'
+import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { AppModule } from './app.module.js';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  app.setGlobalPrefix('api/v1');
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+  app.enableCors();
+
+  const cfg = new DocumentBuilder()
+    .setTitle('Deepseek ARTI API').setVersion('1.0').addBearerAuth().build();
+  SwaggerModule.setup('docs', app, SwaggerModule.createDocument(app, cfg));
+
+  const port = process.env.PORT ?? 4000;
+  await app.listen(port);
+  console.log('API: http://localhost:' + port + '/api/v1');
+}
+bootstrap();
+EOF
+
+echo "════ 7.5/8  Test ════"
+cat &gt; vitest.config.ts &lt;&lt;'EOF'
+import { defineConfig } from 'vitest/config';
+
+export default defineConfig({
+  test: {
+    globals: true,
+    environment: 'node',
+    include: ['**/*.spec.ts'],
+    exclude: ['**/*.e2e-spec.ts', 'node_modules/**'],
+  },
+});
+EOF
+
+cat &gt; src/struktur/struktur.service.spec.ts &lt;&lt;'EOF'
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { NotFoundException } from '@nestjs/common';
+import { StrukturService } from './struktur.service.js';
+
+function saxtaPrisma() {
+  return { $queryRaw: vi.fn() } as any;
+}
+
+describe('StrukturService', () =&gt; {
+  let prisma: any;
+  let service: StrukturService;
+
+  beforeEach(() =&gt; {
+    prisma = saxtaPrisma();
+    service = new StrukturService(prisma);
+  });
+
+  it('merkezler siyahisini qaytarir', async () =&gt; {
+    prisma.$queryRaw.mockResolvedValue([
+      { id: 1, ad: 'Elmi katiblik', aktiv: true },
+    ]);
+    const netice = await service.merkezler();
+    expect(netice).toHaveLength(1);
+    expect(netice[0].ad).toBe('Elmi katiblik');
+  });
+
+  it('tapilmayan merkez ucun 404 atir', async () =&gt; {
+    prisma.$queryRaw.mockResolvedValue([]);
+    await expect(service.merkez(999)).rejects.toThrow(NotFoundException);
+  });
+
+  it('SQL-e parametr oturur', async () =&gt; {
+    prisma.$queryRaw.mockResolvedValue([]);
+    await service.merkez(5).catch(() =&gt; null);
+    const cagiris = prisma.$queryRaw.mock.calls[0];
+    expect(cagiris.length).toBeGreaterThan(1);
+    expect(cagiris[1]).toBe(5);
+  });
+});
+EOF
+
+npm test
+
+echo "════ 8/8  Yoxlama ════"
+npm run build
+echo ""
+echo "HAZIR. Serveri ise salmaq ucun: npm run start:dev"
+SKRIPT
+chmod +x ~/Deepseek_ARTI/DS_Backend/qur.sh</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — set -e nə edir?</span>
+  <p><code>set -e</code> — hər hansı əmr xəta verərsə, skript <strong>dərhal dayanır</strong>. Bu olmasa skript davam edər və sonunda 'hamısı yaxşıdır' təəssüratı yaranar, halbuki 3-cü addımda xəta olub.</p>
+</div>
+<div class="block block-yox">
+  <span class="block-title">YOXLAMA 20 — skript nə qaytarır?</span>
+  <pre><code>════ 1/8  Mühit ════
+v26.7.0
+11.19.0
+════ 2/8  NestJS layihəsi ════
+...
+════ 8/8  Yoxlama ════
+
+> nest build
+
+HAZIR. Serveri ise salmaq ucun: npm run start:dev</code></pre>
+</div>
+<div class="block block-olmaz">
+  <span class="block-title">OLMASA NƏ OLAR — skript yoxdursa</span>
+  <p>Server dəyişəndə (məsələn yeni komanda üzvü qoşulanda) hər addımı əl ilə təkrar etmək lazım gələr. 20 addımın birini unutmaq isə saatlıq axtarışa çevrilər.</p>
+</div>
+<div class="block block-evez">
+  <span class="block-title">ƏVƏZİNDƏ — Docker</span>
+  <p>Daha peşəkar yol: <code>Dockerfile</code> + <code>docker-compose.yml</code>. Lakin bu, Backend-4 dərsinin mövzusudur. Başlanğıc üçün shell skripti kifayətdir.</p>
+</div>
+<h2 id="b21">21. Vitest — ilk avtomatik test</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Endpoint-ləri <strong>avtomatik</strong> yoxlayan test yazacağıq.</p>
+</div>
+<div class="block block-niye">
+  <span class="block-title">NİYƏ LAZIMDIR</span>
+  <p>'Əl ilə curl etdim, işlədi' — kifayət deyil. Səbəb: sabah kodu dəyişəndə köhnə funksiyanın pozulub-pozulmadığını bilməyəcəksiniz.</p><table><tr><th>Yanaşma</th><th>Vaxt</th><th>Etibarlıq</th></tr><tr><td>Əl ilə curl</td><td>2 dəqiqə</td><td>Aşağı — unudulur</td></tr><tr><td>Avtomatik test</td><td>3 saniyə</td><td>Yüksək — hər dəyişiklikdə işləyir</td></tr></table>
+</div>
+<h3><span class="step-num">1</span> Vitest konfiqurasiyası</h3>
+<pre data-lang="bash"><code>cat &gt; ~/Deepseek_ARTI/DS_Backend/vitest.config.ts &lt;&lt;'EOF'
+import { defineConfig } from 'vitest/config';
+
+export default defineConfig({
+  test: {
+    globals: true,
+    environment: 'node',
+    include: ['**/*.spec.ts'],
+    // e2e testleri ayri isledilir
+    exclude: ['**/*.e2e-spec.ts', 'node_modules/**'],
+  },
+});
+EOF</code></pre>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ EXCLUDE SƏTRİ VACİBDİR</span>
+  <p><code>exclude</code> olmasa, Vitest e2e testlərini də götürür və onlar işləyən server tələb etdiyi üçün <strong>uğursuz olur</strong>. Nəticədə 'testlər pozulub' təəssüratı yaranır.</p>
+</div>
+<h3><span class="step-num">2</span> Service testi</h3>
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/struktur
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/struktur/struktur.service.spec.ts &lt;&lt;'EOF'
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { StrukturService } from './struktur.service.js';
+import { NotFoundException } from '@nestjs/common';
+
+/**
+ * Saxta Prisma — real bazaya toxunmuruq.
+ * Hər test öz nəticəsini mockResolvedValue ilə təyin edir.
+ */
+function saxtaPrisma() {
+  return { $queryRaw: vi.fn() } as any;
+}
+
+describe('StrukturService', () =&gt; {
+  let prisma: any;
+  let service: StrukturService;
+
+  beforeEach(() =&gt; {
+    prisma = saxtaPrisma();
+    service = new StrukturService(prisma);
+  });
+
+  it('merkezler siyahisini qaytarir', async () =&gt; {
+    prisma.$queryRaw.mockResolvedValue([
+      { id: 1, ad: 'Elmi katiblik', aktiv: true },
+    ]);
+
+    const netice = await service.merkezler();
+
+    expect(netice).toHaveLength(1);
+    expect(netice[0].ad).toBe('Elmi katiblik');
+  });
+
+  it('tapilmayan merkez ucun 404 atir', async () =&gt; {
+    // BOŞ nəticə — servis NotFoundException atmalıdır
+    prisma.$queryRaw.mockResolvedValue([]);
+
+    await expect(service.merkez(999)).rejects.toThrow(NotFoundException);
+  });
+
+  it('tapilan merkezi qaytarir', async () =&gt; {
+    prisma.$queryRaw.mockResolvedValue([
+      { id: 2, ad: 'Elmi-pedaqoji tedqiqatlar merkezi', aktiv: true },
+    ]);
+
+    const netice = await service.merkez(2);
+
+    expect(netice.id).toBe(2);
+  });
+
+  it('SQL-e parametr oturur (SQL injection qorumasi)', async () =&gt; {
+    prisma.$queryRaw.mockResolvedValue([]);
+    await service.merkez(5).catch(() =&gt; null);
+
+    const cagiris = prisma.$queryRaw.mock.calls[0];
+    // Prisma template literal: (strings, ...parametrler)
+    expect(cagiris.length).toBeGreaterThan(1);
+    expect(cagiris[1]).toBe(5);
+  });
+});
+EOF</code></pre>
+<h3><span class="step-num">3</span> Testləri işlət</h3>
+<pre data-lang="bash"><code>cd ~/Deepseek_ARTI/DS_Backend
+npm test</code></pre>
+<pre data-lang="çıxış"><code> RUN  v4.0.0 /Users/royatalibova/Deepseek_ARTI/DS_Backend
+
+ ✓ src/struktur/struktur.service.spec.ts (4 tests) 3ms
+ ✓ src/app.controller.spec.ts (1 tests) 65ms
+
+ Test Files  2 passed (2)
+      Tests  5 passed (5)
+   Duration  274ms</code></pre>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ TƏLƏ: «beforeEach» SAYĞACI SIFIRLAYIR</span>
+  <p>İlk versiyada saxta Prisma nəticələri <strong>növbə ilə</strong> qaytarırdı:</p>
+  <pre><code>let cagiris = 0;
+return { $queryRaw: vi.fn(() =&gt; Promise.resolve(neticeler[cagiris++] ?? [])) };</code></pre>
+  <p>Bu, <strong>səhvdir</strong> — çünki <code>beforeEach</code> hər testdən əvvəl
+  işləyir və <code>cagiris</code>-i yenidən <code>0</code> edir. Nəticədə:</p>
+  <table>
+    <tr><th>Test</th><th>Gözlənilən</th><th>Faktiki</th></tr>
+    <tr><td><code>merkezler()</code></td><td><code>[0]</code> → 1 sətir</td><td>✅ düzgün</td></tr>
+    <tr><td><code>merkez(999)</code></td><td><code>[1]</code> → boş</td><td>❌ yenə <code>[0]</code> → 1 sətir!</td></tr>
+  </table>
+  <p>Test belə xəta verir:</p>
+  <pre><code>AssertionError: promise resolved "{ id: 1, ad: 'Elmi katiblik' }"
+                instead of rejecting</code></pre>
+  <p><strong>Həll:</strong> hər test öz nəticəsini <code>mockResolvedValue()</code> ilə
+  təyin etsin — ümumi sayğac olmasın:</p>
+  <pre><code>prisma.$queryRaw.mockResolvedValue([]);        // bu test ucun bos netice
+await expect(service.merkez(999)).rejects.toThrow(NotFoundException);</code></pre>
+</div>
+<div class="block block-ipucu">
+  <span class="block-title">💡 ÜMUMİ QAYDA — test izolyasiyası</span>
+  <p>Hər test <strong>müstəqil</strong> olmalıdır: başqa testin işlədiyi və ya
+  işləmədiyi onun nəticəsinə təsir etməməlidir.</p>
+  <p>Testləri tərsinə sıra ilə işlədin — əgər nəticə dəyişirsə, izolyasiya pozulub:</p>
+  <pre><code>npx vitest run --sequence.shuffle</code></pre>
+</div>
+<div class="block block-izah">
+  <span class="block-title">İZAH — testin strukturu</span>
+  <table><tr><th>Hissə</th><th>Nə edir</th></tr><tr><td><code>describe</code></td><td>Test qrupunu adlandırır</td></tr><tr><td><code>it</code></td><td>Bir test halı</td></tr><tr><td><code>beforeEach</code></td><td>Hər testdən əvvəl təmiz vəziyyət</td></tr><tr><td><code>expect(...).toBe(...)</code></td><td>Nəticəni yoxlayır</td></tr><tr><td><code>vi.fn()</code></td><td>Saxta funksiya — çağırışları yazır</td></tr><tr><td><code>rejects.toThrow()</code></td><td>Xəta atıldığını yoxlayır</td></tr></table>
+</div>
+<div class="block block-ipucu">
+  <span class="block-title">💡 NİYƏ SAXTA PRISMA?</span>
+  <p>Real bazaya qoşulan test <strong>yavaş</strong> və <strong>asılıdır</strong> olur: baza işləmirsə test də pozulur. Saxta Prisma ilə biz yalnız <em>məntiqi</em> yoxlayırıq — servis düzgün SQL qururmu, xətanı düzgün atırmı.</p><p>Real bazanı yoxlayan testlər isə <code>*.e2e-spec.ts</code> fayllarındadır.</p>
+</div>
+<div class="block block-evez">
+  <span class="block-title">ƏVƏZİNDƏ — Jest</span>
+  <p>NestJS standart olaraq Jest işlədir. Lakin Vitest daha sürətli və müasir konfiqurasiyaya malikdir. Keçid üçün <code>jest</code> → <code>vitest</code> importlarını dəyişmək kifayətdir.</p>
+</div>
+<h2 id="b22">22. package.json skriptləri</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Tez-tez işlədilən əmrləri <code>package.json</code>-a skript kimi yazacağıq.</p>
+</div>
+<div class="block block-niye">
+  <span class="block-title">NİYƏ LAZIMDIR</span>
+  <p><code>npm run start:dev</code> yazmaq <code>npx ts-node src/main.ts</code>-dən qısadır və komandada <strong>hamı eyni əmri</strong> işlədir.</p>
+</div>
+<pre data-lang="bash"><code>cd ~/Deepseek_ARTI/DS_Backend
+
+python3 - &lt;&lt;'PYEOF'
+import json
+p = 'package.json'
+d = json.load(open(p))
+d['scripts'] = {
+    'build':            'nest build',
+    'start':            'nest start',
+    'start:dev':        'nest start --watch',
+    'start:debug':      'nest start --debug --watch',
+    'test':             'vitest run',
+    'test:watch':       'vitest',
+    'prisma:generate':  'prisma generate',
+    'prisma:pull':      'prisma db pull',
+    'prisma:studio':    'prisma studio',
+    'db:reset':         'prisma generate &amp;&amp; prisma db pull',
+}
+json.dump(d, open(p, 'w'), indent=2, ensure_ascii=False)
+print('  package.json yenilendi')
+PYEOF
+
+cat package.json | python3 -c "import json,sys; print(json.dumps(json.load(sys.stdin)['scripts'], indent=2, ensure_ascii=False))"</code></pre>
+<pre data-lang="json"><code>{
+  "build": "nest build",
+  "start": "nest start",
+  "start:dev": "nest start --watch",
+  "start:debug": "nest start --debug --watch",
+  "test": "vitest run",
+  "test:watch": "vitest",
+  "prisma:generate": "prisma generate",
+  "prisma:pull": "prisma db pull",
+  "prisma:studio": "prisma studio",
+  "db:reset": "prisma generate &amp;&amp; prisma db pull"
+}</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — hər skript</span>
+  <table><tr><th>Skript</th><th>Nə edir</th><th>Nə vaxt</th></tr><tr><td><code>build</code></td><td>TypeScript → JavaScript</td><td>İstehsala çıxarmazdan əvvəl</td></tr><tr><td><code>start</code></td><td>Serveri bir dəfə işlədir</td><td>Sınaq</td></tr><tr><td><code>start:dev</code></td><td>Dəyişikliyi görüb yenidən yükləyir</td><td>İnkişaf zamanı ← əsas</td></tr><tr><td><code>test</code></td><td>Bütün testləri bir dəfə işlədir</td><td>Commit-dən əvvəl</td></tr><tr><td><code>test:watch</code></td><td>Fayl dəyişəndə testi təkrar işlədir</td><td>Test yazarkən</td></tr><tr><td><code>prisma:generate</code></td><td>Müştəri kodunu yaradır</td><td>Sxem dəyişdikdən sonra</td></tr><tr><td><code>prisma:pull</code></td><td>Bazadan modelləri oxuyur</td><td>Baza dəyişdikdə</td></tr><tr><td><code>prisma:studio</code></td><td>Brauzerdə baza baxışı</td><td>Məlumatı görmək üçün</td></tr><tr><td><code>db:reset</code></td><td>İkisini birlikdə</td><td>Baza strukturu dəyişdikdə</td></tr></table>
+</div>
+<div class="block block-ipucu">
+  <span class="block-title">💡 prisma:studio</span>
+  <p><code>npm run prisma:studio</code> — brauzerdə <code>http://localhost:5555</code> ünvanında bazanın qrafik redaktorunu açır. Cədvəlləri görmək, sətir əlavə etmək və düzəltmək üçün əlverişlidir.</p>
+</div>
+<h2 id="b23">23. Git — ilk commit və GitHub</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Layihəni git-ə əlavə edib GitHub-a göndərəcəyik.</p>
+</div>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ PUSH-DAN ƏVVƏL MÜTLƏQ YOXLA</span>
+  <p>Bu addımı <strong>heç vaxt</strong> atlamayın:</p>
+</div>
+<pre data-lang="bash"><code>cd ~/Deepseek_ARTI
+git status                                  # .env görünməsin!
+git diff --cached | grep -iE 'sk-|api_key|password|secret'</code></pre>
+<div class="block block-olmaz">
+  <span class="block-title">OLMASA NƏ OLAR — şifrə push olunsa</span>
+  <p>GitHub <strong>secret scanning</strong> işə düşür və push rədd olunur. Ən pisi: şifrə artıq commit tarixçəsindədir və onu <strong>dəyişmək lazımdır</strong> — tarixçədən silmək kifayət etmir.</p>
+</div>
+<h3><span class="step-num">1</span> Git başlat</h3>
+<pre data-lang="bash"><code>cd ~/Deepseek_ARTI
+
+# Git 2.15 kimi köhnə versiyalarda '-b main' işləmir
+git init
+git symbolic-ref HEAD refs/heads/main
+
+git config user.name  "Tariyel Talibov"
+git config user.email "tariyel@arti.edu.az"</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — niyə git init && git symbolic-ref?</span>
+  <p><code>git init -b main</code> əmri git 2.28+ tələb edir. macOS-un köhnə git versiyalarında:</p><pre><code>error: unknown switch `b'</code></pre><p>Ona görə <code>git init</code> edib, sonra başlığı əl ilə dəyişirik. Bu üsul <strong>hər versiyada</strong> işləyir.</p>
+</div>
+<h3><span class="step-num">2</span> Faylları əlavə et</h3>
+<pre data-lang="bash"><code>cd ~/Deepseek_ARTI
+git add -A
+git status --short | head -20
+
+# Fayl sayı
+git diff --cached --name-only | wc -l</code></pre>
+<h3><span class="step-num">3</span> Commit</h3>
+<pre data-lang="bash"><code>cd ~/Deepseek_ARTI
+git commit -m "baza+backend: DS_Baza (48 cedvel, 40 sorgu) ve DS_Backend-1 (NestJS+Prisma)"</code></pre>
+<h3><span class="step-num">4</span> GitHub-a göndər</h3>
+<pre data-lang="bash"><code>cd ~/Deepseek_ARTI
+git remote add origin git@github.com:Ttariyel-1954/Deepseek_ARTI.git
+git push -u origin main</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — commit mesajı formatı</span>
+  <pre><code>&lt;qat&gt;: &lt;qısa təsvir&gt;
+
+- detal 1
+- detal 2</code></pre><table><tr><th>Qat</th><th>Nə vaxt</th></tr><tr><td><code>baza:</code></td><td>SQL, sxem, cədvəl dəyişikliyi</td></tr><tr><td><code>backend:</code></td><td>NestJS, Prisma, API</td></tr><tr><td><code>frontend:</code></td><td>Next.js, React, UI</td></tr><tr><td><code>ders:</code></td><td>HTML dərs faylları</td></tr><tr><td><code>sened:</code></td><td>README, TELIMAT</td></tr></table>
+</div>
+<div class="block block-evez">
+  <span class="block-title">ƏVƏZİNDƏ — GitHub CLI</span>
+  <pre><code>brew install gh
+gh auth login
+gh repo create Deepseek_ARTI --private --source=. --push</code></pre><p>Bu, reponu yaradıb push etməyi bir əmrdə edir.</p>
+</div>
+<h2 id="b24">24. Xəta kitabçası</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Bu dərsdə ən çox rast gəlinən xətaları və onların həllini toplayacağıq.</p>
+</div>
+<table>
+  <tr><th>Xəta</th><th>Səbəb</th><th>Həll</th></tr>
+  <tr><td><code>P1012: The datasource property `url` is no longer supported</code></td><td>Prisma 7 — url sxemdə olmamalıdır</td><td>url-i <code>prisma.config.ts</code>-ə köçürün</td></tr>
+  <tr><td><code>P1012: Argument "url" is missing in data source block "db"</code><br><strong>+ <code>Prisma CLI Version : 4.15.0</code></strong></td>
+      <td><strong>Qlobal Prisma 4 işləyir</strong> — lokal prisma 7 qurulmayıb, ona görə <code>npx</code> qlobal olana düşür.
+      Prisma 4-də <code>url</code> sxemdə mütləqdir, sxem isə Prisma 7 üçün yazılıb.</td>
+      <td><code>npm install -D prisma@^7.10.0</code>, sonra <code>npx prisma --version</code> ilə 7.x olduğunu yoxlayın.
+      Lazımsa <code>npm uninstall -g prisma</code></td></tr>
+  <tr><td><code>Query engine not found</code></td><td>npm <code>postinstall</code> skriptini işlətməyib</td>
+      <td><code>npm install-scripts approve prisma</code> və <code>@prisma/engines</code></td></tr>
+  <tr><td><code>This schema is not defined in the datasource</code></td><td><code>@@schema</code> var, <code>schemas</code> yoxdur</td><td><code>datasource</code>-a <code>schemas = [...]</code> əlavə edin</td></tr>
+  <tr><td><code>Environment variable not found: DATABASE_URL</code></td><td><code>dotenv/config</code> import olunmayıb</td><td><code>prisma.config.ts</code>-in başına <code>import 'dotenv/config'</code></td></tr>
+  <tr><td><code>Cannot find module './app.module.js'</code></td><td>Fayl yoxdur və ya <code>.js</code> unudulub</td><td><code>ls src/app.module.ts</code> + import-a <code>.js</code> əlavə edin</td></tr>
+  <tr><td><code>Cannot find module '@nestjs/config'</code></td><td>Paket qurulmayıb</td><td><code>npm install @nestjs/config</code></td></tr>
+  <tr><td><code>dist/src/main.js</code> (dist/main.js yerinə)</td><td><code>tsconfig.build.json</code> yoxdur</td><td><code>rootDir: "./src"</code> ilə yaradın</td></tr>
+  <tr><td><code>404 Cannot GET /struktur/merkezler</code></td><td><code>setGlobalPrefix</code> yoxdur və ya modul qeydiyyatsız</td><td><code>main.ts</code> + <code>app.module.ts</code> yoxlayın</td></tr>
+  <tr><td><code>EADDRINUSE :::4000</code></td><td>Port tutulub</td><td><code>lsof -ti :4000 | xargs kill -9</code></td></tr>
+  <tr><td><code>TypeError: Do not know how to serialize a BigInt</code></td><td>BIGINT cast edilməyib</td><td><code>id::int</code>, <code>count(*)::int</code></td></tr>
+  <tr><td><code>The "path" argument must be of type string</code></td><td><code>.env</code> yoxdur</td><td><code>ls -la .env</code></td></tr>
+  <tr><td><code>relation "struktur.merkezler" does not exist</code></td><td>Qlobal <code>DATABASE_URL</code> səhv bazaya aparır</td><td><code>unset DATABASE_URL PGHOST</code></td></tr>
+  <tr><td><code>PrismaClientInitializationError</code></td><td>Adapter yoxdur (Prisma 7)</td><td><code>new PrismaPg({ connectionString })</code></td></tr>
+  <tr><td><code>Validation failed (numeric string is expected)</code></td><td>Marshrut sırası səhvdir</td><td><code>@Get('statistika')</code>-nı <code>@Get(':id')</code>-dən əvvəl yazın</td></tr>
+  <tr><td><code>ERR_MODULE_NOT_FOUND</code> (işləmə zamanı)</td><td>Backend import-da <code>.js</code> yoxdur</td><td>Bütün nisbi importlara <code>.js</code> əlavə edin</td></tr>
+  <tr><td><code>Cannot find module '../generated/prisma/client.js'</code></td><td><code>prisma generate</code> işlədilməyib</td><td><code>npx prisma generate</code></td></tr>
+</table>
+<div class="block block-ipucu">
+  <span class="block-title">💡 XƏTA OXUMA QAYDASI</span>
+  <p>NestJS xətası uzundur, lakin <strong>ən alt sətr</strong> ən vacibdir. Oradan yuxarı oxuyun:</p><ol><li>Son sətir — xətanın növü;</li><li>Yuxarısı — hansı fayl, hansı sətir;</li><li>Daha yuxarısı — hansı modul yüklənərkən.</li></ol>
+</div>
+<h2 id="b25">25. Yoxlama siyahısı və növbəti dərs</h2>
+<div class="block block-yox">
+  <span class="block-title">YOXLAMA — BACKEND-1 HAZIRDIR?</span>
+  <table>
+    <tr><th>#</th><th>Yoxlama</th><th>Əmr / Gözlənilən</th></tr>
+    <tr><td>1</td><td>Node 22+</td><td><code>node --version</code></td></tr>
+    <tr><td>2</td><td>NestJS quruldu</td><td><code>ls DS_Backend/src/</code></td></tr>
+    <tr><td>3</td><td>Paketlər quraşdırıldı</td><td><code>ls node_modules/@prisma/adapter-pg</code></td></tr>
+    <tr><td>4</td><td><code>.env</code> var</td><td><code>ls -la .env</code></td></tr>
+    <tr><td>5</td><td><code>.gitignore</code>-da <code>.env</code></td><td><code>grep '^\.env$' .gitignore</code></td></tr>
+    <tr><td>6</td><td><code>tsconfig.build.json</code> var</td><td><code>cat tsconfig.build.json</code></td></tr>
+    <tr><td>7</td><td>Prisma sxemi 12 sxem</td><td><code>grep -c 'schemas' prisma/schema.prisma</code></td></tr>
+    <tr><td>8</td><td><code>prisma.config.ts</code> var</td><td><code>ls prisma.config.ts</code></td></tr>
+    <tr><td>9</td><td>48 model oxundu</td><td><code>grep -c '^model ' prisma/schema.prisma</code> → 48</td></tr>
+    <tr><td>10</td><td>Müştəri yaradıldı</td><td><code>ls src/generated/prisma/</code></td></tr>
+    <tr><td>11</td><td>PrismaService + Module</td><td><code>ls src/prisma/</code></td></tr>
+    <tr><td>12</td><td>Struktur modulu</td><td><code>ls src/struktur/</code></td></tr>
+    <tr><td>13</td><td>Modul qeydiyyatı</td><td><code>grep StrukturModule src/app.module.ts</code></td></tr>
+    <tr><td>14</td><td>Server başlayır</td><td><code>npm run start:dev</code> → Mapped 3 route</td></tr>
+    <tr><td>15</td><td>Endpoint işləyir</td><td><code>curl localhost:4000/api/v1/struktur/merkezler</code> → 200</td></tr>
+    <tr><td>16</td><td>404 düzgün işləyir</td><td><code>curl .../9999</code> → 404</td></tr>
+    <tr><td>17</td><td>400 düzgün işləyir</td><td><code>curl .../abc</code> → 400</td></tr>
+    <tr><td>18</td><td>Swagger açılır</td><td><code>open localhost:4000/docs</code></td></tr>
+  </table>
+</div>
+<div class="block block-ne">
+  <span class="block-title">NƏ GƏLİR — Backend-2</span>
+  <p>Növbəti dərsdə <strong>bütün modulları</strong> quracağıq:</p><table><tr><th>#</th><th>Mövzu</th></tr><tr><td>1</td><td>DTO yaratmaq və validasiya (<code>class-validator</code>)</td></tr><tr><td>2</td><td>Tam CRUD — POST, PATCH, DELETE</td></tr><tr><td>3</td><td>Kadrlar modulu — filtr, səhifələmə, axtarış</td></tr><tr><td>4</td><td>Elm, təhsil, maliyyə, logistika modulları</td></tr><tr><td>5</td><td>Hesabat endpoint-ləri — aqreqasiya sorğuları</td></tr><tr><td>6</td><td>Xəta idarəsi — vahid format</td></tr></table>
+</div>
+<div class="success-box"><strong>Backend-1 tamamlandı.</strong> İşlək backend var: <code>http://localhost:4000/api/v1/struktur/merkezler</code> real bazadan real məlumat qaytarır.</div>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('pre').forEach(function (pre) {
+      var btn = document.createElement('button');
+      btn.className = 'copy-btn';
+      btn.textContent = '📋 KOPYALA';
+      btn.addEventListener('click', async function (ev) {
+        ev.preventDefault();
+        var kod = pre.querySelector('code');
+        var metn = kod ? kod.textContent : pre.textContent;
+        try {
+          await navigator.clipboard.writeText(metn);
+          btn.textContent = '✅ KOPYALANDI';
+          btn.classList.add('copied');
+          setTimeout(function () {
+            btn.textContent = '📋 KOPYALA';
+            btn.classList.remove('copied');
+          }, 2000);
+        } catch (err) {
+          var ta = document.createElement('textarea');
+          ta.value = metn;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          btn.textContent = '✅ KOPYALANDI';
+          setTimeout(function () { btn.textContent = '📋 KOPYALA'; }, 2000);
+        }
+      });
+      pre.insertBefore(btn, pre.firstChild);
+    });
+  });
+</script>
+</body>
+</html>
