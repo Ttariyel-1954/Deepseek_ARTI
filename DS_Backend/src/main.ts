@@ -10,9 +10,9 @@ async function bootstrap() {
   app.setGlobalPrefix('api/v1');
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true,            // DTO-da olmayan saheleri sil
-      forbidNonWhitelisted: true, // ...ve xeta ver
-      transform: true,            // '5' -> 5
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
       transformOptions: { enableImplicitConversion: false },
     }),
   );
@@ -21,6 +21,7 @@ async function bootstrap() {
 
   const cfg = new DocumentBuilder()
     .setTitle('Deepseek ARTI API')
+    .setDescription('Azerbaycan Respublikasinin Tehsil Institutu — ERP backend')
     .setVersion('1.0')
     .addBearerAuth()
     .build();
@@ -28,6 +29,7 @@ async function bootstrap() {
 
   const port = process.env.PORT ?? 4000;
   await app.listen(port);
-  console.log('API: http://localhost:' + port + '/api/v1');
+  console.log('API:       http://localhost:' + port + '/api/v1');
+  console.log('Senedler:  http://localhost:' + port + '/docs');
 }
 bootstrap();

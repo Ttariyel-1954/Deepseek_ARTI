@@ -1,0 +1,2592 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DS Backend 3 — JWT autentifikasiya, rollar ve audit</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #eef2f7; color: #1e293b; line-height: 1.85;
+    padding: 2rem 1rem; font-size: 16.5px;
+  }
+  .container {
+    max-width: 1150px; margin: 0 auto; background: #fff;
+    border-radius: 22px; box-shadow: 0 15px 40px -15px rgba(15,23,42,.25);
+    padding: 3rem 3rem 4rem;
+  }
+  header {
+    border-bottom: 5px solid #7c2d12; padding-bottom: 1.8rem;
+    margin-bottom: 2.5rem; position: relative;
+  }
+  header::after {
+    content: ''; position: absolute; bottom: -5px; left: 0;
+    width: 120px; height: 5px; background: #f59e0b;
+  }
+  .lesson-badge {
+    display: inline-block; background: linear-gradient(135deg,#7c2d12,#ea580c);
+    color: #fff; font-size: .75rem; font-weight: 800;
+    padding: .5rem 1.2rem; border-radius: 30px; letter-spacing: 2px;
+    margin-bottom: 1.2rem; text-transform: uppercase;
+  }
+  h1 { font-size: 2.25rem; font-weight: 800; color: #0f172a; line-height: 1.15; margin-bottom: .7rem; }
+  .subtitle { font-size: 1.12rem; color: #64748b; margin-bottom: 1.3rem; }
+  .meta { display: flex; gap: .8rem; flex-wrap: wrap; }
+  .meta span {
+    background: #ffedd5; color: #9a3412; padding: .4rem 1rem;
+    border-radius: 20px; font-weight: 700; font-size: .82rem;
+  }
+  h2 {
+    font-size: 1.8rem; font-weight: 800; color: #7c2d12;
+    margin-top: 3.2rem; margin-bottom: 1.1rem;
+    padding: .8rem 0 .8rem 1.2rem; border-left: 7px solid #ea580c;
+    background: linear-gradient(to right,#fff7ed,transparent);
+  }
+  h3 {
+    font-size: 1.28rem; font-weight: 700; color: #9a3412;
+    margin-top: 2.3rem; margin-bottom: .9rem;
+    display: flex; align-items: center; gap: .7rem;
+  }
+  h4 { font-size: 1.08rem; font-weight: 700; color: #334155; margin-top: 1.6rem; margin-bottom: .7rem; }
+  p { margin-bottom: 1rem; }
+  .step-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg,#ea580c,#7c2d12); color: #fff;
+    min-width: 36px; height: 36px; border-radius: 50%;
+    font-weight: 800; font-size: .9rem; flex-shrink: 0; padding: 0 .5rem;
+  }
+  .block {
+    border-radius: 14px; padding: 1.25rem 1.5rem; margin: 1.1rem 0;
+    border-left: 6px solid; position: relative;
+  }
+  .block-ne     { border-color:#3b82f6; background:#eff6ff; }
+  .block-niye   { border-color:#8b5cf6; background:#f5f3ff; }
+  .block-sade   { border-color:#14b8a6; background:#f0fdfa; }
+  .block-olmaz  { border-color:#ef4444; background:#fef2f2; }
+  .block-evez   { border-color:#f59e0b; background:#fffbeb; }
+  .block-nece   { border-color:#10b981; background:#ecfdf5; }
+  .block-yox    { border-color:#ec4899; background:#fdf2f8; }
+  .block-izah   { border-color:#06b6d4; background:#ecfeff; }
+  .block-xeber  { border-color:#dc2626; background:#fef2f2; }
+  .block-ipucu  { border-color:#84cc16; background:#f7fee7; }
+  .block-hara   { border-color:#0ea5e9; background:#f0f9ff; }
+  .block-title {
+    font-weight: 800; font-size: .76rem; text-transform: uppercase;
+    letter-spacing: 1.6px; margin-bottom: .6rem; display: block;
+  }
+  .block-ne    .block-title { color:#1d4ed8; }
+  .block-niye  .block-title { color:#7c3aed; }
+  .block-sade  .block-title { color:#0d9488; }
+  .block-olmaz .block-title { color:#dc2626; }
+  .block-evez  .block-title { color:#d97706; }
+  .block-nece  .block-title { color:#059669; }
+  .block-yox   .block-title { color:#db2777; }
+  .block-izah  .block-title { color:#0891b2; }
+  .block-xeber .block-title { color:#b91c1c; }
+  .block-ipucu .block-title { color:#4d7c0f; }
+  .block-hara  .block-title { color:#0284c7; }
+  pre {
+    background: #0f172a; color: #e2e8f0; padding: 1.3rem 1.5rem;
+    border-radius: 14px; overflow-x: auto; margin: 1.1rem 0;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: .83rem; line-height: 1.7;
+    border: 1px solid #334155; position: relative;
+  }
+  pre::before {
+    content: attr(data-lang); position: absolute; top: .7rem; right: .9rem;
+    font-size: .6rem; font-weight: 800; color: #64748b;
+    letter-spacing: 2px; background: #1e293b; padding: .2rem .7rem;
+    border-radius: 5px; text-transform: uppercase;
+  }
+  pre code { background: transparent; color: inherit; padding: 0; font-size: inherit; }
+  code {
+    font-family: 'SF Mono', Menlo, monospace; background: #e2e8f0;
+    color: #0f172a; padding: .15rem .5rem; border-radius: 5px; font-size: .87em;
+  }
+  table {
+    width: 100%; border-collapse: collapse; margin: 1.3rem 0;
+    background: #fff; border-radius: 12px; overflow: hidden;
+    box-shadow: 0 3px 12px rgba(0,0,0,.06); font-size: .9rem;
+  }
+  th {
+    background: linear-gradient(135deg,#7c2d12,#9a3412); color: #fff;
+    padding: .85rem 1rem; text-align: left; font-weight: 700; font-size: .82rem;
+  }
+  td { padding: .75rem 1rem; border-top: 1px solid #e2e8f0; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8fafc; }
+  ul, ol { margin: .8rem 0 1.2rem 1.9rem; }
+  li { margin-bottom: .5rem; }
+  .toc {
+    background: linear-gradient(135deg,#fff7ed,#ffedd5);
+    border: 2px solid #fdba74; border-radius: 16px;
+    padding: 1.7rem 2rem; margin: 2.3rem 0;
+  }
+  .toc h3 { margin-top: 0; color: #7c2d12; font-size: 1.25rem; }
+  .toc ol { margin-left: 1.2rem; }
+  .toc a { color: #c2410c; text-decoration: none; font-weight: 600; }
+  .toc a:hover { text-decoration: underline; }
+  .success-box {
+    background: linear-gradient(135deg,#d1fae5,#a7f3d0);
+    border: 2px solid #10b981; border-radius: 14px;
+    padding: 1.25rem 1.5rem; margin: 1.4rem 0;
+    font-weight: 600; color: #065f46;
+  }
+  .success-box::before { content: '✅ '; font-size: 1.25rem; margin-right: .3rem; }
+  .sozluq {
+    background: #fffbeb; border: 2px dashed #f59e0b;
+    border-radius: 14px; padding: 1.2rem 1.5rem; margin: 1.3rem 0;
+  }
+  .sozluq .soz { font-weight: 800; color: #b45309; }
+  .mektub {
+    background: #fffdf7; border: 2px solid #d6d3d1;
+    border-radius: 10px; padding: 2rem 2.3rem; margin: 1.5rem 0;
+    font-family: 'Times New Roman', Georgia, serif;
+    font-size: 1rem; line-height: 1.9; color: #1c1917;
+    box-shadow: 0 4px 18px rgba(0,0,0,.07);
+  }
+  .mektub .basliq { text-align: center; font-weight: 700; margin-bottom: 1.6rem; }
+  .mektub .sag { text-align: right; margin-bottom: 1.6rem; }
+  .mektub .imza { margin-top: 2.2rem; }
+  .mektub ol { margin-left: 1.6rem; }
+  .excel {
+    background: #f8fafc; border: 2px solid #94a3b8; border-radius: 10px;
+    padding: 0; margin: 1.2rem 0; overflow-x: auto;
+  }
+  .excel table { margin: 0; border-radius: 0; box-shadow: none; font-size: .82rem; }
+  .excel th { background: linear-gradient(135deg,#166534,#14532d); padding: .6rem .7rem; }
+  .excel td { padding: .5rem .7rem; }
+  .excel-basliq {
+    background: #1e293b; color: #e2e8f0; padding: .6rem 1rem;
+    font-family: 'SF Mono', Menlo, monospace; font-size: .8rem;
+    font-weight: 700; letter-spacing: 1px;
+  }
+  footer {
+    margin-top: 4.5rem; padding-top: 2rem;
+    border-top: 3px dashed #cbd5e1; text-align: center;
+    color: #64748b; font-size: .9rem;
+  }
+  @media (max-width: 700px) {
+    .container { padding: 1.5rem 1.2rem; }
+    h1 { font-size: 1.6rem; } h2 { font-size: 1.35rem; }
+    pre { font-size: .72rem; padding: 1rem; }
+    .mektub { padding: 1.2rem; font-size: .9rem; }
+  }
+  pre { position: relative; }
+  .copy-btn {
+    position: absolute; top: .7rem; right: .9rem;
+    background: #1e293b; color: #cbd5e1; border: 1px solid #475569;
+    border-radius: 6px; padding: .3rem .7rem; font-size: .68rem;
+    font-weight: 700; cursor: pointer; z-index: 10; opacity: .75;
+  }
+  .copy-btn:hover { background: #334155; color: #fff; opacity: 1; }
+  .copy-btn.copied { background: #059669 !important; color: #fff !important; }
+  pre::before { right: auto !important; left: .9rem !important; }
+  pre code { display: block; padding-top: .2rem; }
+
+  /* ─── REDAKTƏ OLUNA BİLƏN MƏKTUB ─── */
+  .mektub-alet {
+    background: #f0fdf4; border: 2px solid #16a34a;
+    border-radius: 12px; padding: 1.2rem 1.4rem; margin: 1.3rem 0;
+  }
+  .mektub-alet .alet-basliq {
+    font-weight: 800; font-size: .82rem; color: #15803d;
+    text-transform: uppercase; letter-spacing: 1.4px;
+    margin-bottom: .8rem; display: block;
+  }
+  textarea.mektub-metni {
+    width: 100%; min-height: 420px; padding: 1.1rem 1.3rem;
+    border: 2px solid #94a3b8; border-radius: 10px;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: .82rem; line-height: 1.75; color: #0f172a;
+    background: #fffdf7; resize: vertical;
+  }
+  textarea.mektub-metni:focus {
+    outline: none; border-color: #16a34a;
+    box-shadow: 0 0 0 3px rgba(22,163,74,.15);
+  }
+  .duyme-sira { display: flex; gap: .6rem; flex-wrap: wrap; margin-top: .8rem; }
+  .duyme {
+    background: linear-gradient(135deg,#16a34a,#15803d); color: #fff;
+    border: none; border-radius: 8px; padding: .55rem 1.1rem;
+    font-size: .78rem; font-weight: 700; cursor: pointer;
+    font-family: inherit; letter-spacing: .3px;
+  }
+  .duyme:hover { opacity: .88; }
+  .duyme.mavi { background: linear-gradient(135deg,#2563eb,#1d4ed8); }
+  .duyme.boz  { background: linear-gradient(135deg,#475569,#334155); }
+  .duyme.narinci { background: linear-gradient(135deg,#ea580c,#c2410c); }
+  .duyme.kicik { padding: .35rem .8rem; font-size: .7rem; }
+
+  /* ─── EXCEL ALƏT PANELİ ─── */
+  .excel-alet {
+    display: flex; gap: .5rem; align-items: center;
+    background: #1e293b; padding: .55rem .9rem;
+    border-radius: 10px 10px 0 0; flex-wrap: wrap;
+  }
+  .excel-alet .fayl-adi {
+    color: #94a3b8; font-family: 'SF Mono', Menlo, monospace;
+    font-size: .76rem; font-weight: 700; margin-right: auto;
+  }
+  .excel-alet .duyme { padding: .35rem .8rem; font-size: .7rem; }
+
+  /* ─── İNTERAKTİV MƏKTUB GENERATORU ─── */
+  .generator {
+    background: #eff6ff; border: 2px solid #3b82f6;
+    border-radius: 14px; padding: 1.4rem 1.6rem; margin: 1.4rem 0;
+  }
+  .generator .sahe-sira {
+    display: grid; grid-template-columns: 180px 1fr; gap: .7rem 1rem;
+    align-items: center; margin-bottom: .7rem;
+  }
+  .generator label {
+    font-weight: 700; font-size: .84rem; color: #1e40af;
+  }
+  .generator input, .generator select {
+    padding: .5rem .8rem; border: 2px solid #93c5fd;
+    border-radius: 8px; font-family: inherit; font-size: .84rem;
+    background: #fff; color: #0f172a; width: 100%;
+  }
+  .generator input:focus, .generator select:focus {
+    outline: none; border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+  }
+  @media (max-width: 700px) {
+    .generator .sahe-sira { grid-template-columns: 1fr; }
+  }
+
+  /* ─── FAYL AĞACI ─── */
+  .fayl-agaci {
+    background: #0f172a; color: #e2e8f0; padding: 1.5rem 1.7rem;
+    border-radius: 14px; overflow-x: auto; margin: 1.3rem 0;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: .8rem; line-height: 1.75;
+    border: 1px solid #334155;
+  }
+  .fayl-agaci .geden  { color: #fbbf24; font-weight: 700; }
+  .fayl-agaci .gelen  { color: #4ade80; font-weight: 700; }
+  .fayl-agaci .kod    { color: #60a5fa; font-weight: 700; }
+  .fayl-agaci .qeyd   { color: #64748b; font-style: italic; }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <div class="lesson-badge">DS_Backend · Hissə 3/4</div>
+  <h1>Backend 3 — JWT, rollar və audit</h1>
+  <p class="subtitle">Sistemi bağla, sonra açar paylaş — autentifikasiya, RBAC və hər dəyişikliyin izi</p>
+  <p class="meta">Layihə: <strong>Deepseek_ARTI</strong> · Blok: <code>DS_Backend</code> · NestJS 12 · Passport · JWT · bcrypt · 100 test</p>
+</header>
+<div class="toc">
+  <h3>📚 Bu dərsdə nələr öyrənəcəksiniz</h3>
+  <ol>
+    <li><a href="#b1">Backend-3 nə verir — xülasə</a></li>
+    <li><a href="#b2">Auth paketlərinin quraşdırılması</a></li>
+    <li><a href="#b3">Autentifikasiya nədir — session vs JWT</a></li>
+    <li><a href="#b4">JWT nədir — üç hissə</a></li>
+    <li><a href="#b5">Şifrə saxlama — heç vaxt düz mətn</a></li>
+    <li><a href="#b6">bcrypt — hash və compare</a></li>
+    <li><a href="#b7">LoginDto və QeydiyyatDto</a></li>
+    <li><a href="#b8">Rollar (RBAC) — dörd rol matrisi</a></li>
+    <li><a href="#b9">Dekoratorlar — @Roles, @Public, @CurrentUser</a></li>
+    <li><a href="#b10">JWT strategiyası</a></li>
+    <li><a href="#b11">JwtAuthGuard — qlobal «təhlükəsiz susmaya görə»</a></li>
+    <li><a href="#b12">RolesGuard — RBAC yoxlaması</a></li>
+    <li><a href="#b13">⚠️ REAL XƏTA: .env və modul yüklənmə sırası</a></li>
+    <li><a href="#b14">Auth servisi — login və timing attack qoruması</a></li>
+    <li><a href="#b15">Auth controller</a></li>
+    <li><a href="#b16">Auth modulu — registerAsync</a></li>
+    <li><a href="#b17">Audit interceptor</a></li>
+    <li><a href="#b18">app.module.ts — APP_GUARD sırası</a></li>
+    <li><a href="#b19">Endpoint-lərin qorunması</a></li>
+    <li><a href="#b20">Seed skripti</a></li>
+    <li><a href="#b21">Testlər — 38 unit + 62 e2e</a></li>
+    <li><a href="#b22">Backend-2 testlərinin yenilənməsi</a></li>
+    <li><a href="#b23">Xəta kitabçası</a></li>
+    <li><a href="#b24">Yoxlama siyahısı və növbəti dərs</a></li>
+  </ol>
+</div>
+<h2 id="b1">1. Backend-3 nə verir — xülasə</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Backend-2-də API işləyirdi, lakin <strong>hər kəs hər şeyi edə bilirdi</strong>. İndi sistemi bağlayacağıq:</p><table><tr><th>#</th><th>Nə əlavə olunur</th><th>Nə üçün</th></tr><tr><td>1</td><td><strong>JWT autentifikasiya</strong></td><td>Kim olduğunu bilmək</td></tr><tr><td>2</td><td><strong>bcrypt şifrə hash</strong></td><td>Baza sızsa da şifrələr açılmasın</td></tr><tr><td>3</td><td><strong>Rollar (RBAC)</strong></td><td>Hər kəs hər şeyi etməsin</td></tr><tr><td>4</td><td><strong>Qlobal guard</strong></td><td>Yeni endpoint susmaya görə qorunsun</td></tr><tr><td>5</td><td><strong>Audit interceptor</strong></td><td>Kim nəyi dəyişdi — iz qalsın</td></tr><tr><td>6</td><td><strong>Seed skripti</strong></td><td>İstifadəçiləri tək əmrlə yaratmaq</td></tr><tr><td>7</td><td><strong>100 test</strong></td><td>Təhlükəsizlik pozulmasın</td></tr></table>
+</div>
+<div class="block block-niye">
+  <span class="block-title">NİYƏ BU DƏRS ƏN VACİBDİR?</span>
+  <p>Backend-1 və -2 funksionallıq verdi. Backend-3 isə <strong>etimad</strong> verir. Bu olmasa:</p><ul><li>İstənilən şəxs bütün əməkdaşların maaşını görər;</li><li>Kənar şəxs məlumatları silə bilər;</li><li>Baza sızsa, bütün şifrələr açıq mətn kimi oxunar;</li><li>'Bunu kim dəyişdi?' sualına cavab tapılmaz.</li></ul>
+</div>
+<div class="success-box">Bu dərsin sonunda API <strong>bağlı</strong> olacaq: 24 endpoint, 4 rol, 100 test. Token olmadan heç nə işləməyəcək.</div>
+<h2 id="b2">2. Auth paketlərinin quraşdırılması</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Autentifikasiya üçün lazım olan 5 paketi quraşdıracağıq.</p>
+</div>
+<pre data-lang="bash"><code>cd ~/Deepseek_ARTI/DS_Backend
+unset DATABASE_URL PGHOST
+
+npm install \
+  @nestjs/jwt@^12.0.0 \
+  @nestjs/passport@^12.0.0 \
+  passport@^0.7.0 \
+  passport-jwt@^4.0.1 \
+  bcryptjs@^3.0.0
+
+npm install -D @types/passport-jwt@^4.0.1 @types/bcryptjs@^2.4.6</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — hər paket nə edir?</span>
+  <table><tr><th>Paket</th><th>Nə edir</th><th>Olmazsa</th></tr><tr><td><code>@nestjs/jwt</code></td><td>Token imzalayır və yoxlayır</td><td>Özümüz HMAC yazmalı olardıq</td></tr><tr><td><code>@nestjs/passport</code></td><td>Passport-u NestJS-ə bağlayır</td><td><code>PassportStrategy</code> tapılmır</td></tr><tr><td><code>passport</code></td><td>Autentifikasiya çərçivəsi</td><td>Strategiya işləmir</td></tr><tr><td><code>passport-jwt</code></td><td>JWT strategiyası</td><td>Bearer token oxunmur</td></tr><tr><td><code>bcryptjs</code></td><td>Şifrə hash-ləyir</td><td>Şifrələr açıq saxlanılardı</td></tr></table>
+</div>
+<div class="block block-ipucu">
+  <span class="block-title">💡 NİYƏ «bcryptjs», «bcrypt» YOX?</span>
+  <table><tr><th>Paket</th><th>Nədir</th><th>Quraşdırma</th></tr><tr><td><code>bcrypt</code></td><td>Native C++ modulu</td><td>Kompilyator tələb edir</td></tr><tr><td><code>bcryptjs</code></td><td>Təmiz JavaScript</td><td>Hər yerdə işləyir ✅</td></tr></table><p>Native modul Docker-də və ARM-da problem yaradır. <code>bcryptjs</code> bir qədər yavaşdır, lakin <strong>hər platformada</strong> işləyir.</p>
+</div>
+<div class="block block-yox">
+  <span class="block-title">YOXLAMA 2 — Paketlər quraşdırıldı?</span>
+  <pre><code>for p in @nestjs/jwt @nestjs/passport passport passport-jwt bcryptjs; do
+  echo "$p: $(node -p "require('$p/package.json').version")"
+done
+
+@nestjs/jwt: 12.0.2
+@nestjs/passport: 12.0.0
+passport: 0.7.0
+passport-jwt: 4.0.1
+bcryptjs: 3.0.3</code></pre>
+</div>
+<h2 id="b3">3. Autentifikasiya nədir — session vs JWT</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>İki yanaşmanı müqayisə edib JWT-ni seçmə səbəbini anlayacağıq.</p>
+</div>
+<table>
+  <tr><th></th><th>Session (köhnə yol)</th><th>JWT (müasir)</th></tr>
+  <tr><td><strong>Harada saxlanılır</strong></td><td>Serverin yaddaşında / bazada</td><td>Tokenin ÖZÜNDƏ (imzalı)</td></tr>
+  <tr><td><strong>Yoxlama</strong></td><td>Bazaya sorğu</td><td>İmza riyazi yoxlanılır</td></tr>
+  <tr><td><strong>Ölçəklənmə</strong></td><td>Çətin — hər server öz yaddaşını saxlayır</td><td>Asan — istənilən server yoxlaya bilər</td></tr>
+  <tr><td><strong>Ləğv etmə</strong></td><td>Asan — session silinir</td><td>Çətin — token bitənə qədər qüvvədədir</td></tr>
+  <tr><td><strong>Mobil tətbiq</strong></td><td>Çətin (cookie)</td><td>Asan (header)</td></tr>
+  <tr><td><strong>Ölçü</strong></td><td>Kiçik (session id)</td><td>Böyük (~200 simvol)</td></tr>
+</table>
+<div class="block block-izah">
+  <span class="block-title">İZAH — bizim seçim</span>
+  <p>ARTİ ERP üçün JWT seçirik, çünki:</p><ul><li>Frontend (Next.js) və backend (NestJS) <strong>ayrı</strong> portlardadır;</li><li>Gələcəkdə mobil tətbiq və R Shiny paneli də qoşulacaq;</li><li>Bir neçə server ola bilər (yük balanslaşdırması);</li><li>Token müddəti qısadır (8 saat) — ləğv etmə problemi azalır.</li></ul>
+</div>
+<div class="block block-olmaz">
+  <span class="block-title">OLMASA NƏ OLAR — heç bir autentifikasiya</span>
+  <p>API tam açıq olar. Kənar şəxs bütün məlumatı oxuya, silə, dəyişə bilər:</p>
+</div>
+<pre data-lang="bash"><code># Tokensiz məlumat çəkmək — bu İŞLƏMƏMƏLİDİR
+curl -s http://localhost:4000/api/v1/kadrlar/emekdaslar | head -c 120</code></pre>
+<pre data-lang="çıxış"><code># Autentifikasiya OLSA:
+{ "ugur": false,
+  "xeta": { "kod": "AUTENTIFIKASIYA_LAZIM",
+            "mesaj": "Unauthorized" } }</code></pre>
+<div class="block block-evez">
+  <span class="block-title">ƏVƏZİNDƏ — digər yanaşmalar</span>
+  <table><tr><th>Yanaşma</th><th>Üstünlük</th><th>Çatışmazlıq</th></tr><tr><td>Session + Redis</td><td>Ani ləğv etmə</td><td>Əlavə infrastruktur</td></tr><tr><td>OAuth 2.0 (Google)</td><td>Şifrə idarəsi yox</td><td>Xarici asılılıq, dövlət qurumu üçün uyğun deyil</td></tr><tr><td>API açarı</td><td>Sadə</td><td>İstifadəçi anlayışı yox, ləğv çətindir</td></tr><tr><td><strong>JWT + refresh token</strong></td><td>Balanslı</td><td>İki token idarəsi</td></tr></table><p>Biz <strong>sadə JWT</strong> ilə başlayırıq. Refresh token gələcək mərhələdədir.</p>
+</div>
+<h2 id="b4">4. JWT nədir — üç hissə</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>JWT-nin strukturunu açacağıq. Bu, diaqnostika üçün vacibdir.</p>
+</div>
+<pre data-lang="sxem"><code>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiYWRtaW5AYXJ0aS5lZHUuYXoiLCJyb2wiOiJhZG1pbiIsImlhdCI6MTc4OTgyODc3NiwiZXhwIjoxNzg5ODU3NTc2fQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+└──────────── HEADER ────────────┘ └──────────── PAYLOAD ────────────┘ └─────────── İMZA ──────────┘</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — hər hissə nədir?</span>
+  <table><tr><th>Hissə</th><th>Nə saxlayır</th><th>Şifrəlidir?</th></tr><tr><td><strong>Header</strong></td><td>Alqoritm (HS256) və tip (JWT)</td><td>❌ Base64 — hər kəs oxuyur</td></tr><tr><td><strong>Payload</strong></td><td>İstifadəçi id, email, rol, vaxtlar</td><td>❌ Base64 — hər kəs oxuyur</td></tr><tr><td><strong>İmza</strong></td><td>Header+Payload+gizli açarın HMAC-ı</td><td>✅ Riyazi qorunma</td></tr></table>
+</div>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ JWT ŞİFRƏLƏNMİR — YALNIZ İMZALANIR</span>
+  <p>Tokeni istənilən şəxs <code>base64 -d</code> ilə aça bilər. İmza yalnız <strong>dəyişdirilmədiyini</strong> sübut edir, gizli olduğunu yox.</p><p><strong>Nəticə:</strong> JWT payload-a <em>heç vaxt</em> həssas məlumat qoymayın (şifrə, FIN kod, maaş). Yalnız <strong>identifikasiya</strong> üçün lazım olanı.</p>
+</div>
+<h3><span class="step-num">1</span> Tokeni aç</h3>
+<pre data-lang="bash"><code># Tokeni 3 hisseye böl ve payload-i oxu
+TOKEN='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiYWRtaW5AYXJ0aS5lZHUuYXoiLCJyb2wiOiJhZG1pbiIsImlhdCI6MTc4OTgyODc3NiwiZXhwIjoxNzg5ODU3NTc2fQ.xxx'
+
+echo "$TOKEN" | cut -d. -f2 | base64 -d 2&gt;/dev/null | python3 -m json.tool</code></pre>
+<pre data-lang="json"><code>{
+  "sub": 2,
+  "email": "admin@arti.edu.az",
+  "rol": "admin",
+  "iat": 1789828776,
+  "exp": 1789857576
+}</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — payload sahələri</span>
+  <table><tr><th>Sahə</th><th>Mənası</th><th>Nümunə</th></tr><tr><td><code>sub</code></td><td>Subject — istifadəçi id</td><td><code>2</code></td></tr><tr><td><code>email</code></td><td>İstifadəçi e-poçtu</td><td><code>admin@...</code></td></tr><tr><td><code>rol</code></td><td>RBAC rolu</td><td><code>admin</code></td></tr><tr><td><code>iat</code></td><td>Issued at — nə vaxt verildi</td><td>Unix vaxt</td></tr><tr><td><code>exp</code></td><td>Expiration — nə vaxt bitir</td><td>Unix vaxt</td></tr></table><p><code>iat</code> və <code>exp</code> avtomatik əlavə olunur — biz yazmırıq.</p>
+</div>
+<div class="block block-ipucu">
+  <span class="block-title">💡 TOKEN MÜDDƏTİNİ YOXLAMAQ</span>
+  <pre><code>node -e "
+const t = process.argv[1];
+const p = JSON.parse(Buffer.from(t.split('.')[1], 'base64').toString());
+console.log('Bitir:', new Date(p.exp * 1000).toLocaleString('az'));
+console.log('Qaldi:', Math.round((p.exp * 1000 - Date.now()) / 60000), 'deqiqe');
+" "$TOKEN"</code></pre>
+</div>
+<h2 id="b5">5. Şifrə saxlama — heç vaxt düz mətn</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Şifrələrin bazada necə saxlandığını görəcəyik.</p>
+</div>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ ƏN BÖYÜK TƏHLÜKƏSİZLİK SƏHVİ</span>
+  <p>Şifrəni düz mətn kimi saxlamaq:</p><table><tr><th>Cədvəl</th><th>email</th><th>parol</th></tr><tr><td>❌ SƏHV</td><td>admin@arti.edu.az</td><td><strong>123456</strong></td></tr><tr><td>✅ DOĞRU</td><td>admin@arti.edu.az</td><td><code>$2b$10$oIesQsaJ4ahBc...</code></td></tr></table><p>Düz mətn saxlanılsa, baza sızması <strong>bütün istifadəçilərin</strong> şifrəsini açıq verir. İnsanlar isə eyni şifrəni hər yerdə işlədir.</p>
+</div>
+<div class="block block-izah">
+  <span class="block-title">İZAH — hash nədir?</span>
+  <p><strong>Hash</strong> — geri qaytarıla bilməyən çevrilmədir:</p><pre data-lang="sxem"><code>"123456"  --hash-->  "$2b$10$oIesQsaJ4ahBc..."
+                          |
+                          +-- GERI QAYTARMAQ MÜMKÜN DEYİL</code></pre><p>Yoxlama isə belədir: istifadəçi şifrəni yazır → hash-lənir → bazadakı hash ilə <strong>müqayisə</strong> olunur.</p>
+</div>
+<div class="block block-evez">
+  <span class="block-title">ƏVƏZİNDƏ — digər alqoritmlər</span>
+  <table><tr><th>Alqoritm</th><th>Sürət</th><th>Vəziyyət</th></tr><tr><td>MD5</td><td>Çox sürətli</td><td>❌ <strong>QADAĞAN</strong> — GPU ilə saniyədə milyard</td></tr><tr><td>SHA-256</td><td>Sürətli</td><td>❌ Şifrə üçün yararsız — çox sürətli</td></tr><tr><td>bcrypt</td><td>Yavaş (tənzimlənən)</td><td>✅ Standart</td></tr><tr><td>Argon2</td><td>Yavaş</td><td>✅ Ən müasir (2015)</td></tr><tr><td>scrypt</td><td>Yavaş, yaddaş tələb edir</td><td>✅ Yaxşı</td></tr></table><p><strong>Məntiq tərsdir:</strong> parol hash-i üçün <em>yavaş</em> olmaq <strong>üstünlükdür</strong>. Sürətli alqoritm hücumçuya da kömək edir.</p>
+</div>
+<h2 id="b6">6. bcrypt — hash və compare</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>bcrypt-in iki funksiyasını öyrənəcəyik: <code>hash()</code> və <code>compare()</code>.</p>
+</div>
+<h3><span class="step-num">1</span> Hash yaratmaq</h3>
+<pre data-lang="typescript"><code>import * as bcrypt from 'bcryptjs';
+
+const BCRYPT_RAUND = 10;                       // "cost" — 2^10 = 1024 raund
+
+const hash = await bcrypt.hash('123456', BCRYPT_RAUND);
+// '$2b$10$oIesQsaJ4ahBc0vjhaRpN.x7k8YqZ...'
+//   │   │  └──────────── duz (salt), 22 simvol
+//   │   └── cost = 10
+//   └── alqoritm versiyasi (2b = bcrypt)</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — hash-in hissələri</span>
+  <table><tr><th>Hissə</th><th>Uzunluq</th><th>Nədir</th></tr><tr><td><code>$2b$</code></td><td>4</td><td>Alqoritm versiyası</td></tr><tr><td><code>10$</code></td><td>3</td><td>Cost faktoru</td></tr><tr><td><em>duz</em></td><td>22</td><td>Təsadüfi salt</td></tr><tr><td><em>hash</em></td><td>31</td><td>Əsl hash dəyəri</td></tr></table><p><strong>CƏMİ: 60 simvol</strong>. Duz hash-in İÇİNDƏDİR — ona görə ayrıca sütun lazım deyil.</p>
+</div>
+<div class="block block-ipucu">
+  <span class="block-title">💡 SALT (DUZ) NƏ ÜÇÜNDÜR?</span>
+  <p>Duz olmasa, eyni şifrəli iki istifadəçinin hash-i eyni olar:</p><table><tr><th></th><th>Duzsuz</th><th>Duzlu</th></tr><tr><td>admin şifrəsi <code>123456</code></td><td><code>e10adc39...</code></td><td><code>$2b$10$oIes...</code></td></tr><tr><td>user şifrəsi <code>123456</code></td><td><code>e10adc39...</code> ⚠️ EYNİ</td><td><code>$2b$10$Xk2p...</code> ✅ FƏRQLİ</td></tr></table><p>Duzsuz halda hücumçu bir hash-i sındırıb <strong>bütün</strong> eyni şifrəliləri tapır. Duzlu halda hər biri ayrıca sındırılmalıdır.</p>
+</div>
+<h3><span class="step-num">2</span> Şifrəni yoxlamaq</h3>
+<pre data-lang="typescript"><code>const duzdur = await bcrypt.compare('123456', hash);
+// true
+
+const sehvdir = await bcrypt.compare('654321', hash);
+// false</code></pre>
+<div class="block block-olmaz">
+  <span class="block-title">OLMASA NƏ OLAR — hash-ləri müqayisə etmək</span>
+  <p>Sadəlövh yanaşma:</p>
+</div>
+<pre data-lang="typescript"><code>// SEHV!
+if (await bcrypt.hash(gelenParol, 10) === bazadakiHash) { ... }</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — niyə bu işləmir?</span>
+  <p>bcrypt hər dəfə <strong>yeni təsadüfi duz</strong> yaradır. Eyni şifrə üçün hər dəfə fərqli hash alınır:</p>
+</div>
+<pre data-lang="bash"><code>node -e "
+const b = require('bcryptjs');
+console.log(b.hashSync('123456', 10));
+console.log(b.hashSync('123456', 10));
+console.log(b.hashSync('123456', 10));
+"</code></pre>
+<pre data-lang="çıxış"><code>$2b$10$oIesQsaJ4ahBc0vjhaRpN.x7k8YqZ...
+$2b$10$Xk2pLmN9vRtYuIoP3aSdF.e5wQ1zX...
+$2b$10$Zq7wErT5yUiOpAsD2fGhJ.k9lMnBv...
+                   ^^^ HAMISI FERQLIDIR</code></pre>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ BCRYPT ASİNXRONDUR</span>
+  <p><code>bcrypt.hash()</code> və <code>compare()</code> <strong>Promise</strong> qaytarır. <code>await</code> unudulsa, dəyər əvəzinə Promise alınır:</p>
+</div>
+<pre data-lang="typescript"><code>// SEHV — await yoxdur
+const hash = bcrypt.hash('123456', 10);
+// Promise { &lt;pending&gt; }  →  bazaya "Promise" yazilar!
+
+// DOĞRU
+const hash = await bcrypt.hash('123456', 10);</code></pre>
+<h3><span class="step-num">3</span> Cost faktorunu seçmək</h3>
+<table>
+  <tr><th>Cost</th><th>Raund</th><th>Vaxt</th><th>Nə vaxt</th></tr>
+  <tr><td>8</td><td>256</td><td>~10 ms</td><td>Testlər</td></tr>
+  <tr><td><strong>10</strong></td><td>1024</td><td>~50 ms</td><td><strong>Standart — bizim seçim</strong></td></tr>
+  <tr><td>12</td><td>4096</td><td>~200 ms</td><td>Yüksək təhlükəsizlik</td></tr>
+  <tr><td>14</td><td>16384</td><td>~800 ms</td><td>Çox yavaş — istifadəçi gözləyir</td></tr>
+</table>
+<div class="block block-ipucu">
+  <span class="block-title">💡 COST-U NECƏ SEÇMƏK?</span>
+  <p>Qayda: <strong>login 200-500 ms çəkməlidir</strong>. Cost-u hər il bir addım artırmaq tövsiyə olunur (kompüterlər sürətlənir).</p><p><code>10</code> bu gün balanslı seçimdir: hücumçu üçün yavaş, istifadəçi üçün hiss olunmaz.</p>
+</div>
+<h2 id="b7">7. LoginDto və QeydiyyatDto</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>İki DTO yaradacağıq: giriş və qeydiyyat üçün.</p>
+</div>
+<h3><span class="step-num">1</span> LoginDto</h3>
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/auth/dto
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/auth/dto/login.dto.ts &lt;&lt;'EOF'
+import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail, IsString, MaxLength, MinLength } from 'class-validator';
+
+/** Login ucun gelen melumat */
+export class LoginDto {
+  @ApiProperty({ example: 'admin@arti.edu.az' })
+  @IsEmail({}, { message: 'E-poçt ünvanı yanlışdır' })
+  @MaxLength(120)
+  email!: string;
+
+  @ApiProperty({ example: '123456', minLength: 6 })
+  @IsString()
+  @MinLength(6, { message: 'Şifrə ən azı 6 simvol olmalıdır' })
+  @MaxLength(100)
+  parol!: string;
+}
+EOF</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — login DTO-nun qaydaları</span>
+  <table><tr><th>Sahə</th><th>Qayda</th><th>Nə üçün</th></tr><tr><td><code>email</code></td><td><code>@IsEmail()</code></td><td>Yanlış formatla bazaya sorğu göndərməyək</td></tr><tr><td><code>parol</code></td><td><code>@MinLength(6)</code></td><td>Çox qısa şifrə bazada ola bilməz</td></tr></table>
+</div>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ LOGIN-DƏ MÜRƏKKƏB QAYDA YAZMAYIN</span>
+  <p>Login DTO-da <code>@Matches</code> kimi sərt qaydalar <strong>olmamalıdır</strong>:</p><ul><li>Əgər qayda dəyişsə, köhnə şifrəli istifadəçilər giriş edə bilməz;</li><li>'Şifrə böyük hərf tələb edir' mesajı hücumçuya şifrə <strong>qaydasını</strong> deyir;</li><li>Login sadəcə <em>müqayisədir</em> — qayda qeydiyyatda yoxlanılır.</li></ul><p><strong>Qayda:</strong> login yumşaq, qeydiyyat sərt olmalıdır.</p>
+</div>
+<h3><span class="step-num">2</span> QeydiyyatDto</h3>
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/auth/dto
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/auth/dto/qeydiyyat.dto.ts &lt;&lt;'EOF'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsEmail, IsIn, IsInt, IsOptional, IsString,
+  MaxLength, MinLength,
+} from 'class-validator';
+
+/** ROL — sistemde movcud olan 4 rol */
+export const ROLLAR = ['admin', 'muhendis', 'maliyyeci', 'baxici'] as const;
+export type Rol = (typeof ROLLAR)[number];
+
+/** Yeni istifadeci yaratmaq ucun */
+export class QeydiyyatDto {
+  @ApiProperty({ example: 'yeni@arti.edu.az' })
+  @IsEmail({}, { message: 'E-poçt ünvanı yanlışdır' })
+  @MaxLength(120)
+  email!: string;
+
+  @ApiProperty({ example: 'guclu-sifre-2026', minLength: 8 })
+  @IsString()
+  @MinLength(8, { message: 'Şifrə ən azı 8 simvol olmalıdır' })
+  @MaxLength(100)
+  parol!: string;
+
+  @ApiProperty({ example: 'Əliyev Kamran' })
+  @IsString()
+  @MinLength(3, { message: 'Ad-soyad ən azı 3 simvol olmalıdır' })
+  @MaxLength(150)
+  ad_soyad!: string;
+
+  @ApiPropertyOptional({ enum: ROLLAR, default: 'baxici' })
+  @IsOptional()
+  @IsIn(ROLLAR as unknown as string[], {
+    message: 'rol yalnız: admin, muhendis, maliyyeci, baxici',
+  })
+  rol?: Rol;
+
+  @ApiPropertyOptional({ description: 'Bagli emekdas id (varsa)' })
+  @IsOptional()
+  @IsInt()
+  emekdas_id?: number;
+}
+EOF</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — ROLLAR sabiti</span>
+  <p><code>ROLLAR</code> massivi həm validasiyada, həm tip kimi işlədilir:</p>
+</div>
+<pre data-lang="typescript"><code>export const ROLLAR = ['admin', 'muhendis', 'maliyyeci', 'baxici'] as const;
+export type Rol = (typeof ROLLAR)[number];
+
+// Rol = 'admin' | 'muhendis' | 'maliyyeci' | 'baxici'</code></pre>
+<div class="block block-ipucu">
+  <span class="block-title">💡 «as const» NƏ EDİR?</span>
+  <p><code>as const</code> olmasa, TypeScript <code>string[]</code> kimi görür və <code>Rol</code> tipi sadəcə <code>string</code> olar — yəni <strong>yazı səhvini tutmur</strong>:</p><table><tr><th></th><th>Tip</th><th>Yazı səhvi tutulur?</th></tr><tr><td><code>as const</code> olmadan</td><td><code>string</code></td><td>❌ <code>'admn'</code> keçir</td></tr><tr><td><code>as const</code> ilə</td><td><code>'admin' | ...</code></td><td>✅ Kompilyasiya xətası</td></tr></table>
+</div>
+<h2 id="b8">8. Rollar (RBAC) — dörd rol matrisi</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Dörd rolu və hər birinin nə edə biləcəyini müəyyənləşdirəcəyik.</p>
+</div>
+<table>
+  <tr><th>Rol</th><th>Nə edir</th><th>Oxu</th><th>Yarat/Yenilə</th><th>Sil</th><th>İstifadəçi idarəsi</th></tr>
+  <tr><td><code>admin</code></td><td>Sistem administratoru</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+  <tr><td><code>muhendis</code></td><td>Mühəndis / metodist</td><td>✅</td><td>✅</td><td>❌</td><td>❌</td></tr>
+  <tr><td><code>maliyyeci</code></td><td>Maliyyə işçisi</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td></tr>
+  <tr><td><code>baxici</code></td><td>Yalnız oxuma</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td></tr>
+</table>
+<div class="block block-izah">
+  <span class="block-title">İZAH — «admin» super-roldur</span>
+  <p><code>RolesGuard</code>-da xüsusi qayda var:</p>
+</div>
+<pre data-lang="typescript"><code>// admin HER SEYE icazelidir — super-rol
+if (istifadeci.rol === 'admin') return true;</code></pre>
+<div class="block block-niye">
+  <span class="block-title">NİYƏ BELƏ?</span>
+  <p>Əks halda hər yeni endpoint-də <code>@Roles('admin', ...)</code> yazmaq lazım gələrdi və biri mütləq unudulardı. Super-rol bu riski aradan qaldırır.</p><p><strong>Alternativ:</strong> super-rolu tam çıxarıb hər yerdə açıq yazmaq — daha sərt, lakin daha çox yazı tələb edir.</p>
+</div>
+<div class="block block-evez">
+  <span class="block-title">ƏVƏZİNDƏ — icazə (permission) modeli</span>
+  <table><tr><th>Model</th><th>Nümunə</th><th>Çeviklik</th></tr><tr><td><strong>RBAC</strong> (bizim)</td><td>Rol → icazələr</td><td>Orta</td></tr><tr><td>ABAC</td><td>Atribut əsaslı (<code>şöbə = öz şöbəsi</code>)</td><td>Yüksək</td></tr><tr><td>ACL</td><td>Hər obyektə ayrıca icazə</td><td>Çox yüksək, idarəsi çətin</td></tr></table><p>4 rollu dövlət qurumu üçün RBAC tamamilə kifayətdir.</p>
+</div>
+<h2 id="b9">9. Dekoratorlar — @Roles, @Public, @CurrentUser</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Üç dekorator yaradacağıq — guard-lar və controller-lər onları oxuyacaq.</p>
+</div>
+<h3><span class="step-num">1</span> @Roles — icazəli rollar</h3>
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/auth/decorators
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/auth/decorators/roles.decorator.ts &lt;&lt;'EOF'
+import { SetMetadata } from '@nestjs/common';
+import { Rol } from '../dto/qeydiyyat.dto.js';
+
+export const ROLLAR_ACARI = 'rollar';
+
+/**
+ * Endpoint-e hansi rollarin gire bileceyini teyin edir.
+ *
+ *   @Roles('admin', 'maliyyeci')
+ *   @Get('hesabat')
+ */
+export const Roles = (...rollar: Rol[]) =&gt; SetMetadata(ROLLAR_ACARI, rollar);
+EOF</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — SetMetadata nə edir?</span>
+  <p><code>SetMetadata(acar, deyer)</code> metadatanı funksiyaya <strong>yapışdırır</strong>. Guard isə <code>Reflector</code> vasitəsilə onu oxuyur:</p><pre data-lang="sxem"><code>@Roles('admin','muhendis')   -->   metadata: { rollar: ['admin','muhendis'] }
+                                              |
+              RolesGuard &lt;-- Reflector.getAllAndOverride()</code></pre>
+</div>
+<h3><span class="step-num">2</span> @Public — autentifikasiyadan azad</h3>
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/auth/decorators
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/auth/decorators/public.decorator.ts &lt;&lt;'EOF'
+import { SetMetadata } from '@nestjs/common';
+
+export const PUBLIC_ACARI = 'publicdir';
+
+/**
+ * Endpoint-i autentifikasiyadan AZAD edir.
+ *
+ * Qlobal JwtAuthGuard butun endpoint-leri qoruyur.
+ * Login ve saglamliq kimi endpoint-ler ucun bu lazimdir.
+ *
+ *   @Public()
+ *   @Post('login')
+ */
+export const Public = () =&gt; SetMetadata(PUBLIC_ACARI, true);
+EOF</code></pre>
+<div class="block block-niye">
+  <span class="block-title">NİYƏ @Public LAZIMDIR?</span>
+  <p>Qlobal guard <strong>hər şeyi</strong> qoruyur. Lakin bəzi endpoint-lər tokensiz işləməlidir:</p><table><tr><th>Endpoint</th><th>Nə üçün açıq</th></tr><tr><td><code>POST /auth/login</code></td><td>Token almaq üçün — paradoks</td></tr><tr><td><code>GET /saglamliq</code></td><td>Monitorinq sistemi token bilmir</td></tr><tr><td><code>GET /</code></td><td>API məlumatı</td></tr></table>
+</div>
+<h3><span class="step-num">3</span> @CurrentUser — istifadəçini controller-ə ötür</h3>
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/auth/decorators
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/auth/decorators/current-user.decorator.ts &lt;&lt;'EOF'
+import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+
+/** JWT-dən cixarilan istifadeci melumati */
+export interface CariIstifadeci {
+  id: number;
+  email: string;
+  ad_soyad: string;
+  rol: string;
+}
+
+/**
+ * Cari istifadecini controller metoduna oturur.
+ *
+ *   @Get('profil')
+ *   profil(@CurrentUser() istifadeci: CariIstifadeci) { ... }
+ */
+export const CurrentUser = createParamDecorator(
+  (sahe: keyof CariIstifadeci | undefined, ctx: ExecutionContext) =&gt; {
+    const sorqu = ctx.switchToHttp().getRequest();
+    const istifadeci = sorqu.user as CariIstifadeci | undefined;
+    if (!istifadeci) return undefined;
+    return sahe ? istifadeci[sahe] : istifadeci;
+  },
+);
+EOF</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — bu dekorator nə qənaət edir?</span>
+  <p>Olmadan hər controller-də belə yazmalı olardıq:</p>
+</div>
+<pre data-lang="typescript"><code>@Get('profil')
+profil(@Req() sorqu: Request) {
+  const istifadeci = sorqu.user as CariIstifadeci;
+  return istifadeci;
+}</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — @CurrentUser ilə</span>
+  <p>İndi isə birbaşa:</p>
+</div>
+<pre data-lang="typescript"><code>@Get('profil')
+profil(@CurrentUser() istifadeci: CariIstifadeci) {
+  return istifadeci;
+}
+
+// Ve ya yalniz bir sahe:
+@Get('profil')
+email(@CurrentUser('email') email: string) {
+  return { email };
+}</code></pre>
+<div class="block block-ipucu">
+  <span class="block-title">💡 `createParamDecorator` NƏ EDİR?</span>
+  <p>NestJS-in xüsusi parametr dekoratoru yaratmağa imkan verir. <code>ctx.switchToHttp().getRequest()</code> ilə sorğuya çatırıq — orada <code>user</code> sahəsini <strong>JwtStrategy.validate()</strong> qoyub.</p>
+</div>
+<h2 id="b10">10. JWT strategiyası</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Tokeni oxuyub istifadəçini tapan strategiyanı yazacağıq.</p>
+</div>
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/auth/strategies
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/auth/strategies/jwt.strategy.ts &lt;&lt;'EOF'
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { PassportStrategy } from '@nestjs/passport';
+import { ExtractJwt, Strategy } from 'passport-jwt';
+import { ConfigService } from '@nestjs/config';
+import { PrismaService } from '../../prisma/prisma.service.js';
+import type { CariIstifadeci } from '../decorators/current-user.decorator.js';
+
+/** JWT tokenin ichindeki melumat */
+export interface JwtPayload {
+  sub: number;      // istifadeci id
+  email: string;
+  rol: string;
+}
+
+/** Bazadan oxunan istifadeci setri */
+interface IstifadeciSetri {
+  id: number;
+  email: string;
+  ad_soyad: string;
+  rol: string;
+  aktiv: boolean;
+}
+
+@Injectable()
+export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
+  constructor(
+    private readonly prisma: PrismaService,
+    config: ConfigService,
+  ) {
+    super({
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ignoreExpiration: false,
+      // EYNI menbe — JwtModule ile: ConfigService
+      secretOrKey: config.get&lt;string&gt;('JWT_SECRET')!,
+    });
+  }
+
+  /**
+   * Token DUZGUNDURSE bu metod cagirilir.
+   * Burada istifadecinin HELE DE movcud ve aktiv oldugunu yoxlayiriq —
+   * eks halda silinmis istifadecinin tokeni 8 saat isleyerdi.
+   */
+  async validate(payload: JwtPayload): Promise&lt;CariIstifadeci&gt; {
+    const setirler = await this.prisma.$queryRaw&lt;IstifadeciSetri[]&gt;`
+      SELECT id, email, ad_soyad, rol, aktiv
+        FROM kadrlar.istifadeciler
+       WHERE id = ${payload.sub}`;
+
+    const istifadeci = setirler[0];
+
+    if (!istifadeci) {
+      throw new UnauthorizedException('İstifadəçi tapılmadı');
+    }
+    if (!istifadeci.aktiv) {
+      throw new UnauthorizedException('İstifadəçi deaktiv edilib');
+    }
+
+    return {
+      id: istifadeci.id,
+      email: istifadeci.email,
+      ad_soyad: istifadeci.ad_soyad,
+      rol: istifadeci.rol,
+    };
+  }
+}
+EOF</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — üç addım</span>
+  <table><tr><th>Addım</th><th>Kod</th><th>Nə edir</th></tr><tr><td>1. Tokeni götür</td><td><code>ExtractJwt.fromAuthHeaderAsBearerToken()</code></td><td><code>Authorization: Bearer xxx</code> header-indən oxuyur</td></tr><tr><td>2. İmzanı yoxla</td><td><code>secretOrKey</code></td><td>Token dəyişdirilibsə rədd edir</td></tr><tr><td>3. İstifadəçini tap</td><td><code>validate(payload)</code></td><td>Bazadan oxuyur, <code>request.user</code>-ə yazır</td></tr></table>
+</div>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ validate() İÇİNDƏ BAZAYA BAXMAQ VACİBDİR</span>
+  <p>Token 8 saat qüvvədədir. Bu müddətdə istifadəçi:</p><ul><li>Silinə bilər;</li><li>Deaktiv edilə bilər;</li><li>Rolu dəyişdirilə bilər.</li></ul><p>Yalnız token payload-ına güvənsək, silinmiş istifadəçi 8 saat işləməyə davam edər. Ona görə <code>validate()</code>-də bazadan <strong>təzə məlumat</strong> oxuyuruq.</p>
+</div>
+<div class="block block-olmaz">
+  <span class="block-title">OLMASA NƏ OLAR — bazaya baxmasaq</span>
+  <table><tr><th>Hadisə</th><th>Bazaya baxmadan</th><th>Bazaya baxaraq</th></tr><tr><td>İstifadəçi silindi</td><td>Token 8 saat işləyir ⚠️</td><td>Dərhal 401 ✅</td></tr><tr><td>Deaktiv edildi</td><td>İşləyir ⚠️</td><td>Dərhal 401 ✅</td></tr><tr><td>Rol dəyişdi</td><td>Köhnə rol qüvvədə ⚠️</td><td>Yeni rol dərhal qüvvədə ✅</td></tr></table><p><strong>Qiymət:</strong> hər sorğuda bir SQL. Lakin bu, <code>id</code> üzrə indeksli sadə sorğudur — mikrosaniyələr.</p>
+</div>
+<div class="block block-evez">
+  <span class="block-title">ƏVƏZİNDƏ — keşləmə</span>
+  <p>Performans üçün istifadəçini Redis-də 60 saniyə keşləmək olar. Lakin 14 istifadəçi üçün bu lazımsızdır — <strong>vaxtından əvvəl optimallaşdırma</strong> etməyin.</p>
+</div>
+<h2 id="b11">11. JwtAuthGuard — qlobal «təhlükəsiz susmaya görə»</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Qlobal guard yaradacağıq: hər şey qorunur, <code>@Public()</code> istisnadır.</p>
+</div>
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/auth/guards
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/auth/guards/jwt-auth.guard.ts &lt;&lt;'EOF'
+import { ExecutionContext, Injectable } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+import { AuthGuard } from '@nestjs/passport';
+import { PUBLIC_ACARI } from '../decorators/public.decorator.js';
+
+/**
+ * QLOBAL autentifikasiya guard-i.
+ *
+ * Butun endpoint-ler qorunur. @Public() ile isarelenmisler istisnadir.
+ * Bu, "guvenli susmaya gore" prinsipidir: yeni endpoint elave edende
+ * onu qorumaq UCUN heç nə etmek lazim deyil — susmaya gore qorunur.
+ */
+@Injectable()
+export class JwtAuthGuard extends AuthGuard('jwt') {
+  constructor(private readonly reflector: Reflector) {
+    super();
+  }
+
+  canActivate(context: ExecutionContext) {
+    const publicdir = this.reflector.getAllAndOverride&lt;boolean&gt;(PUBLIC_ACARI, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+
+    if (publicdir) return true;      // @Public() — burax
+    return super.canActivate(context);
+  }
+}
+EOF</code></pre>
+<div class="block block-niye">
+  <span class="block-title">NİYƏ QLOBAL? — İKİ YANAŞMA</span>
+  <table><tr><th></th><th>Endpoint-ə görə</th><th>Qlobal (bizim)</th></tr><tr><td>Necə işləyir</td><td>Hər controller-də <code>@UseGuards()</code></td><td>Bir dəfə <code>APP_GUARD</code></td></tr><tr><td>Yeni endpoint</td><td><strong>Susmaya görə AÇIQ</strong> ⚠️</td><td><strong>Susmaya görə QORUNUR</strong> ✅</td></tr><tr><td>Unutma riski</td><td>Yüksək</td><td>Yoxdur</td></tr><tr><td>Açıq endpoint</td><td>Heç nə yazmaq lazım deyil</td><td><code>@Public()</code></td></tr></table>
+</div>
+<div class="block block-olmaz">
+  <span class="block-title">OLMASA NƏ OLAR — «susmaya görə açıq» faciəsi</span>
+  <p>Endpoint-ə görə yanaşmada tipik hadisə:</p><ol><li>Developer <code>GET /kadrlar/emekdaslar</code> yaradır;</li><li><code>@UseGuards(JwtAuthGuard)</code> yazmağı <strong>unudur</strong>;</li><li>Testlər keçir (testdə token göndərilir, lakin guard yoxdur — fərq görünmür);</li><li>İstehsalata çıxır → <strong>bütün maaşlar açıq</strong>.</li></ol><p>Qlobal guard bu ssenarini <strong>mümkünsüz</strong> edir.</p>
+</div>
+<div class="block block-izah">
+  <span class="block-title">İZAH — getAllAndOverride nə edir?</span>
+  <p>Metadatanı iki yerdə axtarır: <strong>metodda</strong> və <strong>sinifdə</strong>:</p>
+</div>
+<pre data-lang="typescript"><code>const publicdir = this.reflector.getAllAndOverride&lt;boolean&gt;(PUBLIC_ACARI, [
+  context.getHandler(),     // metod:  @Get('login')
+  context.getClass(),       // sinif:  @Controller('auth')
+]);</code></pre>
+<div class="block block-ipucu">
+  <span class="block-title">💡 BÜTÜN CONTROLLER-İ AÇMAQ</span>
+  <p><code>@Public()</code>-i sinifə qoysaq, controller-in bütün endpoint-ləri açıq olar:</p>
+</div>
+<pre data-lang="typescript"><code>@Public()                    // butun controller PUBLIC
+@Controller('ictimai')
+export class IctimaiController { ... }</code></pre>
+<h2 id="b12">12. RolesGuard — RBAC yoxlaması</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>İkinci qlobal guard — rol yoxlaması.</p>
+</div>
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/auth/guards
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/auth/guards/roles.guard.ts &lt;&lt;'EOF'
+import {
+  CanActivate, ExecutionContext, ForbiddenException, Injectable,
+} from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+import { ROLLAR_ACARI } from '../decorators/roles.decorator.js';
+import { Rol } from '../dto/qeydiyyat.dto.js';
+
+/**
+ * RBAC — Role-Based Access Control.
+ * @Roles(...) ile isarelenmis endpoint-e yalniz hemin rollar gire biler.
+ */
+@Injectable()
+export class RolesGuard implements CanActivate {
+  constructor(private readonly reflector: Reflector) {}
+
+  canActivate(context: ExecutionContext): boolean {
+    const teleb = this.reflector.getAllAndOverride&lt;Rol[]&gt;(ROLLAR_ACARI, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+
+    // @Roles yoxdursa — her bir autentifikasiya olunmus istifadeci gire biler
+    if (!teleb || teleb.length === 0) return true;
+
+    const sorqu = context.switchToHttp().getRequest();
+    const istifadeci = sorqu.user as { rol?: string } | undefined;
+
+    if (!istifadeci?.rol) {
+      throw new ForbiddenException('İstifadəçi rolu müəyyən deyil');
+    }
+
+    // 'admin' HER SEYE icazelidir — super-rol
+    if (istifadeci.rol === 'admin') return true;
+
+    if (!teleb.includes(istifadeci.rol as Rol)) {
+      throw new ForbiddenException(
+        `Bu əməliyyat üçün icazəniz yoxdur. ` +
+        `Tələb olunan rol: ${teleb.join(' və ya ')}. Sizin rol: ${istifadeci.rol}`,
+      );
+    }
+
+    return true;
+  }
+}
+EOF</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — məntiq axını</span>
+  <pre data-lang="sxem"><code>Sorqu gəlir
+   |
+   +-- JwtAuthGuard -----> token varmi?  --X--> 401
+   |                      duzdurmu?      --X--> 401
+   |                      user = {...}
+   v
+   +-- RolesGuard -------> @Roles var?   --X--> BURAX (her kes)
+   |                      rol = admin?   --B--> BURAX (super-rol)
+   |                      rolu uygundur? --X--> 403
+   v
+Controller metodu</code></pre>
+</div>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ GUARD-LARIN SIRASI VACİBDİR</span>
+  <p><code>RolesGuard</code> <code>JwtAuthGuard</code>-dan <strong>SONRA</strong> işləməlidir — çünki <code>request.user</code>-i o yaradır.</p><p>Sıra <code>app.module.ts</code>-dəki <code>providers</code> massivinin sırası ilə müəyyən olunur:</p>
+</div>
+<pre data-lang="typescript"><code>providers: [
+  { provide: APP_GUARD, useClass: JwtAuthGuard },   // 1-ci
+  { provide: APP_GUARD, useClass: RolesGuard },     // 2-ci
+]</code></pre>
+<div class="block block-olmaz">
+  <span class="block-title">OLMASA NƏ OLAR — sıra tərs olsa</span>
+  <p><code>RolesGuard</code> birinci işləsə, <code>request.user</code> hələ <code>undefined</code> olar:</p><pre><code>403 Forbidden: İstifadəçi rolu müəyyən deyil</code></pre><p>Hətta <strong>düzgün token</strong> göndərsəniz belə.</p>
+</div>
+<div class="block block-ipucu">
+  <span class="block-title">💡 `includes` vs `some`</span>
+  <p>Rollar massivini yoxlayarkən:</p><table><tr><th>Kod</th><th>Nəticə</th></tr><tr><td><code>teleb.includes(rol)</code></td><td>✅ Düzgün — massivdə axtarır</td></tr><tr><td><code>rol in teleb</code></td><td>❌ Səhv — indeksləri yoxlayır</td></tr><tr><td><code>teleb.indexOf(rol) &gt;= 0</code></td><td>✅ Düzgün, lakin uzun</td></tr></table>
+</div>
+<h2 id="b13">13. ⚠️ REAL XƏTA: .env və modul yüklənmə sırası</h2>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ BU XƏTA BU DƏRSDƏ REAL OLARAQ BAŞ VERDİ</span>
+  <p>İlk buraxılışda <code>JwtModule.register()</code> yazdım. Nəticə: <strong>login işləyirdi, amma heç bir token qəbul olunmurdu</strong> — hər sorğu 401.</p>
+</div>
+<pre data-lang="çıxış"><code>$ curl -X POST .../auth/login -d '{"email":"admin@arti.edu.az","parol":"123456"}'
+{"token":"eyJhbGciOiJIUzI1NiIs...","istifadeci":{...}}      &lt;-- TOKEN GELIR
+
+$ curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIs..." .../struktur/merkezler
+{"ugur":false,"xeta":{"kod":"AUTENTIFIKASIYA_LAZIM",...}}  &lt;-- AMMA 401!</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — səbəb: İKİ FƏRQLİ AÇAR</span>
+  <p>İki yerdə <code>process.env.JWT_SECRET</code> oxunurdu, lakin <strong>fərqli vaxtlarda</strong>:</p><table><tr><th>Harada</th><th>Nə vaxt işləyir</th><th>Oxunan açar</th></tr><tr><td><code>JwtModule.register({...})</code></td><td>Modul <strong>yüklənəndə</strong> (import zamanı)</td><td>❌ <code>undefined</code> → fallback</td></tr><tr><td><code>JwtStrategy</code> konstruktoru</td><td>DI <strong>yaradılanda</strong> (ConfigModule hazır)</td><td>✅ real açar</td></tr></table><p>Nəticə: token <strong>bir açarla imzalanır</strong>, <strong>başqa açarla yoxlanılır</strong> → 401.</p>
+</div>
+<div class="block block-yox">
+  <span class="block-title">SÜBUT — diaqnostika</span>
+  <pre><code>$ node -e "
+console.log('.env yuklenmeden:', process.env.JWT_SECRET ?? '(yoxdur)');
+require('dotenv').config({ path: '.env' });
+console.log('.env yuklendikden sonra:', process.env.JWT_SECRET);
+"
+
+.env yuklenmeden: (yoxdur)
+.env yuklendikden sonra: deepseek-arti-gizli-acar-2026</code></pre>
+</div>
+<div class="block block-olmaz">
+  <span class="block-title">HƏLL — üç variant</span>
+  <table><tr><th>#</th><th>Həll</th><th>Qiymətləndirmə</th></tr><tr><td>1</td><td><code>main.ts</code>-ə <code>import 'dotenv/config'</code></td><td>İşləyir, lakin kövrəkdir</td></tr><tr><td>2</td><td><code>JwtModule.registerAsync()</code> + <code>ConfigService</code></td><td>✅ <strong>Düzgün yol</strong> — NestJS standartı</td></tr><tr><td>3</td><td>Açarı kodda sabit yazmaq</td><td>❌ <strong>QADAĞAN</strong> — açar repoya düşər</td></tr></table>
+</div>
+<h3><span class="step-num">1</span> Düzgün həll</h3>
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/auth
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/auth/auth.module.ts &lt;&lt;'EOF'
+import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+import { AuthService } from './auth.service.js';
+import { AuthController } from './auth.controller.js';
+import { JwtStrategy } from './strategies/jwt.strategy.js';
+import type { SignOptions } from 'jsonwebtoken';
+
+@Module({
+  imports: [
+    PassportModule,
+    /*
+     * registerAsync MÜTLƏQDİR — register() YOX.
+     *
+     * Sebeb: JwtModule.register({...}) modul YUKLENENDE icra olunur,
+     * yeni .env hele oxunmamis olur. Netice: acar "undefined" olur ve
+     * fallback deyer istifade olunur.
+     *
+     * registerAsync ise ConfigModule hazir olandan SONRA isleyir.
+     */
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) =&gt; ({
+        secret: config.get&lt;string&gt;('JWT_SECRET'),
+        signOptions: {
+          expiresIn: (config.get&lt;string&gt;('JWT_MUDDET') ?? '8h') as SignOptions['expiresIn'],
+        },
+      }),
+    }),
+  ],
+  controllers: [AuthController],
+  providers: [AuthService, JwtStrategy],
+})
+export class AuthModule {}
+EOF</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — register vs registerAsync</span>
+  <table><tr><th></th><th><code>register()</code></th><th><code>registerAsync()</code></th></tr><tr><td>Nə vaxt işləyir</td><td>Dərhal, import zamanı</td><td>Modul hazır olanda</td></tr><tr><td><code>.env</code> yüklənib?</td><td>❌ Yox</td><td>✅ Bəli</td></tr><tr><td><code>ConfigService</code></td><td>Yoxdur</td><td>✅ Var</td></tr><tr><td>Tövsiyə</td><td>Sabit dəyərlər üçün</td><td>✅ <strong>Mühit dəyişənləri üçün</strong></td></tr></table>
+</div>
+<div class="block block-ipucu">
+  <span class="block-title">💡 ÜMUMİ QAYDA</span>
+  <p><strong>Mühit dəyişəni oxuyursunuzsa — <code>registerAsync</code> işlədin.</strong></p><p>Eyni qayda <code>TypeOrmModule</code>, <code>CacheModule</code>, <code>MailerModule</code> və digər <code>register()</code> API-li modullara da aiddir.</p>
+</div>
+<div class="block block-yox">
+  <span class="block-title">YOXLAMA 13 — Açarlar uyğundur?</span>
+  <pre><code># Login
+curl -s -X POST .../auth/login -d '{...}' | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])"
+
+# Hemin token ile sorqu
+curl -s -H "Authorization: Bearer &lt;TOKEN&gt;" .../struktur/merkezler | head -c 80
+
+# Gozlenilen: melumat gelir (401 YOX)</code></pre>
+</div>
+<h2 id="b14">14. Auth servisi — login və timing attack qoruması</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Biznes məntiqini yazacağıq: login, qeydiyyat, şifrə dəyişmə.</p>
+</div>
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/auth
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/auth/auth.service.ts &lt;&lt;'EOF'
+import {
+  ConflictException, Injectable, Logger, UnauthorizedException,
+} from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcryptjs';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { LoginDto } from './dto/login.dto.js';
+import { QeydiyyatDto } from './dto/qeydiyyat.dto.js';
+import type { JwtPayload } from './strategies/jwt.strategy.js';
+
+/** Bazadan oxunan istifadeci setri (parol_hash DAXIL) */
+interface IstifadeciSetri {
+  id: number;
+  email: string;
+  parol_hash: string;
+  ad_soyad: string;
+  rol: string;
+  emekdas_id: number | null;
+  aktiv: boolean;
+}
+
+/** Xarice qaytarilan istifadeci melumati (parol YOX) */
+export interface IstifadeciCavabi {
+  id: number;
+  email: string;
+  ad_soyad: string;
+  rol: string;
+  emekdas_id: number | null;
+}
+
+export interface LoginCavabi {
+  token: string;
+  istifadeci: IstifadeciCavabi;
+  bitme: string;
+}
+
+/** bcrypt "cost" — ne qeder boyukdurse, o qeder yavas ve guvenli */
+const BCRYPT_RAUND = 10;
+
+@Injectable()
+export class AuthService {
+  private readonly log = new Logger('AUTH');
+
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly jwt: JwtService,
+  ) {}
+
+  /** E-poçt + şifrə ile giriş */
+  async login(dto: LoginDto): Promise&lt;LoginCavabi&gt; {
+    const setirler = await this.prisma.$queryRaw&lt;IstifadeciSetri[]&gt;`
+      SELECT id, email, parol_hash, ad_soyad, rol, emekdas_id, aktiv
+        FROM kadrlar.istifadeciler
+       WHERE lower(email) = lower(${dto.email})`;
+
+    const istifadeci = setirler[0];
+
+    /*
+     * TEHLUKESIZLIK: e-poct tapilmasa da, sifre yoxlamasi APARILIR.
+     * Sebeb: cavab vaxtina gore "bu email movcuddurmu?" oyrenile biler
+     * (timing attack). Ona gore saxta hash ile muqayise edirik.
+     */
+    const hash = istifadeci?.parol_hash ?? SAXTA_HASH;
+    const duzdur = await bcrypt.compare(dto.parol, hash);
+
+    if (!istifadeci || !duzdur) {
+      this.log.warn(`Ugursuz giris cehdi: ${dto.email}`);
+      /*
+       * EYNI mesaj — hem "email yoxdur", hem "sifre sehvdir" ucun.
+       * Eks halda istifadeci siyahisi oyrenile biler (user enumeration).
+       */
+      throw new UnauthorizedException('E-poçt və ya şifrə yanlışdır');
+    }
+
+    if (!istifadeci.aktiv) {
+      throw new UnauthorizedException('İstifadəçi deaktiv edilib');
+    }
+
+    const payload: JwtPayload = {
+      sub: istifadeci.id,
+      email: istifadeci.email,
+      rol: istifadeci.rol,
+    };
+
+    const token = await this.jwt.signAsync(payload);
+    const muddet = process.env.JWT_MUDDET ?? '8h';
+
+    this.log.log(`Giris ugurlu: ${istifadeci.email} (${istifadeci.rol})`);
+
+    return {
+      token,
+      istifadeci: this.temizle(istifadeci),
+      bitme: muddet,
+    };
+  }
+
+  /** Yeni istifadeci yarat */
+  async qeydiyyat(dto: QeydiyyatDto): Promise&lt;IstifadeciCavabi&gt; {
+    const movcud = await this.prisma.$queryRaw&lt;{ id: number }[]&gt;`
+      SELECT id::int FROM kadrlar.istifadeciler
+       WHERE lower(email) = lower(${dto.email})`;
+
+    if (movcud.length) {
+      throw new ConflictException(`Bu e-poçt artıq qeydiyyatdadır: ${dto.email}`);
+    }
+
+    if (dto.emekdas_id) {
+      const e = await this.prisma.$queryRaw&lt;{ id: number }[]&gt;`
+        SELECT id::int FROM kadrlar.emekdaslar WHERE id = ${dto.emekdas_id}`;
+      if (!e.length) {
+        throw new ConflictException(`Əməkdaş tapılmadı: id=${dto.emekdas_id}`);
+      }
+    }
+
+    const hash = await bcrypt.hash(dto.parol, BCRYPT_RAUND);
+
+    const setirler = await this.prisma.$queryRaw&lt;IstifadeciSetri[]&gt;`
+      INSERT INTO kadrlar.istifadeciler
+        (email, parol_hash, ad_soyad, rol, emekdas_id, aktiv)
+      VALUES
+        (lower(${dto.email}), ${hash}, ${dto.ad_soyad},
+         ${dto.rol ?? 'baxici'}, ${dto.emekdas_id ?? null}, true)
+      RETURNING id, email, parol_hash, ad_soyad, rol, emekdas_id, aktiv`;
+
+    this.log.log(`Yeni istifadeci: ${dto.email} (${dto.rol ?? 'baxici'})`);
+    return this.temizle(setirler[0]);
+  }
+
+  /** Şifrəni dəyiş */
+  async parolDeyis(id: number, kohne: string, yeni: string) {
+    const setirler = await this.prisma.$queryRaw&lt;IstifadeciSetri[]&gt;`
+      SELECT id, email, parol_hash, ad_soyad, rol, emekdas_id, aktiv
+        FROM kadrlar.istifadeciler WHERE id = ${id}`;
+
+    const istifadeci = setirler[0];
+    if (!istifadeci) throw new UnauthorizedException('İstifadəçi tapılmadı');
+
+    const duzdur = await bcrypt.compare(kohne, istifadeci.parol_hash);
+    if (!duzdur) throw new UnauthorizedException('Köhnə şifrə yanlışdır');
+
+    const yeniHash = await bcrypt.hash(yeni, BCRYPT_RAUND);
+    await this.prisma.$executeRaw`
+      UPDATE kadrlar.istifadeciler SET parol_hash = ${yeniHash} WHERE id = ${id}`;
+
+    this.log.log(`Parol deyisdirildi: ${istifadeci.email}`);
+    return { deyisdirildi: true };
+  }
+
+  /** Butun istifadeciler (parolsuz) — yalniz admin ucun */
+  async siyahi(): Promise&lt;IstifadeciCavabi[]&gt; {
+    const setirler = await this.prisma.$queryRaw&lt;IstifadeciSetri[]&gt;`
+      SELECT id, email, parol_hash, ad_soyad, rol, emekdas_id, aktiv
+        FROM kadrlar.istifadeciler ORDER BY id`;
+    return setirler.map((s) =&gt; this.temizle(s));
+  }
+
+  /** Shaheleri temizle — parol_hash heç vaxt xarice cixmasin */
+  private temizle(s: IstifadeciSetri): IstifadeciCavabi {
+    return {
+      id: s.id,
+      email: s.email,
+      ad_soyad: s.ad_soyad,
+      rol: s.rol,
+      emekdas_id: s.emekdas_id,
+    };
+  }
+}
+
+/**
+ * Saxta hash — istifadeci tapilmayanda muqayise ucun.
+ * "123456" sifresinin hash-idir, lakin heç bir hesaba aid deyil.
+ */
+const SAXTA_HASH =
+  '$2b$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy';
+EOF</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — iki təhlükəsizlik qərarı</span>
+  <p><strong>1. Timing attack qoruması:</strong></p>
+</div>
+<pre data-lang="typescript"><code>const hash = istifadeci?.parol_hash ?? SAXTA_HASH;
+const duzdur = await bcrypt.compare(dto.parol, hash);
+
+if (!istifadeci || !duzdur) {
+  throw new UnauthorizedException('E-poçt və ya şifrə yanlışdır');
+}</code></pre>
+<div class="block block-olmaz">
+  <span class="block-title">OLMASA NƏ OLAR — sadəlövh yanaşma</span>
+  <p>Əvvəlcə istifadəçini yoxlasaq:</p>
+</div>
+<pre data-lang="typescript"><code>const istifadeci = await tap(email);
+if (!istifadeci) throw new UnauthorizedException('İstifadəçi tapılmadı');
+
+const duzdur = await bcrypt.compare(parol, istifadeci.parol_hash);
+if (!duzdur) throw new UnauthorizedException('Şifrə yanlışdır');</code></pre>
+<table>
+  <tr><th>Sorğu</th><th>Vaxt</th><th>Hücumçu nə öyrənir</th></tr>
+  <tr><td>Mövcud olmayan e-poçt</td><td>~5 ms</td><td>Bu e-poçt <strong>yoxdur</strong></td></tr>
+  <tr><td>Mövcud e-poçt</td><td>~50 ms</td><td>Bu e-poçt <strong>var</strong> (bcrypt hesablandı)</td></tr>
+</table>
+<div class="block block-izah">
+  <span class="block-title">İZAH — bizim yanaşma</span>
+  <p>İstifadəçi tapılmasa da <strong>saxta hash</strong> ilə bcrypt müqayisəsi aparırıq. Nəticədə hər iki halda vaxt eyni olur (~50 ms) və hücumçu fərqi görmür.</p>
+</div>
+<div class="block block-ipucu">
+  <span class="block-title">💡 İKİNCİ QƏRAR — EYNI XƏTA MESAJI</span>
+  <table><tr><th></th><th>Mesaj</th><th>Nəticə</th></tr><tr><td>❌ Fərqli</td><td>'İstifadəçi tapılmadı' / 'Şifrə yanlışdır'</td><td>E-poçt siyahısı öyrənilir</td></tr><tr><td>✅ Eyni</td><td>'E-poçt və ya şifrə yanlışdır'</td><td>Heç nə öyrənilmir</td></tr></table><p>Bu, <strong>user enumeration</strong> hücumunun qarşısını alır.</p>
+</div>
+<h2 id="b15">15. Auth controller</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Dörd endpoint: login, profil, qeydiyyat, istifadəçi siyahısı.</p>
+</div>
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/auth
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/auth/auth.controller.ts &lt;&lt;'EOF'
+import { Body, Controller, Get, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { AuthService } from './auth.service.js';
+import { LoginDto } from './dto/login.dto.js';
+import { QeydiyyatDto } from './dto/qeydiyyat.dto.js';
+import { Public } from './decorators/public.decorator.js';
+import { Roles } from './decorators/roles.decorator.js';
+import { CurrentUser } from './decorators/current-user.decorator.js';
+import type { CariIstifadeci } from './decorators/current-user.decorator.js';
+
+@ApiTags('auth')
+@Controller('auth')
+export class AuthController {
+  constructor(private readonly auth: AuthService) {}
+
+  @Public()
+  @Post('login')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Giriş — JWT token al' })
+  @ApiResponse({ status: 200, description: 'Token qaytarildi' })
+  @ApiResponse({ status: 401, description: 'E-poçt və ya şifrə yanlışdır' })
+  login(@Body() dto: LoginDto) {
+    return this.auth.login(dto);
+  }
+
+  @Get('profil')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Cari istifadecinin profili' })
+  profil(@CurrentUser() istifadeci: CariIstifadeci) {
+    return istifadeci;
+  }
+
+  @Post('qeydiyyat')
+  @Roles('admin')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Yeni istifadeci yarat (yalniz admin)' })
+  @ApiResponse({ status: 409, description: 'Bu e-poçt artıq var' })
+  qeydiyyat(@Body() dto: QeydiyyatDto) {
+    return this.auth.qeydiyyat(dto);
+  }
+
+  @Get('istifadeciler')
+  @Roles('admin')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Butun istifadeciler (yalniz admin)' })
+  siyahi() {
+    return this.auth.siyahi();
+  }
+}
+EOF</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — endpoint-lər</span>
+  <table><tr><th>Metod</th><th>Yol</th><th>İcazə</th><th>Nə edir</th></tr><tr><td>POST</td><td><code>/auth/login</code></td><td><code>@Public()</code></td><td>Token alır</td></tr><tr><td>GET</td><td><code>/auth/profil</code></td><td>İstənilən token</td><td>Öz profilini göstərir</td></tr><tr><td>POST</td><td><code>/auth/qeydiyyat</code></td><td><code>@Roles('admin')</code></td><td>Yeni istifadəçi yaradır</td></tr><tr><td>GET</td><td><code>/auth/istifadeciler</code></td><td><code>@Roles('admin')</code></td><td>Hamısını siyahılayır</td></tr></table>
+</div>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ LOGIN-DƏ 200, 201 DEYİL</span>
+  <p><code>@Post()</code> susmaya görə <strong>201 Created</strong> qaytarır. Login heç nə <em>yaratmır</em> — ona görə:</p>
+</div>
+<pre data-lang="typescript"><code>@Post('login')
+@HttpCode(HttpStatus.OK)      // 200 — 201 YOX
+login(@Body() dto: LoginDto) { ... }</code></pre>
+<div class="block block-ipucu">
+  <span class="block-title">💡 NİYƏ CAVAB TİPİ AÇIQ YAZILIR?</span>
+  <p><code>login(): Promise&lt;LoginCavabi&gt;</code> — TypeScript tipi sənədləşmə rolunu oynayır. Frontend komandası <code>/docs</code>-da dəqiq cavab strukturunu görür.</p>
+</div>
+<h2 id="b16">16. Auth modulu — registerAsync</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYƏK</span>
+  <p>Modulu yığacağıq. (Fayl artıq §13-də yazıldı.)</p>
+</div>
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/auth
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/auth/auth.module.ts &lt;&lt;'EOF'
+import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+import { AuthService } from './auth.service.js';
+import { AuthController } from './auth.controller.js';
+import { JwtStrategy } from './strategies/jwt.strategy.js';
+import type { SignOptions } from 'jsonwebtoken';
+
+@Module({
+  imports: [
+    PassportModule,
+    /*
+     * registerAsync MÜTLƏQDİR — register() YOX.
+     *
+     * Sebeb: JwtModule.register({...}) modul YUKLENENDE icra olunur,
+     * yeni .env hele oxunmamis olur. Netice: acar "undefined" olur ve
+     * fallback deyer istifade olunur.
+     *
+     * registerAsync ise ConfigModule hazir olandan SONRA isleyir.
+     */
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) =&gt; ({
+        secret: config.get&lt;string&gt;('JWT_SECRET'),
+        signOptions: {
+          expiresIn: (config.get&lt;string&gt;('JWT_MUDDET') ?? '8h') as SignOptions['expiresIn'],
+        },
+      }),
+    }),
+  ],
+  controllers: [AuthController],
+  providers: [AuthService, JwtStrategy],
+})
+export class AuthModule {}
+EOF</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — modulun hissələri</span>
+  <table><tr><th>Hissə</th><th>Nə üçün</th></tr><tr><td><code>PassportModule</code></td><td>Strategiyaları qeydiyyatdan keçirir</td></tr><tr><td><code>JwtModule.registerAsync</code></td><td>Token imzalama və yoxlama</td></tr><tr><td><code>providers: [AuthService, JwtStrategy]</code></td><td>Passport <code>JwtStrategy</code>-ni avtomatik tapır</td></tr></table>
+</div>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ JwtStrategy-Nİ PROVIDERS-A ƏLAVƏ ETMƏK VACİBDİR</span>
+  <p>Əlavə etməsəniz, Passport strategiyanı tanımır:</p><pre><code>Error: Unknown authentication strategy "jwt"</code></pre><p>Bu, ən çaşdırıcı xətalardan biridir — çünki kod düzgün görünür.</p>
+</div>
+<h2 id="b17">17. Audit interceptor</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Hər yazma əməliyyatını <code>audit.audit_log</code> cədvəlinə yazacağıq.</p>
+</div>
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/common/interceptors
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/common/interceptors/audit.interceptor.ts &lt;&lt;'EOF'
+import {
+  CallHandler, ExecutionContext, Injectable, Logger, NestInterceptor,
+} from '@nestjs/common';
+import { Observable, tap } from 'rxjs';
+import { PrismaService } from '../../prisma/prisma.service.js';
+import { CariIstifadeci } from '../../auth/decorators/current-user.decorator.js';
+
+/** Yalniz bu HTTP metodlari jurnala yazilir */
+const IZLENEN_METODLAR = ['POST', 'PATCH', 'PUT', 'DELETE'];
+
+@Injectable()
+export class AuditInterceptor implements NestInterceptor {
+  private readonly log = new Logger('AUDIT');
+
+  constructor(private readonly prisma: PrismaService) {}
+
+  intercept(context: ExecutionContext, novbeti: CallHandler): Observable&lt;unknown&gt; {
+    const sorqu = context.switchToHttp().getRequest();
+    const metod: string = sorqu.method;
+
+    if (!IZLENEN_METODLAR.includes(metod)) {
+      return novbeti.handle();          // oxuma emeliyyatlarini yazmiriq
+    }
+
+    const istifadeci = sorqu.user as CariIstifadeci | undefined;
+    const baslama = Date.now();
+    const cedvel = this.cedvelAdi(sorqu.route?.path ?? sorqu.url);
+
+    return novbeti.handle().pipe(
+      tap({
+        next: () =&gt; this.yaz(cedvel, metod, istifadeci, sorqu, Date.now() - baslama, null),
+        error: (xeta: Error) =&gt;
+          this.yaz(cedvel, metod, istifadeci, sorqu, Date.now() - baslama, xeta.message),
+      }),
+    );
+  }
+
+  /**
+   * URL-den cedvel adini cixarir.
+   * /api/v1/struktur/merkezler/:id  -&gt;  struktur.merkezler
+   */
+  private cedvelAdi(yol: string): string {
+    const temiz = yol
+      .replace(/^\/api\/v\d+\//, '')     // qlobal prefiksi sil
+      .replace(/^\//, '')
+      .replace(/\/:[^/]+.*$/, '')          // :id kimi parametrleri sil
+      .replace(/\/+$/, '')
+      .replace(/\//g, '.');
+    return temiz || 'namelum';
+  }
+
+  private async yaz(
+    cedvel: string,
+    metod: string,
+    istifadeci: CariIstifadeci | undefined,
+    sorqu: { params?: Record&lt;string, string&gt;; url: string },
+    gecikme: number,
+    xeta: string | null,
+  ): Promise&lt;void&gt; {
+    const setirId = sorqu.params?.id ? Number(sorqu.params.id) : null;
+    const istifadeciAdi = istifadeci?.email ?? 'anonim';
+
+    const qeyd = xeta
+      ? `XETA: ${xeta} | ${gecikme}ms`
+      : `Ugurlu | ${gecikme}ms`;
+
+    try {
+      await this.prisma.$executeRaw`
+        INSERT INTO audit.audit_log (cedvel_adi, emeliyyat, setir_id, istifadeci, qeyd)
+        VALUES (${cedvel}, ${metod}, ${setirId}, ${istifadeciAdi}, ${qeyd})`;
+    } catch (x) {
+      // Audit yazilmamasi esas emeliyyati POZMASIN
+      this.log.error(`Audit yazilmadi: ${(x as Error).message}`);
+    }
+
+    this.log.log(`${metod} ${sorqu.url} — ${istifadeciAdi} — ${qeyd}`);
+  }
+}
+EOF</code></pre>
+<div class="block block-niye">
+  <span class="block-title">NİYƏ AUDIT LAZIMDIR?</span>
+  <table><tr><th>Sual</th><th>Audit olmadan</th></tr><tr><td>'Bu maaşı kim dəyişdi?'</td><td>Bilinmir</td></tr><tr><td>'Bu mərkəzi kim sildi?'</td><td>Bilinmir</td></tr><tr><td>'Dünən nə dəyişdi?'</td><td>Bilinmir</td></tr><tr><td>'Şübhəli fəaliyyət varmı?'</td><td>Bilinmir</td></tr></table><p>Dövlət qurumunda audit <strong>tələbdir</strong>, seçim deyil.</p>
+</div>
+<div class="block block-izah">
+  <span class="block-title">İZAH — interceptor necə işləyir?</span>
+  <pre data-lang="sxem"><code>Sorqu --> Interceptor.before --> Controller --> Service
+                            |                              |
+                            |                              v
+                            +----- Interceptor.after &lt;---- Cavab
+                                       |
+                                       v
+                              audit_log-a YAZ</code></pre>
+</div>
+<pre data-lang="typescript"><code>return novbeti.handle().pipe(
+  tap({
+    next:  () =&gt; this.yaz(..., null),              // ugurlu
+    error: (x) =&gt; this.yaz(..., x.message),        // xetali
+  }),
+);</code></pre>
+<div class="block block-ipucu">
+  <span class="block-title">💡 YALNIZ YAZMA ƏMƏLİYYATLARI</span>
+  <p><code>GET</code> sorğuları jurnala yazılmır — əks halda cədvəl sürətlə böyüyər:</p>
+</div>
+<pre data-lang="typescript"><code>const IZLENEN_METODLAR = ['POST', 'PATCH', 'PUT', 'DELETE'];
+
+if (!IZLENEN_METODLAR.includes(metod)) {
+  return novbeti.handle();      // oxuma — kec, yazma
+}</code></pre>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ AUDIT XƏTASI ƏSAS ƏMƏLİYYATI POZMAMALIDIR</span>
+  <p>Audit yazıla bilməz (baza yüklənib, cədvəl silinib). Bu halda <strong>əsas əməliyyat uğursuz olmamalıdır</strong>:</p>
+</div>
+<pre data-lang="typescript"><code>try {
+  await this.prisma.$executeRaw`INSERT INTO audit.audit_log ...`;
+} catch (x) {
+  // Audit yazilmamasi esas emeliyyati POZMASIN
+  this.log.error(`Audit yazilmadi: ${(x as Error).message}`);
+}</code></pre>
+<div class="block block-olmaz">
+  <span class="block-title">OLMASA NƏ OLAR — try/catch olmasa</span>
+  <p>Audit cədvəli dolubsa, istifadəçi məlumat <strong>əlavə edə bilməz</strong> — səbəbi isə anlaşılmaz olar. Audit <em>köməkçi</em> funksiyadır, <strong>əsas işi bloklamamalıdır</strong>.</p>
+</div>
+<h3><span class="step-num">1</span> Cədvəl adını düzgün çıxarmaq</h3>
+<div class="block block-izah">
+  <span class="block-title">İZAH — cedvelAdi()</span>
+  <p>İlk versiyada nəticə <code>api.v1.struktur.merkezler</code> olurdu — qlobal prefiks də daxil. Düzəldilmiş variant:</p>
+</div>
+<pre data-lang="typescript"><code>private cedvelAdi(yol: string): string {
+  return yol
+    .replace(/^\/api\/v\d+\//, '')     // qlobal prefiksi sil
+    .replace(/^\//, '')
+    .replace(/\/:[^/]+.*$/, '')          // :id kimi parametrleri sil
+    .replace(/\/+$/, '')
+    .replace(/\//g, '.') || 'namelum';
+}
+
+// /api/v1/struktur/merkezler/:id  -&gt;  struktur.merkezler</code></pre>
+<h2 id="b18">18. app.module.ts — APP_GUARD sırası</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Qlobal guard və interceptor-u qeyd edəcəyik.</p>
+</div>
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/app.module.ts &lt;&lt;'EOF'
+import { Module } from '@nestjs/common';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { ConfigModule } from '@nestjs/config';
+import { PrismaModule } from './prisma/prisma.module.js';
+import { SaglamliqModule } from './saglamliq/saglamliq.module.js';
+import { AuthModule } from './auth/auth.module.js';
+import { StrukturModule } from './struktur/struktur.module.js';
+import { KadrlarModule } from './kadrlar/kadrlar.module.js';
+import { HesabatlarModule } from './hesabatlar/hesabatlar.module.js';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard.js';
+import { RolesGuard } from './auth/guards/roles.guard.js';
+import { AuditInterceptor } from './common/interceptors/audit.interceptor.js';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    PrismaModule,
+    SaglamliqModule,
+    AuthModule,
+    StrukturModule,
+    KadrlarModule,
+    HesabatlarModule,
+  ],
+  providers: [
+    // SIRA VACIBDIR: evvelce "kim oldugunu" yoxla, sonra "icazen varmi"
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
+    { provide: APP_GUARD, useClass: RolesGuard },
+    // Butun yazma emeliyyatlarini jurnala yaz
+    { provide: APP_INTERCEPTOR, useClass: AuditInterceptor },
+  ],
+})
+export class AppModule {}
+EOF</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — APP_GUARD nədir?</span>
+  <p><code>@UseGuards()</code> hər controller-də təkrar yazılır. <code>APP_GUARD</code> isə qlobal qeydiyyatdır:</p><table><tr><th>Token</th><th>Nə üçün</th></tr><tr><td><code>APP_GUARD</code></td><td>Qlobal guard</td></tr><tr><td><code>APP_INTERCEPTOR</code></td><td>Qlobal interceptor</td></tr><tr><td><code>APP_PIPE</code></td><td>Qlobal pipe</td></tr><tr><td><code>APP_FILTER</code></td><td>Qlobal xəta filtri</td></tr></table>
+</div>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ SIRA MÜTLƏQDİR</span>
+  <pre data-lang="sxem"><code>1. JwtAuthGuard    ->  request.user = {...}
+2. RolesGuard      ->  request.user.rol yoxlanilir</code></pre><p>Massivdəki sıra icra sırasıdır. Tərs olsa — 403.</p>
+</div>
+<div class="block block-ipucu">
+  <span class="block-title">💡 main.ts-DƏ ALLEXCEPTIONSFILTER</span>
+  <p>Qeyd: <code>AllExceptionsFilter</code> <code>main.ts</code>-də <code>app.useGlobalFilters()</code> ilə qoşulub, <code>APP_FILTER</code> ilə yox. Səbəb: filtr <code>APP_GUARD</code>-dan əvvəl işləməlidir ki, guard-ın atdığı 401 də düzgün formatda qaytarılsın.</p>
+</div>
+<h2 id="b19">19. Endpoint-lərin qorunması</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Mövcud endpoint-lərə rol tələbləri əlavə edəcəyik.</p>
+</div>
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/struktur
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/struktur/struktur.controller.ts &lt;&lt;'EOF'
+import {
+  Body, Controller, Delete, Get, HttpCode, HttpStatus, Param,
+  ParseIntPipe, Patch, Post, Query,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags,
+} from '@nestjs/swagger';
+import { Roles } from '../auth/decorators/roles.decorator.js';
+import { StrukturService, Merkez } from './struktur.service.js';
+import { CreateMerkezDto } from './dto/create-merkez.dto.js';
+import { UpdateMerkezDto } from './dto/update-merkez.dto.js';
+import { MerkezFiltrDto } from './dto/merkez-filtr.dto.js';
+import { Sehifelenmis } from '../common/dto/sehife.dto.js';
+
+@ApiTags('struktur')
+@ApiBearerAuth()
+@Controller('struktur/merkezler')
+export class StrukturController {
+  constructor(private readonly struktur: StrukturService) {}
+
+  @Get()
+  @ApiOperation({
+    summary: 'Merkezlerin siyahisi',
+    description: 'Sehifeleme, axtaris, filtr ve siralama desteklenir.',
+  })
+  @ApiResponse({ status: 200, description: 'Sehifelenmis siyahi' })
+  siyahi(@Query() filtr: MerkezFiltrDto): Promise&lt;Sehifelenmis&lt;Merkez&gt;&gt; {
+    return this.struktur.merkezler(filtr);
+  }
+
+  @Get('statistika')
+  @ApiOperation({ summary: 'Merkez uzre shobe ve emekdas sayi' })
+  statistika() {
+    return this.struktur.merkezStatistikasi();
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Bir merkez' })
+  @ApiParam({ name: 'id', example: 2 })
+  @ApiResponse({ status: 404, description: 'Merkez tapilmadi' })
+  bir(@Param('id', ParseIntPipe) id: number): Promise&lt;Merkez&gt; {
+    return this.struktur.merkez(id);
+  }
+
+  @Post()
+  @Roles('admin', 'muhendis')
+  @ApiOperation({ summary: 'Yeni merkez yarat (admin, muhendis)' })
+  @ApiResponse({ status: 201, description: 'Yaradildi' })
+  @ApiResponse({ status: 409, description: 'Bu adla merkez artiq var' })
+  yarat(@Body() dto: CreateMerkezDto): Promise&lt;Merkez&gt; {
+    return this.struktur.yarat(dto);
+  }
+
+  @Patch(':id')
+  @Roles('admin', 'muhendis')
+  @ApiOperation({ summary: 'Merkezi yenile (admin, muhendis)' })
+  yenile(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateMerkezDto,
+  ): Promise&lt;Merkez&gt; {
+    return this.struktur.yenile(id, dto);
+  }
+
+  @Delete(':id')
+  @Roles('admin')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Merkezi sil (yalniz admin)' })
+  @ApiResponse({ status: 409, description: 'Bagli shobeler var' })
+  sil(@Param('id', ParseIntPipe) id: number) {
+    return this.struktur.sil(id);
+  }
+}
+EOF</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — rol paylanması</span>
+  <table><tr><th>Endpoint</th><th>Rol</th><th>Nə üçün</th></tr><tr><td><code>GET /struktur/merkezler</code></td><td>hamı (token ilə)</td><td>Oxumaq zərərsizdir</td></tr><tr><td><code>POST /struktur/merkezler</code></td><td><code>admin, muhendis</code></td><td>Struktur dəyişikliyi məsuliyyət tələb edir</td></tr><tr><td><code>PATCH /struktur/merkezler/:id</code></td><td><code>admin, muhendis</code></td><td>Eyni</td></tr><tr><td><code>DELETE /struktur/merkezler/:id</code></td><td><code>admin</code></td><td>Silmə <strong>geri qaytarılmır</strong> — yalnız admin</td></tr></table>
+</div>
+<div class="block block-niye">
+  <span class="block-title">NİYƏ SİLMƏ YALNIZ ADMIN?</span>
+  <p>Silmə əməliyyatı:</p><ul><li>Bağlı məlumatı da məhv edə bilər;</li><li>Geri qaytarma yoxdur (hard delete);</li><li>Audit jurnalında iz qalsa da, məlumat bərpa olunmur.</li></ul><p>Buna görə ən dar icazə — yalnız <code>admin</code>.</p>
+</div>
+<h3><span class="step-num">1</span> Saglamliq endpoint-lərini aç</h3>
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/saglamliq
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/saglamliq/saglamliq.controller.ts &lt;&lt;'EOF'
+import { Controller, Get } from '@nestjs/common';
+import { Public } from '../auth/decorators/public.decorator.js';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { PrismaService } from '../prisma/prisma.service.js';
+
+@ApiTags('saglamliq')
+@Controller()
+export class SaglamliqController {
+  constructor(private readonly prisma: PrismaService) {}
+
+  @Public()
+  @Get('saglamliq')
+  @ApiOperation({ summary: 'Server ve baza saglamligi' })
+  async yoxla() {
+    const baslama = Date.now();
+
+    const baza = await this.prisma.$queryRaw&lt;{ cedvel: number }[]&gt;`
+      SELECT count(*)::int AS cedvel FROM information_schema.tables
+       WHERE table_type = 'BASE TABLE'
+         AND table_schema NOT IN ('pg_catalog', 'information_schema')`;
+
+    return {
+      status: 'saglam',
+      baza: {
+        qosulub: true,
+        cedvel_sayi: baza[0]?.cedvel ?? 0,
+        gecikme_ms: Date.now() - baslama,
+      },
+      versiya: process.env.npm_package_version ?? '0.0.1',
+      vaxt: new Date().toISOString(),
+    };
+  }
+
+  @Public()
+  @Get()
+  @ApiOperation({ summary: 'Kok — API melumati' })
+  kok() {
+    return {
+      ad: 'Deepseek ARTI API',
+      versiya: '1.0',
+      sened: '/docs',
+      prefiks: '/api/v1',
+    };
+  }
+}
+EOF</code></pre>
+<div class="block block-ipucu">
+  <span class="block-title">💡 @Public() YADDA SAXLAYIN</span>
+  <p>Qlobal guard əlavə edəndə <strong>monitorinq endpoint-ləri dərhal 401 verir</strong>. Docker, Kubernetes, UptimeRobot — hamısı token bilmir.</p>
+</div>
+<h2 id="b20">20. Seed skripti</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>İstifadəçiləri yaradan skript yazacağıq.</p>
+</div>
+<div class="block block-niye">
+  <span class="block-title">NİYƏ LAZIMDIR</span>
+  <p>Şifrələr bcrypt ilə hash-lənməlidir — əl ilə SQL yazmaq mümkün deyil. Skript isə:</p><ul><li>Hash-ləyir;</li><li>İdempotentdir — ikinci dəfə işlətsəniz dublikat yaratmır;</li><li>Yeni mühitdə (test, istehsalat) eyni istifadəçiləri yaradır.</li></ul>
+</div>
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/scripts
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/scripts/seed-auth.ts &lt;&lt;'EOF'
+/**
+ * İstifadəçiləri yaradır / yeniləyir.
+ *
+ *   npm run seed:auth
+ *
+ * İdempotentdir: ikinci dəfə işlətsəniz, mövcud istifadəçilərin
+ * şifrəsini yeniləyir — dublikat yaratmır.
+ */
+import 'dotenv/config';
+import * as bcrypt from 'bcryptjs';
+import { Pool } from 'pg';
+
+interface SeedIstifadeci {
+  email: string;
+  parol: string;
+  ad_soyad: string;
+  rol: 'admin' | 'muhendis' | 'maliyyeci' | 'baxici';
+}
+
+const ISTIFADECILER: SeedIstifadeci[] = [
+  { email: 'admin@arti.edu.az',     parol: '123456', ad_soyad: 'Elnur Əliyev',    rol: 'admin' },
+  { email: 'muhendis@arti.edu.az',  parol: '123456', ad_soyad: 'Rəşad Məmmədov',  rol: 'muhendis' },
+  { email: 'maliyyeci@arti.edu.az', parol: '123456', ad_soyad: 'Tural İsmayılov', rol: 'maliyyeci' },
+  { email: 'baxici@arti.edu.az',    parol: '123456', ad_soyad: 'Günel Rzayeva',   rol: 'baxici' },
+];
+
+const BCRYPT_RAUND = 10;
+
+async function main() {
+  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+
+  console.log('════ İstifadəçilər yaradılır ════\n');
+
+  for (const i of ISTIFADECILER) {
+    const hash = await bcrypt.hash(i.parol, BCRYPT_RAUND);
+
+    const netice = await pool.query(
+      `INSERT INTO kadrlar.istifadeciler (email, parol_hash, ad_soyad, rol, aktiv)
+       VALUES (lower($1), $2, $3, $4, true)
+       ON CONFLICT (email) DO UPDATE
+         SET parol_hash = EXCLUDED.parol_hash,
+             ad_soyad   = EXCLUDED.ad_soyad,
+             rol        = EXCLUDED.rol,
+             aktiv      = true
+       RETURNING id, email, rol`,
+      [i.email, hash, i.ad_soyad, i.rol],
+    );
+
+    const s = netice.rows[0];
+    console.log(`  ✓ id=${String(s.id).padStart(2)}  ${s.email.padEnd(24)} ${s.rol.padEnd(10)} şifrə: ${i.parol}`);
+  }
+
+  const cem = await pool.query('SELECT count(*)::int AS say FROM kadrlar.istifadeciler');
+  console.log(`\n════ CƏMİ: ${cem.rows[0].say} istifadəçi ════`);
+
+  await pool.end();
+}
+
+main().catch((xeta) =&gt; {
+  console.error('XƏTA:', xeta.message);
+  process.exit(1);
+});
+EOF</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — ON CONFLICT nə edir?</span>
+  <p><code>INSERT ... ON CONFLICT (email) DO UPDATE</code> — PostgreSQL-in <strong>upsert</strong> əmri:</p><table><tr><th>Vəziyyət</th><th>Nə olur</th></tr><tr><td>E-poçt yoxdur</td><td>Yeni sətir yaranır</td></tr><tr><td>E-poçt var</td><td>Şifrə və rol <strong>yenilənir</strong></td></tr></table><p>Beləliklə skript <strong>neçə dəfə işlətsəniz də</strong> eyni nəticəni verir.</p>
+</div>
+<pre data-lang="bash"><code>cd ~/Deepseek_ARTI/DS_Backend
+
+# package.json-a skript elave et
+npm pkg set scripts.seed:auth="tsx scripts/seed-auth.ts"
+
+# Icra et
+npm run seed:auth</code></pre>
+<pre data-lang="çıxış"><code>════ İstifadəçilər yaradılır ════
+
+  ✓ id= 2  admin@arti.edu.az        admin      şifrə: 123456
+  ✓ id= 3  muhendis@arti.edu.az     muhendis   şifrə: 123456
+  ✓ id= 4  maliyyeci@arti.edu.az    maliyyeci  şifrə: 123456
+  ✓ id= 5  baxici@arti.edu.az       baxici     şifrə: 123456
+
+════ CƏMİ: 4 istifadəçi ════</code></pre>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ İSTEHSALATDA ŞİFRƏLƏRİ DƏYİŞİN</span>
+  <p><code>123456</code> yalnız inkişaf üçündür. İstehsalata çıxmazdan əvvəl:</p><ul><li>Hər istifadəçiyə <strong>fərqli</strong> və güclü şifrə verin;</li><li>Skripti repodan çıxarın və ya şifrələri mühit dəyişənindən oxuyun;</li><li>İlk girişdə şifrə dəyişmə məcburiyyəti qoyun.</li></ul>
+</div>
+<h2 id="b21">21. Testlər — 38 unit + 62 e2e</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Təhlükəsizlik qatını test edəcəyik. Bu dərsdə testlər <strong>funksionallıqdan daha vacibdir</strong>.</p>
+</div>
+<h3><span class="step-num">1</span> Auth servisi testləri</h3>
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/src/auth
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/src/auth/auth.service.spec.ts &lt;&lt;'EOF'
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { ConflictException, UnauthorizedException } from '@nestjs/common';
+
+/*
+ * bcryptjs-i MOCK edirik: namespace dondurulmus oldugu ucun
+ * vi.spyOn() onun metodlarini evez ede bilmir.
+ * vi.mock ise modul yuklenende isleyir ve metodlari evez edir.
+ */
+vi.mock('bcryptjs', async () =&gt; {
+  const real = await vi.importActual&lt;typeof import('bcryptjs')&gt;('bcryptjs');
+  return {
+    ...real,
+    compare: vi.fn(real.compare),
+    hash: vi.fn(real.hash),
+  };
+});
+
+import * as bcrypt from 'bcryptjs';
+import { AuthService } from './auth.service.js';
+
+function saxtaPrisma() {
+  return {
+    $queryRaw: vi.fn(),
+    $executeRaw: vi.fn(),
+  } as any;
+}
+
+function saxtaJwt() {
+  return { signAsync: vi.fn().mockResolvedValue('saxta.token.deyeri') } as any;
+}
+
+/** Real bcrypt hash-i — testde de real olsun */
+const HASH_123456 = bcrypt.hashSync('123456', 4);   // test ucun az raund
+
+describe('AuthService', () =&gt; {
+  let prisma: any;
+  let jwt: any;
+  let service: AuthService;
+
+  beforeEach(() =&gt; {
+    prisma = saxtaPrisma();
+    jwt = saxtaJwt();
+    service = new AuthService(prisma, jwt);
+  });
+
+  // ── LOGIN ──
+  describe('login()', () =&gt; {
+    const setir = {
+      id: 2, email: 'admin@arti.edu.az', parol_hash: HASH_123456,
+      ad_soyad: 'Elnur Əliyev', rol: 'admin', emekdas_id: 1, aktiv: true,
+    };
+
+    it('duzgun sifre ile token qaytarir', async () =&gt; {
+      prisma.$queryRaw.mockResolvedValue([setir]);
+
+      const n = await service.login({ email: 'admin@arti.edu.az', parol: '123456' });
+
+      expect(n.token).toBe('saxta.token.deyeri');
+      expect(n.istifadeci.email).toBe('admin@arti.edu.az');
+      expect(n.istifadeci.rol).toBe('admin');
+    });
+
+    it('cavabda parol_hash YOXDUR', async () =&gt; {
+      prisma.$queryRaw.mockResolvedValue([setir]);
+
+      const n = await service.login({ email: 'admin@arti.edu.az', parol: '123456' });
+
+      expect(n.istifadeci).not.toHaveProperty('parol_hash');
+      expect(JSON.stringify(n)).not.toContain('$2b$');
+    });
+
+    it('sehv sifre ile UnauthorizedException atir', async () =&gt; {
+      prisma.$queryRaw.mockResolvedValue([setir]);
+      await expect(service.login({ email: 'admin@arti.edu.az', parol: 'sehv' }))
+        .rejects.toThrow(UnauthorizedException);
+    });
+
+    it('movcud olmayan email ile EYNI xeta mesajini verir', async () =&gt; {
+      prisma.$queryRaw.mockResolvedValue([]);
+
+      await expect(service.login({ email: 'yox@arti.edu.az', parol: '123456' }))
+        .rejects.toThrow('E-poçt və ya şifrə yanlışdır');
+    });
+
+    it('movcud olmayan email ucun de bcrypt MUQAYISESI aparilir (timing attack)', async () =&gt; {
+      prisma.$queryRaw.mockResolvedValue([]);
+      vi.mocked(bcrypt.compare).mockClear();
+
+      await service.login({ email: 'yox@arti.edu.az', parol: '123456' }).catch(() =&gt; null);
+
+      // Istifadeci tapilmasa da muqayise APARILIR — cavab vaxti ferqlenmesin
+      expect(bcrypt.compare).toHaveBeenCalledTimes(1);
+      const [, hash] = vi.mocked(bcrypt.compare).mock.calls[0];
+      expect(String(hash).startsWith('$2b$')).toBe(true);   // saxta hash de REALDIR
+    });
+
+    it('deaktiv istifadeci daxil ola bilmir', async () =&gt; {
+      prisma.$queryRaw.mockResolvedValue([{ ...setir, aktiv: false }]);
+      await expect(service.login({ email: 'admin@arti.edu.az', parol: '123456' }))
+        .rejects.toThrow('İstifadəçi deaktiv edilib');
+    });
+
+    it('JWT payload icinde rol var', async () =&gt; {
+      prisma.$queryRaw.mockResolvedValue([setir]);
+      await service.login({ email: 'admin@arti.edu.az', parol: '123456' });
+
+      const payload = jwt.signAsync.mock.calls[0][0];
+      expect(payload).toMatchObject({ sub: 2, rol: 'admin' });
+    });
+  });
+
+  // ── QEYDIYYAT ──
+  describe('qeydiyyat()', () =&gt; {
+    it('yeni istifadeci yaradir ve sifreyi HASH edir', async () =&gt; {
+      prisma.$queryRaw
+        .mockResolvedValueOnce([])                         // email yoxdur
+        .mockResolvedValueOnce([{ id: 9, email: 'yeni@arti.edu.az',
+          parol_hash: HASH_123456, ad_soyad: 'Yeni Adam',
+          rol: 'baxici', emekdas_id: null, aktiv: true }]);
+
+      const n = await service.qeydiyyat({
+        email: 'yeni@arti.edu.az', parol: 'guclu-sifre-1',
+        ad_soyad: 'Yeni Adam',
+      });
+
+      expect(n.id).toBe(9);
+      expect(n).not.toHaveProperty('parol_hash');
+    });
+
+    it('INSERT-e duz METN sifre GETMIR — hash gedir', async () =&gt; {
+      prisma.$queryRaw
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce([{ id: 9, email: 'y@arti.edu.az', parol_hash: 'x',
+          ad_soyad: 'Y', rol: 'baxici', emekdas_id: null, aktiv: true }]);
+
+      await service.qeydiyyat({ email: 'y@arti.edu.az', parol: 'guclu-sifre-1', ad_soyad: 'Y' });
+
+      // SQL parametrleri: [email, hash, ...]
+      const arqumentler = prisma.$queryRaw.mock.calls[1];
+      const duzMetnVar = arqumentler.some((a: unknown) =&gt; a === 'guclu-sifre-1');
+      expect(duzMetnVar).toBe(false);
+    });
+
+    it('eyni email ile ConflictException atir', async () =&gt; {
+      prisma.$queryRaw.mockResolvedValue([{ id: 2 }]);
+      await expect(service.qeydiyyat({
+        email: 'admin@arti.edu.az', parol: 'guclu-sifre-1', ad_soyad: 'X',
+      })).rejects.toThrow(ConflictException);
+    });
+
+    it('movcud olmayan emekdas_id ile xeta atir', async () =&gt; {
+      prisma.$queryRaw
+        .mockResolvedValueOnce([])          // email yoxdur
+        .mockResolvedValueOnce([]);         // emekdas yoxdur
+
+      await expect(service.qeydiyyat({
+        email: 'y@arti.edu.az', parol: 'guclu-sifre-1',
+        ad_soyad: 'Y', emekdas_id: 9999,
+      })).rejects.toThrow(ConflictException);
+    });
+  });
+
+  // ── PAROL DEYISME ──
+  describe('parolDeyis()', () =&gt; {
+    it('kohne sifre duzdurse yenileyir', async () =&gt; {
+      prisma.$queryRaw.mockResolvedValue([{
+        id: 2, email: 'a@b.az', parol_hash: HASH_123456,
+        ad_soyad: 'A', rol: 'admin', emekdas_id: null, aktiv: true,
+      }]);
+      prisma.$executeRaw.mockResolvedValue(1);
+
+      const n = await service.parolDeyis(2, '123456', 'yeni-sifre-2026');
+      expect(n.deyisdirildi).toBe(true);
+      expect(prisma.$executeRaw).toHaveBeenCalledTimes(1);
+    });
+
+    it('kohne sifre sehvdirse xeta atir', async () =&gt; {
+      prisma.$queryRaw.mockResolvedValue([{
+        id: 2, email: 'a@b.az', parol_hash: HASH_123456,
+        ad_soyad: 'A', rol: 'admin', emekdas_id: null, aktiv: true,
+      }]);
+
+      await expect(service.parolDeyis(2, 'sehv', 'yeni-sifre-2026'))
+        .rejects.toThrow('Köhnə şifrə yanlışdır');
+    });
+  });
+});
+EOF</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — ən vacib testlər</span>
+  <table><tr><th>Test</th><th>Nə sübut edir</th></tr><tr><td>cavabda <code>parol_hash</code> yoxdur</td><td>Şifrə hash-ı API-dən sız mır</td></tr><tr><td>mövcud olmayan email → <strong>eyni</strong> mesaj</td><td>User enumeration mümkün deyil</td></tr><tr><td>bcrypt müqayisəsi hər halda aparılır</td><td>Timing attack mümkün deyil</td></tr><tr><td>INSERT-ə düz mətn şifrə getmir</td><td>Şifrə HƏMİŞƏ hash-lənir</td></tr></table>
+</div>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ bcryptjs-i MOCK ETMƏK LAZIM GƏLDİ</span>
+  <p>İlk versiyada <code>vi.spyOn(bcrypt, 'compare')</code> yazdım — xəta verdi:</p><pre><code>TypeError: Cannot redefine property: compare</code></pre><p><strong>Səbəb:</strong> ESM namespace dondurulmuşdur (frozen) — <code>spyOn</code> onu dəyişə bilmir.</p><p><strong>Həll:</strong> <code>vi.mock</code> ilə modulu yüklənərkən əvəz et:</p>
+</div>
+<pre data-lang="typescript"><code>vi.mock('bcryptjs', async () =&gt; {
+  const real = await vi.importActual&lt;typeof import('bcryptjs')&gt;('bcryptjs');
+  return {
+    ...real,                              // real funksiyalari saxla
+    compare: vi.fn(real.compare),         // ...amma izlenen variantla
+    hash: vi.fn(real.hash),
+  };
+});</code></pre>
+<h3><span class="step-num">2</span> e2e testləri</h3>
+<pre data-lang="bash"><code>mkdir -p ~/Deepseek_ARTI/DS_Backend/test
+
+cat &gt; ~/Deepseek_ARTI/DS_Backend/test/backend3.e2e-spec.ts &lt;&lt;'EOF'
+import { Test, TestingModule } from '@nestjs/testing';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
+import request from 'supertest';
+import { App } from 'supertest/types';
+import { AppModule } from '../src/app.module.js';
+import { AllExceptionsFilter } from '../src/common/filters/all-exceptions.filter.js';
+import { Pool } from 'pg';
+
+/**
+ * BACKEND-3 e2e: autentifikasiya, RBAC ve audit.
+ * APP_GUARD ile qeyd olunan qlobal guard-lar AppModule ile avtomatik gelir.
+ */
+describe('Backend-3 (e2e)', () =&gt; {
+  let app: INestApplication&lt;App&gt;;
+
+  const tokenlar: Record&lt;string, string&gt; = {};
+  const YARADILANLAR: number[] = [];
+
+  beforeAll(async () =&gt; {
+    const modul: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
+
+    app = modul.createNestApplication();
+    app.setGlobalPrefix('api/v1');
+    app.useGlobalPipes(
+      new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }),
+    );
+    app.useGlobalFilters(new AllExceptionsFilter());
+    await app.init();
+
+    // Butun rollar ucun token al
+    for (const rol of ['admin', 'muhendis', 'maliyyeci', 'baxici']) {
+      const c = await request(app.getHttpServer())
+        .post('/api/v1/auth/login')
+        .send({ email: `${rol}@arti.edu.az`, parol: '123456' });
+      if (c.body?.token) tokenlar[rol] = c.body.token;
+    }
+  });
+
+  afterAll(async () =&gt; {
+    const admin = tokenlar.admin;
+
+    // 1) Test zamani yaradilan merkezleri sil
+    for (const id of YARADILANLAR) {
+      await request(app.getHttpServer())
+        .delete(`/api/v1/struktur/merkezler/${id}`)
+        .set('Authorization', `Bearer ${admin}`);
+    }
+
+    /*
+     * 2) Test istifadecilerini sil.
+     * Qeydiyyat endpoint-i ile yaradilanlar bazada qalir —
+     * onlari birbasa SQL ile temizleyirik, eks halda her test
+     * buraxilisi yeni setirler elave eder.
+     */
+    const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+    await pool.query("DELETE FROM kadrlar.istifadeciler WHERE email LIKE 'e2e%'");
+    await pool.end();
+
+    await app.close();
+  });
+
+  const url = (y: string) =&gt; `/api/v1${y}`;
+  const auth = (rol: string) =&gt; ({ Authorization: `Bearer ${tokenlar[rol]}` });
+
+  // ── LOGIN ──
+  describe('POST /auth/login', () =&gt; {
+    it('duzgun melumatla token qaytarir', async () =&gt; {
+      const c = await request(app.getHttpServer())
+        .post(url('/auth/login'))
+        .send({ email: 'admin@arti.edu.az', parol: '123456' })
+        .expect(200);
+
+      expect(c.body.token).toBeTypeOf('string');
+      expect(c.body.token.split('.')).toHaveLength(3);     // JWT 3 hissedir
+      expect(c.body.istifadeci.rol).toBe('admin');
+      expect(c.body.istifadeci).not.toHaveProperty('parol_hash');
+    });
+
+    it('sehv sifre 401 verir', () =&gt;
+      request(app.getHttpServer())
+        .post(url('/auth/login'))
+        .send({ email: 'admin@arti.edu.az', parol: 'sehv-sifre' })
+        .expect(401));
+
+    it('movcud olmayan email 401 verir', () =&gt;
+      request(app.getHttpServer())
+        .post(url('/auth/login'))
+        .send({ email: 'yoxdur@arti.edu.az', parol: '123456' })
+        .expect(401));
+
+    it('qisa sifre 400 verir (validasiya)', () =&gt;
+      request(app.getHttpServer())
+        .post(url('/auth/login'))
+        .send({ email: 'admin@arti.edu.az', parol: '123' })
+        .expect(400));
+
+    it('yanlis email formati 400 verir', () =&gt;
+      request(app.getHttpServer())
+        .post(url('/auth/login'))
+        .send({ email: 'email-deyil', parol: '123456' })
+        .expect(400));
+  });
+
+  // ── TOKEN ──
+  describe('Token yoxlamasi', () =&gt; {
+    it('tokensiz qorunan endpoint 401', () =&gt;
+      request(app.getHttpServer()).get(url('/struktur/merkezler')).expect(401));
+
+    it('sehv token 401', () =&gt;
+      request(app.getHttpServer())
+        .get(url('/struktur/merkezler'))
+        .set('Authorization', 'Bearer sehv.token.deyeri')
+        .expect(401));
+
+    it('Bearer prefiksi olmadan 401', () =&gt;
+      request(app.getHttpServer())
+        .get(url('/struktur/merkezler'))
+        .set('Authorization', tokenlar.admin)
+        .expect(401));
+
+    it('duzgun token 200', () =&gt;
+      request(app.getHttpServer())
+        .get(url('/struktur/merkezler'))
+        .set(auth('admin'))
+        .expect(200));
+  });
+
+  // ── PUBLIC ──
+  describe('@Public() endpoint-ler', () =&gt; {
+    it('saglamliq tokensiz isleyir', () =&gt;
+      request(app.getHttpServer()).get(url('/saglamliq')).expect(200));
+
+    it('kok tokensiz isleyir', () =&gt;
+      request(app.getHttpServer()).get(url('')).expect(200));
+
+    it('login tokensiz isleyir', () =&gt;
+      request(app.getHttpServer())
+        .post(url('/auth/login'))
+        .send({ email: 'admin@arti.edu.az', parol: '123456' })
+        .expect(200));
+  });
+
+  // ── PROFIL ──
+  describe('GET /auth/profil', () =&gt; {
+    it('cari istifadecini qaytarir', async () =&gt; {
+      const c = await request(app.getHttpServer())
+        .get(url('/auth/profil'))
+        .set(auth('maliyyeci'))
+        .expect(200);
+
+      expect(c.body.email).toBe('maliyyeci@arti.edu.az');
+      expect(c.body.rol).toBe('maliyyeci');
+      expect(c.body).not.toHaveProperty('parol_hash');
+    });
+  });
+
+  // ── RBAC MATRİSİ ──
+  describe('RBAC — rol icazeleri', () =&gt; {
+    const yarat = (rol: string) =&gt;
+      request(app.getHttpServer())
+        .post(url('/struktur/merkezler'))
+        .set(auth(rol))
+        .send({ ad: `RBAC E2E ${rol} ${Date.now()}` });
+
+    it('admin merkez yarada bilir', async () =&gt; {
+      const c = await yarat('admin').expect(201);
+      YARADILANLAR.push(c.body.id);
+    });
+
+    it('muhendis merkez yarada bilir', async () =&gt; {
+      const c = await yarat('muhendis').expect(201);
+      YARADILANLAR.push(c.body.id);
+    });
+
+    it('maliyyeci merkez yarada BILMIR (403)', () =&gt;
+      yarat('maliyyeci').expect(403));
+
+    it('baxici merkez yarada BILMIR (403)', () =&gt;
+      yarat('baxici').expect(403));
+
+    it('baxici OXUYA bilir (200)', () =&gt;
+      request(app.getHttpServer())
+        .get(url('/struktur/merkezler'))
+        .set(auth('baxici'))
+        .expect(200));
+
+    it('admin olmayan silmir (403)', async () =&gt; {
+      const c = await request(app.getHttpServer())
+        .post(url('/struktur/merkezler'))
+        .set(auth('admin'))
+        .send({ ad: `Silme testi ${Date.now()}` })
+        .expect(201);
+
+      await request(app.getHttpServer())
+        .delete(url(`/struktur/merkezler/${c.body.id}`))
+        .set(auth('muhendis'))
+        .expect(403);
+
+      await request(app.getHttpServer())
+        .delete(url(`/struktur/merkezler/${c.body.id}`))
+        .set(auth('admin'))
+        .expect(200);
+    });
+
+    it('istifadeci siyahisi yalniz admin ucun', async () =&gt; {
+      await request(app.getHttpServer())
+        .get(url('/auth/istifadeciler')).set(auth('baxici')).expect(403);
+      await request(app.getHttpServer())
+        .get(url('/auth/istifadeciler')).set(auth('admin')).expect(200);
+    });
+
+    it('admin HER SEYE icazelidir (super-rol)', () =&gt;
+      request(app.getHttpServer())
+        .get(url('/hesabatlar/icmal')).set(auth('admin')).expect(200));
+
+    it('baxici hesabatlari oxuya bilir', () =&gt;
+      request(app.getHttpServer())
+        .get(url('/hesabatlar/icmal')).set(auth('baxici')).expect(200));
+  });
+
+  // ── QEYDİYYAT ──
+  describe('POST /auth/qeydiyyat', () =&gt; {
+    const yeni = () =&gt; ({
+      email: `e2e${Date.now()}_${Math.floor(Math.random() * 9999)}@arti.edu.az`,
+      parol: 'guclu-sifre-2026',
+      ad_soyad: 'E2E Test Istifadeci',
+      rol: 'baxici',
+    });
+
+    it('admin yeni istifadeci yarada bilir', async () =&gt; {
+      const c = await request(app.getHttpServer())
+        .post(url('/auth/qeydiyyat'))
+        .set(auth('admin'))
+        .send(yeni())
+        .expect(201);
+
+      expect(c.body.rol).toBe('baxici');
+      expect(c.body).not.toHaveProperty('parol_hash');
+    });
+
+    it('qeydiyyatdan sonra HEMIN sifre ile giris isleyir', async () =&gt; {
+      const m = yeni();
+      await request(app.getHttpServer())
+        .post(url('/auth/qeydiyyat')).set(auth('admin')).send(m).expect(201);
+
+      const c = await request(app.getHttpServer())
+        .post(url('/auth/login'))
+        .send({ email: m.email, parol: m.parol })
+        .expect(200);
+
+      expect(c.body.token).toBeTypeOf('string');
+    });
+
+    it('qeydiyyat yalniz admin ucun (baxici 403)', () =&gt;
+      request(app.getHttpServer())
+        .post(url('/auth/qeydiyyat')).set(auth('baxici')).send(yeni()).expect(403));
+
+    it('qisa sifre 400 verir', () =&gt;
+      request(app.getHttpServer())
+        .post(url('/auth/qeydiyyat')).set(auth('admin'))
+        .send({ ...yeni(), parol: 'qisa' })
+        .expect(400));
+
+    it('yanlis rol 400 verir', () =&gt;
+      request(app.getHttpServer())
+        .post(url('/auth/qeydiyyat')).set(auth('admin'))
+        .send({ ...yeni(), rol: 'superadmin' })
+        .expect(400));
+  });
+
+  // ── AUDIT ──
+  describe('Audit jurnali', () =&gt; {
+    it('yazma emeliyyati jurnala dusur', async () =&gt; {
+      const c = await request(app.getHttpServer())
+        .post(url('/struktur/merkezler'))
+        .set(auth('admin'))
+        .send({ ad: `Audit E2E ${Date.now()}` })
+        .expect(201);
+      YARADILANLAR.push(c.body.id);
+
+      const audit = await request(app.getHttpServer())
+        .get(url('/hesabatlar/audit?limit=1'))
+        .set(auth('admin'))
+        .expect(200);
+
+      expect(audit.body[0].cedvel_adi).toBe('struktur.merkezler');
+      expect(audit.body[0].emeliyyat).toBe('POST');
+      expect(audit.body[0].istifadeci).toBe('admin@arti.edu.az');
+    });
+
+    it('oxuma emeliyyati jurnala DUSMUR', async () =&gt; {
+      const evvel = await request(app.getHttpServer())
+        .get(url('/hesabatlar/audit?limit=1'))
+        .set(auth('admin'));
+
+      await request(app.getHttpServer())
+        .get(url('/struktur/merkezler')).set(auth('admin')).expect(200);
+      await request(app.getHttpServer())
+        .get(url('/kadrlar/emekdaslar')).set(auth('admin')).expect(200);
+
+      const sonra = await request(app.getHttpServer())
+        .get(url('/hesabatlar/audit?limit=1'))
+        .set(auth('admin'));
+
+      // En son qeyd deyismeyib — GET yazilmir
+      expect(sonra.body[0].id).toBe(evvel.body[0].id);
+    });
+  });
+
+  // ── XƏTA FORMATI ──
+  describe('Xeta formatlari', () =&gt; {
+    it('401 formati duzgundur', async () =&gt; {
+      const c = await request(app.getHttpServer())
+        .get(url('/struktur/merkezler')).expect(401);
+      expect(c.body.xeta.kod).toBe('AUTENTIFIKASIYA_LAZIM');
+    });
+
+    it('403 formati duzgundur', async () =&gt; {
+      const c = await request(app.getHttpServer())
+        .post(url('/struktur/merkezler')).set(auth('baxici'))
+        .send({ ad: 'Test Merkez' })
+        .expect(403);
+      expect(c.body.xeta.kod).toBe('ICAZE_YOXDUR');
+    });
+
+    it('parol_hash HEÇ VAXT cavabda gelmir', async () =&gt; {
+      const cavablar = await Promise.all([
+        request(app.getHttpServer()).post(url('/auth/login'))
+          .send({ email: 'admin@arti.edu.az', parol: '123456' }),
+        request(app.getHttpServer()).get(url('/auth/profil')).set(auth('admin')),
+        request(app.getHttpServer()).get(url('/auth/istifadeciler')).set(auth('admin')),
+      ]);
+      for (const c of cavablar) {
+        expect(JSON.stringify(c.body)).not.toContain('$2b$');
+        expect(JSON.stringify(c.body)).not.toContain('parol_hash');
+      }
+    });
+  });
+});
+EOF</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — e2e test qrupları</span>
+  <table><tr><th>Qrup</th><th>Test</th><th>Nə yoxlanılır</th></tr><tr><td>POST /auth/login</td><td>5</td><td>Token, səhv şifrə, validasiya</td></tr><tr><td>Token yoxlaması</td><td>4</td><td>Tokensiz, səhv token, prefikssiz</td></tr><tr><td>@Public() endpoint-lər</td><td>3</td><td>Token olmadan işləyir</td></tr><tr><td>GET /auth/profil</td><td>1</td><td>Cari istifadəçi</td></tr><tr><td><strong>RBAC matrisi</strong></td><td>8</td><td>Hər rol üçün icazə</td></tr><tr><td>POST /auth/qeydiyyat</td><td>5</td><td>Yaratma, giriş, icazə</td></tr><tr><td>Audit jurnalı</td><td>2</td><td>Yazma qeyd olunur, oxuma yox</td></tr><tr><td>Xəta formatları</td><td>3</td><td>401, 403, parol sızması</td></tr></table>
+</div>
+<div class="block block-ipucu">
+  <span class="block-title">💡 TEST TƏMİZLİYİ</span>
+  <p>Test yaratdığı məlumatı <strong>sil məlidir</strong>, əks halda hər buraxılış bazanı böyüdür. Biz <code>afterAll</code>-da təmizləyirik:</p>
+</div>
+<pre data-lang="typescript"><code>afterAll(async () =&gt; {
+  // 1) Yaradilan merkezleri sil
+  for (const id of YARADILANLAR) {
+    await request(app.getHttpServer())
+      .delete(`/api/v1/struktur/merkezler/${id}`)
+      .set('Authorization', `Bearer ${tokenlar.admin}`);
+  }
+
+  // 2) Test istifadecilerini sil (qeydiyyat endpoint-i onlari saxlayir)
+  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+  await pool.query("DELETE FROM kadrlar.istifadeciler WHERE email LIKE 'e2e%'");
+  await pool.end();
+
+  await app.close();
+});</code></pre>
+<div class="block block-olmaz">
+  <span class="block-title">OLMASA NƏ OLAR — təmizləmə olmasa</span>
+  <p>E2E testləri 4 buraxılışda bazaya <strong>80 istifadəçi</strong> əlavə etdi. Nəticədə:</p><ul><li><code>/auth/istifadeciler</code> siyahısı oxunmaz olur;</li><li>Sayğac testləri pozulur;</li><li>İstehsalat bazasında zibil qalır.</li></ul>
+</div>
+<pre data-lang="bash"><code>cd ~/Deepseek_ARTI/DS_Backend
+unset DATABASE_URL PGHOST
+
+npm test                                         # 38 unit
+npx vitest run --config vitest.config.e2e.ts     # 62 e2e</code></pre>
+<pre data-lang="çıxış"><code> ✓ src/common/dto/sehife.dto.spec.ts (8 tests)
+ ✓ src/struktur/struktur.service.spec.ts (17 tests)
+ ✓ src/auth/auth.service.spec.ts (13 tests)
+ Test Files  3 passed (3)
+      Tests  38 passed (38)
+
+ ✓ test/backend2.e2e-spec.ts (30 tests)
+ ✓ test/backend3.e2e-spec.ts (32 tests)
+ Test Files  2 passed (2)
+      Tests  62 passed (62)</code></pre>
+<h2 id="b22">22. Backend-2 testlərinin yenilənməsi</h2>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ BACKEND-3 KÖHNƏ TESTLƏRİ POZUR</span>
+  <p>Qlobal guard əlavə olanda Backend-2-nin <strong>30 e2e testi</strong> dərhal uğursuz oldu — hamısı 401 qaytarmağa başladı:</p>
+</div>
+<pre data-lang="çıxış"><code> FAIL  test/backend2.e2e-spec.ts &gt; GET /struktur/merkezler
+       &gt; sehifelenmis siyahi qaytarir
+ Error: expected 200 "OK", got 401 "Unauthorized"</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — bu, GÖZLƏNİLƏN nəticədir</span>
+  <p>Testlər <strong>qırılmadı</strong> — davranış dəyişdi. Əvvəl API açıq idi, indi bağlıdır.</p><p>Bu, <strong>yaxşı əlamətdir</strong>: testlər real dəyişikliyi tutdu. Əgər testlər yenə yaşıl qalsaydı, deməli heç nə yoxlamırdılar.</p>
+</div>
+<div class="block block-ne">
+  <span class="block-title">HƏLL — testlərə token əlavə et</span>
+  <p>Hər test faylında <code>beforeAll</code>-da token alırıq və bütün sorğulara header əlavə edirik:</p>
+</div>
+<pre data-lang="typescript"><code>describe('Backend-2 (e2e)', () =&gt; {
+  let app: INestApplication&lt;App&gt;;
+  let token = '';
+
+  const api = () =&gt;
+    request(app.getHttpServer()).set('Authorization', `Bearer ${token}`);
+  const publicApi = () =&gt; request(app.getHttpServer());
+
+  beforeAll(async () =&gt; {
+    // ... app yaradilir ...
+
+    const girish = await publicApi()
+      .post('/api/v1/auth/login')
+      .send({ email: 'admin@arti.edu.az', parol: '123456' });
+
+    token = girish.body?.token ?? '';
+    expect(token).toBeTruthy();
+  });</code></pre>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ api() FUNKSİYASINI YANLIŞ YAZMAQ — REAL XƏTA</span>
+  <p>İlk cəhddə belə yazdım:</p>
+</div>
+<pre data-lang="typescript"><code>// SEHV — sonsuz rekursiya!
+const api = () =&gt; api().set('Authorization', `Bearer ${token}`);
+// RangeError: Maximum call stack size exceeded</code></pre>
+<div class="block block-izah">
+  <span class="block-title">İZAH — nə baş verdi?</span>
+  <p>Kütləvi əvəzləmə (`request(app.getHttpServer())` → `api()`) funksiyanın <strong>öz gövdəsini</strong> də dəyişdi. Nəticədə <code>api()</code> özünü çağırır.</p>
+</div>
+<pre data-lang="typescript"><code>// DOĞRU
+const api = () =&gt;
+  request(app.getHttpServer()).set('Authorization', `Bearer ${token}`);</code></pre>
+<div class="block block-ipucu">
+  <span class="block-title">💡 DƏRS</span>
+  <p>Kütləvi əvəzləmə (find &amp; replace) edərkən <strong>həmişə</strong> nəticəni yoxlayın — xüsusən funksiya təriflərini.</p><p>Komanda: <code>grep -n 'const api' fayl.ts</code> — tərifi dərhal göstərir.</p>
+</div>
+<h2 id="b23">23. Xəta kitabçası</h2>
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Bu dərsdə rast gəlinən xətaları toplayacağıq.</p>
+</div>
+<table>
+  <tr><th>Xəta</th><th>Səbəb</th><th>Həll</th></tr>
+  <tr><td>Login işləyir, amma <strong>hər token 401</strong> verir</td><td><code>JwtModule.register()</code> <code>.env</code>-dən əvvəl işləyir — fərqli açarlar</td><td><code>registerAsync()</code> + <code>ConfigService</code> işlədin</td></tr>
+  <tr><td><code>Unknown authentication strategy "jwt"</code></td><td><code>JwtStrategy</code> <code>providers</code>-dadır?</td><td><code>AuthModule</code>-un <code>providers</code>-ına əlavə edin</td></tr>
+  <tr><td><code>TypeError: Cannot redefine property: compare</code></td><td>ESM namespace dondurulub — <code>vi.spyOn</code> işləmir</td><td><code>vi.mock('bcryptjs', ...)</code> işlədin</td></tr>
+  <tr><td><code>RangeError: Maximum call stack size exceeded</code></td><td>Test köməkçisi özünü çağırır</td><td><code>api()</code> gövdəsində <code>request(app.getHttpServer())</code> yazın</td></tr>
+  <tr><td>403 bütün endpoint-lərdə (token düzgün olsa da)</td><td>Guard sırası tərsdir</td><td><code>JwtAuthGuard</code> <code>RolesGuard</code>-dan əvvəl olmalıdır</td></tr>
+  <tr><td>Monitorinq endpoint-i 401 verir</td><td><code>@Public()</code> unudulub</td><td><code>/saglamliq</code>-a <code>@Public()</code> əlavə edin</td></tr>
+  <tr><td><code>pbkdf2</code> / <code>bcrypt</code> native xətası</td><td><code>bcrypt</code> paketi (C++) işlədilib</td><td><code>npm uninstall bcrypt &amp;&amp; npm i bcryptjs</code></td></tr>
+  <tr><td>Bazada <code>Promise { &lt;pending&gt; }</code> yazılıb</td><td><code>await bcrypt.hash()</code> unudulub</td><td><code>await</code> əlavə edin</td></tr>
+  <tr><td><code>@CurrentUser()</code> <code>undefined</code> qaytarır</td><td>Guard işləməyib və ya sıra tərsdir</td><td><code>JwtStrategy</code> qeydiyyatını yoxlayın</td></tr>
+  <tr><td>Audit cədvəlində <code>api.v1.struktur.merkezler</code></td><td>Qlobal prefiks təmizlənmir</td><td><code>cedvelAdi()</code>-də <code>replace(/^\/api\/v\d+\//, '')</code></td></tr>
+  <tr><td>E2E testləri bazada zibil qoyur</td><td><code>afterAll</code>-da təmizləmə yoxdur</td><td>Yaradılan sətirləri silin</td></tr>
+  <tr><td><code>Do not know how to serialize a BigInt</code></td><td><code>count(*)::int</code> cast yoxdur</td><td>SQL-də cast edin</td></tr>
+</table>
+<div class="block block-ipucu">
+  <span class="block-title">💡 401 vs 403 — FƏRQİ</span>
+  <table><tr><th>Kod</th><th>Mənası</th><th>Nə etməli</th></tr><tr><td><strong>401</strong> Unauthorized</td><td>'Sən kimsən?' — token yoxdur/səhvdir</td><td>Yenidən login ol</td></tr><tr><td><strong>403</strong> Forbidden</td><td>'Sən kimsən, bilirəm — amma icazən yoxdur'</td><td>Admin-dən icazə istə</td></tr></table><p>Frontend bu fərqi bilməlidir: 401 → login səhifəsinə yönləndir; 403 → 'icazəniz yoxdur' mesajı göstər.</p>
+</div>
+<h2 id="b24">24. Yoxlama siyahısı və növbəti dərs</h2>
+<div class="block block-yox">
+  <span class="block-title">YOXLAMA — BACKEND-3 HAZIRDIR?</span>
+  <table>
+    <tr><th>#</th><th>Yoxlama</th><th>Əmr / Gözlənilən</th></tr>
+    <tr><td>1</td><td>Auth paketləri (5)</td><td><code>ls node_modules/@nestjs/jwt</code></td></tr>
+    <tr><td>2</td><td>Auth qovluqları (4)</td><td><code>ls src/auth/</code></td></tr>
+    <tr><td>3</td><td>JWT strategiyası</td><td><code>ls src/auth/strategies/jwt.strategy.ts</code></td></tr>
+    <tr><td>4</td><td>2 guard</td><td><code>ls src/auth/guards/</code></td></tr>
+    <tr><td>5</td><td>3 dekorator</td><td><code>ls src/auth/decorators/</code></td></tr>
+    <tr><td>6</td><td>Audit interceptor</td><td><code>ls src/common/interceptors/</code></td></tr>
+    <tr><td>7</td><td>Seed skripti</td><td><code>ls scripts/seed-auth.ts</code></td></tr>
+    <tr><td>8</td><td>Seed işləyir</td><td><code>npm run seed:auth</code> → 4 istifadəçi</td></tr>
+    <tr><td>9</td><td>Build keçir</td><td><code>npm run build</code> → exit 0</td></tr>
+    <tr><td>10</td><td>Unit testlər</td><td><code>npm test</code> → 38 passed</td></tr>
+    <tr><td>11</td><td>e2e testlər</td><td><code>npx vitest run --config vitest.config.e2e.ts</code> → 62 passed</td></tr>
+    <tr><td>12</td><td>24 marshrut</td><td>server logunda <code>Mapped</code> sayı</td></tr>
+    <tr><td>13</td><td>Tokensiz 401</td><td><code>curl .../struktur/merkezler</code> → 401</td></tr>
+    <tr><td>14</td><td>Login token verir</td><td><code>curl -X POST .../auth/login</code> → <code>token</code></td></tr>
+    <tr><td>15</td><td>Token ilə 200</td><td><code>curl -H 'Authorization: Bearer ...'</code> → 200</td></tr>
+    <tr><td>16</td><td>Səhv şifrə 401</td><td>eyni mesaj verməlidir</td></tr>
+    <tr><td>17</td><td>baxici yarada bilmir</td><td><code>POST /merkezler</code> → 403</td></tr>
+    <tr><td>18</td><td>muhendis silə bilmir</td><td><code>DELETE /merkezler/:id</code> → 403</td></tr>
+    <tr><td>19</td><td>admin hər şeyi edir</td><td>super-rol işləyir</td></tr>
+    <tr><td>20</td><td>Audit jurnalı dolur</td><td><code>curl .../hesabatlar/audit</code></td></tr>
+    <tr><td>21</td><td><code>parol_hash</code> sızmır</td><td>cavabda <code>$2b$</code> yoxdur</td></tr>
+    <tr><td>22</td><td>Swagger-də Authorize</td><td><code>open localhost:4000/docs</code></td></tr>
+  </table>
+</div>
+<div class="block block-ne">
+  <span class="block-title">NƏ GƏLİR — Backend-4</span>
+  <table><tr><th>#</th><th>Mövzu</th></tr><tr><td>1</td><td><strong>AI qatı</strong> — DeepSeek API inteqrasiyası</td></tr><tr><td>2</td><td><strong>RAG</strong> — <code>ai.embeddingler</code>, vektor axtarış</td></tr><tr><td>3</td><td><strong>Məlumat üzrə sual</strong> — təbii dil → SQL</td></tr><tr><td>4</td><td><strong>Excel/PDF ixracı</strong></td></tr><tr><td>5</td><td><strong>Docker + docker-compose</strong></td></tr><tr><td>6</td><td><strong>GitHub Actions CI/CD</strong></td></tr><tr><td>7</td><td><strong>İstehsalat yerləşdirmə</strong> + ehtiyat nüsxə</td></tr></table>
+</div>
+<div class="success-box"><strong>Backend-3 tamamlandı.</strong> API artıq <strong>bağlıdır</strong>: JWT token tələb olunur, 4 rol fərqlənir, hər dəyişiklik audit jurnalına düşür. <strong>24 endpoint · 4 rol · 100 test.</strong></div>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('pre').forEach(function (pre) {
+      var btn = document.createElement('button');
+      btn.className = 'copy-btn';
+      btn.textContent = '📋 KOPYALA';
+      btn.addEventListener('click', async function (ev) {
+        ev.preventDefault();
+        var kod = pre.querySelector('code');
+        var metn = kod ? kod.textContent : pre.textContent;
+        try {
+          await navigator.clipboard.writeText(metn);
+          btn.textContent = '✅ KOPYALANDI';
+          btn.classList.add('copied');
+          setTimeout(function () {
+            btn.textContent = '📋 KOPYALA';
+            btn.classList.remove('copied');
+          }, 2000);
+        } catch (err) {
+          var ta = document.createElement('textarea');
+          ta.value = metn;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          btn.textContent = '✅ KOPYALANDI';
+          setTimeout(function () { btn.textContent = '📋 KOPYALA'; }, 2000);
+        }
+      });
+      pre.insertBefore(btn, pre.firstChild);
+    });
+  });
+</script>
+</body>
+</html>

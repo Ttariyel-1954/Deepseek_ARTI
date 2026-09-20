@@ -3,8 +3,9 @@ import {
   ParseIntPipe, Patch, Post, Query,
 } from '@nestjs/common';
 import {
-  ApiOperation, ApiParam, ApiResponse, ApiTags,
+  ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags,
 } from '@nestjs/swagger';
+import { Roles } from '../auth/decorators/roles.decorator.js';
 import { StrukturService, Merkez } from './struktur.service.js';
 import { CreateMerkezDto } from './dto/create-merkez.dto.js';
 import { UpdateMerkezDto } from './dto/update-merkez.dto.js';
@@ -12,6 +13,7 @@ import { MerkezFiltrDto } from './dto/merkez-filtr.dto.js';
 import { Sehifelenmis } from '../common/dto/sehife.dto.js';
 
 @ApiTags('struktur')
+@ApiBearerAuth()
 @Controller('struktur/merkezler')
 export class StrukturController {
   constructor(private readonly struktur: StrukturService) {}
@@ -41,7 +43,8 @@ export class StrukturController {
   }
 
   @Post()
-  @ApiOperation({ summary: 'Yeni merkez yarat' })
+  @Roles('admin', 'muhendis')
+  @ApiOperation({ summary: 'Yeni merkez yarat (admin, muhendis)' })
   @ApiResponse({ status: 201, description: 'Yaradildi' })
   @ApiResponse({ status: 409, description: 'Bu adla merkez artiq var' })
   yarat(@Body() dto: CreateMerkezDto): Promise<Merkez> {
@@ -49,7 +52,8 @@ export class StrukturController {
   }
 
   @Patch(':id')
-  @ApiOperation({ summary: 'Merkezi yenile (yalniz gonderilen saheler)' })
+  @Roles('admin', 'muhendis')
+  @ApiOperation({ summary: 'Merkezi yenile (admin, muhendis)' })
   yenile(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateMerkezDto,
@@ -58,8 +62,9 @@ export class StrukturController {
   }
 
   @Delete(':id')
+  @Roles('admin')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Merkezi sil' })
+  @ApiOperation({ summary: 'Merkezi sil (yalniz admin)' })
   @ApiResponse({ status: 409, description: 'Bagli shobeler var' })
   sil(@Param('id', ParseIntPipe) id: number) {
     return this.struktur.sil(id);

@@ -7,7 +7,7 @@ Layihə 4 müstəqil blokdan ibarətdir. Hər blok ayrıca yenilənə və geniş
 | Blok | Nə edir | Texnologiya | Vəziyyət |
 |---|---|---|---|
 | `DS_Baza` | Məlumatı saxlayır | PostgreSQL 18 | ✅ hazır |
-| `DS_Backend` | API xidməti | NestJS 12 + Prisma 7 | ✅ Backend-1, -2 hazır |
+| `DS_Backend` | API xidməti | NestJS 12 + Prisma 7 | ✅ Backend-1, -2, -3 hazır |
 | `DS_Frontend` | İstifadəçi interfeysi | Next.js 16 + React 19 | ⏳ plan |
 | `DS_Web` | Xarici veb təqdimat | yenidən yazılır | ⏳ real məlumat gözlənilir |
 
@@ -51,8 +51,9 @@ open ~/Deepseek_ARTI/DƏRSLƏR/Deepseek_Baza.html
 |---|---|---|---|
 | 1 | `Deepseek_Baza.html` | 2261 | ✅ hazır |
 | 2 | `DS_Backend-1.html` | 2145 | ✅ hazır |
-| 3 | `DS_Backend-2.html` | 2879 | ✅ hazır |
-| 4-5 | `DS_Backend-3..4.html` | — | ⏳ növbəti |
+| 3 | `DS_Backend-2.html` | 2921 | ✅ hazır |
+| 4 | `DS_Backend-3.html` | 2592 | ✅ hazır |
+| 5 | `DS_Backend-4.html` | — | ⏳ növbəti |
 | 6-8 | `DS_Frontend-1..3.html` | — | ⏳ plan |
 | 9-10 | `DS_Web-1..2.html` | — | ⏳ real məlumat gözlənilir |
 
@@ -92,22 +93,43 @@ curl http://localhost:4000/api/v1/struktur/merkezler
 open http://localhost:4000/docs
 ```
 
-### Backend-2 fayllarını yaratmaq
+### Backend fayllarını yaratmaq
 
 ```bash
 cd ~/Deepseek_ARTI/DS_Backend
 bash backend2_qur.sh          # 21 fayl + qovluqlar + build
+bash backend3_qur.sh          # 19 fayl + auth paketleri + build
+```
+
+### Giriş məlumatları
+
+| E-poçt | Şifrə | Rol |
+|---|---|---|
+| `admin@arti.edu.az` | `123456` | admin |
+| `muhendis@arti.edu.az` | `123456` | muhendis |
+| `maliyyeci@arti.edu.az` | `123456` | maliyyeci |
+| `baxici@arti.edu.az` | `123456` | baxici |
+
+```bash
+TOKEN=$(curl -s -X POST http://localhost:4000/api/v1/auth/login \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+
+curl -H "Authorization: Bearer $TOKEN" \
+  http://localhost:4000/api/v1/struktur/merkezler
 ```
 
 ### API göstəriciləri
 
 | Göstərici | Dəyər |
 |---|---|
-| Endpoint | **20** |
-| Unit test | 25 |
-| e2e test | 30 |
-| **Cəmi test** | **55** |
-| Modul | 5 (sağlamlıq, struktur, kadrlar, hesabat, prisma) |
+| Endpoint | **24** |
+| Rol (RBAC) | 4 (admin, muhendis, maliyyeci, baxici) |
+| Unit test | 38 |
+| e2e test | 62 |
+| **Cəmi test** | **100** |
+| Modul | 6 (sağlamlıq, auth, struktur, kadrlar, hesabat, prisma) |
 
 Təlimatlar real sınaqdan keçirilmişdir:
 
@@ -115,6 +137,7 @@ Təlimatlar real sınaqdan keçirilmişdir:
 |---|---|
 | Backend-1 | 48 model, 3 marshrut, `int` tipləri — `_hesabat/backend1_sinag.txt` |
 | Backend-2 | 20 marshrut, 55 test, SQL injection qoruması — `_hesabat/backend2_sinag.txt` |
+| Backend-3 | 24 marshrut, 100 test, JWT + RBAC + audit — `_hesabat/backend3_sinag.txt` |
 
 ### Əsas xüsusiyyətlər
 
@@ -123,6 +146,10 @@ Təlimatlar real sınaqdan keçirilmişdir:
 - **SQL injection qoruması** — ağ siyahı (whitelist) prinsipi
 - **Səhifələmə + filtr + sıralama** — `SehifeDto`-dan miras
 - **Mass assignment qoruması** — `forbidNonWhitelisted`
+- **JWT autentifikasiya** — qlobal guard, `@Public()` istisnası
+- **Rollar (RBAC)** — `@Roles()`, admin super-rol
+- **bcrypt şifrə hash** — cost 10, salt daxili
+- **Audit jurnalı** — bütün yazma əməliyyatları
 
 ## Vacib qaydalar
 

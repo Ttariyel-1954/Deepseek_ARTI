@@ -1,4 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
+import { Public } from '../auth/decorators/public.decorator.js';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PrismaService } from '../prisma/prisma.service.js';
 
@@ -7,6 +8,7 @@ import { PrismaService } from '../prisma/prisma.service.js';
 export class SaglamliqController {
   constructor(private readonly prisma: PrismaService) {}
 
+  @Public()
   @Get('saglamliq')
   @ApiOperation({ summary: 'Server ve baza saglamligi' })
   async yoxla() {
@@ -29,6 +31,7 @@ export class SaglamliqController {
     };
   }
 
+  @Public()
   @Get()
   @ApiOperation({ summary: 'Kok — API melumati' })
   kok() {

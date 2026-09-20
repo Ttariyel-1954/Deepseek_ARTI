@@ -12,6 +12,15 @@ import { AllExceptionsFilter } from '../src/common/filters/all-exceptions.filter
  */
 describe('Backend-2 (e2e)', () => {
   let app: INestApplication<App>;
+  let token = '';
+
+  /*
+   * BACKEND-3 QEYDI:
+   * Backend-3 qlobal JwtAuthGuard elave edir — butun endpoint-ler qorunur.
+   * Ona gore bu testler artik TOKEN gondermelidir, eks halda 401 alirlar.
+   */
+  const api = () => request(app.getHttpServer());
+  const publicApi = () => request(app.getHttpServer());
 
   beforeAll(async () => {
     const modul: TestingModule = await Test.createTestingModule({
@@ -32,6 +41,14 @@ describe('Backend-2 (e2e)', () => {
     app.useGlobalFilters(new AllExceptionsFilter());
 
     await app.init();
+
+    // Admin tokeni al
+    const girish = await publicApi()
+      .post('/api/v1/auth/login').set('Authorization', `Bearer ${token}`).set('Authorization', `Bearer ${token}`)
+      .send({ email: 'admin@arti.edu.az', parol: '123456' });
+
+    token = girish.body?.token ?? '';
+    expect(token).toBeTruthy();
   });
 
   afterAll(async () => {
@@ -43,11 +60,11 @@ describe('Backend-2 (e2e)', () => {
   // ── SAĞLAMLIQ ──
   describe('Saglamliq', () => {
     it('prefikssiz yol 404 qaytarir', () =>
-      request(app.getHttpServer()).get('/struktur/merkezler').expect(404));
+      publicApi().get('/struktur/merkezler').expect(404));
 
     it('GET /api/v1/saglamliq baza veziyyetini verir', async () => {
-      const c = await request(app.getHttpServer())
-        .get(url('/saglamliq'))
+      const c = await api()
+        .get(url('/saglamliq')).set('Authorization', `Bearer ${token}`).set('Authorization', `Bearer ${token}`)
         .expect(200);
 
       expect(c.body.status).toBe('saglam');
@@ -57,7 +74,7 @@ describe('Backend-2 (e2e)', () => {
     });
 
     it('GET /api/v1 kok melumat verir', async () => {
-      const c = await request(app.getHttpServer()).get(url('')).expect(200);
+      const c = await api().get(url('')).set('Authorization', `Bearer ${token}`).set('Authorization', `Bearer ${token}`).expect(200);
       expect(c.body.prefiks).toBe('/api/v1');
     });
   });
@@ -65,8 +82,8 @@ describe('Backend-2 (e2e)', () => {
   // ── STRUKTUR: OXUMA ──
   describe('GET /struktur/merkezler', () => {
     it('sehifelenmis siyahi qaytarir', async () => {
-      const c = await request(app.getHttpServer())
-        .get(url('/struktur/merkezler?limit=3'))
+      const c = await api()
+        .get(url('/struktur/merkezler?limit=3')).set('Authorization', `Bearer ${token}`).set('Authorization', `Bearer ${token}`)
         .expect(200);
 
       expect(Array.isArray(c.body.data)).toBe(true);
@@ -80,8 +97,8 @@ describe('Backend-2 (e2e)', () => {
     });
 
     it('axtaris isleyir', async () => {
-      const c = await request(app.getHttpServer())
-        .get(url('/struktur/merkezler?axtar=elmi'))
+      const c = await api()
+        .get(url('/struktur/merkezler?axtar=elmi')).set('Authorization', `Bearer ${token}`).set('Authorization', `Bearer ${token}`)
         .expect(200);
       expect(c.body.meta.cem).toBeGreaterThan(0);
       for (const r of c.body.data) {
@@ -91,28 +108,28 @@ describe('Backend-2 (e2e)', () => {
     });
 
     it('yanlis limit 400 verir', () =>
-      request(app.getHttpServer())
-        .get(url('/struktur/merkezler?limit=999'))
+      api()
+        .get(url('/struktur/merkezler?limit=999')).set('Authorization', `Bearer ${token}`).set('Authorization', `Bearer ${token}`)
         .expect(400));
 
     it('sehife=0 400 verir', () =>
-      request(app.getHttpServer())
-        .get(url('/struktur/merkezler?sehife=0'))
+      api()
+        .get(url('/struktur/merkezler?sehife=0')).set('Authorization', `Bearer ${token}`).set('Authorization', `Bearer ${token}`)
         .expect(400));
   });
 
   describe('GET /struktur/merkezler/:id', () => {
     it('movcud id 200', () =>
-      request(app.getHttpServer()).get(url('/struktur/merkezler/1')).expect(200));
+      api().get(url('/struktur/merkezler/1')).set('Authorization', `Bearer ${token}`).set('Authorization', `Bearer ${token}`).expect(200));
 
     it('movcud olmayan id 404', () =>
-      request(app.getHttpServer())
-        .get(url('/struktur/merkezler/999999'))
+      api()
+        .get(url('/struktur/merkezler/999999')).set('Authorization', `Bearer ${token}`).set('Authorization', `Bearer ${token}`)
         .expect(404));
 
     it('reqem olmayan id 400', () =>
-      request(app.getHttpServer())
-        .get(url('/struktur/merkezler/abc'))
+      api()
+        .get(url('/struktur/merkezler/abc')).set('Authorization', `Bearer ${token}`).set('Authorization', `Bearer ${token}`)
         .expect(400));
   });
 
@@ -121,8 +138,8 @@ describe('Backend-2 (e2e)', () => {
     let yeniId: number;
 
     it('POST yeni merkez yaradir (201)', async () => {
-      const c = await request(app.getHttpServer())
-        .post(url('/struktur/merkezler'))
+      const c = await api()
+        .post(url('/struktur/merkezler')).set('Authorization', `Bearer ${token}`).set('Authorization', `Bearer ${token}`)
         .send({ ad: `E2E Test Merkezi ${Date.now()}`, tip: 'merkez' })
         .expect(201);
 
@@ -131,63 +148,63 @@ describe('Backend-2 (e2e)', () => {
     });
 
     it('PATCH qismen yenileyir', async () => {
-      const c = await request(app.getHttpServer())
-        .patch(url(`/struktur/merkezler/${yeniId}`))
+      const c = await api()
+        .patch(url(`/struktur/merkezler/${yeniId}`)).set('Authorization', `Bearer ${token}`).set('Authorization', `Bearer ${token}`)
         .send({ telefon: '+994 12 000 11 22' })
         .expect(200);
       expect(c.body.telefon).toBe('+994 12 000 11 22');
     });
 
     it('eyni adla ikinci POST 409 verir', async () => {
-      const c1 = await request(app.getHttpServer())
-        .post(url('/struktur/merkezler'))
+      const c1 = await api()
+        .post(url('/struktur/merkezler')).set('Authorization', `Bearer ${token}`).set('Authorization', `Bearer ${token}`)
         .send({ ad: `Tekrar Test ${Date.now()}` })
         .expect(201);
 
-      await request(app.getHttpServer())
-        .post(url('/struktur/merkezler'))
+      await api()
+        .post(url('/struktur/merkezler')).set('Authorization', `Bearer ${token}`).set('Authorization', `Bearer ${token}`)
         .send({ ad: c1.body.ad })
         .expect(409);
 
-      await request(app.getHttpServer())
-        .delete(url(`/struktur/merkezler/${c1.body.id}`))
+      await api()
+        .delete(url(`/struktur/merkezler/${c1.body.id}`)).set('Authorization', `Bearer ${token}`).set('Authorization', `Bearer ${token}`)
         .expect(200);
     });
 
     it('qisa ad 400 verir', () =>
-      request(app.getHttpServer())
-        .post(url('/struktur/merkezler'))
+      api()
+        .post(url('/struktur/merkezler')).set('Authorization', `Bearer ${token}`).set('Authorization', `Bearer ${token}`)
         .send({ ad: 'AB' })
         .expect(400));
 
     it('yanlis e-poct 400 verir', () =>
-      request(app.getHttpServer())
-        .post(url('/struktur/merkezler'))
+      api()
+        .post(url('/struktur/merkezler')).set('Authorization', `Bearer ${token}`).set('Authorization', `Bearer ${token}`)
         .send({ ad: 'Test Merkez', email: 'sehv' })
         .expect(400));
 
     it('DTO-da olmayan sahe 400 verir (mass assignment qorumasi)', () =>
-      request(app.getHttpServer())
-        .post(url('/struktur/merkezler'))
+      api()
+        .post(url('/struktur/merkezler')).set('Authorization', `Bearer ${token}`).set('Authorization', `Bearer ${token}`)
         .send({ ad: 'Test Merkez', rol: 'admin' })
         .expect(400));
 
     it('bagli shobesi olan merkez silinmir (409)', () =>
-      request(app.getHttpServer())
-        .delete(url('/struktur/merkezler/2'))
+      api()
+        .delete(url('/struktur/merkezler/2')).set('Authorization', `Bearer ${token}`).set('Authorization', `Bearer ${token}`)
         .expect(409));
 
     it('DELETE yaradilmis merkezi silir', () =>
-      request(app.getHttpServer())
-        .delete(url(`/struktur/merkezler/${yeniId}`))
+      api()
+        .delete(url(`/struktur/merkezler/${yeniId}`)).set('Authorization', `Bearer ${token}`).set('Authorization', `Bearer ${token}`)
         .expect(200));
   });
 
   // ── KADRLAR ──
   describe('GET /kadrlar/emekdaslar', () => {
     it('tam profil qaytarir', async () => {
-      const c = await request(app.getHttpServer())
-        .get(url('/kadrlar/emekdaslar?limit=2'))
+      const c = await api()
+        .get(url('/kadrlar/emekdaslar?limit=2')).set('Authorization', `Bearer ${token}`).set('Authorization', `Bearer ${token}`)
         .expect(200);
 
       const r = c.body.data[0];
@@ -198,15 +215,15 @@ describe('Backend-2 (e2e)', () => {
     });
 
     it('merkez_id filtri isleyir', async () => {
-      const c = await request(app.getHttpServer())
-        .get(url('/kadrlar/emekdaslar?merkez_id=10'))
+      const c = await api()
+        .get(url('/kadrlar/emekdaslar?merkez_id=10')).set('Authorization', `Bearer ${token}`).set('Authorization', `Bearer ${token}`)
         .expect(200);
       expect(c.body.meta.cem).toBeGreaterThan(0);
     });
 
     it('maas araligi filtri isleyir', async () => {
-      const c = await request(app.getHttpServer())
-        .get(url('/kadrlar/emekdaslar?min_maas=2000&max_maas=3000'))
+      const c = await api()
+        .get(url('/kadrlar/emekdaslar?min_maas=2000&max_maas=3000')).set('Authorization', `Bearer ${token}`).set('Authorization', `Bearer ${token}`)
         .expect(200);
       for (const r of c.body.data) {
         expect(r.maas).toBeGreaterThanOrEqual(2000);
@@ -215,8 +232,8 @@ describe('Backend-2 (e2e)', () => {
     });
 
     it('siralama=desc isleyir', async () => {
-      const c = await request(app.getHttpServer())
-        .get(url('/kadrlar/emekdaslar?siralama=desc&siralama_sah=maas&limit=5'))
+      const c = await api()
+        .get(url('/kadrlar/emekdaslar?siralama=desc&siralama_sah=maas&limit=5')).set('Authorization', `Bearer ${token}`).set('Authorization', `Bearer ${token}`)
         .expect(200);
       const maaslar = c.body.data.map((r: { maas: number }) => r.maas);
       const siralanmis = [...maaslar].sort((a, b) => b - a);
@@ -224,13 +241,13 @@ describe('Backend-2 (e2e)', () => {
     });
 
     it('yanlis siralama sahesi 400 verir', () =>
-      request(app.getHttpServer())
-        .get(url('/kadrlar/emekdaslar?siralama_sah=DROP TABLE'))
+      api()
+        .get(url('/kadrlar/emekdaslar?siralama_sah=DROP TABLE')).set('Authorization', `Bearer ${token}`).set('Authorization', `Bearer ${token}`)
         .expect(400));
 
     it('icmal qaytarir', async () => {
-      const c = await request(app.getHttpServer())
-        .get(url('/kadrlar/emekdaslar/icmal'))
+      const c = await api()
+        .get(url('/kadrlar/emekdaslar/icmal')).set('Authorization', `Bearer ${token}`).set('Authorization', `Bearer ${token}`)
         .expect(200);
       expect(c.body).toHaveProperty('umumi_fond');
       expect(Array.isArray(c.body.merkez_uzre)).toBe(true);
@@ -240,23 +257,23 @@ describe('Backend-2 (e2e)', () => {
   // ── HESABATLAR ──
   describe('GET /hesabatlar', () => {
     it('icmal 48 cedvel ve 8 view gosterir', async () => {
-      const c = await request(app.getHttpServer())
-        .get(url('/hesabatlar/icmal'))
+      const c = await api()
+        .get(url('/hesabatlar/icmal')).set('Authorization', `Bearer ${token}`).set('Authorization', `Bearer ${token}`)
         .expect(200);
       expect(c.body.cedvel_sayi).toBe(48);
       expect(c.body.gorunus_sayi).toBe(8);
     });
 
     it('8 view siyahilayir', async () => {
-      const c = await request(app.getHttpServer())
-        .get(url('/hesabatlar/gorunusler'))
+      const c = await api()
+        .get(url('/hesabatlar/gorunusler')).set('Authorization', `Bearer ${token}`).set('Authorization', `Bearer ${token}`)
         .expect(200);
       expect(c.body).toHaveLength(8);
     });
 
     it('budce ROLLUP yekunu verir', async () => {
-      const c = await request(app.getHttpServer())
-        .get(url('/hesabatlar/budce-icmali'))
+      const c = await api()
+        .get(url('/hesabatlar/budce-icmali')).set('Authorization', `Bearer ${token}`).set('Authorization', `Bearer ${token}`)
         .expect(200);
       const cem = c.body.find((r: { il: string }) => r.il === 'CƏMİ');
       expect(cem).toBeDefined();
@@ -264,8 +281,8 @@ describe('Backend-2 (e2e)', () => {
     });
 
     it('funksiyalar netice qaytarir', async () => {
-      const c = await request(app.getHttpServer())
-        .get(url('/hesabatlar/funksiyalar'))
+      const c = await api()
+        .get(url('/hesabatlar/funksiyalar')).set('Authorization', `Bearer ${token}`).set('Authorization', `Bearer ${token}`)
         .expect(200);
       expect(typeof c.body.maas_fondu).toBe('number');
     });
@@ -274,8 +291,8 @@ describe('Backend-2 (e2e)', () => {
   // ── XƏTA FORMATI ──
   describe('Vahid xeta formati', () => {
     it('404 formati duzgundur', async () => {
-      const c = await request(app.getHttpServer())
-        .get(url('/struktur/merkezler/999999'))
+      const c = await api()
+        .get(url('/struktur/merkezler/999999')).set('Authorization', `Bearer ${token}`).set('Authorization', `Bearer ${token}`)
         .expect(404);
 
       expect(c.body).toMatchObject({
@@ -287,8 +304,8 @@ describe('Backend-2 (e2e)', () => {
     });
 
     it('validasiya xetasi detallar massivi verir', async () => {
-      const c = await request(app.getHttpServer())
-        .post(url('/struktur/merkezler'))
+      const c = await api()
+        .post(url('/struktur/merkezler')).set('Authorization', `Bearer ${token}`).set('Authorization', `Bearer ${token}`)
         .send({ ad: 'AB', email: 'sehv' })
         .expect(400);
 
