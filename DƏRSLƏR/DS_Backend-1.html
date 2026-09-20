@@ -1425,14 +1425,17 @@ EOF</code></pre>
       <p>Aşağıdaki əmrləri işlədin və nəticəni yoxlayın:</p>
 <pre><code>cd ~/Deepseek_ARTI/DS_Backend
 
-# @Catch() boş mötərizə ilə olmalıdır — hamısını tutur
+# 1) @Catch() BOŞ mötərizə ilə olmalıdır — hər növ xətanı tutur
 grep -n '@Catch' src/common/filters/all-exceptions.filter.ts
 
-# Status → kod xəritəsi tamdırmı?
-grep -c ':' src/common/filters/all-exceptions.filter.ts
+# 2) Status → kod xəritəsi — 7 sətir olmalıdır
+sed -n '/^const KOD_XERITESI/,/^};/p' src/common/filters/all-exceptions.filter.ts
 
-# main.ts-də qeydiyyatdan keçibmi?
-grep -n 'useGlobalFilters' src/main.ts</code></pre>
+# 3) Cavab formatı — 4 sahə olmalıdır
+grep -nE 'ugur:|xeta:|yol:|vaxt:' src/common/filters/all-exceptions.filter.ts
+
+# ℹ️ Filter-i GLOBAL qeydiyyatdan keçirmək ADDIM 11-dədir
+#    (main.ts → app.useGlobalFilters(...)). O fayl hələ yaranmayıb, normaldır.</code></pre>
       <div class="olmaz">
         <span class="olmaz-basliq">⚠️ Bu kod olmasa nə olardı</span>
 <pre><code>$ curl -s http://localhost:4000/api/v1/yoxdur
@@ -1694,12 +1697,17 @@ EOF</code></pre>
       <p>Aşağıdaki əmrləri işlədin və nəticəni yoxlayın:</p>
 <pre><code>cd ~/Deepseek_ARTI/DS_Backend
 
-# Hər üç modul imports siyahısındadırmı?
-grep -n 'imports\|ConfigModule\|PrismaModule\|SaglamliqModule\|isGlobal' \
-  src/app.module.ts
+# 1) Hər üç modul imports siyahısındadırmı?
+grep -nE 'ConfigModule|PrismaModule|SaglamliqModule|isGlobal' src/app.module.ts
 
-# NestJS bu faylı giriş nöqtəsi kimi tanıyırmı?
-grep -n 'AppModule' src/main.ts</code></pre>
+# 2) ConfigModule.forRoot() çağırılıbmı?
+grep -n 'forRoot' src/app.module.ts
+
+# 3) AppModule ixrac olunubmu?
+grep -n 'export class AppModule' src/app.module.ts
+
+# ℹ️ AppModule-u işə salan fayl ADDIM 11-dədir
+#    (main.ts → NestFactory.create(AppModule)). O fayl hələ yaranmayıb, normaldır.</code></pre>
       <div class="olmaz">
         <span class="olmaz-basliq">⚠️ Bu kod olmasa nə olardı</span>
 <pre><code>$ node dist/main.js      # ConfigModule silinsə:
