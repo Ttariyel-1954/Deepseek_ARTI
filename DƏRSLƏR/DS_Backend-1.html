@@ -577,7 +577,8 @@ DS_Backend/test</code></pre>
     <div class="hisse hisse-b">
       <span class="hisse-basliq">B · Kod</span>
     <p class="fayl-ad">package.json</p>
-<pre><code>{
+<pre><code>cat &gt; package.json &lt;&lt;'EOF'
+{
   "name": "ds-backend",
   "version": "0.1.0",
   "description": "Deepseek_ARTI — ARTİ ERP backend (NestJS 12 + Prisma 7 + PostgreSQL)",
@@ -625,7 +626,8 @@ DS_Backend/test</code></pre>
     "typescript": "^6.0.2",
     "vitest": "^4.1.2"
   }
-}</code></pre>
+}
+EOF</code></pre>
     </div>
 
     <div class="hisse hisse-c">
@@ -717,7 +719,8 @@ class-validator          0.14.4</code></pre>
     <div class="hisse hisse-b">
       <span class="hisse-basliq">B · Kod</span>
     <p class="fayl-ad">tsconfig.json</p>
-<pre><code>{
+<pre><code>cat &gt; tsconfig.json &lt;&lt;'EOF'
+{
   "compilerOptions": {
     "module": "nodenext",
     "moduleResolution": "nodenext",
@@ -738,25 +741,30 @@ class-validator          0.14.4</code></pre>
     "strictPropertyInitialization": false,
     "types": ["vitest/globals", "node"]
   }
-}</code></pre>
+}
+EOF</code></pre>
     <p class="fayl-ad">tsconfig.build.json</p>
-<pre><code>{
+<pre><code>cat &gt; tsconfig.build.json &lt;&lt;'EOF'
+{
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "rootDir": "./src"
   },
   "include": ["src"],
   "exclude": ["node_modules", "test", "dist", "**/*spec.ts"]
-}</code></pre>
+}
+EOF</code></pre>
     <p class="fayl-ad">nest-cli.json</p>
-<pre><code>{
+<pre><code>cat &gt; nest-cli.json &lt;&lt;'EOF'
+{
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
   "compilerOptions": {
     "deleteOutDir": true
   }
-}</code></pre>
+}
+EOF</code></pre>
     </div>
 
     <div class="hisse hisse-c">
@@ -849,25 +857,31 @@ src/saglamliq/saglamliq.controller.ts:11:4 - error TS1270:
     <div class="hisse hisse-b">
       <span class="hisse-basliq">B · Kod</span>
     <p class="fayl-ad">.env</p>
-<pre><code># ── Baza ──────────────────────────────────────────────────────
+<pre><code>cat &gt; .env &lt;&lt;'EOF'
+# ── Baza ──────────────────────────────────────────────────────
 DATABASE_URL="postgresql://arti_user:arti_secret_2025@localhost:5432/arti_baza"
 
 # ── Server ────────────────────────────────────────────────────
 PORT=4000
-NODE_ENV=development</code></pre>
+NODE_ENV=development
+EOF</code></pre>
     <p class="fayl-ad">.env.example</p>
-<pre><code># Nümunə — öz dəyərlərinizlə doldurun, bu faylı KOMİT ETMƏYİN
+<pre><code>cat &gt; .env.example &lt;&lt;'EOF'
+# Nümunə — öz dəyərlərinizlə doldurun, bu faylı KOMİT ETMƏYİN
 DATABASE_URL="postgresql://ISTIFADECI:SIFRE@localhost:5432/arti_baza"
 PORT=4000
-NODE_ENV=development</code></pre>
+NODE_ENV=development
+EOF</code></pre>
     <p class="fayl-ad">.gitignore</p>
-<pre><code>.env
+<pre><code>cat &gt; .gitignore &lt;&lt;'EOF'
+.env
 .env.*
 !.env.example
 node_modules/
 dist/
 src/generated/
-*.log</code></pre>
+*.log
+EOF</code></pre>
     </div>
 
     <div class="hisse hisse-c">
@@ -956,19 +970,23 @@ $ git status --short
     <div class="hisse hisse-b">
       <span class="hisse-basliq">B · Kod</span>
     <p class="fayl-ad">prisma/schema.prisma — datasource və generator</p>
-<pre><code>generator client {
+<pre><code>cat &gt; prisma/schema.prisma &lt;&lt;'EOF'
+generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
-}</code></pre>
+}
+EOF</code></pre>
     <p class="fayl-ad">prisma.config.ts</p>
-<pre><code>import 'dotenv/config';
+<pre><code>cat &gt; prisma.config.ts &lt;&lt;'EOF'
+import 'dotenv/config';
 import { defineConfig, env } from 'prisma/config';
 
 export default defineConfig({
   schema: 'prisma/schema.prisma',
   migrations: { path: 'prisma/migrations' },
   datasource: { url: env('DATABASE_URL') },
-});</code></pre>
+});
+EOF</code></pre>
     <p class="fayl-ad">Terminal — sxemi çıxar və müştərini yarat</p>
 <pre><code>cd ~/Deepseek_ARTI/DS_Backend
 
@@ -1078,7 +1096,8 @@ model merkezler {
     <div class="hisse hisse-b">
       <span class="hisse-basliq">B · Kod</span>
     <p class="fayl-ad">src/prisma/prisma.service.ts</p>
-<pre><code>import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+<pre><code>cat &gt; src/prisma/prisma.service.ts &lt;&lt;'EOF'
+import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../generated/prisma/client.js';
 
@@ -1131,7 +1150,8 @@ export class PrismaService
       gecikmeMs: Date.now() - baslama,
     };
   }
-}</code></pre>
+}
+EOF</code></pre>
     </div>
 
     <div class="hisse hisse-c">
@@ -1216,7 +1236,8 @@ $ psql -U arti_user -w -d arti_baza -tAc \
     <div class="hisse hisse-b">
       <span class="hisse-basliq">B · Kod</span>
     <p class="fayl-ad">src/prisma/prisma.module.ts</p>
-<pre><code>import { Global, Module } from '@nestjs/common';
+<pre><code>cat &gt; src/prisma/prisma.module.ts &lt;&lt;'EOF'
+import { Global, Module } from '@nestjs/common';
 import { PrismaService } from './prisma.service.js';
 
 /**
@@ -1228,7 +1249,8 @@ import { PrismaService } from './prisma.service.js';
   providers: [PrismaService],
   exports: [PrismaService],
 })
-export class PrismaModule {}</code></pre>
+export class PrismaModule {}
+EOF</code></pre>
     </div>
 
     <div class="hisse hisse-c">
@@ -1314,7 +1336,8 @@ AppModule
     <div class="hisse hisse-b">
       <span class="hisse-basliq">B · Kod</span>
     <p class="fayl-ad">src/common/filters/all-exceptions.filter.ts</p>
-<pre><code>import {
+<pre><code>cat &gt; src/common/filters/all-exceptions.filter.ts &lt;&lt;'EOF'
+import {
   ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, Logger,
 } from '@nestjs/common';
 import type { Request, Response } from 'express';
@@ -1381,7 +1404,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
       vaxt: new Date().toISOString(),
     });
   }
-}</code></pre>
+}
+EOF</code></pre>
     </div>
 
     <div class="hisse hisse-c">
@@ -1461,7 +1485,8 @@ grep -n 'useGlobalFilters' src/main.ts</code></pre>
     <div class="hisse hisse-b">
       <span class="hisse-basliq">B · Kod</span>
     <p class="fayl-ad">src/saglamliq/saglamliq.service.ts</p>
-<pre><code>import { Injectable } from '@nestjs/common';
+<pre><code>cat &gt; src/saglamliq/saglamliq.service.ts &lt;&lt;'EOF'
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 
 export interface SaglamliqCavabi {
@@ -1493,9 +1518,11 @@ export class SaglamliqService {
       vaxt: new Date().toISOString(),
     };
   }
-}</code></pre>
+}
+EOF</code></pre>
     <p class="fayl-ad">src/saglamliq/saglamliq.controller.ts</p>
-<pre><code>import { Controller, Get } from '@nestjs/common';
+<pre><code>cat &gt; src/saglamliq/saglamliq.controller.ts &lt;&lt;'EOF'
+import { Controller, Get } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SaglamliqService } from './saglamliq.service.js';
 import type { SaglamliqCavabi } from './saglamliq.service.js';
@@ -1523,9 +1550,11 @@ export class SaglamliqController {
   yoxla(): Promise&lt;SaglamliqCavabi&gt; {
     return this.saglamliq.yoxla();
   }
-}</code></pre>
+}
+EOF</code></pre>
     <p class="fayl-ad">src/saglamliq/saglamliq.module.ts</p>
-<pre><code>import { Module } from '@nestjs/common';
+<pre><code>cat &gt; src/saglamliq/saglamliq.module.ts &lt;&lt;'EOF'
+import { Module } from '@nestjs/common';
 import { SaglamliqController } from './saglamliq.controller.js';
 import { SaglamliqService } from './saglamliq.service.js';
 
@@ -1533,7 +1562,8 @@ import { SaglamliqService } from './saglamliq.service.js';
   controllers: [SaglamliqController],
   providers: [SaglamliqService],
 })
-export class SaglamliqModule {}</code></pre>
+export class SaglamliqModule {}
+EOF</code></pre>
     </div>
 
     <div class="hisse hisse-c">
@@ -1627,7 +1657,8 @@ $ curl -s http://localhost:4000/api/v1/ | python3 -m json.tool
     <div class="hisse hisse-b">
       <span class="hisse-basliq">B · Kod</span>
     <p class="fayl-ad">src/app.module.ts</p>
-<pre><code>import { Module } from '@nestjs/common';
+<pre><code>cat &gt; src/app.module.ts &lt;&lt;'EOF'
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './prisma/prisma.module.js';
 import { SaglamliqModule } from './saglamliq/saglamliq.module.js';
@@ -1642,7 +1673,8 @@ import { SaglamliqModule } from './saglamliq/saglamliq.module.js';
     SaglamliqModule,
   ],
 })
-export class AppModule {}</code></pre>
+export class AppModule {}
+EOF</code></pre>
     </div>
 
     <div class="hisse hisse-c">
@@ -1725,7 +1757,8 @@ grep -n 'AppModule' src/main.ts</code></pre>
     <div class="hisse hisse-b">
       <span class="hisse-basliq">B · Kod</span>
     <p class="fayl-ad">src/main.ts</p>
-<pre><code>import 'reflect-metadata';
+<pre><code>cat &gt; src/main.ts &lt;&lt;'EOF'
+import 'reflect-metadata';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -1768,7 +1801,8 @@ async function bootstrap(): Promise&lt;void&gt; {
   Logger.log(`Sənədləşdirmə → http://localhost:${port}/docs`, 'BAŞLANGIC');
 }
 
-bootstrap();</code></pre>
+bootstrap();
+EOF</code></pre>
     </div>
 
     <div class="hisse hisse-c">
@@ -1973,7 +2007,8 @@ $ curl -s $API/saglamliq
     <div class="hisse hisse-b">
       <span class="hisse-basliq">B · Kod</span>
     <p class="fayl-ad">vitest.config.ts — unit testlər</p>
-<pre><code>import { defineConfig } from 'vitest/config';
+<pre><code>cat &gt; vitest.config.ts &lt;&lt;'EOF'
+import { defineConfig } from 'vitest/config';
 
 /**
  * UNIT testlər — baza və server TƏLƏB OLUNMUR.
@@ -1986,9 +2021,11 @@ export default defineConfig({
     include: ['src/**/*.spec.ts'],
     exclude: ['**/node_modules/**', '**/dist/**', '**/*.e2e-spec.ts'],
   },
-});</code></pre>
+});
+EOF</code></pre>
     <p class="fayl-ad">vitest.config.e2e.ts — e2e testlər</p>
-<pre><code>import { defineConfig } from 'vitest/config';
+<pre><code>cat &gt; vitest.config.e2e.ts &lt;&lt;'EOF'
+import { defineConfig } from 'vitest/config';
 
 /**
  * e2e testlər — REAL bazaya qoşulur.
@@ -2003,9 +2040,11 @@ export default defineConfig({
     testTimeout: 30_000,
     hookTimeout: 30_000,
   },
-});</code></pre>
+});
+EOF</code></pre>
     <p class="fayl-ad">src/saglamliq/saglamliq.service.spec.ts</p>
-<pre><code>import { Test } from '@nestjs/testing';
+<pre><code>cat &gt; src/saglamliq/saglamliq.service.spec.ts &lt;&lt;'EOF'
+import { Test } from '@nestjs/testing';
 import { SaglamliqService } from './saglamliq.service.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 
@@ -2050,9 +2089,11 @@ describe('SaglamliqService (unit)', () =&gt; {
 
     await expect(servis.yoxla()).rejects.toThrow('bağlantı yoxdur');
   });
-});</code></pre>
+});
+EOF</code></pre>
     <p class="fayl-ad">test/saglamliq.e2e-spec.ts</p>
-<pre><code>import { INestApplication, ValidationPipe } from '@nestjs/common';
+<pre><code>cat &gt; test/saglamliq.e2e-spec.ts &lt;&lt;'EOF'
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
 import { App } from 'supertest/types';
@@ -2110,7 +2151,8 @@ describe('Sağlamlıq (e2e)', () =&gt; {
     expect(c.body.xeta.kod).toBe('TAPILMADI');
     expect(typeof c.body.vaxt).toBe('string');
   });
-});</code></pre>
+});
+EOF</code></pre>
     </div>
 
     <div class="hisse hisse-c">
