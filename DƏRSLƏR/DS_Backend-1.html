@@ -1164,6 +1164,13 @@ EOF</code></pre>
       <p>Aşağıdaki əmrləri işlədin və nəticəni yoxlayın:</p>
 <pre><code>cd ~/Deepseek_ARTI/DS_Backend
 
+# ⚠️ ÖN ŞƏRT — ADDIM 5 işlədilibmi? Müştəri yoxdursa bu fayl kompilyasiya olunmur:
+#     error TS2307: Cannot find module '../generated/prisma/client.js'
+ls src/generated/prisma/client.ts || {
+  echo "✗ Prisma müştərisi yoxdur → əvvəlcə işlədin: npx prisma generate"
+  exit 1
+}
+
 # Adapter, həyat dövrü və yoxlama metodu yerindədirmi?
 grep -n 'PrismaPg\|super({\|onModuleInit\|onModuleDestroy\|DATABASE_URL' \
   src/prisma/prisma.service.ts
