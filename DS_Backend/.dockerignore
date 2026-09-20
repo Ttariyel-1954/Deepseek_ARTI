@@ -1,0 +1,14 @@
+node_modules
+dist
+.git
+.github
+.env
+.env.*
+!.env.example
+*.log
+coverage
+src/generated
+*.tsbuildinfo
+.DS_Store
+_hesabat
+DƏRSLƏR

@@ -7,6 +7,8 @@ import { AuthModule } from './auth/auth.module.js';
 import { StrukturModule } from './struktur/struktur.module.js';
 import { KadrlarModule } from './kadrlar/kadrlar.module.js';
 import { HesabatlarModule } from './hesabatlar/hesabatlar.module.js';
+import { AiModule } from './ai/ai.module.js';
+import { IxracModule } from './ixrac/ixrac.module.js';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard.js';
 import { RolesGuard } from './auth/guards/roles.guard.js';
 import { AuditInterceptor } from './common/interceptors/audit.interceptor.js';
@@ -20,6 +22,8 @@ import { AuditInterceptor } from './common/interceptors/audit.interceptor.js';
     StrukturModule,
     KadrlarModule,
     HesabatlarModule,
+    AiModule,
+    IxracModule,
   ],
   providers: [
     // SIRA VACIBDIR: evvelce "kim oldugunu" yoxla, sonra "icazen varmi"

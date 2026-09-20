@@ -7,7 +7,7 @@ Layihə 4 müstəqil blokdan ibarətdir. Hər blok ayrıca yenilənə və geniş
 | Blok | Nə edir | Texnologiya | Vəziyyət |
 |---|---|---|---|
 | `DS_Baza` | Məlumatı saxlayır | PostgreSQL 18 | ✅ hazır |
-| `DS_Backend` | API xidməti | NestJS 12 + Prisma 7 | ✅ Backend-1, -2, -3 hazır |
+| `DS_Backend` | API xidməti | NestJS 12 + Prisma 7 | ✅ **Backend 1-4 bitdi** |
 | `DS_Frontend` | İstifadəçi interfeysi | Next.js 16 + React 19 | ⏳ plan |
 | `DS_Web` | Xarici veb təqdimat | yenidən yazılır | ⏳ real məlumat gözlənilir |
 
@@ -53,7 +53,7 @@ open ~/Deepseek_ARTI/DƏRSLƏR/Deepseek_Baza.html
 | 2 | `DS_Backend-1.html` | 2145 | ✅ hazır |
 | 3 | `DS_Backend-2.html` | 2921 | ✅ hazır |
 | 4 | `DS_Backend-3.html` | 2592 | ✅ hazır |
-| 5 | `DS_Backend-4.html` | — | ⏳ növbəti |
+| 5 | `DS_Backend-4.html` | 3248 | ✅ hazır |
 | 6-8 | `DS_Frontend-1..3.html` | — | ⏳ plan |
 | 9-10 | `DS_Web-1..2.html` | — | ⏳ real məlumat gözlənilir |
 
@@ -99,6 +99,38 @@ open http://localhost:4000/docs
 cd ~/Deepseek_ARTI/DS_Backend
 bash backend2_qur.sh          # 21 fayl + qovluqlar + build
 bash backend3_qur.sh          # 19 fayl + auth paketleri + build
+bash backend4_qur.sh          # 17 fayl + AI/ixrac/Docker/CI + build
+```
+
+### AI qatı
+
+`DEEPSEEK_API_KEY` olmadan da sistem işləyir (demo rejim). Real cavab üçün:
+
+```bash
+# DS_Backend/.env
+DEEPSEEK_API_KEY="sk-..."
+```
+
+```bash
+# Sual ver
+curl -X POST localhost:4000/api/v1/ai/sorush \
+  -H "Authorization: Bearer $TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{"sual":"ARTİ-də neçə əməkdaş var?","kontekst":true}'
+
+# Təbii dil → SQL
+curl -X POST localhost:4000/api/v1/ai/sql \
+  -H "Authorization: Bearer $TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{"sual":"Ən çox maaş alan 5 nəfər","limit":5}'
+```
+
+### Docker
+
+```bash
+cd ~/Deepseek_ARTI/DS_Backend
+export JWT_SECRET="guclu-acar" DB_PASSWORD="arti_secret_2025"
+docker compose up -d
 ```
 
 ### Giriş məlumatları
@@ -124,12 +156,12 @@ curl -H "Authorization: Bearer $TOKEN" \
 
 | Göstərici | Dəyər |
 |---|---|
-| Endpoint | **24** |
+| Endpoint | **35** |
 | Rol (RBAC) | 4 (admin, muhendis, maliyyeci, baxici) |
-| Unit test | 38 |
-| e2e test | 62 |
-| **Cəmi test** | **100** |
-| Modul | 6 (sağlamlıq, auth, struktur, kadrlar, hesabat, prisma) |
+| Unit test | 75 |
+| e2e test | 90 |
+| **Cəmi test** | **165** |
+| Modul | 7 (sağlamlıq, auth, struktur, kadrlar, hesabat, ai, ixrac) |
 
 Təlimatlar real sınaqdan keçirilmişdir:
 
@@ -138,6 +170,7 @@ Təlimatlar real sınaqdan keçirilmişdir:
 | Backend-1 | 48 model, 3 marshrut, `int` tipləri — `_hesabat/backend1_sinag.txt` |
 | Backend-2 | 20 marshrut, 55 test, SQL injection qoruması — `_hesabat/backend2_sinag.txt` |
 | Backend-3 | 24 marshrut, 100 test, JWT + RBAC + audit — `_hesabat/backend3_sinag.txt` |
+| Backend-4 | 35 marshrut, 165 test, AI + RAG + Docker — `_hesabat/backend4_sinag.txt` |
 
 ### Əsas xüsusiyyətlər
 
@@ -150,6 +183,13 @@ Təlimatlar real sınaqdan keçirilmişdir:
 - **Rollar (RBAC)** — `@Roles()`, admin super-rol
 - **bcrypt şifrə hash** — cost 10, salt daxili
 - **Audit jurnalı** — bütün yazma əməliyyatları
+- **AI qatı** — DeepSeek API, demo rejim dəstəyi
+- **RAG** — kosinus oxşarlığı ilə sənəd axtarışı (JSONB)
+- **Təbii dil → SQL** — resept reyestri (AI SQL yazmır)
+- **Excel/HTML ixracı** — ExcelJS + çap üçün CSS
+- **Docker** — 3 mərhələli qurulus, docker-compose
+- **CI/CD** — GitHub Actions (3 job)
+- **Ehtiyat** — pg_dump + gzip + avtomatik təmizləmə
 
 ## Vacib qaydalar
 
