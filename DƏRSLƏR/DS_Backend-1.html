@@ -975,6 +975,11 @@ generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
 }
+
+datasource db {
+  provider = "postgresql"
+  schemas  = ["ai", "audit", "elm", "kadrlar", "logistika", "maliyye", "metodika", "ortaq", "qiymetlendirme", "sened", "struktur", "tehsil"]
+}
 EOF</code></pre>
     <p class="fayl-ad">prisma.config.ts</p>
 <pre><code>cat &gt; prisma.config.ts &lt;&lt;'EOF'
