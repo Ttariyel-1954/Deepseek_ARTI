@@ -1,0 +1,76 @@
+#!/bin/bash
+# ══════════════════════════════════════════════════════════════════════
+#  pre-commit HOOK — gizli məlumat repoya düşməsin
+#
+#  NİYƏ LAZIMDIR:
+#    Bu reponun tarixçəsində bir dəfə DeepSeek API açarı commit edilib
+#    (sk-ea9b64...) və GitHub-a göndərilib. Açar sonradan fayldan
+#    silinsə də, git tarixçəsində ƏBƏDİ qalır.
+#
+#  Necə işləyir:
+#    Commit etməzdən ƏVVƏL hazırlanmış (staged) faylları yoxlayır.
+#    Açar, parol və ya private key tapsa — commit DAYANDIRILIR.
+#
+#  Quraşdırma (bir dəfə):
+#    cd ~/Deepseek_ARTI && git config core.hooksPath .githooks
+#
+#  Keçmək (MÜTLƏQ səbəb varsa):
+#    git commit --no-verify
+# ══════════════════════════════════════════════════════════════════════
+
+DESEN='sk-[a-zA-Z0-9]{20,}|api[_-]?key[[:space:]]*[:=][[:space:]]*.{0,2}[a-zA-Z0-9_-]{16,}|BEGIN [A-Z ]*PRIVATE KEY|postgres(ql)?://[^:]+:[^@]{6,}@'
+
+fayllar=$(git diff --cached --name-only --diff-filter=ACM 2>/dev/null)
+[ -z "$fayllar" ] && exit 0
+
+tapilan=0
+
+for f in $fayllar; do
+  [ -f "$f" ] || continue
+
+  # Nümunə fayllar istisnadır
+  case "$f" in
+    *.example|*.md|*README*) continue ;;
+  esac
+
+  netice=$(grep -nEI "$DESEN" "$f" 2>/dev/null)
+  if [ -n "$netice" ]; then
+    [ "$tapilan" -eq 0 ] && {
+      echo ""
+      echo "════════════════════════════════════════════════════════════"
+      echo "  ❌ COMMIT DAYANDIRILDI — GİZLİ MƏLUMAT TAPILDI"
+      echo "════════════════════════════════════════════════════════════"
+    }
+    tapilan=1
+    echo ""
+    echo "  Fayl: $f"
+    echo "$netice" | head -5 | sed 's/^/    /'
+  fi
+done
+
+if [ "$tapilan" -eq 1 ]; then
+  cat <<'XETA'
+
+  ────────────────────────────────────────────────────────────
+  NƏ ETMƏLİ:
+
+    1) Açarı fayldan ÇIXARIN — yerinə mühit dəyişəni işlədin:
+         const açar = process.env.DEEPSEEK_API_KEY;
+
+    2) Açarın özünü .env faylına yazın
+       (.env .gitignore-dadır — repoya düşmür)
+
+    3) Yenidən cəhd edin:
+         git add <fayl>
+         git commit -m "..."
+
+  ⚠️  ƏGƏR AÇAR ARTIQ GITHUB-A GÖNDƏRİLİBSƏ:
+      onu platformada DƏRHAL LƏĞV EDİN. Git tarixçəsindən
+      silmək kifayət etmir — açar artıq ictimai sayılır.
+  ────────────────────────────────────────────────────────────
+
+XETA
+  exit 1
+fi
+
+exit 0

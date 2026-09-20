@@ -1,261 +1,280 @@
 # Deepseek_ARTI
 
-**ARTİ (Azərbaycan Respublikasının Təhsil İnstitutu) üçün AI ilə idarə olunan ERP sistemi.**
+**ARTİ — Azərbaycan Respublikasının Təhsil İnstitutu** üçün ERP sistemi.
+Layihə qat-qat qurulur: əvvəlcə baza, sonra backend, sonra frontend və veb.
+Hər qat **addım-addım** yazılır və hər addım canlı yoxlanılır.
 
-Layihə 4 müstəqil blokdan ibarətdir. Hər blok ayrıca yenilənə və genişlənə bilər.
+---
 
-| Blok | Nə edir | Texnologiya | Vəziyyət |
+## Layihə xəritəsi
+
+```
+~/Deepseek_ARTI/
+│
+├── DS_Baza/                 ← BAZA QATI
+│   ├── sql/
+│   │   ├── 00_TAM_DDL.sql       bütün sxem: 12 sxem · 48 cədvəl · 35 FK
+│   │   ├── 10_view.sql          8 view
+│   │   ├── 11_funksiya.sql      10 funksiya
+│   │   ├── 12_trigger.sql       14 trigger
+│   │   ├── 10_sorgular.sql      40 yoxlama sorğusu
+│   │   ├── 20_veriler.sql       bütün məlumat (mərkəz, şöbə, əməkdaş)
+│   │   └── BERPA_ET.md          bazanı sıfırdan bərpa təlimatı
+│   ├── ders.css                 dərslərin ümumi görünüşü
+│   └── ders_yarat.py            Baza dərsinin generatoru
+│
+├── DS_Backend/              ← BACKEND QATI (NestJS 12 + Prisma 7)
+│   ├── src/
+│   │   ├── main.ts              giriş nöqtəsi: prefiks, validasiya, Swagger
+│   │   ├── app.module.ts        kök modul
+│   │   ├── prisma/              baza bağlantısı (PrismaService, PrismaModule)
+│   │   ├── common/filters/      vahid xəta formatı
+│   │   ├── saglamliq/           sağlamlıq endpoint-i
+│   │   └── generated/           Prisma müştərisi (git-ə düşmür)
+│   ├── prisma/schema.prisma     48 model — bazadan çıxarılıb
+│   ├── test/                    e2e testlər
+│   ├── ds1_yarat.py             Backend-1 dərsinin generatoru
+│   └── package.json
+│
+├── DƏRSLƏR/                 ← DƏRSLƏR (HTML)
+│   ├── Deepseek_Baza.html       Baza — 40 sorğu (2260 sətir)
+│   └── DS_Backend-1.html        Backend 1 — A/B/C/D (2240 sətir)
+│
+├── _hesabat/                ← generatorların işlətdiyi çıxışlar
+│   └── sorgu_cixis.txt          40 sorğunun real nəticəsi
+│
+├── _arxiV/                  ← baza ehtiyat nüsxələri (git-ə düşmür)
+│   └── arti_baza_TAM_*.sql
+│
+├── .githooks/pre-commit     ← gizli məlumat qoruyucusu
+├── README.md                ← bu fayl
+└── yoxla.sh                 ← vəziyyət yoxlaması
+```
+
+---
+
+## Hazırkı vəziyyət
+
+| Qat | Vəziyyət | Nə var |
+|---|---|---|
+| **Baza** | ✅ Hazır | 12 sxem · 48 cədvəl · 8 view · 10 funksiya · 14 trigger · 35 FK |
+| **Backend** | 🟡 Davam edir | NestJS 12 · 2 endpoint · 7 test · Swagger. **Autentifikasiya yoxdur** |
+| **Frontend** | ⬜ Başlamamış | — |
+| **Web** | ⬜ Başlamamış | — |
+
+### Dərslər
+
+| # | Dərs | Sətir | Vəziyyət |
 |---|---|---|---|
-| `DS_Baza` | Məlumatı saxlayır | PostgreSQL 18 | ✅ hazır |
-| `DS_Backend` | API xidməti | NestJS 12 + Prisma 7 | ✅ **Backend 1-4 bitdi** |
-| `DS_Frontend` | İstifadəçi interfeysi | Next.js 16 + React 19 | ⏳ plan |
-| `DS_Web` | Xarici veb təqdimat | yenidən yazılır | ⏳ real məlumat gözlənilir |
+| 1 | `Deepseek_Baza.html` — baza və 40 sorğu | 2260 | ✅ |
+| 2 | `DS_Backend-1.html` — sıfırdan ilk işləyən API | 2240 | ✅ |
+| 3 | `DS_Backend-2.html` — struktur və kadrlar modulları | — | ⬜ |
+| 4 | `DS_Backend-3.html` — autentifikasiya, rollar, audit | — | ⬜ |
+| 5 | `DS_Backend-4.html` — AI qatı, ixrac, yerləşdirmə | — | ⬜ |
+| 6 | `DS_Frontend-*.html` | — | ⬜ |
+| 7 | `DS_Web-*.html` | — | ⬜ |
 
-## Baza
-
-| Göstərici | Dəyər |
-|---|---|
-| Baza adı | `arti_baza` |
-| İstifadəçi | `arti_user` |
-| Port | 5432 |
-| Sxem | 12 |
-| Cədvəl | 48 |
-| Görünüş (view) | 8 |
-| Funksiya | 10 |
-| Trigger | 5 |
-| Xarici açar | 35 |
+---
 
 ## Sürətli başlanğıc
 
 ```bash
+# 1) Layihəni aç
 cd ~/Deepseek_ARTI
-unset DATABASE_URL PGHOST          # MÜTLƏQ!
-export PGPASSWORD=arti_secret_2025
 
-# Vəziyyəti yoxla
+# 2) Vəziyyəti yoxla
 ./yoxla.sh
 
-# 40 sorğunu işlət
-psql -U arti_user -d arti_baza -f DS_Baza/sql/10_sorgular.sql
+# 3) Backend-i işə sal
+cd DS_Backend
+unset DATABASE_URL PGHOST        # ← VACİB: sistem dəyişəni başqa bazaya yönəldə bilər
+npm run start:dev
 ```
 
-## Dərslər
-
-Bütün dərslər `DƏRSLƏR/` qovluğundadır. Brauzerdə açın:
+İşlədiyini yoxla:
 
 ```bash
-open ~/Deepseek_ARTI/DƏRSLƏR/Deepseek_Baza.html
+curl -s http://localhost:4000/api/v1/saglamliq | python3 -m json.tool
+# {
+#   "status": "saglam",
+#   "baza": { "qosulub": true, "cedvel_sayi": 48, "gecikme_ms": 2 },
+#   ...
+# }
 ```
 
-| # | Dərs | Sətir | Vəziyyət |
-|---|---|---|---|
-| 1 | `Deepseek_Baza.html` | 2261 | ✅ hazır |
-| 2 | `DS_Backend-1.html` | 2145 | ✅ hazır |
-| 3 | `DS_Backend-2.html` | 2921 | ✅ hazır |
-| 4 | `DS_Backend-3.html` | 2592 | ✅ hazır |
-| 5 | `DS_Backend-4.html` | 3248 | ✅ hazır |
-| 6-8 | `DS_Frontend-1..3.html` | — | ⏳ plan |
-| 9-10 | `DS_Web-1..2.html` | — | ⏳ real məlumat gözlənilir |
+Swagger sənədləşdirməsi: <http://localhost:4000/docs>
 
-## Qovluq strukturu
+---
+
+## Baza
+
+| Nə | Say |
+|---|---|
+| Sxem | 12 — `ai` `audit` `elm` `kadrlar` `logistika` `maliyye` `metodika` `ortaq` `qiymetlendirme` `sened` `struktur` `tehsil` |
+| Cədvəl | 48 |
+| View | 8 |
+| Funksiya | 10 |
+| Trigger | 14 |
+| Xarici açar | 35 |
+
+**Əsas məlumat:**
+
+| Cədvəl | Sətir |
+|---|---|
+| `struktur.merkezler` | 10 |
+| `struktur.shobeler` | 36 |
+| `struktur.rehberlik` | 7 |
+| `kadrlar.emekdaslar` | 14 |
+| `kadrlar.istifadeciler` | 4 |
+
+### Bağlantı
 
 ```
-Deepseek_ARTI/
-Deepseek_ARTI/
-├── DS_Baza/                    baza bloku — PostgreSQL 18
-│   ├── ders_yarat.py           dərs generatoru
-│   └── sql/
-│       ├── 00_TAM_DDL.sql      struktur: 12 sxem, 48 cədvəl, 8 view, 10 fn, 5 trigger
-│       ├── 20_veriler.sql      məlumat: bütün sətirlər (INSERT formatında)
-│       ├── BERPA_ET.md         bazanı sıfırdan bərpa təlimatı
-│       ├── 10_sorgular.sql     40 vacib sorğu
-│       ├── 10_view.sql         8 görünüş
-│       ├── 11_funksiya.sql     10 funksiya
-│       └── 12_trigger.sql      5 trigger
-├── DS_Backend/                 NestJS 12 + Prisma 7
-│   ├── qur.sh                  Backend-1 tam qurulma skripti
-│   ├── backend2_qur.sh         Backend-2 fayllarini bir əmrlə yaradir
-│   └── ders2_yarat.py          Backend-2 dərs generatoru
-├── DS_Frontend/                Next.js 16 + React 19 (plan)
-├── DS_Web/                     xarici veb təqdimat (real məlumat gözlənilir)
-├── DƏRSLƏR/                    bütün HTML dərslər
-├── _hesabat/                   sınaq nəticələri
-└── yoxla.sh                    sürətli vəziyyət yoxlaması
+Baza       : arti_baza
+İstifadəçi : arti_user
+Şifrə      : arti_secret_2025
+Port       : 5432
 ```
-
-## Backend
 
 ```bash
-cd ~/Deepseek_ARTI/DS_Backend
 unset DATABASE_URL PGHOST
-npm run start:dev                 # :4000
-curl http://localhost:4000/api/v1/struktur/merkezler
-open http://localhost:4000/docs
-```
-
-### Backend fayllarını yaratmaq
-
-```bash
-cd ~/Deepseek_ARTI/DS_Backend
-bash backend2_qur.sh          # 21 fayl + qovluqlar + build
-bash backend3_qur.sh          # 19 fayl + auth paketleri + build
-bash backend4_qur.sh          # 17 fayl + AI/ixrac/Docker/CI + build
-```
-
-### AI qatı
-
-`DEEPSEEK_API_KEY` olmadan da sistem işləyir (demo rejim). Real cavab üçün:
-
-```bash
-# DS_Backend/.env
-DEEPSEEK_API_KEY="sk-..."
-```
-
-```bash
-# Sual ver
-curl -X POST localhost:4000/api/v1/ai/sorush \
-  -H "Authorization: Bearer $TOKEN" \
-  -H 'Content-Type: application/json' \
-  -d '{"sual":"ARTİ-də neçə əməkdaş var?","kontekst":true}'
-
-# Təbii dil → SQL
-curl -X POST localhost:4000/api/v1/ai/sql \
-  -H "Authorization: Bearer $TOKEN" \
-  -H 'Content-Type: application/json' \
-  -d '{"sual":"Ən çox maaş alan 5 nəfər","limit":5}'
-```
-
-### Docker
-
-```bash
-cd ~/Deepseek_ARTI/DS_Backend
-export JWT_SECRET="guclu-acar" DB_PASSWORD="arti_secret_2025"
-docker compose up -d
-```
-
-### Giriş məlumatları
-
-| E-poçt | Şifrə | Rol |
-|---|---|---|
-| `admin@arti.edu.az` | `123456` | admin |
-| `muhendis@arti.edu.az` | `123456` | muhendis |
-| `maliyyeci@arti.edu.az` | `123456` | maliyyeci |
-| `baxici@arti.edu.az` | `123456` | baxici |
-
-```bash
-TOKEN=$(curl -s -X POST http://localhost:4000/api/v1/auth/login \
-  -H 'Content-Type: application/json' \
-  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
-  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
-
-curl -H "Authorization: Bearer $TOKEN" \
-  http://localhost:4000/api/v1/struktur/merkezler
-```
-
-### API göstəriciləri
-
-| Göstərici | Dəyər |
-|---|---|
-| Endpoint | **35** |
-| Rol (RBAC) | 4 (admin, muhendis, maliyyeci, baxici) |
-| Unit test | 75 |
-| e2e test | 90 |
-| **Cəmi test** | **165** |
-| Modul | 7 (sağlamlıq, auth, struktur, kadrlar, hesabat, ai, ixrac) |
-
-Təlimatlar real sınaqdan keçirilmişdir:
-
-| Dərs | Nəticə |
-|---|---|
-| Backend-1 | 48 model, 3 marshrut, `int` tipləri — `_hesabat/backend1_sinag.txt` |
-| Backend-2 | 20 marshrut, 55 test, SQL injection qoruması — `_hesabat/backend2_sinag.txt` |
-| Backend-3 | 24 marshrut, 100 test, JWT + RBAC + audit — `_hesabat/backend3_sinag.txt` |
-| Backend-4 | 35 marshrut, 165 test, AI + RAG + Docker — `_hesabat/backend4_sinag.txt` |
-
-### Əsas xüsusiyyətlər
-
-- **DTO + class-validator** — bütün giriş məlumatı yoxlanılır
-- **Vahid xəta formatı** — `{ ugur, xeta: { kod, mesaj, detallar }, yol, vaxt }`
-- **SQL injection qoruması** — ağ siyahı (whitelist) prinsipi
-- **Səhifələmə + filtr + sıralama** — `SehifeDto`-dan miras
-- **Mass assignment qoruması** — `forbidNonWhitelisted`
-- **JWT autentifikasiya** — qlobal guard, `@Public()` istisnası
-- **Rollar (RBAC)** — `@Roles()`, admin super-rol
-- **bcrypt şifrə hash** — cost 10, salt daxili
-- **Audit jurnalı** — bütün yazma əməliyyatları
-- **AI qatı** — DeepSeek API, demo rejim dəstəyi
-- **RAG** — kosinus oxşarlığı ilə sənəd axtarışı (JSONB)
-- **Təbii dil → SQL** — resept reyestri (AI SQL yazmır)
-- **Excel/HTML ixracı** — ExcelJS + çap üçün CSS
-- **Docker** — 3 mərhələli qurulus, docker-compose
-- **CI/CD** — GitHub Actions (3 job)
-- **Ehtiyat** — pg_dump + gzip + avtomatik təmizləmə
-
-## Vacib qaydalar
-
-1. **`unset DATABASE_URL PGHOST`** — hər sessiyanın əvvəlində.
-2. **PostgreSQL cast** — `id::int`, `maas::float8`, `count(*)::int`.
-3. **Backend import** — `.js` MƏCBURİ; frontend-də YOX.
-4. **Özünü təsdiqləmə** — "yəqin işləyir" yox, real sınaq.
-
-## Baza bərpası
-
-Repo-da bazanın tam bərpası üçün hər şey var:
-
-```bash
-psql -U postgres -c "CREATE ROLE arti_user WITH LOGIN PASSWORD 'arti_secret_2025';"
-psql -U postgres -c "CREATE DATABASE arti_baza OWNER arti_user;"
 export PGPASSWORD=arti_secret_2025
-psql -U arti_user -d arti_baza -f DS_Baza/sql/00_TAM_DDL.sql
-psql -U arti_user -d arti_baza -f DS_Baza/sql/20_veriler.sql
+psql -U arti_user -d arti_baza
+```
+
+### Bazanı sıfırdan bərpa etmək
+
+```bash
+cd ~/Deepseek_ARTI/DS_Baza/sql
+unset DATABASE_URL PGHOST
+export PGPASSWORD=arti_secret_2025
+
+psql -U arti_user -d arti_baza -f 00_TAM_DDL.sql     # sxem + cədvəllər
+psql -U arti_user -d arti_baza -f 10_view.sql        # view-lar
+psql -U arti_user -d arti_baza -f 11_funksiya.sql    # funksiyalar
+psql -U arti_user -d arti_baza -f 12_trigger.sql     # trigger-lər
+psql -U arti_user -d arti_baza -f 20_veriler.sql     # məlumat
 ```
 
 Ətraflı: [`DS_Baza/sql/BERPA_ET.md`](DS_Baza/sql/BERPA_ET.md)
 
-## Git
+---
 
-Repo: <https://github.com/Ttariyel-1954/Deepseek_ARTI>
+## Backend
+
+**Texnologiya:** NestJS 12.0.3 · Prisma 7.10 · TypeScript 6.0 · Vitest 4.1 · PostgreSQL
+
+### Endpoint-lər
+
+| Metod | Yol | Nə edir |
+|---|---|---|
+| `GET` | `/api/v1` | API haqqında qısa məlumat |
+| `GET` | `/api/v1/saglamliq` | Sağlamlıq — bazaya **real** sorğu göndərir |
+
+Sənədləşdirmə: `/docs`
+
+### Əmrlər
 
 ```bash
-cd ~/Deepseek_ARTI
-git add -A
-git commit -m "<qat>: <qısa təsvir>"
-git push
+cd ~/Deepseek_ARTI/DS_Backend
+unset DATABASE_URL PGHOST
+
+npm run start:dev        # inkişaf — hər dəyişiklikdə özü yenilənir
+npm run build            # TypeScript → JavaScript (dist/)
+npm run start:prod       # istehsalat: node dist/main.js
+
+npm test                 # unit testlər (baza lazım DEYİL) — 3 test
+npx vitest run --config vitest.config.e2e.ts   # e2e (real baza) — 4 test
+
+npm run db:yenile        # prisma db pull && prisma generate
 ```
 
-Commit mesajı formatı: `baza:` · `backend:` · `frontend:` · `ders:` · `sened:`
+### Vacib qaydalar
 
-Push-dan əvvəl **mütləq** yoxla:
+Bu layihədə aşağıdaki şeylər **məcburidir** — pozulsa kod işləmir:
 
-```bash
-git status
-git diff --cached | grep -iE 'sk-|api_key|password|secret'
-```
-
+| Qayda | Səbəb |
+|---|---|
+| `import ... from './x.js'` | ESM + `moduleResolution: nodenext`. `.js` olmasa `TS2307` |
+| `schemas = [...]` bir sətirdə | Prisma çoxsətirli massivi qəbul etmir → `P1012` |
+| `PrismaPg` adapter | Prisma 7-də adapter MÜTLƏQDİR |
+| `@Global()` PrismaModule-da | Yoxsa `Nest can't resolve dependencies` |
+| `JwtModule.registerAsync()` | `register()` `.env`-dən əvvəl işləyir (3-cü dərsdə) |
+| SQL-də `::int` / `::float8` cast | Yoxsa `Do not know how to serialize a BigInt` |
 
 ---
 
-## 🔐 Təhlükəsizlik qeydi
+## Dərslərin formatı — A / B / C / D
 
-| Nə | Vəziyyət |
-|---|---|
-| `DS_Backend/.env` | ❌ **repoda yoxdur** (`.gitignore`-dadır) |
-| `DS_Backend/.env.example` | ✅ repoda var — şifrəsiz nümunə |
-| `node_modules/`, `dist/`, `src/generated/` | ❌ repoda yoxdur |
-| API açarları | ✅ repo-da **yoxdur** |
+Hər dərs addımlara bölünüb və **hər addım 4 hissədən** ibarətdir:
 
-**`arti_secret_2025`** — bu, **yalnız lokal inkişaf bazasının** şifrəsidir və
-sənədlərdə (dərslər, `BERPA_ET.md`, `qur.sh`) copy-paste rahatlığı üçün açıq göstərilib.
+| Hissə | Nə var | Nə üçün |
+|---|---|---|
+| **A** | Bu addım nəyə görədir — 3-4 cümlə | Kodu yazmadan **əvvəl** məqsədi anlamaq |
+| **B** | Addıma aid kodun özü — tam | Olduğu kimi kopyalayıb işlətmək |
+| **C** | Yoxlama əmrləri + ⚠️ **bu kod olmasa nə olardı** | Səhvi dərhal tutmaq |
+| **D** | Bu koddan sonra **sistemin real durumu** | Nəticənin ölçülmüş olduğunu görmək |
 
-> ⚠️ **İstehsala (production) çıxarmazdan əvvəl mütləq dəyişdirin:**
-> ```bash
-> psql -U postgres -c "ALTER ROLE arti_user WITH PASSWORD 'yeni-guclu-sifre';"
-> ```
-> Sonra `DS_Backend/.env`-i yeniləyin. `.env` repoya getmədiyi üçün
-> şifrə dəyişikliyi repoya təsir etmir.
+**C və D hissələrindəki bütün çıxışlar realdır** — kodu bilərəkdən söndürüb
+alınmış xətalar və canlı sistemdən götürülmüş nəticələr.
 
-Push-dan əvvəl həmişə yoxlayın:
+### Dərsləri yenidən yaratmaq
+
+Dərs generatorları kodu **birbaşa işləyən layihədən** oxuyur — ona görə dərs
+heç vaxt koddan ayrı düşə bilməz:
 
 ```bash
-git diff --cached | grep -iE 'sk-|api_key|password|secret'
+cd ~/Deepseek_ARTI
+python3 DS_Baza/ders_yarat.py      # → DƏRSLƏR/Deepseek_Baza.html
+python3 DS_Backend/ds1_yarat.py    # → DƏRSLƏR/DS_Backend-1.html
 ```
+
+---
+
+## Yoxlama
+
+```bash
+./yoxla.sh                # tam vəziyyət hesabatı
+./yoxla.sh baza           # yalnız baza
+./yoxla.sh backend        # yalnız backend
+./yoxla.sh dersler        # yalnız dərslər
+./yoxla.sh git            # yalnız git
+./yoxla.sh test           # testləri də işlət
+```
+
+---
+
+## Gizli məlumat qoruyucusu
+
+Repo tarixçəsində bir dəfə DeepSeek API açarı commit edilmişdi.
+Təkrarlanmasın deyə `pre-commit` hook qurulub:
+
+```bash
+git config core.hooksPath .githooks     # bir dəfə — artıq qurulub
+```
+
+Hook hər commit-dən əvvəl hazırlanmış faylları yoxlayır və
+açar / parol / private key tapsa commit-i **dayandırır**.
+
+⚠️ **Açarı `.env` və ya `Kodlar` faylında saxlayın** — hər ikisi
+`.gitignore`-dadır və repoya düşmür.
+
+---
+
+## Vacib xəbərdarlıqlar
+
+- ⚠️ **`unset DATABASE_URL PGHOST`** — hər `psql`, `npm` və server əmrindən əvvəl.
+  Sistem dəyişəni başqa bazaya (`zarat_deepseek`) yönləndirə bilər.
+- ⚠️ **`.env` git-ə düşmür** — yeni kompüterdə `.env.example`-dən kopyalayın.
+- ⚠️ **`src/generated/` git-ə düşmür** — `npx prisma generate` ilə yaradılır.
+- ⚠️ **`node_modules/` git-ə düşmür** — `npm install` lazımdır.
+
+---
+
+## Repo
+
+```
+git@github.com:Ttariyel-1954/Deepseek_ARTI.git
+```
+
+Layihə addım-addım qurulur: hər addım yazılır → canlı yoxlanılır → commit edilir.
