@@ -1,0 +1,2240 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Backend 1 — Sıfırdan ilk işləyən API (A/B/C/D)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #eef2f7; color: #1e293b; line-height: 1.85;
+    padding: 2rem 1rem; font-size: 16.5px;
+  }
+  .container {
+    max-width: 1150px; margin: 0 auto; background: #fff;
+    border-radius: 22px; box-shadow: 0 15px 40px -15px rgba(15,23,42,.25);
+    padding: 3rem 3rem 4rem;
+  }
+  header {
+    border-bottom: 5px solid #7c2d12; padding-bottom: 1.8rem;
+    margin-bottom: 2.5rem; position: relative;
+  }
+  header::after {
+    content: ''; position: absolute; bottom: -5px; left: 0;
+    width: 120px; height: 5px; background: #f59e0b;
+  }
+  .lesson-badge {
+    display: inline-block; background: linear-gradient(135deg,#7c2d12,#ea580c);
+    color: #fff; font-size: .75rem; font-weight: 800;
+    padding: .5rem 1.2rem; border-radius: 30px; letter-spacing: 2px;
+    margin-bottom: 1.2rem; text-transform: uppercase;
+  }
+  h1 { font-size: 2.25rem; font-weight: 800; color: #0f172a; line-height: 1.15; margin-bottom: .7rem; }
+  .subtitle { font-size: 1.12rem; color: #64748b; margin-bottom: 1.3rem; }
+  .meta { display: flex; gap: .8rem; flex-wrap: wrap; }
+  .meta span {
+    background: #ffedd5; color: #9a3412; padding: .4rem 1rem;
+    border-radius: 20px; font-weight: 700; font-size: .82rem;
+  }
+  h2 {
+    font-size: 1.8rem; font-weight: 800; color: #7c2d12;
+    margin-top: 3.2rem; margin-bottom: 1.1rem;
+    padding: .8rem 0 .8rem 1.2rem; border-left: 7px solid #ea580c;
+    background: linear-gradient(to right,#fff7ed,transparent);
+  }
+  h3 {
+    font-size: 1.28rem; font-weight: 700; color: #9a3412;
+    margin-top: 2.3rem; margin-bottom: .9rem;
+    display: flex; align-items: center; gap: .7rem;
+  }
+  h4 { font-size: 1.08rem; font-weight: 700; color: #334155; margin-top: 1.6rem; margin-bottom: .7rem; }
+  p { margin-bottom: 1rem; }
+  .step-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg,#ea580c,#7c2d12); color: #fff;
+    min-width: 36px; height: 36px; border-radius: 50%;
+    font-weight: 800; font-size: .9rem; flex-shrink: 0; padding: 0 .5rem;
+  }
+  .block {
+    border-radius: 14px; padding: 1.25rem 1.5rem; margin: 1.1rem 0;
+    border-left: 6px solid; position: relative;
+  }
+  .block-ne     { border-color:#3b82f6; background:#eff6ff; }
+  .block-niye   { border-color:#8b5cf6; background:#f5f3ff; }
+  .block-sade   { border-color:#14b8a6; background:#f0fdfa; }
+  .block-olmaz  { border-color:#ef4444; background:#fef2f2; }
+  .block-evez   { border-color:#f59e0b; background:#fffbeb; }
+  .block-nece   { border-color:#10b981; background:#ecfdf5; }
+  .block-yox    { border-color:#ec4899; background:#fdf2f8; }
+  .block-izah   { border-color:#06b6d4; background:#ecfeff; }
+  .block-xeber  { border-color:#dc2626; background:#fef2f2; }
+  .block-ipucu  { border-color:#84cc16; background:#f7fee7; }
+  .block-hara   { border-color:#0ea5e9; background:#f0f9ff; }
+  .block-title {
+    font-weight: 800; font-size: .76rem; text-transform: uppercase;
+    letter-spacing: 1.6px; margin-bottom: .6rem; display: block;
+  }
+  .block-ne    .block-title { color:#1d4ed8; }
+  .block-niye  .block-title { color:#7c3aed; }
+  .block-sade  .block-title { color:#0d9488; }
+  .block-olmaz .block-title { color:#dc2626; }
+  .block-evez  .block-title { color:#d97706; }
+  .block-nece  .block-title { color:#059669; }
+  .block-yox   .block-title { color:#db2777; }
+  .block-izah  .block-title { color:#0891b2; }
+  .block-xeber .block-title { color:#b91c1c; }
+  .block-ipucu .block-title { color:#4d7c0f; }
+  .block-hara  .block-title { color:#0284c7; }
+  pre {
+    background: #0f172a; color: #e2e8f0; padding: 1.3rem 1.5rem;
+    border-radius: 14px; overflow-x: auto; margin: 1.1rem 0;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: .83rem; line-height: 1.7;
+    border: 1px solid #334155; position: relative;
+  }
+  pre::before {
+    content: attr(data-lang); position: absolute; top: .7rem; right: .9rem;
+    font-size: .6rem; font-weight: 800; color: #64748b;
+    letter-spacing: 2px; background: #1e293b; padding: .2rem .7rem;
+    border-radius: 5px; text-transform: uppercase;
+  }
+  pre code { background: transparent; color: inherit; padding: 0; font-size: inherit; }
+  code {
+    font-family: 'SF Mono', Menlo, monospace; background: #e2e8f0;
+    color: #0f172a; padding: .15rem .5rem; border-radius: 5px; font-size: .87em;
+  }
+  table {
+    width: 100%; border-collapse: collapse; margin: 1.3rem 0;
+    background: #fff; border-radius: 12px; overflow: hidden;
+    box-shadow: 0 3px 12px rgba(0,0,0,.06); font-size: .9rem;
+  }
+  th {
+    background: linear-gradient(135deg,#7c2d12,#9a3412); color: #fff;
+    padding: .85rem 1rem; text-align: left; font-weight: 700; font-size: .82rem;
+  }
+  td { padding: .75rem 1rem; border-top: 1px solid #e2e8f0; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8fafc; }
+  ul, ol { margin: .8rem 0 1.2rem 1.9rem; }
+  li { margin-bottom: .5rem; }
+  .toc {
+    background: linear-gradient(135deg,#fff7ed,#ffedd5);
+    border: 2px solid #fdba74; border-radius: 16px;
+    padding: 1.7rem 2rem; margin: 2.3rem 0;
+  }
+  .toc h3 { margin-top: 0; color: #7c2d12; font-size: 1.25rem; }
+  .toc ol { margin-left: 1.2rem; }
+  .toc a { color: #c2410c; text-decoration: none; font-weight: 600; }
+  .toc a:hover { text-decoration: underline; }
+  .success-box {
+    background: linear-gradient(135deg,#d1fae5,#a7f3d0);
+    border: 2px solid #10b981; border-radius: 14px;
+    padding: 1.25rem 1.5rem; margin: 1.4rem 0;
+    font-weight: 600; color: #065f46;
+  }
+  .success-box::before { content: '✅ '; font-size: 1.25rem; margin-right: .3rem; }
+  .sozluq {
+    background: #fffbeb; border: 2px dashed #f59e0b;
+    border-radius: 14px; padding: 1.2rem 1.5rem; margin: 1.3rem 0;
+  }
+  .sozluq .soz { font-weight: 800; color: #b45309; }
+  .mektub {
+    background: #fffdf7; border: 2px solid #d6d3d1;
+    border-radius: 10px; padding: 2rem 2.3rem; margin: 1.5rem 0;
+    font-family: 'Times New Roman', Georgia, serif;
+    font-size: 1rem; line-height: 1.9; color: #1c1917;
+    box-shadow: 0 4px 18px rgba(0,0,0,.07);
+  }
+  .mektub .basliq { text-align: center; font-weight: 700; margin-bottom: 1.6rem; }
+  .mektub .sag { text-align: right; margin-bottom: 1.6rem; }
+  .mektub .imza { margin-top: 2.2rem; }
+  .mektub ol { margin-left: 1.6rem; }
+  .excel {
+    background: #f8fafc; border: 2px solid #94a3b8; border-radius: 10px;
+    padding: 0; margin: 1.2rem 0; overflow-x: auto;
+  }
+  .excel table { margin: 0; border-radius: 0; box-shadow: none; font-size: .82rem; }
+  .excel th { background: linear-gradient(135deg,#166534,#14532d); padding: .6rem .7rem; }
+  .excel td { padding: .5rem .7rem; }
+  .excel-basliq {
+    background: #1e293b; color: #e2e8f0; padding: .6rem 1rem;
+    font-family: 'SF Mono', Menlo, monospace; font-size: .8rem;
+    font-weight: 700; letter-spacing: 1px;
+  }
+  footer {
+    margin-top: 4.5rem; padding-top: 2rem;
+    border-top: 3px dashed #cbd5e1; text-align: center;
+    color: #64748b; font-size: .9rem;
+  }
+  @media (max-width: 700px) {
+    .container { padding: 1.5rem 1.2rem; }
+    h1 { font-size: 1.6rem; } h2 { font-size: 1.35rem; }
+    pre { font-size: .72rem; padding: 1rem; }
+    .mektub { padding: 1.2rem; font-size: .9rem; }
+  }
+  pre { position: relative; }
+  .copy-btn {
+    position: absolute; top: .7rem; right: .9rem;
+    background: #1e293b; color: #cbd5e1; border: 1px solid #475569;
+    border-radius: 6px; padding: .3rem .7rem; font-size: .68rem;
+    font-weight: 700; cursor: pointer; z-index: 10; opacity: .75;
+  }
+  .copy-btn:hover { background: #334155; color: #fff; opacity: 1; }
+  .copy-btn.copied { background: #059669 !important; color: #fff !important; }
+  pre::before { right: auto !important; left: .9rem !important; }
+  pre code { display: block; padding-top: .2rem; }
+
+  /* ─── REDAKTƏ OLUNA BİLƏN MƏKTUB ─── */
+  .mektub-alet {
+    background: #f0fdf4; border: 2px solid #16a34a;
+    border-radius: 12px; padding: 1.2rem 1.4rem; margin: 1.3rem 0;
+  }
+  .mektub-alet .alet-basliq {
+    font-weight: 800; font-size: .82rem; color: #15803d;
+    text-transform: uppercase; letter-spacing: 1.4px;
+    margin-bottom: .8rem; display: block;
+  }
+  textarea.mektub-metni {
+    width: 100%; min-height: 420px; padding: 1.1rem 1.3rem;
+    border: 2px solid #94a3b8; border-radius: 10px;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: .82rem; line-height: 1.75; color: #0f172a;
+    background: #fffdf7; resize: vertical;
+  }
+  textarea.mektub-metni:focus {
+    outline: none; border-color: #16a34a;
+    box-shadow: 0 0 0 3px rgba(22,163,74,.15);
+  }
+  .duyme-sira { display: flex; gap: .6rem; flex-wrap: wrap; margin-top: .8rem; }
+  .duyme {
+    background: linear-gradient(135deg,#16a34a,#15803d); color: #fff;
+    border: none; border-radius: 8px; padding: .55rem 1.1rem;
+    font-size: .78rem; font-weight: 700; cursor: pointer;
+    font-family: inherit; letter-spacing: .3px;
+  }
+  .duyme:hover { opacity: .88; }
+  .duyme.mavi { background: linear-gradient(135deg,#2563eb,#1d4ed8); }
+  .duyme.boz  { background: linear-gradient(135deg,#475569,#334155); }
+  .duyme.narinci { background: linear-gradient(135deg,#ea580c,#c2410c); }
+  .duyme.kicik { padding: .35rem .8rem; font-size: .7rem; }
+
+  /* ─── EXCEL ALƏT PANELİ ─── */
+  .excel-alet {
+    display: flex; gap: .5rem; align-items: center;
+    background: #1e293b; padding: .55rem .9rem;
+    border-radius: 10px 10px 0 0; flex-wrap: wrap;
+  }
+  .excel-alet .fayl-adi {
+    color: #94a3b8; font-family: 'SF Mono', Menlo, monospace;
+    font-size: .76rem; font-weight: 700; margin-right: auto;
+  }
+  .excel-alet .duyme { padding: .35rem .8rem; font-size: .7rem; }
+
+  /* ─── İNTERAKTİV MƏKTUB GENERATORU ─── */
+  .generator {
+    background: #eff6ff; border: 2px solid #3b82f6;
+    border-radius: 14px; padding: 1.4rem 1.6rem; margin: 1.4rem 0;
+  }
+  .generator .sahe-sira {
+    display: grid; grid-template-columns: 180px 1fr; gap: .7rem 1rem;
+    align-items: center; margin-bottom: .7rem;
+  }
+  .generator label {
+    font-weight: 700; font-size: .84rem; color: #1e40af;
+  }
+  .generator input, .generator select {
+    padding: .5rem .8rem; border: 2px solid #93c5fd;
+    border-radius: 8px; font-family: inherit; font-size: .84rem;
+    background: #fff; color: #0f172a; width: 100%;
+  }
+  .generator input:focus, .generator select:focus {
+    outline: none; border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+  }
+  @media (max-width: 700px) {
+    .generator .sahe-sira { grid-template-columns: 1fr; }
+  }
+
+  /* ─── FAYL AĞACI ─── */
+  .fayl-agaci {
+    background: #0f172a; color: #e2e8f0; padding: 1.5rem 1.7rem;
+    border-radius: 14px; overflow-x: auto; margin: 1.3rem 0;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: .8rem; line-height: 1.75;
+    border: 1px solid #334155;
+  }
+  .fayl-agaci .geden  { color: #fbbf24; font-weight: 700; }
+  .fayl-agaci .gelen  { color: #4ade80; font-weight: 700; }
+  .fayl-agaci .kod    { color: #60a5fa; font-weight: 700; }
+  .fayl-agaci .qeyd   { color: #64748b; font-style: italic; }
+
+  /* ─── ADDIM BLOKU (A/B/C/D) ─── */
+  .addim {
+    border: 2px solid #e2e8f0; border-radius: 18px;
+    padding: 0 0 1rem; margin: 2.6rem 0;
+    background: #fff; overflow: hidden;
+  }
+  .addim-basliq {
+    font-size: 1.45rem; font-weight: 800; color: #fff;
+    background: linear-gradient(135deg, #7c2d12, #ea580c);
+    padding: 1.1rem 1.5rem; margin: 0 0 1.2rem;
+    display: flex; align-items: center; gap: .9rem; line-height: 1.3;
+  }
+  .addim-no {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,.22); color: #fff;
+    min-width: 44px; height: 44px; border-radius: 12px;
+    font-weight: 800; font-size: 1.05rem; flex-shrink: 0;
+  }
+  .addim-govde { padding: 0 1.4rem; }
+
+  .hisse {
+    border-radius: 12px; padding: 1.1rem 1.4rem;
+    margin: 1rem 0; border-left: 6px solid;
+  }
+  .hisse-a { background: #eff6ff; border-color: #2563eb; }
+  .hisse-b { background: #f8fafc; border-color: #0f172a; }
+  .hisse-c { background: #fffbeb; border-color: #d97706; }
+  .hisse-d { background: #f5f3ff; border-color: #7c3aed; }
+  .hisse-basliq {
+    display: block; font-weight: 800; font-size: .78rem;
+    letter-spacing: 1.6px; text-transform: uppercase;
+    margin-bottom: .75rem;
+  }
+  .hisse-a .hisse-basliq { color: #1d4ed8; }
+  .hisse-b .hisse-basliq { color: #0f172a; }
+  .hisse-c .hisse-basliq { color: #b45309; }
+  .hisse-d .hisse-basliq { color: #6d28d9; }
+  .hisse p:last-child { margin-bottom: 0; }
+  .hisse h4 {
+    font-size: .95rem; font-weight: 700; color: #334155;
+    margin: 1rem 0 .5rem;
+  }
+  .fayl-ad {
+    display: inline-block; background: #1e293b; color: #7dd3fc;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: .74rem; font-weight: 600;
+    padding: .28rem .85rem; border-radius: 6px; margin: .3rem 0 .4rem;
+  }
+  .olmaz {
+    background: #fef2f2; border: 2px dashed #dc2626;
+    border-radius: 10px; padding: .9rem 1.2rem; margin: 1rem 0 0;
+  }
+  .olmaz-basliq {
+    display: block; font-weight: 800; font-size: .78rem;
+    color: #b91c1c; letter-spacing: 1.2px; margin-bottom: .55rem;
+  }
+  .oldu {
+    background: #f0fdf4; border: 2px solid #16a34a;
+    border-radius: 10px; padding: .9rem 1.2rem; margin: 1rem 0 0;
+  }
+  .oldu-basliq {
+    display: block; font-weight: 800; font-size: .78rem;
+    color: #15803d; letter-spacing: 1.2px; margin-bottom: .55rem;
+  }
+  .addim-icmal {
+    display: flex; gap: .5rem; flex-wrap: wrap;
+    padding: .9rem 1.4rem 0; font-size: .78rem;
+  }
+  .addim-icmal span {
+    background: #f1f5f9; color: #475569; padding: .3rem .8rem;
+    border-radius: 20px; font-weight: 700;
+  }
+  .icmal {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: .8rem; margin: 1.4rem 0;
+  }
+  .icmal a {
+    display: block; background: #fff7ed; border: 2px solid #fed7aa;
+    border-radius: 12px; padding: .85rem 1rem; text-decoration: none;
+    color: #9a3412; font-weight: 700; font-size: .86rem;
+    transition: .15s;
+  }
+  .icmal a:hover { background: #ffedd5; border-color: #ea580c; }
+  .icmal a b { display: block; font-size: .7rem; color: #ea580c; letter-spacing: 1px; }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <div class="lesson-badge">DS_Backend · Hissə 1 / 4</div>
+  <h1>Backend 1 — Sıfırdan ilk işləyən API</h1>
+  <p class="subtitle">Hər addım 4 hissə: <strong>A</strong> niyə ·
+    <strong>B</strong> kod · <strong>C</strong> yoxlama · <strong>D</strong> durum</p>
+  <p class="meta">
+    <span>NestJS 12</span>
+    <span>Prisma 7</span>
+    <span>PostgreSQL · arti_baza</span>
+    <span>13 addım</span>
+    <span>7 test</span>
+  </p>
+</header>
+
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Sıfırdan başlayıb <strong>işləyən, bazaya qoşulan və test edilən</strong> bir
+  backend quracağıq. Sonda <code>http://localhost:4000/api/v1/saglamliq</code>
+  ünvanı canlı olacaq və 48 cədvəlli <code>arti_baza</code> ilə danışacaq.</p>
+  <p><strong>Bu dərsdə autentifikasiya YOXDUR</strong> — API açıqdır.
+  İstifadəçi girişi və rollar növbəti dərsin mövzusudur.</p>
+</div>
+
+<div class="block block-nece">
+  <span class="block-title">NECƏ OXUMALI — hər addımın 4 hissəsi</span>
+  <table>
+    <tr><th>Hissə</th><th>Nə var</th><th>Nə üçün lazımdır</th></tr>
+    <tr>
+      <td><strong>A</strong></td>
+      <td>Bu addım nəyə görədir — 3-4 cümlə</td>
+      <td>Kodu yazmadan <em>əvvəl</em> məqsədi anlamaq üçün</td>
+    </tr>
+    <tr>
+      <td><strong>B</strong></td>
+      <td>Addıma aid kodun özü — tam və kopyalana bilən</td>
+      <td>Olduğu kimi kopyalayıb işlətmək üçün</td>
+    </tr>
+    <tr>
+      <td><strong>C</strong></td>
+      <td>Kodun düzgün yazıldığını yoxlayan əmrlər +
+        <span style="color:#b91c1c">bu kod olmasa nə olardı</span></td>
+      <td>Səhvi <em>dərhal</em> tutmaq və kodun <em>nə üçün</em> orada olduğunu
+        görmək üçün</td>
+    </tr>
+    <tr>
+      <td><strong>D</strong></td>
+      <td>Sistemin bu koddan sonraki <strong>real</strong> durumu —
+        əmrlərin həqiqi çıxışı</td>
+      <td>Nəticənin uydurma deyil, ölçülmüş olduğunu görmək üçün</td>
+    </tr>
+  </table>
+  <p>D hissəsindəki bütün çıxışlar bu dərs hazırlanarkən <strong>canlı sistemdə</strong>
+  işlədilib və olduğu kimi köçürülüb. C hissəsindəki qırmızı xəta mətnləri də
+  realdır — kodu bilərəkdən söndürüb alınmış çıxışlardır.</p>
+</div>
+
+<div class="block block-ipucu">
+  <span class="block-title">💡 BAŞLAMAZDAN ƏVVƏL — ön şərtlər</span>
+  <table>
+    <tr><th>Nə</th><th>Yoxlama əmri</th><th>Gözlənilən</th></tr>
+    <tr><td>Node.js 22+</td><td><code>node -v</code></td><td><code>v22</code> və yuxarı</td></tr>
+    <tr><td>PostgreSQL işləyir</td><td><code>pg_isready -h localhost -p 5432</code></td>
+        <td><code>accepting connections</code></td></tr>
+    <tr><td><code>arti_baza</code> mövcuddur</td>
+        <td><code>psql -U arti_user -w -d arti_baza -c '\dt *.*'</code></td>
+        <td>48 cədvəl</td></tr>
+  </table>
+  <p>Psql işlədərkən <code>unset DATABASE_URL PGHOST</code> əmrini verin — əks halda
+  sistem dəyişəni başqa bazaya yönləndirə bilər.</p>
+</div>
+
+<div class="toc">
+  <h3>📚 Addımlar</h3>
+  <ol>
+    <li><a href="#a1">1. Layihə qovluğu və skelet</a></li>
+    <li><a href="#a2">2. package.json və asılılıqlar</a></li>
+    <li><a href="#a3">3. TypeScript konfiqurasiyası</a></li>
+    <li><a href="#a4">4. .env — baza açarı koddan ayrılır</a></li>
+    <li><a href="#a5">5. Prisma sxeması — bazanı oxuyub tipləri çıxarmaq</a></li>
+    <li><a href="#a6">6. PrismaService — baza bağlantısı</a></li>
+    <li><a href="#a7">7. PrismaModule — @Global() ilə paylaşılan bağlantı</a></li>
+    <li><a href="#a8">8. AllExceptionsFilter — vahid xəta formatı</a></li>
+    <li><a href="#a9">9. Sağlamlıq modulu — ilk işləyən endpoint</a></li>
+    <li><a href="#a10">10. app.module.ts — kök modul</a></li>
+    <li><a href="#a11">11. main.ts — serverin giriş nöqtəsi</a></li>
+    <li><a href="#a12">12. Build və tam canlı yoxlama</a></li>
+    <li><a href="#a13">13. Testlər — hər dəyişiklikdən sonra bir əmr</a></li>
+  </ol>
+</div>
+
+<div class="icmal">
+  <a href="#a1"><b>ADDIM 1</b>Layihə qovluğu və skelet</a>
+  <a href="#a2"><b>ADDIM 2</b>package.json və asılılıqlar</a>
+  <a href="#a3"><b>ADDIM 3</b>TypeScript konfiqurasiyası</a>
+  <a href="#a4"><b>ADDIM 4</b>.env — baza açarı koddan ayrılır</a>
+  <a href="#a5"><b>ADDIM 5</b>Prisma sxeması — bazanı oxuyub tipləri çıxarmaq</a>
+  <a href="#a6"><b>ADDIM 6</b>PrismaService — baza bağlantısı</a>
+  <a href="#a7"><b>ADDIM 7</b>PrismaModule — @Global() ilə paylaşılan bağlantı</a>
+  <a href="#a8"><b>ADDIM 8</b>AllExceptionsFilter — vahid xəta formatı</a>
+  <a href="#a9"><b>ADDIM 9</b>Sağlamlıq modulu — ilk işləyən endpoint</a>
+  <a href="#a10"><b>ADDIM 10</b>app.module.ts — kök modul</a>
+  <a href="#a11"><b>ADDIM 11</b>main.ts — serverin giriş nöqtəsi</a>
+  <a href="#a12"><b>ADDIM 12</b>Build və tam canlı yoxlama</a>
+  <a href="#a13"><b>ADDIM 13</b>Testlər — hər dəyişiklikdən sonra bir əmr</a>
+</div>
+
+<div class="addim">
+  <h2 class="addim-basliq" id="a1">
+    <span class="addim-no">1</span> Layihə qovluğu və skelet
+  </h2>
+  <div class="addim-govde">
+
+    <div class="hisse hisse-a">
+      <span class="hisse-basliq">A · Bu addım nəyə görədir</span>
+      <p>NestJS layihəsi müəyyən qovluq strukturunu gözləyir: <code>src/</code> mənbə kodu,
+    <code>test/</code> testlər, <code>prisma/</code> isə baza sxemi üçündür. Bu strukturu
+    əvvəlcədən yaratmasaq, sonrakı addımlarda fayllar səpələnmiş halda qalar və
+    <code>nest build</code> hansı faylı haradan götürəcəyini bilməz. Biz
+    <code>nest new</code> əmrini işlətmirik, çünki o, layihə adını kiçik hərflərə çevirir
+    (<code>DS_Backend</code> → <code>ds_backend</code>) və onlarla lazımsız fayl yaradır.
+    Qovluqları əl ilə yaradırıq ki, hər faylın nəyə görə olduğunu dəqiq bilək.</p>
+    </div>
+
+    <div class="hisse hisse-b">
+      <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">Terminal — qovluq strukturu</p>
+<pre><code>cd ~/Deepseek_ARTI
+
+mkdir -p DS_Backend/src/prisma
+mkdir -p DS_Backend/src/common/filters
+mkdir -p DS_Backend/src/saglamliq
+mkdir -p DS_Backend/prisma
+mkdir -p DS_Backend/test</code></pre>
+    </div>
+
+    <div class="hisse hisse-c">
+      <span class="hisse-basliq">C · Yoxlama — kod düzgün yazıldı?</span>
+      <p>Aşağıdaki əmrləri işlədin və nəticəni yoxlayın:</p>
+<pre><code>cd ~/Deepseek_ARTI
+
+# Bütün qovluqlar yarandımı?
+# (node_modules və dist hələ yoxdur, amma sonra işlətsəniz siyahını
+#  doldurmasın deyə onları əvvəlcədən kənarlaşdırırıq)
+find DS_Backend -type d \
+  -not -path '*/node_modules*' -not -path '*/dist*' \
+  -not -path '*/generated*' -not -path '*/.git*' | sort
+
+# Hər biri ayrıca yoxlanılsın
+for d in src src/prisma src/common/filters src/saglamliq prisma test; do
+  [ -d "DS_Backend/$d" ] &amp;&amp; echo "✓ $d" || echo "✗ $d YOXDUR"
+done</code></pre>
+      <div class="olmaz">
+        <span class="olmaz-basliq">⚠️ Bu kod olmasa nə olardı</span>
+<pre><code>$ cd ~/Deepseek_ARTI/DS_Backend
+$ npx prisma db pull
+
+Error: Could not load `prisma/schema.prisma`: file or directory not found</code></pre>
+        <p><code>prisma/</code> qovluğu olmasa sxem faylını ora qoymaq mümkün olmaz və
+    <code>db pull</code> dərhal xəta verir. <code>src/</code> olmasa isə <code>nest build</code>
+    ümumiyyətlə kompilyasiya etməyə fayl tapmaz — boş <code>dist/</code> yaranar.</p>
+      </div>
+    </div>
+
+    <div class="hisse hisse-d">
+      <span class="hisse-basliq">D · Bu koddan sonra sistemin durumu</span>
+<pre><code>$ find DS_Backend -type d \
+    -not -path '*/node_modules*' -not -path '*/dist*' \
+  -not -path '*/generated*' -not -path '*/.git*' | sort
+
+DS_Backend
+DS_Backend/prisma
+DS_Backend/src
+DS_Backend/src/common
+DS_Backend/src/common/filters
+DS_Backend/src/prisma
+DS_Backend/src/saglamliq
+DS_Backend/test</code></pre>
+      <div class="oldu">
+        <span class="oldu-basliq">✔ Nəticə</span>
+        <p>8 qovluq yarandı. Hər birinin vəzifəsi fərqlidir:
+    <ul>
+      <li><code>src/</code> — bütün TypeScript mənbə kodu. <code>nest build</code> yalnız bura baxır.</li>
+      <li><code>src/prisma/</code> — baza bağlantısı (<code>PrismaService</code>, <code>PrismaModule</code>).</li>
+      <li><code>src/common/filters/</code> — bütün layihə üçün ümumi olan şeylər (xəta filtri).</li>
+      <li><code>src/saglamliq/</code> — ilk funksional modul: sağlamlıq yoxlaması.</li>
+      <li><code>prisma/</code> — <code>schema.prisma</code> faylı. Bu qovluq <code>src/</code>-dən
+          kənardadır, çünki o, TypeScript deyil, Prisma dilindədir.</li>
+      <li><code>test/</code> — e2e testlər. Ayrı qovluqdadır ki, <code>nest build</code> onları
+          istehsalat yığımına salmasın.</li>
+    </ul></p>
+      </div>
+    </div>
+
+  </div>
+  <div class="addim-icmal">
+    <span>Addım 1 / 13</span>
+    <span>A · niyə</span><span>B · kod</span>
+    <span>C · yoxlama</span><span>D · durum</span>
+  </div>
+</div>
+
+<div class="addim">
+  <h2 class="addim-basliq" id="a2">
+    <span class="addim-no">2</span> package.json və asılılıqlar
+  </h2>
+  <div class="addim-govde">
+
+    <div class="hisse hisse-a">
+      <span class="hisse-basliq">A · Bu addım nəyə görədir</span>
+      <p><code>package.json</code> layihənin şəxsiyyət vəsiqəsidir — adı, versiyası, əmrləri
+    və asılılıqları burada yazılır. <code>npm install</code> yalnız bu faylı oxuyub
+    <code>node_modules/</code> qovluğunu yaradır. Biz asılılıqları əl ilə, dəqiq
+    siyahı ilə yazırıq ki, hansı paketin <em>niyə</em> lazım olduğunu bilək;
+    <code>nest new</code> isə onlarla istifadə etmədiyimiz paket də qoşur.</p>
+    </div>
+
+    <div class="hisse hisse-b">
+      <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">package.json</p>
+<pre><code>{
+  "name": "ds-backend",
+  "version": "0.1.0",
+  "description": "Deepseek_ARTI — ARTİ ERP backend (NestJS 12 + Prisma 7 + PostgreSQL)",
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "module",
+  "scripts": {
+    "build": "nest build",
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "start:prod": "node dist/main.js",
+    "prisma:pull": "prisma db pull",
+    "prisma:generate": "prisma generate",
+    "prisma:studio": "prisma studio",
+    "db:yenile": "prisma db pull &amp;&amp; prisma generate",
+    "test": "vitest run",
+    "test:izle": "vitest"
+  },
+  "dependencies": {
+    "@nestjs/common": "^12.0.1",
+    "@nestjs/config": "^12.0.0",
+    "@nestjs/core": "^12.0.1",
+    "@nestjs/platform-express": "^12.0.1",
+    "@nestjs/swagger": "^12.0.1",
+    "@prisma/adapter-pg": "^7.10.0",
+    "@prisma/client": "^7.10.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.4",
+    "dotenv": "^16.6.1",
+    "pg": "^8.23.0",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^12.0.0",
+    "@nestjs/schematics": "^12.0.0",
+    "@nestjs/testing": "^12.0.1",
+    "@types/express": "^5.0.0",
+    "@types/node": "^24.0.0",
+    "@types/supertest": "^7.0.0",
+    "prisma": "^7.10.0",
+    "source-map-support": "^0.5.21",
+    "supertest": "^7.0.0",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.2"
+  }
+}</code></pre>
+    </div>
+
+    <div class="hisse hisse-c">
+      <span class="hisse-basliq">C · Yoxlama — kod düzgün yazıldı?</span>
+      <p>Aşağıdaki əmrləri işlədin və nəticəni yoxlayın:</p>
+<pre><code>cd ~/Deepseek_ARTI/DS_Backend
+
+# 1) Fayl düzgün JSON-dur?
+python3 -m json.tool package.json &gt; /dev/null &amp;&amp; echo "✓ JSON düzgündür"
+
+# 2) node_modules yarandımı və neçə paket var?
+ls node_modules | wc -l
+
+# 3) Əsas paketlər yerindədirmi?
+for p in @nestjs/core @nestjs/config @prisma/client @prisma/adapter-pg prisma pg; do
+  [ -d "node_modules/$p" ] &amp;&amp; echo "✓ $p" || echo "✗ $p YOXDUR"
+done</code></pre>
+      <div class="olmaz">
+        <span class="olmaz-basliq">⚠️ Bu kod olmasa nə olardı</span>
+<pre><code>$ cd /tmp/bosh_qovluq &amp;&amp; npm install
+
+npm error code ENOENT
+npm error syscall open
+npm error path /private/tmp/bosh_qovluq/package.json
+npm error errno -2
+npm error enoent Could not read package.json</code></pre>
+        <p><code>package.json</code> olmadan <code>npm install</code> nə quraşdıracağını
+    bilmir — dərhal <code>ENOENT</code> xətası verir. Versiyaları
+    <code>^</code> ilə yazmaq da vacibdir: <code>^12.0.1</code> "<em>12.0.1 və ya daha yeni
+    12.x</em>" deməkdir, yəni yamaq yeniləmələri avtomatik gəlir, amma 13-cü versiya
+    özü-özünə gəlmir.</p>
+      </div>
+    </div>
+
+    <div class="hisse hisse-d">
+      <span class="hisse-basliq">D · Bu koddan sonra sistemin durumu</span>
+<pre><code>$ ls node_modules | wc -l
+430
+
+$ for p in @nestjs/core @nestjs/config @nestjs/swagger @prisma/client \
+           @prisma/adapter-pg prisma typescript vitest pg class-validator; do
+    v=$(python3 -c "import json;print(json.load(open('node_modules/$p/package.json'))['version'])")
+    printf '%-24s %s\n' "$p" "$v"
+  done
+
+@nestjs/core             12.0.3
+@nestjs/config           12.0.0
+@nestjs/swagger          12.0.1
+@prisma/client           7.10.0
+@prisma/adapter-pg       7.10.0
+prisma                   7.10.0
+typescript               6.0.3
+vitest                   4.1.11
+pg                       8.23.0
+class-validator          0.14.4</code></pre>
+      <div class="oldu">
+        <span class="oldu-basliq">✔ Nəticə</span>
+        <p>430 paket quraşdırıldı. Bizim <code>package.json</code>-da 13 birbaşa asılılıq
+    var, qalanı onların öz asılılıqlarıdır. Diqqət yetirin: <code>@prisma/adapter-pg</code>
+    Prisma 7-nin tələbidir — bu paket olmasa <code>PrismaClient</code> ümumiyyətlə
+    yaradıla bilmir (6-cı addımda bunu canlı görəcəyik).</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="addim-icmal">
+    <span>Addım 2 / 13</span>
+    <span>A · niyə</span><span>B · kod</span>
+    <span>C · yoxlama</span><span>D · durum</span>
+  </div>
+</div>
+
+<div class="addim">
+  <h2 class="addim-basliq" id="a3">
+    <span class="addim-no">3</span> TypeScript konfiqurasiyası
+  </h2>
+  <div class="addim-govde">
+
+    <div class="hisse hisse-a">
+      <span class="hisse-basliq">A · Bu addım nəyə görədir</span>
+      <p>NestJS dekoratorlarla işləyir (<code>@Module</code>, <code>@Controller</code>,
+    <code>@Get</code>), TypeScript isə onları yalnız <code>experimentalDecorators</code>
+    açıq olduqda kompilyasiya edir. <code>moduleResolution: nodenext</code> bizi
+    <code>import ... from './x.js'</code> yazmağa məcbur edir — bu, Node ESM-in tələbidir
+    və <code>.js</code> uzantısı unudulsa kod işə düşmür. <code>nest-cli.json</code> isə
+    <code>nest build</code> əmrinə mənbə qovluğunun <code>src</code> olduğunu deyir.</p>
+    </div>
+
+    <div class="hisse hisse-b">
+      <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">tsconfig.json</p>
+<pre><code>{
+  "compilerOptions": {
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "resolvePackageJsonExports": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "ES2023",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "incremental": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "types": ["vitest/globals", "node"]
+  }
+}</code></pre>
+    <p class="fayl-ad">tsconfig.build.json</p>
+<pre><code>{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "./src"
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "test", "dist", "**/*spec.ts"]
+}</code></pre>
+    <p class="fayl-ad">nest-cli.json</p>
+<pre><code>{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "src",
+  "compilerOptions": {
+    "deleteOutDir": true
+  }
+}</code></pre>
+    </div>
+
+    <div class="hisse hisse-c">
+      <span class="hisse-basliq">C · Yoxlama — kod düzgün yazıldı?</span>
+      <p>Aşağıdaki əmrləri işlədin və nəticəni yoxlayın:</p>
+<pre><code>cd ~/Deepseek_ARTI/DS_Backend
+
+# TypeScript-in HƏQİQƏTƏN istifadə etdiyi ayarlar
+npx tsc --showConfig -p tsconfig.build.json | python3 -c "
+import json, sys
+d = json.load(sys.stdin)['compilerOptions']
+for a in ['module','moduleResolution','target','experimentalDecorators',
+          'emitDecoratorMetadata','strict','outDir','rootDir']:
+    print(f'  {a:26s} {d.get(a)}')
+"
+
+# nest-cli mənbə qovluğunu tanıyırmı?
+python3 -c "
+import json
+d = json.load(open('nest-cli.json'))
+print('  sourceRoot:', d.get('sourceRoot'))
+" </code></pre>
+      <div class="olmaz">
+        <span class="olmaz-basliq">⚠️ Bu kod olmasa nə olardı</span>
+<pre><code>$ npm run build
+
+src/saglamliq/saglamliq.controller.ts:11:3 - error TS1241:
+  Unable to resolve signature of method decorator when called as an expression.
+  The runtime will invoke the decorator with 2 arguments,
+  but the decorator expects 3.
+
+src/saglamliq/saglamliq.controller.ts:11:4 - error TS1270:
+  Decorator function return type 'void | TypedPropertyDescriptor&lt;unknown&gt;'
+  is not assignable to type 'void | (() =&gt; { ... })'.</code></pre>
+        <p><code>experimentalDecorators</code> söndürülsə TypeScript <code>@Get</code>-i
+    adi funksiya kimi qəbul edir və <strong>TS1241 / TS1270</strong> xətaları verir.
+    Build uğursuz olur, <code>dist/</code> qovluğu isə <strong>heç yaranmır</strong> —
+    yəni <code>node dist/main.js</code> "fayl tapılmadı" deyəcək. <code>emitDecoratorMetadata</code>
+    də vacibdir: NestJS məhz onun yazdığı <code>__metadata</code> məlumatına baxaraq
+    hansı servisi hara ötürəcəyini anlayır.</p>
+      </div>
+    </div>
+
+    <div class="hisse hisse-d">
+      <span class="hisse-basliq">D · Bu koddan sonra sistemin durumu</span>
+<pre><code>$ npx tsc --showConfig -p tsconfig.build.json
+
+  module                     nodenext
+  moduleResolution           nodenext
+  target                     ES2023
+  experimentalDecorators     True
+  emitDecoratorMetadata      True
+  strict                     True
+  outDir                     ./dist
+  rootDir                    ./src</code></pre>
+      <div class="oldu">
+        <span class="oldu-basliq">✔ Nəticə</span>
+        <p>Diqqət yetirin: <code>tsconfig.build.json</code> əsas fayldan miras alır və
+    yalnız iki şeyi dəyişir — <code>rootDir</code> və <code>include</code>. Buna görə
+    yuxarıdaki bütün ayarlar (dekoratorlar, strict, target) oradan gəlir.
+    <code>rootDir: ./src</code> olmasa <code>dist/</code> daxilində
+    <code>dist/src/main.js</code> kimi artıq qovluq yaranar və
+    <code>node dist/main.js</code> işləməz.</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="addim-icmal">
+    <span>Addım 3 / 13</span>
+    <span>A · niyə</span><span>B · kod</span>
+    <span>C · yoxlama</span><span>D · durum</span>
+  </div>
+</div>
+
+<div class="addim">
+  <h2 class="addim-basliq" id="a4">
+    <span class="addim-no">4</span> .env — baza açarı koddan ayrılır
+  </h2>
+  <div class="addim-govde">
+
+    <div class="hisse hisse-a">
+      <span class="hisse-basliq">A · Bu addım nəyə görədir</span>
+      <p>Baza parolu və port kimi məlumatlar koda <strong>yazılmamalıdır</strong> — onlar
+    git-ə düşər və reponu görən hər kəs baza parolunu oxuyar. <code>.env</code> faylı
+    bu dəyərləri koddan ayırır, <code>.gitignore</code> isə onun git-ə düşməsinin
+    qarşısını alır. <code>dotenv</code> paketi faylı oxuyub dəyərləri
+    <code>process.env</code>-ə yerləşdirir ki, kod onlara adi dəyişən kimi çatsın.</p>
+    </div>
+
+    <div class="hisse hisse-b">
+      <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">.env</p>
+<pre><code># ── Baza ──────────────────────────────────────────────────────
+DATABASE_URL="postgresql://arti_user:arti_secret_2025@localhost:5432/arti_baza"
+
+# ── Server ────────────────────────────────────────────────────
+PORT=4000
+NODE_ENV=development</code></pre>
+    <p class="fayl-ad">.env.example</p>
+<pre><code># Nümunə — öz dəyərlərinizlə doldurun, bu faylı KOMİT ETMƏYİN
+DATABASE_URL="postgresql://ISTIFADECI:SIFRE@localhost:5432/arti_baza"
+PORT=4000
+NODE_ENV=development</code></pre>
+    <p class="fayl-ad">.gitignore</p>
+<pre><code>.env
+.env.*
+!.env.example
+node_modules/
+dist/
+src/generated/
+*.log</code></pre>
+    </div>
+
+    <div class="hisse hisse-c">
+      <span class="hisse-basliq">C · Yoxlama — kod düzgün yazıldı?</span>
+      <p>Aşağıdaki əmrləri işlədin və nəticəni yoxlayın:</p>
+<pre><code>cd ~/Deepseek_ARTI/DS_Backend
+
+# 1) .env git tərəfindən İGNORE olunurmu?
+git check-ignore -v .env
+
+# 2) İçində nə var? (diqqət: parolu ekrana çıxarır)
+grep DATABASE_URL .env
+
+# 3) Node bu dəyəri görürmü?
+node -e "import('dotenv/config').then(() =&gt; {
+  const u = process.env.DATABASE_URL || '';
+  console.log('  DATABASE_URL oxundu :', u ? 'BƏLİ' : 'XEYR');
+  console.log('  uzunluq             :', u.length, 'simvol');
+  console.log('  baza adı            :', u.split('/').pop());
+})"
+</code></pre>
+      <div class="olmaz">
+        <span class="olmaz-basliq">⚠️ Bu kod olmasa nə olardı</span>
+<pre><code>$ DATABASE_URL= PORT=4102 node dist/main.js
+
+[Nest] ERROR [ExceptionHandler] Error: DATABASE_URL təyin olunmayıb
+  — .env faylını yoxlayın</code></pre>
+        <p><code>PrismaService</code> konstruktorunda bu yoxlama var və server
+    <strong>heç qalxmır</strong>. Bu, qəsdən belədir: səhv bağlantı ilə işləyib
+    yanlış bazaya yazmaqdansa, dərhal dayanmaq daha yaxşıdır. Əgər <code>.env</code>
+    <code>.gitignore</code>-da olmasa, parol GitHub-a düşər və onu tarixçədən
+    təmizləmək çox çətin olar.</p>
+      </div>
+    </div>
+
+    <div class="hisse hisse-d">
+      <span class="hisse-basliq">D · Bu koddan sonra sistemin durumu</span>
+<pre><code>$ git check-ignore -v .env
+.gitignore:1:.env	.env
+
+$ node -e "..."      # dotenv ilə oxuma
+  DATABASE_URL oxundu : BƏLİ
+  uzunluq             : 61 simvol
+  baza adı            : arti_baza
+
+$ git status --short
+?? .env.example
+?? .gitignore
+   (diqqət: .env siyahıda YOXDUR — git onu görmür)</code></pre>
+      <div class="oldu">
+        <span class="oldu-basliq">✔ Nəticə</span>
+        <p>Sistemin vəziyyəti: <code>.env</code> faylı mövcuddur, oxunur və
+    <code>process.env.DATABASE_URL</code> dəyəri <code>arti_baza</code>-nı göstərir.
+    Eyni zamanda git onu <strong>görmür</strong> — <code>git status</code> siyahısında
+    yoxdur. <code>.env.example</code> isə əksinə, git-ə düşür: başqa kompüterdə
+    layihəni açan şəxs ona baxıb öz <code>.env</code>-ini yaradır.
+    <code>.env.*</code> sətrindən sonra gələn <code>!.env.example</code>
+    istisna qaydasıdır — ulduz işarəsi onu da udmasın deyə.</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="addim-icmal">
+    <span>Addım 4 / 13</span>
+    <span>A · niyə</span><span>B · kod</span>
+    <span>C · yoxlama</span><span>D · durum</span>
+  </div>
+</div>
+
+<div class="addim">
+  <h2 class="addim-basliq" id="a5">
+    <span class="addim-no">5</span> Prisma sxeması — bazanı oxuyub tipləri çıxarmaq
+  </h2>
+  <div class="addim-govde">
+
+    <div class="hisse hisse-a">
+      <span class="hisse-basliq">A · Bu addım nəyə görədir</span>
+      <p><code>arti_baza</code> artıq mövcuddur: 12 sxem, 48 cədvəl. Biz cədvəlləri
+    TypeScript-də əl ilə təsvir etmirik — Prisma <code>db pull</code> əmri ilə bazanı
+    oxuyub sxemi özü çıxarır. Sonra <code>generate</code> bu sxemdən
+    <strong>tip-təhlükəsiz</strong> TypeScript müştərisini yaradır. Beləliklə kodda
+    <code>prisma.merkezler.findMany()</code> yaza bilirik və səhv sütun adı dərhal
+    kompilyasiyada tutulur, serverdə yox.</p>
+    </div>
+
+    <div class="hisse hisse-b">
+      <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">prisma/schema.prisma — datasource və generator</p>
+<pre><code>generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}</code></pre>
+    <p class="fayl-ad">prisma.config.ts</p>
+<pre><code>import 'dotenv/config';
+import { defineConfig, env } from 'prisma/config';
+
+export default defineConfig({
+  schema: 'prisma/schema.prisma',
+  migrations: { path: 'prisma/migrations' },
+  datasource: { url: env('DATABASE_URL') },
+});</code></pre>
+    <p class="fayl-ad">Terminal — sxemi çıxar və müştərini yarat</p>
+<pre><code>cd ~/Deepseek_ARTI/DS_Backend
+
+# Bazanı oxu və sxemi doldur
+npx prisma db pull
+
+# Sxemdən TypeScript müştərisini yarat
+npx prisma generate</code></pre>
+    </div>
+
+    <div class="hisse hisse-c">
+      <span class="hisse-basliq">C · Yoxlama — kod düzgün yazıldı?</span>
+      <p>Aşağıdaki əmrləri işlədin və nəticəni yoxlayın:</p>
+<pre><code>cd ~/Deepseek_ARTI/DS_Backend
+
+# 1) Sxem etibarlıdırmı?
+npx prisma validate
+
+# 2) Neçə model çıxarıldı?
+grep -c '^model ' prisma/schema.prisma
+
+# 3) Müştəri yarandımı?
+ls src/generated/prisma/client.ts
+
+# 4) Nümunə model — struktur.merkezler
+sed -n '/^model merkezler /,/^}/p' prisma/schema.prisma</code></pre>
+      <div class="olmaz">
+        <span class="olmaz-basliq">⚠️ Bu kod olmasa nə olardı</span>
+<pre><code>$ npx prisma validate      # 'schemas' sətri BÖLÜNSƏ:
+
+Error: Prisma schema validation - (validate wasm)
+Error code: P1012
+error: Error validating: This line is not a valid definition within a datasource.
+  --&gt;  prisma/schema.prisma:8
+ 7 |   provider = "postgresql"
+ 8 |   schemas  = [
+ 9 |     "ai", "audit", "elm", "kadrlar", "logistika", "maliyye",</code></pre>
+        <p><code>schemas</code> siyahısı <strong>mütləq bir sətirdə</strong> olmalıdır —
+    Prisma çoxsətirli massivi bu yerdə qəbul etmir və <code>P1012</code> verir.
+    Sxem faylı heç olmasa <code>db pull</code> "file or directory not found" deyəcək.
+    Müştəri yaradılmasa isə <code>import { PrismaClient } from
+    '../generated/prisma/client.js'</code> sətri <code>TS2307: Cannot find module</code>
+    xətası verəcək və build ümumiyyətlə keçməyəcək.</p>
+      </div>
+    </div>
+
+    <div class="hisse hisse-d">
+      <span class="hisse-basliq">D · Bu koddan sonra sistemin durumu</span>
+<pre><code>$ npx prisma db pull
+✔ Introspected 12 models and wrote them into prisma/schema.prisma
+  ... (48 model)
+
+$ npx prisma generate
+✔ Generated Prisma Client (7.10.0) to ./src/generated/prisma in 98ms
+
+$ grep -c '^model ' prisma/schema.prisma
+48
+
+$ find src/generated -type f | wc -l
+56
+$ du -sh src/generated
+3.4M
+
+$ sed -n '/^model merkezler /,/^}/p' prisma/schema.prisma
+model merkezler {
+  id               Int       @id @default(autoincrement())
+  ad               String
+  tip              String?   @default("merkez")
+  ...
+  @@schema("struktur")
+}</code></pre>
+      <div class="oldu">
+        <span class="oldu-basliq">✔ Nəticə</span>
+        <p>Sistemin vəziyyəti: Prisma artıq bazanı <strong>tanıyır</strong>. 48 cədvəl
+    TypeScript tipinə çevrildi və <code>src/generated/prisma/</code> qovluğunda 56 fayl
+    (3.4 MB) yarandı. Bu qovluq <code>.gitignore</code>-dadır — onu git-ə salmırıq,
+    çünki hər kəs öz kompüterində <code>npx prisma generate</code> ilə yenidən yarada bilər.
+    <code>@@schema("struktur")</code> sətri modelin hansı PostgreSQL sxemində olduğunu göstərir —
+    Prisma 7-də çoxsxemli baza üçün bu MÜTLƏQİDİR.</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="addim-icmal">
+    <span>Addım 5 / 13</span>
+    <span>A · niyə</span><span>B · kod</span>
+    <span>C · yoxlama</span><span>D · durum</span>
+  </div>
+</div>
+
+<div class="addim">
+  <h2 class="addim-basliq" id="a6">
+    <span class="addim-no">6</span> PrismaService — baza bağlantısı
+  </h2>
+  <div class="addim-govde">
+
+    <div class="hisse hisse-a">
+      <span class="hisse-basliq">A · Bu addım nəyə görədir</span>
+      <p>Prisma müştərisi birbaşa <code>new PrismaClient()</code> ilə yaradıla bilməz:
+    Prisma 7-də <em>driver adapter</em> mütləqdir. <code>PrismaService</code> bu
+    bağlantını NestJS-in həyat dövrünə bağlayır — server qalxanda
+    <code>$connect()</code>, sönəndə <code>$disconnect()</code> çağırılır.
+    Əlavə olaraq <code>yoxla()</code> metodu var ki, sağlamlıq endpoint-i bazanın
+    həqiqətən cavab verdiyini yoxlaya bilsin.</p>
+    </div>
+
+    <div class="hisse hisse-b">
+      <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">src/prisma/prisma.service.ts</p>
+<pre><code>import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { PrismaClient } from '../generated/prisma/client.js';
+
+/**
+ * Baza bağlantısını idarə edən servis.
+ *
+ * Prisma 7-də "driver adapter" MÜTLƏQDİR — Prisma özü birbaşa
+ * bağlanmır, `pg` paketini adapter vasitəsilə işlədir.
+ */
+@Injectable()
+export class PrismaService
+  extends PrismaClient
+  implements OnModuleInit, OnModuleDestroy
+{
+  private readonly log = new Logger('BAZA');
+
+  constructor() {
+    const connectionString = process.env.DATABASE_URL;
+
+    if (!connectionString) {
+      throw new Error(
+        'DATABASE_URL təyin olunmayıb — .env faylını yoxlayın',
+      );
+    }
+
+    super({ adapter: new PrismaPg({ connectionString }) });
+  }
+
+  async onModuleInit(): Promise&lt;void&gt; {
+    await this.$connect();
+    this.log.log('Baza bağlantısı açıldı');
+  }
+
+  async onModuleDestroy(): Promise&lt;void&gt; {
+    await this.$disconnect();
+  }
+
+  /** Baza həqiqətən cavab verirmi? — sağlamlıq yoxlaması üçün */
+  async yoxla(): Promise&lt;{ cedvelSayi: number; gecikmeMs: number }&gt; {
+    const baslama = Date.now();
+
+    const netice = await this.$queryRaw&lt;{ say: number }[]&gt;`
+      SELECT count(*)::int AS say
+        FROM information_schema.tables
+       WHERE table_type = 'BASE TABLE'
+         AND table_schema NOT IN ('pg_catalog', 'information_schema')`;
+
+    return {
+      cedvelSayi: netice[0]?.say ?? 0,
+      gecikmeMs: Date.now() - baslama,
+    };
+  }
+}</code></pre>
+    </div>
+
+    <div class="hisse hisse-c">
+      <span class="hisse-basliq">C · Yoxlama — kod düzgün yazıldı?</span>
+      <p>Aşağıdaki əmrləri işlədin və nəticəni yoxlayın:</p>
+<pre><code>cd ~/Deepseek_ARTI/DS_Backend
+
+# Adapter, həyat dövrü və yoxlama metodu yerindədirmi?
+grep -n 'PrismaPg\|super({\|onModuleInit\|onModuleDestroy\|DATABASE_URL' \
+  src/prisma/prisma.service.ts
+
+# Sadəcə bu fayl kompilyasiya olunurmu?
+npx tsc --noEmit -p tsconfig.build.json &amp;&amp; echo "✓ tip yoxlaması keçdi"</code></pre>
+      <div class="olmaz">
+        <span class="olmaz-basliq">⚠️ Bu kod olmasa nə olardı</span>
+<pre><code>$ node dist/main.js      # adapter sətri silinsə:
+
+[Nest] ERROR [ExceptionHandler] PrismaClientInitializationError:
+PrismaClient was instantiated without any options.
+A driver adapter is required to connect to your database.
+Pass a driver adapter to the PrismaClient constructor, for example:
+  import { PrismaPg } from '@prisma/adapter-pg'
+  const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })
+  const prisma = new PrismaClient({ adapter })</code></pre>
+        <p>Prisma 7-dən əvvəl müştəri bazaya özü qoşulurdu; indi bu işi
+    <code>pg</code> paketi görür və Prisma yalnız onun üstündə işləyir. Adapter
+    olmadan <code>PrismaClient</code> <strong>ümumiyyətlə yaradılmır</strong> və
+    server qalxmır. <code>onModuleInit</code> olmasa isə bağlantı yalnız ilk sorğuda
+    açılar — yəni problem server qalxanda yox, istifadəçi ilk dəfə sorğu göndərəndə
+    üzə çıxar, bu isə tapmağı çətinləşdirir.</p>
+      </div>
+    </div>
+
+    <div class="hisse hisse-d">
+      <span class="hisse-basliq">D · Bu koddan sonra sistemin durumu</span>
+<pre><code>$ node dist/main.js
+
+[Nest] LOG [InstanceLoader] PrismaModule dependencies initialized +0ms
+[Nest] LOG [BAZA] Baza bağlantısı açıldı
+[Nest] LOG [NestApplication] Nest application successfully started +0ms
+
+# yoxla() metodu real bazaya sorğu göndərir:
+$ psql -U arti_user -w -d arti_baza -tAc \
+    "SELECT count(*)::int FROM information_schema.tables
+      WHERE table_type='BASE TABLE'
+        AND table_schema NOT IN ('pg_catalog','information_schema')"
+48</code></pre>
+      <div class="oldu">
+        <span class="oldu-basliq">✔ Nəticə</span>
+        <p>Sistemin vəziyyəti: server qalxanda <code>[BAZA] Baza bağlantısı açıldı</code>
+    mesajı çıxır — bu o deməkdir ki, <code>$connect()</code> uğurla keçdi və
+    PostgreSQL həqiqətən cavab verir. <code>yoxla()</code> metodundaki
+    <code>::int</code> çevirməsi çox vacibdir: PostgreSQL <code>count(*)</code> üçün
+    <code>bigint</code> qaytarır, JavaScript isə <code>BigInt</code>-i JSON-a çevirə
+    bilmir və <em>Do not know how to serialize a BigInt</em> xətası verər.</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="addim-icmal">
+    <span>Addım 6 / 13</span>
+    <span>A · niyə</span><span>B · kod</span>
+    <span>C · yoxlama</span><span>D · durum</span>
+  </div>
+</div>
+
+<div class="addim">
+  <h2 class="addim-basliq" id="a7">
+    <span class="addim-no">7</span> PrismaModule — @Global() ilə paylaşılan bağlantı
+  </h2>
+  <div class="addim-govde">
+
+    <div class="hisse hisse-a">
+      <span class="hisse-basliq">A · Bu addım nəyə görədir</span>
+      <p>Bundan sonra hər modul <code>PrismaService</code>-i işlədəcək. Onu hər modulun
+    <code>providers</code> siyahısına yenidən yazmaq həm təkrarçılıqdır, həm də
+    hər yerdə <strong>ayrı nüsxə</strong> yaranması riski daşıyır — 5 modul, 5 bağlantı
+    deməkdir. <code>@Global()</code> dekoratoru modulu bütün layihə üçün əlçatan edir:
+    bir dənə bağlantı havuzu, hamı onu paylaşır.</p>
+    </div>
+
+    <div class="hisse hisse-b">
+      <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">src/prisma/prisma.module.ts</p>
+<pre><code>import { Global, Module } from '@nestjs/common';
+import { PrismaService } from './prisma.service.js';
+
+/**
+ * @Global() — bu modulu HƏR modulda yenidən import etmək lazım deyil.
+ * PrismaService bütün layihədə bir dənədir (singleton).
+ */
+@Global()
+@Module({
+  providers: [PrismaService],
+  exports: [PrismaService],
+})
+export class PrismaModule {}</code></pre>
+    </div>
+
+    <div class="hisse hisse-c">
+      <span class="hisse-basliq">C · Yoxlama — kod düzgün yazıldı?</span>
+      <p>Aşağıdaki əmrləri işlədin və nəticəni yoxlayın:</p>
+<pre><code>cd ~/Deepseek_ARTI/DS_Backend
+
+# @Global, providers və exports üçlüyü yerindədirmi?
+grep -n '@Global\|providers\|exports' src/prisma/prisma.module.ts
+
+# Modul düzgün yazılıbsa build keçməlidir
+npm run build &amp;&amp; echo "✓ build keçdi"</code></pre>
+      <div class="olmaz">
+        <span class="olmaz-basliq">⚠️ Bu kod olmasa nə olardı</span>
+<pre><code>$ node dist/main.js      # @Global() silinsə:
+
+[Nest] ERROR [ExceptionHandler] UnknownDependenciesException [Error]:
+Nest can't resolve dependencies of the SaglamliqService (?).
+Please make sure that the argument PrismaService at index [0]
+is available in the SaglamliqModule module.
+
+    dependencies: [ '?' ]</code></pre>
+        <p>NestJS hər modulu ayrı bir qutu kimi görür: modul yalnız öz
+    <code>providers</code>-ını və <code>imports</code> etdiyi modulların
+    <code>exports</code>-unu görə bilir. <code>@Global()</code> olmasa
+    <code>SaglamliqModule</code> <code>PrismaService</code>-i tanımır və
+    <strong>server heç qalxmır</strong> — xəta isə konfiqurasiya mərhələsində,
+    yəni ilk sorğudan əvvəl çıxır.</p>
+      </div>
+    </div>
+
+    <div class="hisse hisse-d">
+      <span class="hisse-basliq">D · Bu koddan sonra sistemin durumu</span>
+<pre><code>$ node dist/main.js
+
+[Nest] LOG [InstanceLoader] AppModule dependencies initialized +8ms
+[Nest] LOG [InstanceLoader] PrismaModule dependencies initialized +0ms
+[Nest] LOG [InstanceLoader] ConfigHostModule dependencies initialized +0ms
+[Nest] LOG [InstanceLoader] ConfigModule dependencies initialized +0ms
+[Nest] LOG [InstanceLoader] SaglamliqModule dependencies initialized +0ms
+[Nest] LOG [BAZA] Baza bağlantısı açıldı
+
+# Modul ağacı — PrismaModule BİR dənədir, @Global sayəsində hamıya açıqdır:
+AppModule
+├── ConfigModule      (isGlobal: true)
+├── PrismaModule      (@Global: true)  →  PrismaService
+└── SaglamliqModule   →  SaglamliqService (PrismaService-i BİRBAŞA alır)</code></pre>
+      <div class="oldu">
+        <span class="oldu-basliq">✔ Nəticə</span>
+        <p>Sistemin vəziyyəti: dörd modul növbə ilə yükləndi.
+    <code>PrismaModule</code> yalnız <strong>bir dəfə</strong> qeydiyyatdan keçdi və
+    <code>SaglamliqModule</code> onu import etmədən <code>PrismaService</code>-i
+    konstruktorunda istifadə edə bildi. <code>exports</code> sətri isə vacibdir:
+    <code>@Global()</code> modulu "hamıya açıq" edir, amma <code>exports</code>
+    olmasa içindəki servis hələ də görünməz qalar.</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="addim-icmal">
+    <span>Addım 7 / 13</span>
+    <span>A · niyə</span><span>B · kod</span>
+    <span>C · yoxlama</span><span>D · durum</span>
+  </div>
+</div>
+
+<div class="addim">
+  <h2 class="addim-basliq" id="a8">
+    <span class="addim-no">8</span> AllExceptionsFilter — vahid xəta formatı
+  </h2>
+  <div class="addim-govde">
+
+    <div class="hisse hisse-a">
+      <span class="hisse-basliq">A · Bu addım nəyə görədir</span>
+      <p>NestJS xəta baş verəndə öz formatını qaytarır:
+    <code>{ statusCode, message, error }</code>. Frontend isə həmişə <strong>eyni</strong>
+    formanı gözləməlidir, yoxsa hər endpoint üçün ayrı xəta emalı yazmaq lazım gələr.
+    <code>AllExceptionsFilter</code> bütün xətaları tutub vahid formata salır:
+    <code>{ ugur, xeta: { kod, mesaj, detallar }, yol, vaxt }</code>. Beləliklə frontend-də
+    bir dənə funksiya bütün xətaları göstərə bilir.</p>
+    </div>
+
+    <div class="hisse hisse-b">
+      <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">src/common/filters/all-exceptions.filter.ts</p>
+<pre><code>import {
+  ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, Logger,
+} from '@nestjs/common';
+import type { Request, Response } from 'express';
+
+/** HTTP status kodunu oxunaqlı sabitə çevirir */
+const KOD_XERITESI: Record&lt;number, string&gt; = {
+  400: 'YANLIS_SORGU',
+  401: 'AUTENTIFIKASIYA_LAZIM',
+  403: 'ICAZE_YOXDUR',
+  404: 'TAPILMADI',
+  409: 'TOQQUSMA',
+  422: 'EMAL_OLUNMADI',
+  500: 'DAXILI_XETA',
+};
+
+/**
+ * Bütün xətaları VAHDİ formata salır.
+ *
+ * NestJS-in default formatı:  { statusCode, message, error }
+ * Bizim format:               { ugur, xeta: { kod, mesaj, detallar }, yol, vaxt }
+ *
+ * Niyə vacibdir? Frontend həmişə EYNİ formanı gözləyir — bir yerdə
+ * `message`, başqa yerdə `xeta.mesaj` axtarmalı olmur.
+ */
+@Catch()
+export class AllExceptionsFilter implements ExceptionFilter {
+  private readonly log = new Logger('XETA');
+
+  catch(xeta: unknown, host: ArgumentsHost): void {
+    const ctx = host.switchToHttp();
+    const cavab = ctx.getResponse&lt;Response&gt;();
+    const sorgu = ctx.getRequest&lt;Request&gt;();
+
+    let status = HttpStatus.INTERNAL_SERVER_ERROR;
+    let mesaj: string | string[] = 'Daxili server xətası';
+    let kod = 'DAXILI_XETA';
+
+    if (xeta instanceof HttpException) {
+      status = xeta.getStatus();
+      const govde = xeta.getResponse();
+
+      if (typeof govde === 'string') {
+        mesaj = govde;
+      } else if (typeof govde === 'object' &amp;&amp; govde !== null) {
+        const g = govde as Record&lt;string, unknown&gt;;
+        mesaj = (g.message as string | string[]) ?? xeta.message;
+      }
+      kod = KOD_XERITESI[status] ?? 'XETA';
+    } else if (xeta instanceof Error) {
+      mesaj = xeta.message;
+      this.log.error(`${sorgu.method} ${sorgu.url} — ${xeta.message}`, xeta.stack);
+    }
+
+    const detallar = Array.isArray(mesaj) ? mesaj : undefined;
+
+    cavab.status(status).json({
+      ugur: false,
+      xeta: {
+        kod,
+        mesaj: Array.isArray(mesaj) ? 'Validasiya xətası' : mesaj,
+        ...(detallar ? { detallar } : {}),
+      },
+      yol: sorgu.url,
+      vaxt: new Date().toISOString(),
+    });
+  }
+}</code></pre>
+    </div>
+
+    <div class="hisse hisse-c">
+      <span class="hisse-basliq">C · Yoxlama — kod düzgün yazıldı?</span>
+      <p>Aşağıdaki əmrləri işlədin və nəticəni yoxlayın:</p>
+<pre><code>cd ~/Deepseek_ARTI/DS_Backend
+
+# @Catch() boş mötərizə ilə olmalıdır — hamısını tutur
+grep -n '@Catch' src/common/filters/all-exceptions.filter.ts
+
+# Status → kod xəritəsi tamdırmı?
+grep -c ':' src/common/filters/all-exceptions.filter.ts
+
+# main.ts-də qeydiyyatdan keçibmi?
+grep -n 'useGlobalFilters' src/main.ts</code></pre>
+      <div class="olmaz">
+        <span class="olmaz-basliq">⚠️ Bu kod olmasa nə olardı</span>
+<pre><code>$ curl -s http://localhost:4000/api/v1/yoxdur
+
+{"message":"Cannot GET /api/v1/yoxdur","error":"Not Found","statusCode":404}</code></pre>
+        <p>Bu, NestJS-in default formatıdır. Görünür ki, burada nə xəta
+    <strong>kodu</strong> var, nə də <strong>vaxt</strong> — frontend yalnız
+    <code>message</code> mətninə baxa bilər, o da ingiliscədir. Filtr olmadan
+    hər modul öz xəta formatını qaytarar və frontend-də
+    <code>if (res.statusCode) ... else if (res.xeta) ...</code> kimi qarışıq kod yaranar.</p>
+      </div>
+    </div>
+
+    <div class="hisse hisse-d">
+      <span class="hisse-basliq">D · Bu koddan sonra sistemin durumu</span>
+<pre><code>$ curl -s http://localhost:4000/api/v1/yoxdur | python3 -m json.tool
+
+{
+    "ugur": false,
+    "xeta": {
+        "kod": "TAPILMADI",
+        "mesaj": "Cannot GET /api/v1/yoxdur"
+    },
+    "yol": "/yoxdur",
+    "vaxt": "2026-09-20T12:40:36.106Z"
+}</code></pre>
+      <div class="oldu">
+        <span class="oldu-basliq">✔ Nəticə</span>
+        <p>Sistemin vəziyyəti: eyni 404 cavabı indi <strong>vahid formatdadır</strong>.
+    <code>ugur: false</code> sahəsi uğurlu cavablardaki <code>ugur: true</code> ilə
+    simmetrikdir — frontend hər cavabda əvvəlcə bu sahəyə baxır.
+    <code>xeta.kod</code> isə sabit sözdür (<code>TAPILMADI</code>,
+    <code>ICAZE_YOXDUR</code>...), yəni frontend mətn dəyişdikdə belə koda görə
+    qərar verə bilir. <code>@Catch()</code> mötərizəsi boşdur — bu o deməkdir ki,
+    filtr <strong>hər növ</strong> xətanı tutur, yalnız HTTP xətalarını yox.</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="addim-icmal">
+    <span>Addım 8 / 13</span>
+    <span>A · niyə</span><span>B · kod</span>
+    <span>C · yoxlama</span><span>D · durum</span>
+  </div>
+</div>
+
+<div class="addim">
+  <h2 class="addim-basliq" id="a9">
+    <span class="addim-no">9</span> Sağlamlıq modulu — ilk işləyən endpoint
+  </h2>
+  <div class="addim-govde">
+
+    <div class="hisse hisse-a">
+      <span class="hisse-basliq">A · Bu addım nəyə görədir</span>
+      <p>Sistemin işlədiyini yoxlamaq üçün ən sadə endpoint budur. Sadəcə
+    "işləyirəm" demək <strong>kifayət deyil</strong> — baza bağlantısı qopubsa API
+    yenə də "işləyirəm" deyəcək və problem yalnız istifadəçi məlumat istəyəndə
+    üzə çıxacaq. Ona görə <code>/saglamliq</code> hər çağırışda bazaya real sorğu
+    göndərir və cavaba cədvəl sayını da əlavə edir.</p>
+    </div>
+
+    <div class="hisse hisse-b">
+      <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">src/saglamliq/saglamliq.service.ts</p>
+<pre><code>import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service.js';
+
+export interface SaglamliqCavabi {
+  status: string;
+  baza: { qosulub: boolean; cedvel_sayi: number; gecikme_ms: number };
+  versiya: string;
+  vaxt: string;
+}
+
+@Injectable()
+export class SaglamliqService {
+  constructor(private readonly prisma: PrismaService) {}
+
+  /**
+   * Sistemin canlı olub-olmadığını yoxlayır.
+   * Sadəcə "işləyirəm" demir — BAZAYA da sorğu göndərir.
+   */
+  async yoxla(): Promise&lt;SaglamliqCavabi&gt; {
+    const { cedvelSayi, gecikmeMs } = await this.prisma.yoxla();
+
+    return {
+      status: 'saglam',
+      baza: {
+        qosulub: true,
+        cedvel_sayi: cedvelSayi,
+        gecikme_ms: gecikmeMs,
+      },
+      versiya: '0.1.0',
+      vaxt: new Date().toISOString(),
+    };
+  }
+}</code></pre>
+    <p class="fayl-ad">src/saglamliq/saglamliq.controller.ts</p>
+<pre><code>import { Controller, Get } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { SaglamliqService } from './saglamliq.service.js';
+import type { SaglamliqCavabi } from './saglamliq.service.js';
+
+@ApiTags('saglamliq')
+@Controller()
+export class SaglamliqController {
+  constructor(private readonly saglamliq: SaglamliqService) {}
+
+  @Get()
+  @ApiOperation({ summary: 'API haqqında qısa məlumat' })
+  kok() {
+    return {
+      ad: 'ARTİ ERP API',
+      versiya: '0.1.0',
+      prefiks: '/api/v1',
+      senedlesdirme: '/docs',
+    };
+  }
+
+  @Get('saglamliq')
+  @ApiOperation({ summary: 'Sağlamlıq yoxlaması — baza ilə birlikdə' })
+  @ApiResponse({ status: 200, description: 'Sistem sağlamdır' })
+  @ApiResponse({ status: 503, description: 'Baza əlçatmazdır' })
+  yoxla(): Promise&lt;SaglamliqCavabi&gt; {
+    return this.saglamliq.yoxla();
+  }
+}</code></pre>
+    <p class="fayl-ad">src/saglamliq/saglamliq.module.ts</p>
+<pre><code>import { Module } from '@nestjs/common';
+import { SaglamliqController } from './saglamliq.controller.js';
+import { SaglamliqService } from './saglamliq.service.js';
+
+@Module({
+  controllers: [SaglamliqController],
+  providers: [SaglamliqService],
+})
+export class SaglamliqModule {}</code></pre>
+    </div>
+
+    <div class="hisse hisse-c">
+      <span class="hisse-basliq">C · Yoxlama — kod düzgün yazıldı?</span>
+      <p>Aşağıdaki əmrləri işlədin və nəticəni yoxlayın:</p>
+<pre><code>cd ~/Deepseek_ARTI/DS_Backend
+
+# Controller yolu və metodları düzgündürmü?
+grep -n "@Controller\|@Get\|@ApiTags" src/saglamliq/saglamliq.controller.ts
+
+# Servis PrismaService-i çağırırmı?
+grep -n 'prisma.yoxla\|constructor' src/saglamliq/saglamliq.service.ts
+
+# Modul controller və service-i qeydiyyata alıbmı?
+cat src/saglamliq/saglamliq.module.ts</code></pre>
+      <div class="olmaz">
+        <span class="olmaz-basliq">⚠️ Bu kod olmasa nə olardı</span>
+<pre><code>$ curl -s -o /dev/null -w '%{http_code}\n' http://localhost:4000/api/v1/saglamliq
+404
+
+$ curl -s http://localhost:4000/api/v1/saglamliq
+{"ugur":false,"xeta":{"kod":"TAPILMADI",
+ "mesaj":"Cannot GET /api/v1/saglamliq"},"yol":"/saglamliq",
+ "vaxt":"2026-09-20T12:41:02.338Z"}</code></pre>
+        <p>Modul kök modula qoşulmasa NestJS bu yolu ümumiyyətlə tanımır və
+    <strong>404</strong> qaytarır. Diqqət yetirin: xəta formatı bizim filtrdən gəlir —
+    yəni filtr işləyir, sadəcə endpoint yoxdur. Bu, sağlamlıq yoxlamasının
+    ən vacib xüsusiyyətini də göstərir: <strong>404 sağlamlıq problemi deyil</strong>,
+    o, konfiqurasiya problemidir.</p>
+      </div>
+    </div>
+
+    <div class="hisse hisse-d">
+      <span class="hisse-basliq">D · Bu koddan sonra sistemin durumu</span>
+<pre><code>$ curl -s http://localhost:4000/api/v1/saglamliq | python3 -m json.tool
+
+{
+    "status": "saglam",
+    "baza": {
+        "qosulub": true,
+        "cedvel_sayi": 48,
+        "gecikme_ms": 31
+    },
+    "versiya": "0.1.0",
+    "vaxt": "2026-09-20T12:39:17.362Z"
+}
+
+$ curl -s http://localhost:4000/api/v1/ | python3 -m json.tool
+
+{
+    "ad": "ARTİ ERP API",
+    "versiya": "0.1.0",
+    "prefiks": "/api/v1",
+    "senedlesdirme": "/docs"
+}</code></pre>
+      <div class="oldu">
+        <span class="oldu-basliq">✔ Nəticə</span>
+        <p>Sistemin vəziyyəti: API artıq <strong>canlıdır və bazaya qoşulub</strong>.
+    <code>cedvel_sayi: 48</code> rəqəmi birbaşa PostgreSQL-dən gəlir — bu o deməkdir ki,
+    sorğu həqiqətən icra olundu. <code>gecikme_ms</code> sahəsi isə gələcəkdə
+    monitorinq üçün lazımdır: bu rəqəm 500-ü keçməyə başlasa, baza yüklənməsini
+    yoxlamaq lazımdır. <code>@Controller()</code> mötərizəsi <strong>boşdur</strong> —
+    ona görə yollar <code>/saglamliq</code> və <code>/</code> kimi qlobal prefiksin
+    düz altında yerləşir.</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="addim-icmal">
+    <span>Addım 9 / 13</span>
+    <span>A · niyə</span><span>B · kod</span>
+    <span>C · yoxlama</span><span>D · durum</span>
+  </div>
+</div>
+
+<div class="addim">
+  <h2 class="addim-basliq" id="a10">
+    <span class="addim-no">10</span> app.module.ts — kök modul
+  </h2>
+  <div class="addim-govde">
+
+    <div class="hisse hisse-a">
+      <span class="hisse-basliq">A · Bu addım nəyə görədir</span>
+      <p>Kök modul bütün parçaları bir yerə yığır: <code>ConfigModule</code>
+    <code>.env</code>-i oxuyur, <code>PrismaModule</code> baza bağlantısını gətirir,
+    <code>SaglamliqModule</code> isə endpoint-ləri qeydiyyata alır. NestJS tətbiqi
+    məhz bu moduldan başlayaraq bütün ağacı qurur. <code>isGlobal: true</code> olmasa
+    <code>ConfigService</code>-i hər modulda ayrıca import etmək lazım gələrdi.</p>
+    </div>
+
+    <div class="hisse hisse-b">
+      <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">src/app.module.ts</p>
+<pre><code>import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { PrismaModule } from './prisma/prisma.module.js';
+import { SaglamliqModule } from './saglamliq/saglamliq.module.js';
+
+@Module({
+  imports: [
+    // .env faylını oxuyur və BÜTÜN layihə üçün əlçatan edir.
+    // isGlobal: true — hər modulda yenidən import etmək lazım deyil.
+    ConfigModule.forRoot({ isGlobal: true }),
+
+    PrismaModule,
+    SaglamliqModule,
+  ],
+})
+export class AppModule {}</code></pre>
+    </div>
+
+    <div class="hisse hisse-c">
+      <span class="hisse-basliq">C · Yoxlama — kod düzgün yazıldı?</span>
+      <p>Aşağıdaki əmrləri işlədin və nəticəni yoxlayın:</p>
+<pre><code>cd ~/Deepseek_ARTI/DS_Backend
+
+# Hər üç modul imports siyahısındadırmı?
+grep -n 'imports\|ConfigModule\|PrismaModule\|SaglamliqModule\|isGlobal' \
+  src/app.module.ts
+
+# NestJS bu faylı giriş nöqtəsi kimi tanıyırmı?
+grep -n 'AppModule' src/main.ts</code></pre>
+      <div class="olmaz">
+        <span class="olmaz-basliq">⚠️ Bu kod olmasa nə olardı</span>
+<pre><code>$ node dist/main.js      # ConfigModule silinsə:
+
+[Nest] ERROR [ExceptionHandler] Error: DATABASE_URL təyin olunmayıb
+  — .env faylını yoxlayın</code></pre>
+        <p><code>ConfigModule.forRoot()</code> olmasa <code>.env</code> faylı
+    <strong>heç oxunmur</strong> — <code>dotenv</code> paketi quraşdırılıb, amma
+    onu işə salan yoxdur. Nəticədə <code>process.env.DATABASE_URL</code>
+    <code>undefined</code> olur və server 4-cü addımdaki xəta ilə dayanır.
+    <code>isGlobal: true</code> olmasa isə hər modul öz
+    <code>imports</code>-una <code>ConfigModule</code> əlavə etməli olar —
+    20 modulda 20 təkrar sətir.</p>
+      </div>
+    </div>
+
+    <div class="hisse hisse-d">
+      <span class="hisse-basliq">D · Bu koddan sonra sistemin durumu</span>
+<pre><code>$ node dist/main.js
+
+[Nest] LOG [InstanceLoader] AppModule dependencies initialized +8ms
+[Nest] LOG [InstanceLoader] PrismaModule dependencies initialized +0ms
+[Nest] LOG [InstanceLoader] ConfigHostModule dependencies initialized +0ms
+[Nest] LOG [InstanceLoader] ConfigModule dependencies initialized +0ms
+[Nest] LOG [InstanceLoader] SaglamliqModule dependencies initialized +0ms
+[Nest] LOG [RoutesResolver] SaglamliqController {/api/v1}: +37ms
+[Nest] LOG [RouterExplorer] Mapped {/api/v1, GET} route +0ms
+[Nest] LOG [RouterExplorer] Mapped {/api/v1/saglamliq, GET} route +0ms
+[Nest] LOG [BAZA] Baza bağlantısı açıldı
+[Nest] LOG [NestApplication] Nest application successfully started +0ms
+[Nest] LOG [BAŞLANGIC] API hazırdır → http://localhost:4000/api/v1
+[Nest] LOG [BAŞLANGIC] Sənədləşdirmə → http://localhost:4000/docs</code></pre>
+      <div class="oldu">
+        <span class="oldu-basliq">✔ Nəticə</span>
+        <p>Sistemin vəziyyəti: <code>Mapped {/api/v1/saglamliq, GET} route</code>
+    sətri NestJS-in endpoint-i <strong>həqiqətən qeydiyyata aldığını</strong> təsdiqləyir.
+    Diqqət yetirin ki, <code>ConfigHostModule</code> və <code>ConfigModule</code>
+    ayrı-ayrı yüklənir — <code>ConfigModule.forRoot()</code> daxildə köməkçi modul
+    yaradır, bu normaldır. Yüklənmə sırası da önəmlidir: PrismaModule
+    SaglamliqModule-dən əvvəl gəlir, çünki o, bağlantını hazır saxlayır.</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="addim-icmal">
+    <span>Addım 10 / 13</span>
+    <span>A · niyə</span><span>B · kod</span>
+    <span>C · yoxlama</span><span>D · durum</span>
+  </div>
+</div>
+
+<div class="addim">
+  <h2 class="addim-basliq" id="a11">
+    <span class="addim-no">11</span> main.ts — serverin giriş nöqtəsi
+  </h2>
+  <div class="addim-govde">
+
+    <div class="hisse hisse-a">
+      <span class="hisse-basliq">A · Bu addım nəyə görədir</span>
+      <p><code>main.ts</code> tətbiqi işə salan fayldır. Burada üç qlobal qərar verilir:
+    bütün yolların <code>/api/v1</code> altında toplanması, gələn məlumatın avtomatik
+    yoxlanması və xətaların vahid formata salınması. Swagger sənədləşdirməsi də
+    burada qoşulur ki, <code>/docs</code> ünvanında bütün API-yə baxmaq mümkün olsun.
+    Bu qərarlar bir yerdə verildiyi üçün bütün modullar üçün eyni qaydalar qüvvədə olur.</p>
+    </div>
+
+    <div class="hisse hisse-b">
+      <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">src/main.ts</p>
+<pre><code>import 'reflect-metadata';
+import { Logger, ValidationPipe } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { AppModule } from './app.module.js';
+import { AllExceptionsFilter } from './common/filters/all-exceptions.filter.js';
+
+async function bootstrap(): Promise&lt;void&gt; {
+  const app = await NestFactory.create(AppModule);
+
+  // Bütün endpoint-lər /api/v1 altında olsun
+  app.setGlobalPrefix('api/v1');
+
+  // Gələn məlumatı avtomatik yoxla və sinifə çevir
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,            // DTO-da olmayan sahələri sil
+      forbidNonWhitelisted: true, // ...və ya şikayət et
+      transform: true,            // "5" → 5 kimi çevirmələr
+    }),
+  );
+
+  // Xətaları vahid formata sal
+  app.useGlobalFilters(new AllExceptionsFilter());
+
+  // Swagger sənədləşdirmə — /docs
+  const konfiq = new DocumentBuilder()
+    .setTitle('ARTİ ERP API')
+    .setDescription('Azərbaycan Respublikasının Təhsil İnstitutu — ERP sistemi')
+    .setVersion('0.1.0')
+    .build();
+  SwaggerModule.setup('docs', app, SwaggerModule.createDocument(app, konfiq));
+
+  // CORS — frontend ayrı portda işləyəcək
+  app.enableCors();
+
+  const port = Number(process.env.PORT ?? 4000);
+  await app.listen(port);
+
+  Logger.log(`API hazırdır → http://localhost:${port}/api/v1`, 'BAŞLANGIC');
+  Logger.log(`Sənədləşdirmə → http://localhost:${port}/docs`, 'BAŞLANGIC');
+}
+
+bootstrap();</code></pre>
+    </div>
+
+    <div class="hisse hisse-c">
+      <span class="hisse-basliq">C · Yoxlama — kod düzgün yazıldı?</span>
+      <p>Aşağıdaki əmrləri işlədin və nəticəni yoxlayın:</p>
+<pre><code>cd ~/Deepseek_ARTI/DS_Backend
+
+# Dörd qlobal qərar da yerindədirmi?
+grep -n 'setGlobalPrefix\|useGlobalPipes\|useGlobalFilters\|SwaggerModule\|enableCors\|app.listen' \
+  src/main.ts
+
+# PORT dəyəri .env-dən gəlirmi?
+grep -n 'PORT' .env src/main.ts</code></pre>
+      <div class="olmaz">
+        <span class="olmaz-basliq">⚠️ Bu kod olmasa nə olardı</span>
+<pre><code>$ node dist/main.js      # setGlobalPrefix silinsə:
+
+$ curl -s -o /dev/null -w '%{http_code}\n' http://localhost:4000/api/v1/saglamliq
+404
+$ curl -s -o /dev/null -w '%{http_code}\n' http://localhost:4000/saglamliq
+200</code></pre>
+        <p><code>setGlobalPrefix('api/v1')</code> olmasa endpoint <code>/saglamliq</code>
+    ünvanında işləyir və <code>/api/v1/saglamliq</code> <strong>404</strong> verir.
+    Bu, sonradan düzəltməsi ən baha səhvdir: frontend, mobil tətbiq və sənədləşdirmə
+    hamısı köhnə yola bağlanır. Versiya prefiksi (<code>v1</code>) isə gələcəkdə
+    API dəyişəndə köhnə müştəriləri sındırmamaq üçündür.</p>
+      </div>
+    </div>
+
+    <div class="hisse hisse-d">
+      <span class="hisse-basliq">D · Bu koddan sonra sistemin durumu</span>
+<pre><code>$ npm run build &amp;&amp; node dist/main.js
+
+[Nest] LOG [NestApplication] Nest application successfully started +0ms
+[Nest] LOG [BAŞLANGIC] API hazırdır → http://localhost:4000/api/v1
+[Nest] LOG [BAŞLANGIC] Sənədləşdirmə → http://localhost:4000/docs
+
+$ curl -s http://localhost:4000/docs-json | python3 -c "
+import json,sys
+d = json.load(sys.stdin)
+for yol, metodlar in sorted(d['paths'].items()):
+    for m in metodlar:
+        print(f'  {m.upper():6s} {yol}')
+"
+  GET    /api/v1
+  GET    /api/v1/saglamliq
+
+$ curl -s -o /dev/null -w 'docs → %{http_code}\n' http://localhost:4000/docs
+docs → 200</code></pre>
+      <div class="oldu">
+        <span class="oldu-basliq">✔ Nəticə</span>
+        <p>Sistemin vəziyyəti: server qalxdı, iki marshrut qeydiyyatdadır və Swagger
+    sənədləşdirməsi <code>/docs</code> ünvanında canlıdır. <code>/docs-json</code>
+    ünvanı OpenAPI spesifikasiyasını JSON kimi verir — bu fayl sonradan frontend
+    üçün TypeScript tipləri yaratmağa yarayacaq. <code>ValidationPipe</code>-daki
+    <code>whitelist</code> və <code>forbidNonWhitelisted</code> ayarları hələ
+    görünmür, çünki hələ heç bir DTO yoxdur — onlar növbəti dərsdə işə düşəcək.</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="addim-icmal">
+    <span>Addım 11 / 13</span>
+    <span>A · niyə</span><span>B · kod</span>
+    <span>C · yoxlama</span><span>D · durum</span>
+  </div>
+</div>
+
+<div class="addim">
+  <h2 class="addim-basliq" id="a12">
+    <span class="addim-no">12</span> Build və tam canlı yoxlama
+  </h2>
+  <div class="addim-govde">
+
+    <div class="hisse hisse-a">
+      <span class="hisse-basliq">A · Bu addım nəyə görədir</span>
+      <p><code>nest build</code> TypeScript-i JavaScript-ə çevirib <code>dist/</code>
+    qovluğuna yığır; istehsalatda <code>node dist/main.js</code> işlədilir, inkişafda
+    isə <code>nest start --watch</code> hər dəyişiklikdə özü yenidən qurur. Bu addımda
+    bütün əvvəlki addımları <strong>bir yerdə</strong> yoxlayırıq: yığım, serverin
+    qalxması, baza bağlantısı, prefiks, xəta formatı və sənədləşdirmə.</p>
+    </div>
+
+    <div class="hisse hisse-b">
+      <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">Terminal — yığ və işə sal</p>
+<pre><code>cd ~/Deepseek_ARTI/DS_Backend
+
+# Yığ
+npm run build
+
+# İstehsalat rejimində işə sal
+node dist/main.js
+
+# İnkiaf üçün (ayrı terminalda) — hər dəyişiklikdə özü yenilənir
+# npm run start:dev</code></pre>
+    <p class="fayl-ad">Terminal — beş yoxlama bir yerdə</p>
+<pre><code>API=http://localhost:4000/api/v1
+
+echo "1) Sağlamlıq        : $(curl -s -o /dev/null -w '%{http_code}' $API/saglamliq)"
+echo "2) Kök endpoint     : $(curl -s -o /dev/null -w '%{http_code}' $API/)"
+echo "3) Prefikssiz (404) : $(curl -s -o /dev/null -w '%{http_code}' http://localhost:4000/saglamliq)"
+echo "4) Sənədləşdirmə    : $(curl -s -o /dev/null -w '%{http_code}' http://localhost:4000/docs)"
+echo "5) Olmayan yol      : $(curl -s -o /dev/null -w '%{http_code}' $API/yoxdur)"</code></pre>
+    </div>
+
+    <div class="hisse hisse-c">
+      <span class="hisse-basliq">C · Yoxlama — kod düzgün yazıldı?</span>
+      <p>Aşağıdaki əmrləri işlədin və nəticəni yoxlayın:</p>
+<pre><code>cd ~/Deepseek_ARTI/DS_Backend
+
+# 1) dist yarandımı və içində nə var?
+ls -1 dist/
+
+# 2) Bizim mənbələr JavaScript-ə çevrildimi?
+#    (generated/ kənarlaşdırılır — onun 56 faylı siyahını doldurur)
+find dist -name '*.js' -not -path '*/generated/*' | sort
+
+# 3) generated qovluğu da dist-ə düşdümü?
+ls -d dist/generated/prisma</code></pre>
+      <div class="olmaz">
+        <span class="olmaz-basliq">⚠️ Bu kod olmasa nə olardı</span>
+<pre><code>$ npm run build      # xəta olsa:
+
+src/saglamliq/saglamliq.controller.ts:11:3 - error TS1241: ...
+
+$ ls dist/
+ls: dist/: No such file or directory</code></pre>
+        <p>Build uğursuz olsa <code>dist/</code> qovluğu <strong>heç yaranmır</strong>
+    (nest-cli.json-daki <code>deleteOutDir: true</code> əvvəlcə köhnəni silir).
+    Yəni <code>node dist/main.js</code> köhnə kodu işlətməz — sadəcə
+    "fayl tapılmadı" deyəcək. Bu yaxşı xüsusiyyətdir: sınıq kodun təsadüfən
+    istehsalata düşməsi mümkün deyil.</p>
+      </div>
+    </div>
+
+    <div class="hisse hisse-d">
+      <span class="hisse-basliq">D · Bu koddan sonra sistemin durumu</span>
+<pre><code>$ npm run build
+&gt; ds-backend@0.1.0 build
+&gt; nest build
+   (xəta yoxdur)
+
+$ ls -1 dist/ | head
+app.module.js
+common
+generated
+main.js
+prisma
+saglamliq
+tsconfig.build.tsbuildinfo
+
+$ node dist/main.js &amp;
+$ API=http://localhost:4000/api/v1
+1) Sağlamlıq        : 200
+2) Kök endpoint     : 200
+3) Prefikssiz (404) : 404
+4) Sənədləşdirmə    : 200
+5) Olmayan yol      : 404
+
+$ curl -s $API/saglamliq
+{"status":"saglam","baza":{"qosulub":true,"cedvel_sayi":48,
+ "gecikme_ms":2},"versiya":"0.1.0","vaxt":"2026-09-20T12:39:17.362Z"}</code></pre>
+      <div class="oldu">
+        <span class="oldu-basliq">✔ Nəticə</span>
+        <p><strong>Backend-in bu andaki tam durumu:</strong>
+    <ul>
+      <li>Server <code>dist/main.js</code>-dən işləyir — yəni TypeScript yox,
+          <strong>həqiqi JavaScript</strong> icra olunur.</li>
+      <li>Baza bağlantısı canlıdır: 48 cədvəl, 2 ms gecikmə.</li>
+      <li>İki endpoint işləyir, üçüncü qorunur (404), sənədləşdirmə açıqdır.</li>
+      <li>Xəta formatı vahiddir — 5-ci yoxlamanın cavabı bizim formatdadır.</li>
+      <li>Yoxlama üçün heç bir autentifikasiya yoxdur: bu, hələ
+          <strong>açıq API</strong>-dir. Növbəti dərsdə JWT ilə bağlayacağıq.</li>
+    </ul></p>
+      </div>
+    </div>
+
+  </div>
+  <div class="addim-icmal">
+    <span>Addım 12 / 13</span>
+    <span>A · niyə</span><span>B · kod</span>
+    <span>C · yoxlama</span><span>D · durum</span>
+  </div>
+</div>
+
+<div class="addim">
+  <h2 class="addim-basliq" id="a13">
+    <span class="addim-no">13</span> Testlər — hər dəyişiklikdən sonra bir əmr
+  </h2>
+  <div class="addim-govde">
+
+    <div class="hisse hisse-a">
+      <span class="hisse-basliq">A · Bu addım nəyə görədir</span>
+      <p>Hər dəfə əl ilə <code>curl</code> etmək yorucudur və vaxt keçdikcə unudulur.
+    Vitest ilə avtomatik testlər yazırıq: <strong>unit</strong> testlər servisi təcrid
+    olunmuş şəkildə yoxlayır (baza lazım deyil), <strong>e2e</strong> testlər isə real
+    HTTP sorğusu göndərir. Bu andan sonra hər dəyişiklikdən sonra bir əmr bütün
+    sistemi yoxlayır və nəyisə sındırdığımızı dərhal bilirik.</p>
+    </div>
+
+    <div class="hisse hisse-b">
+      <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">vitest.config.ts — unit testlər</p>
+<pre><code>import { defineConfig } from 'vitest/config';
+
+/**
+ * UNIT testlər — baza və server TƏLƏB OLUNMUR.
+ * e2e faylları XARİC edilir, yoxsa `npm test` onları da işə salar.
+ */
+export default defineConfig({
+  test: {
+    globals: true,
+    environment: 'node',
+    include: ['src/**/*.spec.ts'],
+    exclude: ['**/node_modules/**', '**/dist/**', '**/*.e2e-spec.ts'],
+  },
+});</code></pre>
+    <p class="fayl-ad">vitest.config.e2e.ts — e2e testlər</p>
+<pre><code>import { defineConfig } from 'vitest/config';
+
+/**
+ * e2e testlər — REAL bazaya qoşulur.
+ * Fayllar PARALEL işlədilmir: hamısı eyni bazanı dəyişir.
+ */
+export default defineConfig({
+  test: {
+    globals: true,
+    environment: 'node',
+    include: ['test/**/*.e2e-spec.ts'],
+    fileParallelism: false,
+    testTimeout: 30_000,
+    hookTimeout: 30_000,
+  },
+});</code></pre>
+    <p class="fayl-ad">src/saglamliq/saglamliq.service.spec.ts</p>
+<pre><code>import { Test } from '@nestjs/testing';
+import { SaglamliqService } from './saglamliq.service.js';
+import { PrismaService } from '../prisma/prisma.service.js';
+
+describe('SaglamliqService (unit)', () =&gt; {
+  let servis: SaglamliqService;
+  let prisma: { yoxla: ReturnType&lt;typeof vi.fn&gt; };
+
+  beforeEach(async () =&gt; {
+    prisma = { yoxla: vi.fn() };
+
+    const modul = await Test.createTestingModule({
+      providers: [
+        SaglamliqService,
+        { provide: PrismaService, useValue: prisma },
+      ],
+    }).compile();
+
+    servis = modul.get(SaglamliqService);
+  });
+
+  it('baza cavab verəndə status "saglam" olur', async () =&gt; {
+    prisma.yoxla.mockResolvedValue({ cedvelSayi: 48, gecikmeMs: 3 });
+
+    const c = await servis.yoxla();
+
+    expect(c.status).toBe('saglam');
+    expect(c.baza.qosulub).toBe(true);
+    expect(c.baza.cedvel_sayi).toBe(48);
+    expect(c.baza.gecikme_ms).toBe(3);
+  });
+
+  it('cavabda ISO formatlı vaxt olur', async () =&gt; {
+    prisma.yoxla.mockResolvedValue({ cedvelSayi: 48, gecikmeMs: 1 });
+
+    const c = await servis.yoxla();
+
+    expect(new Date(c.vaxt).toISOString()).toBe(c.vaxt);
+  });
+
+  it('baza xəta verəndə xəta YUXARI ötürülür (udulmur)', async () =&gt; {
+    prisma.yoxla.mockRejectedValue(new Error('bağlantı yoxdur'));
+
+    await expect(servis.yoxla()).rejects.toThrow('bağlantı yoxdur');
+  });
+});</code></pre>
+    <p class="fayl-ad">test/saglamliq.e2e-spec.ts</p>
+<pre><code>import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+import request from 'supertest';
+import { App } from 'supertest/types';
+import { AppModule } from '../src/app.module.js';
+import { AllExceptionsFilter } from '../src/common/filters/all-exceptions.filter.js';
+
+describe('Sağlamlıq (e2e)', () =&gt; {
+  let app: INestApplication&lt;App&gt;;
+
+  beforeAll(async () =&gt; {
+    const modul: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
+
+    app = modul.createNestApplication();
+    app.setGlobalPrefix('api/v1');
+    app.useGlobalPipes(
+      new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true }),
+    );
+    app.useGlobalFilters(new AllExceptionsFilter());
+    await app.init();
+  });
+
+  afterAll(async () =&gt; {
+    await app.close();
+  });
+
+  it('GET /api/v1/saglamliq → 200, baza qoşulub, 48 cədvəl', async () =&gt; {
+    const c = await request(app.getHttpServer())
+      .get('/api/v1/saglamliq')
+      .expect(200);
+
+    expect(c.body.status).toBe('saglam');
+    expect(c.body.baza.qosulub).toBe(true);
+    expect(c.body.baza.cedvel_sayi).toBe(48);
+  });
+
+  it('GET /api/v1 → API məlumatı', async () =&gt; {
+    const c = await request(app.getHttpServer()).get('/api/v1').expect(200);
+
+    expect(c.body.prefiks).toBe('/api/v1');
+    expect(c.body.ad).toContain('ERP');
+  });
+
+  it('prefikssiz yol → 404', async () =&gt; {
+    await request(app.getHttpServer()).get('/saglamliq').expect(404);
+  });
+
+  it('olmayan yol → vahid xəta formatı', async () =&gt; {
+    const c = await request(app.getHttpServer())
+      .get('/api/v1/yoxdur')
+      .expect(404);
+
+    expect(c.body.ugur).toBe(false);
+    expect(c.body.xeta.kod).toBe('TAPILMADI');
+    expect(typeof c.body.vaxt).toBe('string');
+  });
+});</code></pre>
+    </div>
+
+    <div class="hisse hisse-c">
+      <span class="hisse-basliq">C · Yoxlama — kod düzgün yazıldı?</span>
+      <p>Aşağıdaki əmrləri işlədin və nəticəni yoxlayın:</p>
+<pre><code>cd ~/Deepseek_ARTI/DS_Backend
+
+# 1) Unit testlər — baza lazım DEYİL
+npm test
+
+# 2) e2e testlər — real bazaya qoşulur
+npx vitest run --config vitest.config.e2e.ts
+
+# 3) Yalnız bir fayl
+npx vitest run src/saglamliq/saglamliq.service.spec.ts
+
+# 4) e2e XARİC edilibmi? (bu əmr YALNIZ spec.ts görməlidir)
+echo "unit konfiqurasiyası:"
+grep -n 'include\|exclude' vitest.config.ts</code></pre>
+      <div class="olmaz">
+        <span class="olmaz-basliq">⚠️ Bu kod olmasa nə olardı</span>
+<pre><code>$ npm test      # exclude sətri silinsə:
+
+ ✓ src/saglamliq/saglamliq.service.spec.ts (3 tests) 37ms
+ ✓ test/saglamliq.e2e-spec.ts (4 tests) 143ms
+
+ Test Files  2 passed (2)
+      Tests  7 passed (7)</code></pre>
+        <p>Bu <em>uğurlu</em> görünür, amma gizli problemdir: artıq
+    <code>npm test</code> bazaya qoşulur. Baza olmayan mühitdə — məsələn
+    CI-ın unit mərhələsində və ya başqa kompüterdə — <code>ECONNREFUSED</code>
+    alacaqsınız və səbəbi tapmaq çətin olacaq. Unit testlər <strong>sürətli və
+    təcrid olunmuş</strong> olmalıdır; e2e isə ayrı əmrlə çağırılmalıdır.</p>
+      </div>
+    </div>
+
+    <div class="hisse hisse-d">
+      <span class="hisse-basliq">D · Bu koddan sonra sistemin durumu</span>
+<pre><code>$ npm test
+ ✓ src/saglamliq/saglamliq.service.spec.ts (3 tests) 33ms
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+
+$ npx vitest run --config vitest.config.e2e.ts
+ ✓ test/saglamliq.e2e-spec.ts (4 tests) 267ms
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+
+Yekun: 3 unit + 4 e2e = 7 test</code></pre>
+      <div class="oldu">
+        <span class="oldu-basliq">✔ Nəticə</span>
+        <p>Sistemin vəziyyəti: artıq <strong>avtomatik təhlükəsizlik şəbəkəsi</strong>
+    var. Unit testlər <code>PrismaService</code>-i saxta obyektlə əvəz edir
+    (<code>useValue: prisma</code>) — buna görə baza olmadan da işləyir və
+    33 ms çəkir. e2e testlər isə real <code>AppModule</code>-u qaldırıb
+    <code>supertest</code> ilə HTTP sorğusu göndərir; onlar bazanı yoxlayır,
+    ona görə 8 dəfə yavaşdır (267 ms). Bu ikisi birlikdə həm
+    <em>məntiqi</em>, həm də <em>inteqrasiyanı</em> qoruyur.</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="addim-icmal">
+    <span>Addım 13 / 13</span>
+    <span>A · niyə</span><span>B · kod</span>
+    <span>C · yoxlama</span><span>D · durum</span>
+  </div>
+</div>
+
+
+<div class="success-box">
+  <strong>Backend-1 tamamlandı.</strong> İşləyən API: 2 endpoint ·
+  48 cədvəlli bazaya canlı bağlantı · vahid xəta formatı · Swagger ·
+  3 unit + 4 e2e test. <strong>Növbəti dərs:</strong> ilk funksional modul —
+  struktur (mərkəzlər, şöbələr) və kadrlar, DTO validasiyası ilə.
+</div>
+
+<div class="block block-xeber">
+  <span class="block-title">⚠️ BU DƏRSDƏ NƏ YOXDUR</span>
+  <ul>
+    <li><strong>Autentifikasiya yoxdur</strong> — bütün endpoint-lər açıqdır.</li>
+    <li><strong>Yazma əməliyyatı yoxdur</strong> — yalnız oxuma (GET).</li>
+    <li><strong>Audit jurnalı yoxdur</strong> — kim nə etdiyi yazılmır.</li>
+    <li><strong>AI qatı yoxdur</strong> — embedding, RAG və təbii dil sorğuları sonra.</li>
+  </ul>
+  <p>Bunlar qəsdən kənarda saxlanılıb: hər biri öz addımlarını tələb edir və
+  ayrı-ayrılıqda yoxlanılmalıdır.</p>
+</div>
+
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('pre').forEach(function (pre) {
+      var btn = document.createElement('button');
+      btn.className = 'copy-btn';
+      btn.textContent = '📋 KOPYALA';
+      btn.addEventListener('click', async function (ev) {
+        ev.preventDefault();
+        var kod = pre.querySelector('code');
+        var metn = kod ? kod.textContent : pre.textContent;
+        try {
+          await navigator.clipboard.writeText(metn);
+          btn.textContent = '✅ KOPYALANDI';
+          btn.classList.add('copied');
+          setTimeout(function () {
+            btn.textContent = '📋 KOPYALA';
+            btn.classList.remove('copied');
+          }, 2000);
+        } catch (err) {
+          var ta = document.createElement('textarea');
+          ta.value = metn;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          btn.textContent = '✅ KOPYALANDI';
+          setTimeout(function () { btn.textContent = '📋 KOPYALA'; }, 2000);
+        }
+      });
+      pre.insertBefore(btn, pre.firstChild);
+    });
+  });
+</script>
+</body>
+</html>
