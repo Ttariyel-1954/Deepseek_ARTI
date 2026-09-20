@@ -416,21 +416,56 @@ export class StrukturService {
     return setirler[0];
   }
 
-  /** Sil — bagli setir varsa 409 */
+  /**
+   * Sil — bagli melumat varsa 409.
+   *
+   * DIQQET: merkezler-e UC cedvel baglidir:
+   *   struktur.shobeler.merkez_id
+   *   struktur.rehberlik.merkez_id
+   *   kadrlar.emekdaslar.merkez_id
+   *
+   * Yalniz shobeler-i yoxlasaq, diger ikisi FK pozuntusu verer ve
+   * istifadeci 500 xetasi gorər. Ona gore HAMISINI yoxlayiriq —
+   * ustelik FK pozuntusunu da ehtiyat kimi tuturuq.
+   */
   async sil(id: number): Promise<{ silindi: true; id: number }> {
     await this.merkez(id);
 
-    const bagli = await this.prisma.$queryRaw<{ say: number }[]>`
-      SELECT count(*)::int AS say FROM struktur.shobeler WHERE merkez_id = ${id}`;
+    const baglilar = await this.prisma.$queryRaw<
+      { cedvel: string; say: number }[]
+    >`
+      SELECT 'shobe'      AS cedvel, count(*)::int AS say
+        FROM struktur.shobeler      WHERE merkez_id = ${id}
+      UNION ALL
+      SELECT 'emekdas',              count(*)::int
+        FROM kadrlar.emekdaslar     WHERE merkez_id = ${id}
+      UNION ALL
+      SELECT 'rehberlik',            count(*)::int
+        FROM struktur.rehberlik     WHERE merkez_id = ${id}`;
 
-    const say = bagli[0]?.say ?? 0;
-    if (say > 0) {
+    const dolu = baglilar.filter((b) => b.say > 0);
+
+    if (dolu.length) {
+      const detallar = dolu.map((b) => `${b.say} ${b.cedvel}`).join(', ');
       throw new ConflictException(
-        `Bu merkeze ${say} shobe baglidir — evvelce onlari kocurun`,
+        `Bu merkeze bagli melumat var (${detallar}) — evvelce onlari kocurun`,
       );
     }
 
-    await this.prisma.$executeRaw`DELETE FROM struktur.merkezler WHERE id = ${id}`;
+    try {
+      await this.prisma.$executeRaw`
+        DELETE FROM struktur.merkezler WHERE id = ${id}`;
+    } catch (xeta) {
+      // Ehtiyat: PostgreSQL xarici acar pozuntusu (SQLSTATE 23503)
+      const mesaj = String((xeta as Error).message ?? '');
+      if (mesaj.includes('23503') || mesaj.includes('foreign key')) {
+        throw new ConflictException(
+          'Bu merkeze bagli melumat var — evvelce onlari kocurun',
+        );
+      }
+      throw xeta;
+    }
+
     return { silindi: true, id };
   }
 

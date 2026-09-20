@@ -1082,21 +1082,56 @@ export class StrukturService {
     return setirler[0];
   }
 
-  /** Sil — bagli setir varsa 409 */
+  /**
+   * Sil — bagli melumat varsa 409.
+   *
+   * DIQQET: merkezler-e UC cedvel baglidir:
+   *   struktur.shobeler.merkez_id
+   *   struktur.rehberlik.merkez_id
+   *   kadrlar.emekdaslar.merkez_id
+   *
+   * Yalniz shobeler-i yoxlasaq, diger ikisi FK pozuntusu verer ve
+   * istifadeci 500 xetasi gorər. Ona gore HAMISINI yoxlayiriq —
+   * ustelik FK pozuntusunu da ehtiyat kimi tuturuq.
+   */
   async sil(id: number): Promise&lt;{ silindi: true; id: number }&gt; {
     await this.merkez(id);
 
-    const bagli = await this.prisma.$queryRaw&lt;{ say: number }[]&gt;`
-      SELECT count(*)::int AS say FROM struktur.shobeler WHERE merkez_id = ${id}`;
+    const baglilar = await this.prisma.$queryRaw&lt;
+      { cedvel: string; say: number }[]
+    &gt;`
+      SELECT 'shobe'      AS cedvel, count(*)::int AS say
+        FROM struktur.shobeler      WHERE merkez_id = ${id}
+      UNION ALL
+      SELECT 'emekdas',              count(*)::int
+        FROM kadrlar.emekdaslar     WHERE merkez_id = ${id}
+      UNION ALL
+      SELECT 'rehberlik',            count(*)::int
+        FROM struktur.rehberlik     WHERE merkez_id = ${id}`;
 
-    const say = bagli[0]?.say ?? 0;
-    if (say &gt; 0) {
+    const dolu = baglilar.filter((b) =&gt; b.say &gt; 0);
+
+    if (dolu.length) {
+      const detallar = dolu.map((b) =&gt; `${b.say} ${b.cedvel}`).join(', ');
       throw new ConflictException(
-        `Bu merkeze ${say} shobe baglidir — evvelce onlari kocurun`,
+        `Bu merkeze bagli melumat var (${detallar}) — evvelce onlari kocurun`,
       );
     }
 
-    await this.prisma.$executeRaw`DELETE FROM struktur.merkezler WHERE id = ${id}`;
+    try {
+      await this.prisma.$executeRaw`
+        DELETE FROM struktur.merkezler WHERE id = ${id}`;
+    } catch (xeta) {
+      // Ehtiyat: PostgreSQL xarici acar pozuntusu (SQLSTATE 23503)
+      const mesaj = String((xeta as Error).message ?? '');
+      if (mesaj.includes('23503') || mesaj.includes('foreign key')) {
+        throw new ConflictException(
+          'Bu merkeze bagli melumat var — evvelce onlari kocurun',
+        );
+      }
+      throw xeta;
+    }
+
     return { silindi: true, id };
   }
 
@@ -1183,6 +1218,44 @@ EOF</code></pre>
     "mesaj": "Bu merkeze 7 shobe baglidir — evvelce onlari kocurun"
   }
 }</code></pre>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ REAL XƏTA: YALNIZ BİR CƏDVƏLİ YOXLAMAQ KİFAYƏT ETMİR</span>
+  <p>İlk versiyada <code>sil()</code> yalnız <code>shobeler</code> cədvəlini yoxlayırdı.
+  Canlı sınaqda <code>DELETE /struktur/merkezler/1</code> <strong>500</strong> qaytardı:</p>
+  <pre><code>Invalid `prisma.$executeRaw()` invocation:
+Raw query failed. Code: `23503`.
+Message: update or delete on table "merkezler" violates
+         foreign key constraint "emekdaslar_merkez_id_fkey"
+         on table "emekdaslar"</code></pre>
+  <p><strong>Səbəb:</strong> <code>struktur.merkezler</code> cədvəlinə
+  <strong>ÜÇ</strong> cədvəl bağlıdır — yalnız biri yox:</p>
+  <table>
+    <tr><th>#</th><th>Cədvəl</th><th>Sütun</th></tr>
+    <tr><td>1</td><td><code>struktur.shobeler</code></td><td><code>merkez_id</code></td></tr>
+    <tr><td>2</td><td><code>kadrlar.emekdaslar</code></td><td><code>merkez_id</code></td></tr>
+    <tr><td>3</td><td><code>struktur.rehberlik</code></td><td><code>merkez_id</code></td></tr>
+  </table>
+  <p>Bütün FK-ları tapmaq üçün:</p>
+  <pre data-lang="sql"><code>SELECT conrelid::regclass::text AS cedvel, a.attname AS sutun
+  FROM pg_constraint c
+  JOIN pg_attribute a ON a.attrelid = c.conrelid AND a.attnum = c.conkey[1]
+ WHERE c.contype = 'f'
+   AND confrelid = 'struktur.merkezler'::regclass
+ ORDER BY 1;</code></pre>
+  <p><strong>Düzgün həll — iki qat:</strong></p>
+  <ol>
+    <li>Hər silmədən əvvəl <strong>bütün</strong> bağlı cədvəlləri yoxla
+    (istifadəçiyə aydın mesaj);</li>
+    <li>Əlavə olaraq FK pozuntusunu <code>try/catch</code> ilə tut —
+    gələcəkdə yeni cədvəl əlavə olunsa da sistem 500 verməsin.</li>
+  </ol>
+  <p>Düzəlişdən sonra nəticə:</p>
+  <pre><code>DELETE /merkezler/1   -&gt; 409  "Bu merkeze bagli melumat var (2 emekdas)"
+DELETE /merkezler/2   -&gt; 409  "Bu merkeze bagli melumat var (7 shobe, 2 emekdas)"
+DELETE /merkezler/10  -&gt; 409  "Bu merkeze bagli melumat var (8 shobe, 3 emekdas)"</code></pre>
+  <p><strong>Dərs:</strong> «silməzdən əvvəl yoxla» yazarkən <em>hamısını</em> yoxla.
+  <code>pg_constraint</code> sorğusu bunu 10 saniyədə göstərir.</p>
+</div>
 <div class="block block-evez">
   <span class="block-title">ƏVƏZİNDƏ — soft delete</span>
   <p>Silmək yerinə <code>aktiv = false</code> etmək:</p><table><tr><th>Yanaşma</th><th>Üstünlük</th><th>Çatışmazlıq</th></tr><tr><td><strong>Hard delete</strong> (bizim)</td><td>Sadə, yer az</td><td>Geri qaytarmaq olmur</td></tr><tr><td>Soft delete</td><td>Tarixçə qalır, geri qaytarıla bilər</td><td>Hər sorğuda <code>WHERE aktiv</code></td></tr></table><p>Kadr və maliyyə məlumatlarında soft delete daha doğrudur — sənəd tarixçəsi pozulmamalıdır.</p>

@@ -12,7 +12,7 @@ echo "════ 1/5  Paketler ════"
 unset DATABASE_URL PGHOST
 npm install @nestjs/jwt@^12.0.0 @nestjs/passport@^12.0.0 \
   passport@^0.7.0 passport-jwt@^4.0.1 bcryptjs@^3.0.0 2>&1 | tail -2
-npm install -D @types/passport-jwt@^4.0.1 @types/bcryptjs@^2.4.6 2>&1 | tail -2
+npm install -D @types/passport-jwt@^4.0.1 @types/bcryptjs@^2.4.6 tsx@^4.19.0 2>&1 | tail -2
 
 echo "════ 2/5  Qovluqlar ════"
 mkdir -p "scripts"

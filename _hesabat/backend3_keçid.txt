@@ -1,0 +1,58 @@
+DS_Backend-3 — TAM KEÇİD HESABATI
+Tarix: 2026-09-20 13:15
+
+══ TƏTBİQ VƏZİYYƏTİ ══
+  Bütün 24 bölmənin faylları yerindədir:
+    §2  paketler (jwt, passport, bcryptjs, tsx)
+    §7  LoginDto, QeydiyyatDto
+    §9  @Roles, @Public, @CurrentUser
+    §10 JwtStrategy
+    §11 JwtAuthGuard (qlobal)
+    §12 RolesGuard (qlobal)
+    §14 AuthService
+    §15 AuthController
+    §16 AuthModule (registerAsync)
+    §17 AuditInterceptor
+    §20 seed-auth.ts
+    §21 testler
+
+══ CANLI SINAQLAR ══
+  §9  @Public()  : /saglamliq ve / tokensiz 200
+  §11 Qlobal guard: /struktur, /kadrlar, /hesabatlar tokensiz 401
+  §12 RBAC matrisi (canlı):
+        admin      POST 201 | DELETE 200 | /auth/istifadeciler 200
+        muhendis   POST 201 | DELETE 403 | /auth/istifadeciler 403
+        maliyyeci  POST 403 | DELETE 403 | /auth/istifadeciler 403
+        baxici     POST 403 | DELETE 403 | /auth/istifadeciler 403
+  §13 Açar uyğunluğu: token imzalanır VE qebul olunur (200)
+  §14 Timing attack: 'mövcud olmayan email' ve 'səhv şifrə' EYNİ mesaj
+  §15 /auth/profil: cari istifadeçi düzgün qaytarılır
+  §17 Audit: yazma emeliyyatları jurnala düşür, oxuma düşmür
+  §20 Seed: 4 istifadeçi (idempotent)
+  §21 Testler: 78 unit + 91 e2e = 169
+
+══ TAM KEÇİD ZAMANI TAPILAN 2 REAL PROBLEM ══
+
+  1) 'tsx: command not found' — §20 seed skripti işləmirdi
+     Sebeb: tsx devDependencies-de YOX IDI (NestJS şablonu onu qurmur)
+     Hell: npm install -D tsx@^4.19.0
+     Derse elave edildi: §20-də quraşdırma addımı + xeta bloku
+
+  2) DELETE /struktur/merkezler/1 -> 500 (409 YOX)
+     Sebeb: sil() yalniz 'shobeler'-i yoxlayirdi.
+            merkezler-e UC cedvel baglidir:
+              struktur.shobeler.merkez_id
+              kadrlar.emekdaslar.merkez_id    <-- YOXLANILMIRDI
+              struktur.rehberlik.merkez_id     <-- YOXLANILMIRDI
+            FK pozuntusu (SQLSTATE 23503) -> 500
+     Hell: (a) UC cedveli birlikde yoxla, (b) FK pozuntusunu try/catch ile tut
+     Netice: 409 + 'Bu merkeze bagli melumat var (2 emekdas)'
+     Derse elave edildi: DS_Backend-2.html-de tam xebərdarlıq bloku
+     Reqressiya testleri: 3 unit + 1 e2e
+
+══ TEST NƏTİCƏSİ ══
+  Build        : exit 0
+  Unit testler : 78 passed   (75 -> 78, +3 reqressiya)
+  e2e testler  : 91 passed   (90 -> 91, +1 reqressiya)
+  CEMİ         : 169 test
+  Marshrut     : 35

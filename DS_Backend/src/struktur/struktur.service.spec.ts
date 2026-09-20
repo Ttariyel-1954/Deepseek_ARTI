@@ -126,17 +126,73 @@ describe('StrukturService', () => {
   describe('sil()', () => {
     it('bagli shobe varsa ConflictException', async () => {
       prisma.$queryRaw
-        .mockResolvedValueOnce([{ id: 2, ad: 'Test', aktiv: true }])  // merkez var
-        .mockResolvedValueOnce([{ say: 7 }]);                          // 7 shobe bagli
+        .mockResolvedValueOnce([{ id: 2, ad: 'Test', aktiv: true }])   // merkez var
+        .mockResolvedValueOnce([                                       // 7 shobe bagli
+          { cedvel: 'shobe', say: 7 },
+          { cedvel: 'emekdas', say: 0 },
+          { cedvel: 'rehberlik', say: 0 },
+        ]);
 
       await expect(service.sil(2)).rejects.toThrow(ConflictException);
       expect(prisma.$executeRaw).not.toHaveBeenCalled();
     });
 
+    it('bagli EMEKDAS varsa da 409 verir (reqressiya)', async () => {
+      /*
+       * REAL XETA: sil() evvelce yalniz 'shobeler'-i yoxlayirdi.
+       * Lakin merkezler-e UC cedvel baglidir:
+       *   struktur.shobeler, struktur.rehberlik, kadrlar.emekdaslar
+       *
+       * Shobesi olmayan, amma emekdasi olan merkezi silmek FK pozuntusu
+       * verirdi -> istifadeci 500 xetasi gorurdu.
+       */
+      prisma.$queryRaw
+        .mockResolvedValueOnce([{ id: 3, ad: 'Test', aktiv: true }])
+        .mockResolvedValueOnce([
+          { cedvel: 'shobe', say: 0 },
+          { cedvel: 'emekdas', say: 2 },        // <-- EMEKDAS baglidir
+          { cedvel: 'rehberlik', say: 0 },
+        ]);
+
+      await expect(service.sil(3)).rejects.toThrow(ConflictException);
+      expect(prisma.$executeRaw).not.toHaveBeenCalled();
+    });
+
+    it('xeta mesajinda bagli cedveller gosterilir', async () => {
+      prisma.$queryRaw
+        .mockResolvedValueOnce([{ id: 3, ad: 'Test', aktiv: true }])
+        .mockResolvedValueOnce([
+          { cedvel: 'shobe', say: 5 },
+          { cedvel: 'emekdas', say: 2 },
+          { cedvel: 'rehberlik', say: 1 },
+        ]);
+
+      await expect(service.sil(3)).rejects.toThrow(/5 shobe, 2 emekdas, 1 rehberlik/);
+    });
+
+    it('FK pozuntusu ehtiyat kimi tutulur (23503)', async () => {
+      prisma.$queryRaw
+        .mockResolvedValueOnce([{ id: 4, ad: 'Test', aktiv: true }])
+        .mockResolvedValueOnce([
+          { cedvel: 'shobe', say: 0 },
+          { cedvel: 'emekdas', say: 0 },
+          { cedvel: 'rehberlik', say: 0 },
+        ]);
+      prisma.$executeRaw.mockRejectedValue(
+        new Error('Raw query failed. Code: `23503`. Message: `foreign key violation`'),
+      );
+
+      await expect(service.sil(4)).rejects.toThrow(ConflictException);
+    });
+
     it('bagli shobe yoxdursa silir', async () => {
       prisma.$queryRaw
         .mockResolvedValueOnce([{ id: 9, ad: 'Test', aktiv: true }])
-        .mockResolvedValueOnce([{ say: 0 }]);
+        .mockResolvedValueOnce([
+          { cedvel: 'shobe', say: 0 },
+          { cedvel: 'emekdas', say: 0 },
+          { cedvel: 'rehberlik', say: 0 },
+        ]);
       prisma.$executeRaw.mockResolvedValue(1);
 
       const n = await service.sil(9);

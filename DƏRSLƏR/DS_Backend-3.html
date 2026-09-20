@@ -1824,11 +1824,31 @@ EOF</code></pre>
 </div>
 <pre data-lang="bash"><code>cd ~/Deepseek_ARTI/DS_Backend
 
-# package.json-a skript elave et
+# 1) tsx paketini qur — TypeScript-i birbasa isledir
+npm install -D tsx@^4.19.0
+
+# 2) package.json-a skript elave et
 npm pkg set scripts.seed:auth="tsx scripts/seed-auth.ts"
 
-# Icra et
+# 3) Icra et
 npm run seed:auth</code></pre>
+<div class="block block-xeber">
+  <span class="block-title">⚠️ REAL XƏTA: «tsx: command not found»</span>
+  <p>Skripti işə salanda bu xəta çıxdı:</p>
+  <pre><code>$ npm run seed:auth
+&gt; tsx scripts/seed-auth.ts
+sh: tsx: command not found</code></pre>
+  <p><strong>Səbəb:</strong> <code>tsx</code> <code>devDependencies</code>-də yox idi.
+  NestJS-in standart şablonu onu qurmur — əlavə etmək lazımdır.</p>
+  <table>
+    <tr><th>Yoxlama</th><th>Əmr</th></tr>
+    <tr><td>Qurulubmu?</td><td><code>ls node_modules/tsx</code></td></tr>
+    <tr><td>Versiya</td><td><code>node -p "require('tsx/package.json').version"</code></td></tr>
+    <tr><td>package.json-də</td><td><code>grep tsx package.json</code></td></tr>
+  </table>
+  <p><strong>Alternativ:</strong> <code>tsx</code> yerinə <code>ts-node</code> də işlədilə bilər,
+  lakin <code>tsx</code> daha sürətlidir və ESM-i yaxşı dəstəkləyir.</p>
+</div>
 <pre data-lang="çıxış"><code>════ İstifadəçilər yaradılır ════
 
   ✓ id= 2  admin@arti.edu.az        admin      şifrə: 123456
