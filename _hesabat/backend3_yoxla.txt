@@ -1,0 +1,483 @@
+════════════════════════════════════════════════════════════════
+  DS_Backend-3 — ADDIM-ADDIM YOXLAMA HESABATI
+  Tarix: 2026-09-20 16:09
+  Server: 
+════════════════════════════════════════════════════════════════
+
+
+╔══════════════════════════════════════════════════════════════╗
+║   DS_Backend-3 — TAM ADDIM-ADDIM YOXLAMA                    ║
+╚══════════════════════════════════════════════════════════════╝
+  ● Server: işləyir — http://localhost:4100/api/v1
+
+══════════════════════════════════════════════════════════════
+  ADDIM 1 — Mühit hazırdır?
+  Dərs bölməsi: §2 (başlanğıc)
+══════════════════════════════════════════════════════════════
+
+  ▸ Node 22+
+    ✓ Node 22+ quraşdırılıb                    1
+       → node v26.7.0 / npm 11.19.0
+
+  ▸ PostgreSQL 5432
+    ✓ 5432 portu dinlənir                         ok
+
+  ▸ Baza əlçatandır
+    ✓ Bazada 48 cədvəl var                       48
+    ✓ 12 tətbiq sxemi var                         12
+
+  ▸ Auth üçün lazım olan cədvəl
+    ✓ istifadeciler: 4 sütun (email, parol_hash, rol, aktiv) 4
+
+  ▸ Audit cədvəli
+    ✓ audit.audit_log: 6 sütun                    6
+
+══════════════════════════════════════════════════════════════
+  ADDIM 2 — Auth paketləri quraşdırıldı?
+  Dərs bölməsi: §2
+══════════════════════════════════════════════════════════════
+
+  ▸ Lokal paketlər (node_modules)
+    ✓ @nestjs/jwt v12.0.2                          var
+    ✓ @nestjs/passport v12.0.0                     var
+    ✓ passport v0.7.0                              var
+    ✓ passport-jwt v4.0.1                          var
+    ✓ bcryptjs v3.0.3                              var
+
+  ▸ package.json-da qeydiyyat
+    ✓ @nestjs/jwt dependencies-də                 mövcuddur
+    ✓ @nestjs/passport dependencies-də            mövcuddur
+    ✓ bcryptjs dependencies-də                    mövcuddur
+    ✓ tsx devDependencies-də                      mövcuddur
+
+  ▸ TAM BACKEND — köhnə paketlər yerindədir?
+    ✓ @nestjs/core                                 var
+    ✓ @prisma/client                               var
+    ✓ exceljs                                      var
+    ✓ class-validator                              var
+
+══════════════════════════════════════════════════════════════
+  ADDIM 4 — JWT tokenin strukturu düzgündür?
+  Dərs bölməsi: §4 (offline — server lazım deyil)
+══════════════════════════════════════════════════════════════
+
+  ▸ Nümunə token yarat
+    ✓ Token 3 hissədən ibarətdir                3
+
+  ▸ Header oxunur
+    ✓ Header-də alg=HS256                         HS256
+
+  ▸ Payload oxunur
+    ✓ Payload-da rol var                           admin
+    ✓ Payload-da exp var                           1
+
+  ▸ ⚠️ Token OXUNA BİLƏR, AMMA İMZASIZ DƏYİŞDİRİLƏ BİLMƏZ
+       payload base64-dür — şifrəli DEYİL, imza ilə qorunur
+    ✓ Payload şifrələnməyib (base64-dür)      admin
+
+  ▸ TAM BACKEND — strategiya faylları yerindədir
+    ✓ JwtStrategy faylı                           src/auth/strategies/jwt.strategy.ts
+    ✓ AuthModule faylı                            src/auth/auth.module.ts
+
+══════════════════════════════════════════════════════════════
+  ADDIM 6 — bcrypt hash və compare işləyir?
+  Dərs bölməsi: §6 (offline)
+══════════════════════════════════════════════════════════════
+
+  ▸ Hash yaradılır və yoxlanılır
+    ✓ Hash uzunluğu 60 simvol                     60
+    ✓ Hash formatı $2b$                           $2b$
+    ✓ Doğru şifrə → true                      true
+    ✓ Səhv şifrə → false                      false
+
+  ▸ Hər hash FƏRQLİDİR (duz işləyir)
+    ✓ Eyni şifrə → fərqli hash                FERQLI
+
+  ▸ TAM BACKEND — bazadakı hash-lər etibarlıdır
+    ✓ Bazadakı şifrə '123456'-dır              DUZ
+
+  ▸ ⚠️ Sütun adı 'parol_hash'-dır ('parol' YOX)
+    ✓ istifadeciler cədvəlində 'parol' sütunu yoxdur yoxdur
+
+══════════════════════════════════════════════════════════════
+  ADDIM 7 — DTO faylları və validasiya qaydaları hazırdır?
+  Dərs bölməsi: §7 (offline)
+══════════════════════════════════════════════════════════════
+    ✓ LoginDto                                     src/auth/dto/login.dto.ts
+    ✓ QeydiyyatDto                                 src/auth/dto/qeydiyyat.dto.ts
+
+  ▸ LoginDto qaydaları
+    ✓ email üçün @IsEmail                       mövcuddur
+    ✓ parol üçün @MinLength(6)                  mövcuddur
+    ✓ parol üçün @MaxLength                     mövcuddur
+
+  ▸ QeydiyyatDto qaydaları
+    ✓ parol üçün @MinLength(8)                  mövcuddur
+    ✓ rol üçün @IsIn                            mövcuddur
+    ✓ ROLLAR sabiti (4 rol)                        mövcuddur
+    ✓ ad_soyad sahəsi                             mövcuddur
+
+  ▸ ⚠️ ROLLAR — dəqiq 4 rol olmalıdır
+    ✓ 4 unikal rol                                 4
+
+  ▸ TAM BACKEND — bütün DTO-lar yerindədir
+    ✓ DTO fayl sayı ≥ 6                         1
+       → 8 DTO faylı
+
+══════════════════════════════════════════════════════════════
+  ADDIM 9 — Dekoratorlar yaradıldı və build keçir?
+  Dərs bölməsi: §9
+══════════════════════════════════════════════════════════════
+    ✓ @Roles                                       src/auth/decorators/roles.decorator.ts
+    ✓ @Public                                      src/auth/decorators/public.decorator.ts
+    ✓ @CurrentUser                                 src/auth/decorators/current-user.decorator.ts
+
+  ▸ Dekorator məzmunu
+    ✓ @Roles → SetMetadata                       mövcuddur
+    ✓ @Public → SetMetadata                      mövcuddur
+    ✓ @CurrentUser → createParamDecorator        mövcuddur
+    ✓ ⚠️ PUBLIC_ACARI sabiti                   mövcuddur
+    ✓ ⚠️ ROLLAR_ACARI sabiti                   mövcuddur
+
+  ▸ ⚠️ CariIstifadeci 'import type' ilə gəlir (TS1272)
+    ✓ import type { CariIstifadeci }               mövcuddur
+
+  ▸ TAM BACKEND — build keçir
+    ✓ npm run build                                exit 0
+    ✓ dist/main.js yaradıldı                     dist/main.js
+
+══════════════════════════════════════════════════════════════
+  ADDIM 10 — JwtStrategy hazırdır?
+  Dərs bölməsi: §10
+══════════════════════════════════════════════════════════════
+    ✓ JwtStrategy                                  src/auth/strategies/jwt.strategy.ts
+    ✓ Bearer token oxunur                          mövcuddur
+    ✓ ⚠️ Bazadan istifadəçi oxunur (validate) mövcuddur
+    ✓ Deaktiv istifadəçi bloklanır              mövcuddur
+    ✓ ⚠️ ConfigService işlədilir (açar uyğunluğu) mövcuddur
+    ✓ PassportStrategy(Strategy)                   mövcuddur
+
+  ▸ TAM BACKEND — build hələ də keçir
+    ✓ npm run build                                exit 0
+
+══════════════════════════════════════════════════════════════
+  ADDIM 11 — JwtAuthGuard — tokensiz 401 verir?
+  Dərs bölməsi: §11
+══════════════════════════════════════════════════════════════
+    ✓ JwtAuthGuard                                 src/auth/guards/jwt-auth.guard.ts
+
+  ▸ LOKAL — qorunan endpoint-lər TOKENSİZ 401 verməlidir
+    ✓ GET /struktur/merkezler                      401
+    ✓ GET /kadrlar/emekdaslar                      401
+    ✓ GET /hesabatlar/icmal                        401
+    ✓ GET /auth/profil                             401
+    ✓ POST /struktur/merkezler                     401
+
+  ▸ @Public() istisnaları AÇIQ olmalıdır
+    ✓ GET /saglamliq (public)                      200
+    ✓ GET / (public)                               200
+    ✓ POST /auth/login (public) TOKENSİZ 200      200
+
+  ▸ ⚠️ Səhv token də 401 verməlidir
+    ✓ Bearer sehv.token.deyeri                     401
+    ✓ Bearer (boş)                                401
+
+  ▸ TAM BACKEND — qlobal prefiks
+       prefikssiz /struktur/merkezler → 404 (404 gözlənilir)
+    ✓ GET /saglamliq hələ də 200                200
+
+══════════════════════════════════════════════════════════════
+  ADDIM 12 — RolesGuard — rol yoxlaması işləyir?
+  Dərs bölməsi: §12
+══════════════════════════════════════════════════════════════
+    ✓ RolesGuard                                   src/auth/guards/roles.guard.ts
+    ✓ admin super-rol qaydası                     mövcuddur
+    ✓ ⚠️ @Public() yoxlanılır (PUBLIC_ACARI) mövcuddur
+    ✓ ⚠️ ROLLAR_ACARI oxunur                   mövcuddur
+    ✓ getAllAndOverride işlədilir                mövcuddur
+
+  ▸ Hər rol üçün token AL
+    ✓ admin@arti.edu.az → token                  var
+    ✓ muhendis@arti.edu.az → token               var
+    ✓ maliyyeci@arti.edu.az → token              var
+    ✓ baxici@arti.edu.az → token                 var
+
+  ▸ Yönləndirmə (GET) — bütün rollar üçün AÇIQ
+    ✓ baxici GET /struktur/merkezler               200
+    ✓ baxici GET /kadrlar/emekdaslar               200
+    ✓ baxici GET /hesabatlar/icmal                 200
+
+  ▸ ⚠️ ROLLAR BOŞ OLANDA — hamı buraxılır
+    ✓ baxici GET /ai/statistika                    200
+
+══════════════════════════════════════════════════════════════
+  ADDIM 13 — JWT açarı uyğundur? (real xətanın yoxlaması)
+  Dərs bölməsi: §13
+══════════════════════════════════════════════════════════════
+
+  ▸ Token AL və YADDA SAXLA
+    ✓ Token alındı                               var
+    ✓ Token fayla yazıldı (/tmp/arti_token.txt)  var
+    ✓ Token uzunluğu 150+                         1
+       → 195 simvol
+
+  ▸ ⚠️ ƏSAS YOXLAMA — token 401 YOX, 200 verməlidir
+    ✓ GET /struktur/merkezler                      200
+    ✓ GET /kadrlar/emekdaslar                      200
+    ✓ GET /hesabatlar/icmal                        200
+       401 olsa: JWT_SECRET .env-də təyin olunmayıb,
+       JwtModule.register() əvəzinə registerAsync() işlədin
+
+  ▸ Token FAYLDAN oxunur (yadda saxlama işləyir)
+    ✓ Fayldan oxunan token işləyir               200
+
+  ▸ TAM BACKEND — bütün əsas endpoint-lər 200
+    ✓ GET /struktur/merkezler                      200
+    ✓ GET /struktur/merkezler/statistika           200
+    ✓ GET /kadrlar/emekdaslar                      200
+    ✓ GET /hesabatlar/icmal                        200
+    ✓ GET /ai/statistika                           200
+
+══════════════════════════════════════════════════════════════
+  ADDIM 14 — AuthService — login və timing attack qoruması
+  Dərs bölməsi: §14
+══════════════════════════════════════════════════════════════
+
+  ▸ LOKAL — düzgün giriş
+    ✓ Token qaytarılır                           mövcuddur
+    ✓ İstifadəçi məlumatı gəlir              mövcuddur
+    ✓ Rol gəlir                                   mövcuddur
+
+  ▸ ⚠️ parol_hash SIZMIR
+    ✓ Cavabda bcrypt hash yoxdur                   yoxdur
+    ✓ Cavabda 'parol_hash' açarı yoxdur          yoxdur
+
+  ▸ Səhv şifrə → 401
+    ✓ Səhv şifrə                                401
+
+  ▸ ⚠️ TIMING ATTACK QORUMASI — mesaj EYNİ olmalıdır
+    ✓ Mövcud olmayan email = səhv şifrə mesajı E-poçt və ya şifrə yanlışdır
+       → "E-poçt və ya şifrə yanlışdır"
+
+  ▸ Validasiya — qısa şifrə / pis email
+    ✓ parol='123' → 400                          400
+    ✓ email='pis' → 400                          400
+    ✓ boş cisim → 400                           400
+
+  ▸ TAM BACKEND — bütün 4 rol giriş edə bilir
+    ✓ admin girişi                                200
+    ✓ muhendis girişi                             200
+    ✓ maliyyeci girişi                            200
+    ✓ baxici girişi                               200
+
+══════════════════════════════════════════════════════════════
+  ADDIM 15 — AuthController — 4 endpoint
+  Dərs bölməsi: §15
+══════════════════════════════════════════════════════════════
+    ✓ AuthController                               src/auth/auth.controller.ts
+
+  ▸ GET /auth/profil — cari istifadəçi
+    ✓ email gəlir                                 mövcuddur
+    ✓ rol gəlir                                   mövcuddur
+
+  ▸ ⚠️ POST /auth/login → 200 (201 DEYİL — @HttpCode)
+    ✓ Login kodu 200                               200
+
+  ▸ GET /auth/istifadeciler — yalnız admin
+    ✓ admin → 200                                200
+    ✓ baxici → 403                               403
+    ✓ muhendis → 403                             403
+
+  ▸ POST /auth/qeydiyyat — yalnız admin
+    ✓ baxici → 403                               403
+
+  ▸ TAM BACKEND — /auth/profil tokensiz 401
+    ✓ GET /auth/profil tokensiz                    401
+
+══════════════════════════════════════════════════════════════
+  ADDIM 16 — AuthModule — registerAsync işlədilir?
+  Dərs bölməsi: §16
+══════════════════════════════════════════════════════════════
+    ✓ AuthModule                                   src/auth/auth.module.ts
+    ✓ registerAsync işlədilir                    mövcuddur
+    ✓ ConfigService işlədilir                    mövcuddur
+    ✓ JwtStrategy providers-də                    mövcuddur
+    ✓ ⚠️ secret ConfigService-dən gəlir      mövcuddur
+
+  ▸ ⚠️ Köhnə register() işlədilmir (açar uyğunsuzluğu xətası)
+    ✓ Kodda JwtModule.register( YOXDUR             yoxdur
+    ✓ Kodda JwtModule.registerAsync( VAR           mövcuddur
+
+  ▸ ⚠️ .env-də JWT_SECRET var
+    ✓ JWT_SECRET təyin olunub                     mövcuddur
+    ✓ JWT_MUDDET təyin olunub                     mövcuddur
+    ✓ JWT_SECRET boş deyil                        yoxdur
+
+  ▸ TAM BACKEND — build
+    ✓ npm run build                                exit 0
+
+══════════════════════════════════════════════════════════════
+  ADDIM 17 — AuditInterceptor — jurnal yazır?
+  Dərs bölməsi: §17
+══════════════════════════════════════════════════════════════
+    ✓ AuditInterceptor                             src/common/interceptors/audit.interceptor.ts
+    ✓ Yalnız POST/PATCH/PUT/DELETE izlənir       mövcuddur
+    ✓ Oxuma əməliyyatları buraxılır           mövcuddur
+    ✓ Xəta da jurnala yazılır                   mövcuddur
+    ✓ ⚠️ Audit xətası əsas əməliyyatı pozmur mövcuddur
+
+  ▸ Yazma əməliyyatı et (POST /struktur/merkezler)
+    ✓ Audit qeydi əlavə olundu                   1
+
+  ▸ Jurnalda düzgün məlumat
+    ✓ Cədvəl adı 'struktur.merkezler'           mövcuddur
+    ✓ Əməliyyat 'POST'                           mövcuddur
+    ✓ İstifadəçi email-i yazılıb              mövcuddur
+
+  ▸ ⚠️ Oxuma (GET) jurnala DÜŞMÜR
+    ✓ 3 GET sorğusu jurnala yazılmadı           1905
+       → test mərkəzi #258 silindi
+
+══════════════════════════════════════════════════════════════
+  ADDIM 18 — app.module.ts — guard sırası düzgündür?
+  Dərs bölməsi: §18
+══════════════════════════════════════════════════════════════
+    ✓ app.module.ts                                src/app.module.ts
+    ✓ APP_GUARD işlədilir                        mövcuddur
+    ✓ APP_INTERCEPTOR işlədilir                  mövcuddur
+    ✓ JwtAuthGuard qeydiyyatda                     mövcuddur
+    ✓ RolesGuard qeydiyyatda                       mövcuddur
+    ✓ AuditInterceptor qeydiyyatda                 mövcuddur
+    ✓ AuthModule import olunub                     mövcuddur
+
+  ▸ ⚠️ GUARD SIRASI — JwtAuthGuard ƏVVƏL olmalıdır
+    ✓ JwtAuthGuard → RolesGuard sırası         1
+       → JwtAuthGuard: sətir 12 | RolesGuard: 13 | Audit: 14
+
+  ▸ TAM BACKEND — bütün modullar import olunub
+    ✓ PrismaModule                                 mövcuddur
+    ✓ SaglamliqModule                              mövcuddur
+    ✓ AuthModule                                   mövcuddur
+    ✓ StrukturModule                               mövcuddur
+    ✓ KadrlarModule                                mövcuddur
+    ✓ HesabatlarModule                             mövcuddur
+    ✓ AiModule                                     mövcuddur
+    ✓ IxracModule                                  mövcuddur
+
+══════════════════════════════════════════════════════════════
+  ADDIM 19 — RBAC matrisi — rol icazələri
+  Dərs bölməsi: §19
+══════════════════════════════════════════════════════════════
+
+  ▸ POST /struktur/merkezler → admin, muhendis: 201 | maliyyeci, baxici: 403
+    ✓ admin → 201                                201
+    ✓ muhendis → 201                             201
+    ✓ maliyyeci → 403                            403
+    ✓ baxici → 403                               403
+
+  ▸ DELETE /struktur/merkezler/:id → yalnız admin: 200 | digərləri: 403
+    ✓ muhendis → 403                             403
+    ✓ maliyyeci → 403                            403
+    ✓ admin → 200                                200
+
+  ▸ ⚠️ BAĞLI mərkəz 409 verməlidir (500 DEYİL)
+    ✓ DELETE /merkezler/1 → 409                  409
+       500 olsa: sil() bütün 3 FK-nı yoxlamır
+
+  ▸ GET /auth/istifadeciler → yalnız admin
+    ✓ admin → 200                                200
+    ✓ muhendis → 403                             403
+    ✓ maliyyeci → 403                            403
+    ✓ baxici → 403                               403
+
+  ▸ TAM BACKEND — bütün oxuma endpoint-ləri baxici ilə açıqdır
+    ✓ baxici GET /struktur/merkezler               200
+    ✓ baxici GET /struktur/merkezler/statistika    200
+    ✓ baxici GET /kadrlar/emekdaslar               200
+    ✓ baxici GET /kadrlar/emekdaslar/icmal         200
+    ✓ baxici GET /hesabatlar/icmal                 200
+    ✓ baxici GET /ai/statistika                    200
+
+  ▸ TAM BACKEND — yazma əməliyyatları bağlıdır
+    ✓ maliyyeci POST /struktur/merkezler           403
+    ✓ baxici POST /auth/qeydiyyat                  403
+       → 1 test mərkəzi təmizləndi
+
+══════════════════════════════════════════════════════════════
+  ADDIM 20 — Seed skripti — istifadəçilər yaradılır?
+  Dərs bölməsi: §20
+══════════════════════════════════════════════════════════════
+    ✓ seed-auth.ts                                 scripts/seed-auth.ts
+    ✓ package.json-da seed:auth                    mövcuddur
+    ✓ tsx devDependencies-də                      mövcuddur
+    ✓ ⚠️ process.env DATABASE_URL oxunur       mövcuddur
+    ✓ bcrypt hash işlədilir                      mövcuddur
+    ✓ ⚠️ Idempotent (upsert / ON CONFLICT)     mövcuddur
+
+  ▸ Seed-i işə sal (2 dəfə — idempotent olmalıdır)
+    ✓ 1-ci işə salma                             exit 0
+    ✓ ⚠️ 2-ci işə salma eyni say (idempotent) 4
+
+  ▸ Bazada 4 istifadəçi
+    ✓ İstifadəçi sayı 4                        4
+
+  ▸ Hər rol mövcuddur
+    ✓ admin rolu                                   1
+    ✓ muhendis rolu                                1
+    ✓ maliyyeci rolu                               1
+    ✓ baxici rolu                                  1
+
+  ▸ TAM BACKEND — seed-dən sonra giriş işləyir
+    ✓ admin girişi                                200
+    ✓ baxici girişi                               200
+
+══════════════════════════════════════════════════════════════
+  ADDIM 21 — Testlər — unit + e2e
+  Dərs bölməsi: §21
+══════════════════════════════════════════════════════════════
+    ✓ Auth unit testləri                          src/auth/auth.service.spec.ts
+    ✓ Backend-3 e2e testləri                      test/backend3.e2e-spec.ts
+    ✓ vitest.config.ts                             vitest.config.ts
+    ✓ vitest.config.e2e.ts                         vitest.config.e2e.ts
+
+  ▸ ⚠️ e2e testləri unit konfiqurasiyasından XARİC edilib
+    ✓ exclude: e2e-spec                            mövcuddur
+
+  ▸ Unit testlər
+    ✓ Unit testlər keçir                         1
+       → 78 test
+
+  ▸ e2e testlər
+    ✓ e2e testlər keçir                          1
+       → 91 test
+
+  ▸ TAM BACKEND — build
+    ✓ npm run build                                exit 0
+
+══════════════════════════════════════════════════════════════
+  ADDIM 22 — Backend-2 testləri token ilə yeniləndimi?
+  Dərs bölməsi: §22
+══════════════════════════════════════════════════════════════
+    ✓ backend2.e2e-spec.ts                         test/backend2.e2e-spec.ts
+    ✓ Token dəyişəni var                        mövcuddur
+    ✓ api() köməkçisi var                       mövcuddur
+    ✓ Login beforeAll-da                           mövcuddur
+    ✓ Bearer başlığı əlavə olunur            mövcuddur
+
+  ▸ ⚠️ Sonsuz rekursiya yoxdur (api() özünü çağırmır)
+    ✓ api() özünü çağırmır                  yoxdur
+
+  ▸ TAM BACKEND — backend2 e2e testləri keçir
+    ✓ backend2.e2e keçir                          1
+       → 31 test
+
+  ▸ Bütün e2e faylları
+       • test/backend2.e2e-spec.ts
+       • test/backend3.e2e-spec.ts
+       • test/backend4.e2e-spec.ts
+
+══════════════════════════════════════════════════════════════
+  NƏTİCƏ:  209 keçdi
+  ✅ BÜTÜN YOXLAMALAR KEÇDİ
+══════════════════════════════════════════════════════════════
+
