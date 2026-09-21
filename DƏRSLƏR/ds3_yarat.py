@@ -227,74 +227,6 @@ rol səhv               → rol yalnız bunlardan biri ola bilər: admin, muhend
 # ─────────────────────────────────────────────────────────────────
 addim(
     n=3,
-    ad="JwtStrategy — tokeni oxuyan strategiya",
-    a="""Token kriptoqrafik olaraq düzgün olsa da <strong>kifayət deyil</strong>:
-    istifadəçi silinibsə və ya deaktiv edilibsə, onun 8 saatlıq tokeni hələ də
-    işləyərdi. <code>JwtStrategy</code> hər sorğuda tokeni açır və bazadan
-    istifadəçini <strong>yenidən</strong> oxuyur. Beləliklə silinmiş istifadəçinin
-    tokeni dərhal yararsız olur. Strategiya həm də açarı
-    <code>ConfigService</code>-dən götürür — bu, sonrakı addımdaki kritik xətanın
-    qarşısını alır.""",
-    b=[("src/auth/strategies/jwt.strategy.ts",
-        fayl("src/auth/strategies/jwt.strategy.ts"))],
-    c_yoxla="""cd ~/Deepseek_ARTI/DS_Backend
-
-# 1) Fayl yerindədirmi?
-ls -l src/auth/strategies/jwt.strategy.ts
-
-# 2) Token Bearer başlığından oxunurmu?
-grep -n 'fromAuthHeaderAsBearerToken\\|ignoreExpiration\\|secretOrKey' \\
-  src/auth/strategies/jwt.strategy.ts
-
-# 3) ⚠️ validate() bazadan istifadəçi oxuyurmu?
-grep -n 'kadrlar.istifadeciler\\|aktiv\\|UnauthorizedException' \\
-  src/auth/strategies/jwt.strategy.ts
-
-# 4) ⚠️ Açar ConfigService-dən gəlirmi?
-grep -n 'ConfigService\\|config.get' src/auth/strategies/jwt.strategy.ts
-
-# 5) Tip yoxlaması
-npx tsc --noEmit -p tsconfig.build.json && echo "✓ tip yoxlaması keçdi"
-""",
-    c_olmaz="""$ node dist/main.js
-   # JwtStrategy providers-də olmasa:
-
-[Nest] ERROR [NestApplication] Error: Unknown authentication
-  strategy "jwt"
-
-   # validate() bazadan oxumasa — silinmiş istifadəçinin tokeni
-   # 8 saat DAHA işləyərdi:
-$ curl localhost:4000/api/v1/auth/profil \\
-    -H "Authorization: Bearer <silinmis-istifadecinin-tokeni>"
-{"id":99,"email":"silinmis@arti.edu.az","rol":"admin"}   ← TƏHLÜKƏ!""",
-    c_izah="""<code>validate()</code> metodu strategiyanın <strong>ürəyidir</strong>.
-    O olmasa token özü kifayət edər və iki problem yaranar: (1) silinmiş
-    istifadəçi tokenin müddəti bitənə qədər işləyə bilər, (2) rol dəyişdirilibsə
-    köhnə rol qüvvədə qalar. Hər iki halda "icazə ləğv etmək" mümkün olmaz.
-    <code>Unknown authentication strategy "jwt"</code> xətası isə
-    <code>JwtStrategy</code>-nin <code>AuthModule</code> <code>providers</code>-ına
-    əlavə olunmadığını göstərir.""",
-    d="""$ npx tsc --noEmit -p tsconfig.build.json
-   (çıxış yoxdur — KEÇDİ)
-
-$ node -e "
-const b = Buffer.from('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiYWRtaW5AYXJ0aS5lZHUuYXoiLCJyb2wiOiJhZG1pbiIsImlhdCI6MTc4OTk2OTM2MywiZXhwIjoxNzg5OTk4MTYzfQ.x', 'base64url');
-console.log('payload:', b.toString('utf8'));
-"
-payload: {"alg":"HS256","typ":"JWT"}{"sub":2,"email":"admin@arti.edu.az","rol":"admin",
-         "iat":1789969363,"exp":1789998163}""",
-    d_izah="""Sistemin vəziyyəti: strategiya hazırdır və tokenin içində
-    <code>sub</code> (istifadəçi id), <code>email</code> və <code>rol</code>
-    daşıyır. Bu məlumat <strong>şifrəli deyil</strong> — base64-dür, yəni hər kəs
-    oxuya bilər. Ona görə tokenə <em>heç vaxt</em> sirr qoyulmamalıdır. Tokenin
-    qorunması <strong>imza</strong> ilə təmin olunur: payload dəyişdirilsə imza
-    uyğun gəlməz və strategiya <code>401</code> verər. <code>iat</code> və
-    <code>exp</code> isə tokenin verilmə və bitmə vaxtıdır (8 saat fərq).""",
-)
-
-# ─────────────────────────────────────────────────────────────────
-addim(
-    n=4,
     ad="Üç dekorator — @Public, @Roles, @CurrentUser",
     a="""Bu üç dekorator guard-larla controller arasında <strong>əlaqə dilidir</strong>.
     <code>@Public()</code> "bu endpoint-i qoruma" deyir, <code>@Roles('admin')</code>
@@ -362,6 +294,74 @@ $ npx tsc --noEmit -p tsconfig.build.json
     <code>req.user</code>-i götürüb metodun parametrinə ötürür. Diqqət yetirin:
     <code>req.user</code>-i <strong>JwtStrategy.validate()</strong> doldurur —
     yəni bu dekorator yalnız <code>JwtAuthGuard</code> işlədikdən sonra mənalıdır.""",
+)
+
+# ─────────────────────────────────────────────────────────────────
+addim(
+    n=4,
+    ad="JwtStrategy — tokeni oxuyan strategiya",
+    a="""Token kriptoqrafik olaraq düzgün olsa da <strong>kifayət deyil</strong>:
+    istifadəçi silinibsə və ya deaktiv edilibsə, onun 8 saatlıq tokeni hələ də
+    işləyərdi. <code>JwtStrategy</code> hər sorğuda tokeni açır və bazadan
+    istifadəçini <strong>yenidən</strong> oxuyur. Beləliklə silinmiş istifadəçinin
+    tokeni dərhal yararsız olur. Strategiya həm də açarı
+    <code>ConfigService</code>-dən götürür — bu, <strong>AuthModule</strong> addımındaki kritik
+    xətanın qarşısını alır.""",
+    b=[("src/auth/strategies/jwt.strategy.ts",
+        fayl("src/auth/strategies/jwt.strategy.ts"))],
+    c_yoxla="""cd ~/Deepseek_ARTI/DS_Backend
+
+# 1) Fayl yerindədirmi?
+ls -l src/auth/strategies/jwt.strategy.ts
+
+# 2) Token Bearer başlığından oxunurmu?
+grep -n 'fromAuthHeaderAsBearerToken\\|ignoreExpiration\\|secretOrKey' \\
+  src/auth/strategies/jwt.strategy.ts
+
+# 3) ⚠️ validate() bazadan istifadəçi oxuyurmu?
+grep -n 'kadrlar.istifadeciler\\|aktiv\\|UnauthorizedException' \\
+  src/auth/strategies/jwt.strategy.ts
+
+# 4) ⚠️ Açar ConfigService-dən gəlirmi?
+grep -n 'ConfigService\\|config.get' src/auth/strategies/jwt.strategy.ts
+
+# 5) Tip yoxlaması
+npx tsc --noEmit -p tsconfig.build.json && echo "✓ tip yoxlaması keçdi"
+""",
+    c_olmaz="""$ node dist/main.js
+   # JwtStrategy providers-də olmasa:
+
+[Nest] ERROR [NestApplication] Error: Unknown authentication
+  strategy "jwt"
+
+   # validate() bazadan oxumasa — silinmiş istifadəçinin tokeni
+   # 8 saat DAHA işləyərdi:
+$ curl localhost:4000/api/v1/auth/profil \\
+    -H "Authorization: Bearer <silinmis-istifadecinin-tokeni>"
+{"id":99,"email":"silinmis@arti.edu.az","rol":"admin"}   ← TƏHLÜKƏ!""",
+    c_izah="""<code>validate()</code> metodu strategiyanın <strong>ürəyidir</strong>.
+    O olmasa token özü kifayət edər və iki problem yaranar: (1) silinmiş
+    istifadəçi tokenin müddəti bitənə qədər işləyə bilər, (2) rol dəyişdirilibsə
+    köhnə rol qüvvədə qalar. Hər iki halda "icazə ləğv etmək" mümkün olmaz.
+    <code>Unknown authentication strategy "jwt"</code> xətası isə
+    <code>JwtStrategy</code>-nin <code>AuthModule</code> <code>providers</code>-ına
+    əlavə olunmadığını göstərir.""",
+    d="""$ npx tsc --noEmit -p tsconfig.build.json
+   (çıxış yoxdur — KEÇDİ)
+
+$ node -e "
+const b = Buffer.from('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiYWRtaW5AYXJ0aS5lZHUuYXoiLCJyb2wiOiJhZG1pbiIsImlhdCI6MTc4OTk2OTM2MywiZXhwIjoxNzg5OTk4MTYzfQ.x', 'base64url');
+console.log('payload:', b.toString('utf8'));
+"
+payload: {"alg":"HS256","typ":"JWT"}{"sub":2,"email":"admin@arti.edu.az","rol":"admin",
+         "iat":1789969363,"exp":1789998163}""",
+    d_izah="""Sistemin vəziyyəti: strategiya hazırdır və tokenin içində
+    <code>sub</code> (istifadəçi id), <code>email</code> və <code>rol</code>
+    daşıyır. Bu məlumat <strong>şifrəli deyil</strong> — base64-dür, yəni hər kəs
+    oxuya bilər. Ona görə tokenə <em>heç vaxt</em> sirr qoyulmamalıdır. Tokenin
+    qorunması <strong>imza</strong> ilə təmin olunur: payload dəyişdirilsə imza
+    uyğun gəlməz və strategiya <code>401</code> verər. <code>iat</code> və
+    <code>exp</code> isə tokenin verilmə və bitmə vaxtıdır (8 saat fərq).""",
 )
 
 # ─────────────────────────────────────────────────────────────────

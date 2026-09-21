@@ -430,8 +430,8 @@ curl -s localhost:4000/api/v1/saglamliq</code></pre>
   <ol>
     <li><a href="#a1">1. Auth paketləri və JWT açarı</a></li>
     <li><a href="#a2">2. LoginDto və QeydiyyatDto</a></li>
-    <li><a href="#a3">3. JwtStrategy — tokeni oxuyan strategiya</a></li>
-    <li><a href="#a4">4. Üç dekorator — @Public, @Roles, @CurrentUser</a></li>
+    <li><a href="#a3">3. Üç dekorator — @Public, @Roles, @CurrentUser</a></li>
+    <li><a href="#a4">4. JwtStrategy — tokeni oxuyan strategiya</a></li>
     <li><a href="#a5">5. İki guard — JwtAuthGuard və RolesGuard</a></li>
     <li><a href="#a6">6. AuthService — login, timing attack və qeydiyyat</a></li>
     <li><a href="#a7">7. AuthController — dörd endpoint</a></li>
@@ -447,8 +447,8 @@ curl -s localhost:4000/api/v1/saglamliq</code></pre>
 <div class="icmal">
   <a href="#a1"><b>ADDIM 1</b>Auth paketləri və JWT açarı</a>
   <a href="#a2"><b>ADDIM 2</b>LoginDto və QeydiyyatDto</a>
-  <a href="#a3"><b>ADDIM 3</b>JwtStrategy — tokeni oxuyan strategiya</a>
-  <a href="#a4"><b>ADDIM 4</b>Üç dekorator — @Public, @Roles, @CurrentUser</a>
+  <a href="#a3"><b>ADDIM 3</b>Üç dekorator — @Public, @Roles, @CurrentUser</a>
+  <a href="#a4"><b>ADDIM 4</b>JwtStrategy — tokeni oxuyan strategiya</a>
   <a href="#a5"><b>ADDIM 5</b>İki guard — JwtAuthGuard və RolesGuard</a>
   <a href="#a6"><b>ADDIM 6</b>AuthService — login, timing attack və qeydiyyat</a>
   <a href="#a7"><b>ADDIM 7</b>AuthController — dörd endpoint</a>
@@ -774,174 +774,7 @@ rol səhv               → rol yalnız bunlardan biri ola bilər: admin, muhend
 
 <div class="addim">
   <h2 class="addim-basliq" id="a3">
-    <span class="addim-no">3</span> JwtStrategy — tokeni oxuyan strategiya
-  </h2>
-  <div class="addim-govde">
-
-    <div class="hisse hisse-a">
-      <span class="hisse-basliq">A · Bu addım nəyə görədir</span>
-      <p>Token kriptoqrafik olaraq düzgün olsa da <strong>kifayət deyil</strong>:
-    istifadəçi silinibsə və ya deaktiv edilibsə, onun 8 saatlıq tokeni hələ də
-    işləyərdi. <code>JwtStrategy</code> hər sorğuda tokeni açır və bazadan
-    istifadəçini <strong>yenidən</strong> oxuyur. Beləliklə silinmiş istifadəçinin
-    tokeni dərhal yararsız olur. Strategiya həm də açarı
-    <code>ConfigService</code>-dən götürür — bu, sonrakı addımdaki kritik xətanın
-    qarşısını alır.</p>
-    </div>
-
-    <div class="hisse hisse-b">
-      <span class="hisse-basliq">B · Kod</span>
-    <p class="fayl-ad">src/auth/strategies/jwt.strategy.ts</p>
-<pre><code>mkdir -p src/auth/strategies
-cat &gt; src/auth/strategies/jwt.strategy.ts &lt;&lt;'EOF'
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { PassportStrategy } from '@nestjs/passport';
-import { ExtractJwt, Strategy } from 'passport-jwt';
-import { PrismaService } from '../../prisma/prisma.service.js';
-import type { CariIstifadeci } from '../decorators/current-user.decorator.js';
-
-/** JWT tokenin içindəki məlumat */
-export interface JwtPayload {
-  sub: number; // istifadəçi id
-  email: string;
-  rol: string;
-}
-
-/** Bazadan oxunan istifadəçi sətri */
-interface IstifadeciSetri {
-  id: number;
-  email: string;
-  ad_soyad: string;
-  rol: string;
-  aktiv: boolean;
-}
-
-@Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
-  constructor(
-    private readonly prisma: PrismaService,
-    config: ConfigService,
-  ) {
-    super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      ignoreExpiration: false,
-      // ⚠️ EYNİ mənbə — JwtModule ilə: ConfigService
-      secretOrKey: config.get&lt;string&gt;('JWT_SECRET')!,
-    });
-  }
-
-  /**
-   * Token DÜZGÜNDÜRSƏ bu metod çağırılır.
-   * Burada istifadəçinin hələ də mövcud və aktiv olduğunu yoxlayırıq —
-   * əks halda silinmiş istifadəçinin tokeni 8 saat işləyərdi.
-   */
-  async validate(payload: JwtPayload): Promise&lt;CariIstifadeci&gt; {
-    const setirler = await this.prisma.$queryRaw&lt;IstifadeciSetri[]&gt;`
-      SELECT id::int AS id, email, ad_soyad, rol, aktiv
-        FROM kadrlar.istifadeciler
-       WHERE id = ${payload.sub}`;
-
-    const istifadeci = setirler[0];
-
-    if (!istifadeci) {
-      throw new UnauthorizedException('İstifadəçi tapılmadı');
-    }
-    if (!istifadeci.aktiv) {
-      throw new UnauthorizedException('İstifadəçi deaktiv edilib');
-    }
-
-    return {
-      id: istifadeci.id,
-      email: istifadeci.email,
-      ad_soyad: istifadeci.ad_soyad,
-      rol: istifadeci.rol,
-    };
-  }
-}
-EOF</code></pre>
-    </div>
-
-    <div class="hisse hisse-c">
-      <span class="hisse-basliq">C · Yoxlama — kod düzgün yazıldı?</span>
-      <p>Aşağıdaki əmrləri işlədin və nəticəni yoxlayın:</p>
-<pre><code>cd ~/Deepseek_ARTI/DS_Backend
-
-# 1) Fayl yerindədirmi?
-ls -l src/auth/strategies/jwt.strategy.ts
-
-# 2) Token Bearer başlığından oxunurmu?
-grep -n 'fromAuthHeaderAsBearerToken\|ignoreExpiration\|secretOrKey' \
-  src/auth/strategies/jwt.strategy.ts
-
-# 3) ⚠️ validate() bazadan istifadəçi oxuyurmu?
-grep -n 'kadrlar.istifadeciler\|aktiv\|UnauthorizedException' \
-  src/auth/strategies/jwt.strategy.ts
-
-# 4) ⚠️ Açar ConfigService-dən gəlirmi?
-grep -n 'ConfigService\|config.get' src/auth/strategies/jwt.strategy.ts
-
-# 5) Tip yoxlaması
-npx tsc --noEmit -p tsconfig.build.json &amp;&amp; echo "✓ tip yoxlaması keçdi"
-</code></pre>
-      <div class="olmaz">
-        <span class="olmaz-basliq">⚠️ Bu kod olmasa nə olardı</span>
-<pre><code>$ node dist/main.js
-   # JwtStrategy providers-də olmasa:
-
-[Nest] ERROR [NestApplication] Error: Unknown authentication
-  strategy "jwt"
-
-   # validate() bazadan oxumasa — silinmiş istifadəçinin tokeni
-   # 8 saat DAHA işləyərdi:
-$ curl localhost:4000/api/v1/auth/profil \
-    -H "Authorization: Bearer &lt;silinmis-istifadecinin-tokeni&gt;"
-{"id":99,"email":"silinmis@arti.edu.az","rol":"admin"}   ← TƏHLÜKƏ!</code></pre>
-        <p><code>validate()</code> metodu strategiyanın <strong>ürəyidir</strong>.
-    O olmasa token özü kifayət edər və iki problem yaranar: (1) silinmiş
-    istifadəçi tokenin müddəti bitənə qədər işləyə bilər, (2) rol dəyişdirilibsə
-    köhnə rol qüvvədə qalar. Hər iki halda "icazə ləğv etmək" mümkün olmaz.
-    <code>Unknown authentication strategy "jwt"</code> xətası isə
-    <code>JwtStrategy</code>-nin <code>AuthModule</code> <code>providers</code>-ına
-    əlavə olunmadığını göstərir.</p>
-      </div>
-    </div>
-
-    <div class="hisse hisse-d">
-      <span class="hisse-basliq">D · Bu koddan sonra sistemin durumu — ÇIXIŞ</span>
-      <p class="cixis-xeber">⚠️ Bu blok <strong>çıxışdır</strong> — kopyalayıb terminala yapıştırmayın. Sadəcə oxuyun. Əmrlər B hissəsindədir.</p>
-<pre><code>$ npx tsc --noEmit -p tsconfig.build.json
-   (çıxış yoxdur — KEÇDİ)
-
-$ node -e "
-const b = Buffer.from('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiYWRtaW5AYXJ0aS5lZHUuYXoiLCJyb2wiOiJhZG1pbiIsImlhdCI6MTc4OTk2OTM2MywiZXhwIjoxNzg5OTk4MTYzfQ.x', 'base64url');
-console.log('payload:', b.toString('utf8'));
-"
-payload: {"alg":"HS256","typ":"JWT"}{"sub":2,"email":"admin@arti.edu.az","rol":"admin",
-         "iat":1789969363,"exp":1789998163}</code></pre>
-      <div class="oldu">
-        <span class="oldu-basliq">✔ Nəticə</span>
-        <p>Sistemin vəziyyəti: strategiya hazırdır və tokenin içində
-    <code>sub</code> (istifadəçi id), <code>email</code> və <code>rol</code>
-    daşıyır. Bu məlumat <strong>şifrəli deyil</strong> — base64-dür, yəni hər kəs
-    oxuya bilər. Ona görə tokenə <em>heç vaxt</em> sirr qoyulmamalıdır. Tokenin
-    qorunması <strong>imza</strong> ilə təmin olunur: payload dəyişdirilsə imza
-    uyğun gəlməz və strategiya <code>401</code> verər. <code>iat</code> və
-    <code>exp</code> isə tokenin verilmə və bitmə vaxtıdır (8 saat fərq).</p>
-      </div>
-    </div>
-
-  </div>
-  <div class="addim-icmal">
-    <span>Addım 3 / 13</span>
-    <span>A · niyə</span><span>B · kod</span>
-    <span>C · yoxlama</span><span>D · durum</span>
-  </div>
-</div>
-
-<div class="addim">
-  <h2 class="addim-basliq" id="a4">
-    <span class="addim-no">4</span> Üç dekorator — @Public, @Roles, @CurrentUser
+    <span class="addim-no">3</span> Üç dekorator — @Public, @Roles, @CurrentUser
   </h2>
   <div class="addim-govde">
 
@@ -1086,6 +919,173 @@ $ npx tsc --noEmit -p tsconfig.build.json
     <code>req.user</code>-i götürüb metodun parametrinə ötürür. Diqqət yetirin:
     <code>req.user</code>-i <strong>JwtStrategy.validate()</strong> doldurur —
     yəni bu dekorator yalnız <code>JwtAuthGuard</code> işlədikdən sonra mənalıdır.</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="addim-icmal">
+    <span>Addım 3 / 13</span>
+    <span>A · niyə</span><span>B · kod</span>
+    <span>C · yoxlama</span><span>D · durum</span>
+  </div>
+</div>
+
+<div class="addim">
+  <h2 class="addim-basliq" id="a4">
+    <span class="addim-no">4</span> JwtStrategy — tokeni oxuyan strategiya
+  </h2>
+  <div class="addim-govde">
+
+    <div class="hisse hisse-a">
+      <span class="hisse-basliq">A · Bu addım nəyə görədir</span>
+      <p>Token kriptoqrafik olaraq düzgün olsa da <strong>kifayət deyil</strong>:
+    istifadəçi silinibsə və ya deaktiv edilibsə, onun 8 saatlıq tokeni hələ də
+    işləyərdi. <code>JwtStrategy</code> hər sorğuda tokeni açır və bazadan
+    istifadəçini <strong>yenidən</strong> oxuyur. Beləliklə silinmiş istifadəçinin
+    tokeni dərhal yararsız olur. Strategiya həm də açarı
+    <code>ConfigService</code>-dən götürür — bu, <strong>AuthModule</strong> addımındaki kritik
+    xətanın qarşısını alır.</p>
+    </div>
+
+    <div class="hisse hisse-b">
+      <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">src/auth/strategies/jwt.strategy.ts</p>
+<pre><code>mkdir -p src/auth/strategies
+cat &gt; src/auth/strategies/jwt.strategy.ts &lt;&lt;'EOF'
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { PassportStrategy } from '@nestjs/passport';
+import { ExtractJwt, Strategy } from 'passport-jwt';
+import { PrismaService } from '../../prisma/prisma.service.js';
+import type { CariIstifadeci } from '../decorators/current-user.decorator.js';
+
+/** JWT tokenin içindəki məlumat */
+export interface JwtPayload {
+  sub: number; // istifadəçi id
+  email: string;
+  rol: string;
+}
+
+/** Bazadan oxunan istifadəçi sətri */
+interface IstifadeciSetri {
+  id: number;
+  email: string;
+  ad_soyad: string;
+  rol: string;
+  aktiv: boolean;
+}
+
+@Injectable()
+export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
+  constructor(
+    private readonly prisma: PrismaService,
+    config: ConfigService,
+  ) {
+    super({
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ignoreExpiration: false,
+      // ⚠️ EYNİ mənbə — JwtModule ilə: ConfigService
+      secretOrKey: config.get&lt;string&gt;('JWT_SECRET')!,
+    });
+  }
+
+  /**
+   * Token DÜZGÜNDÜRSƏ bu metod çağırılır.
+   * Burada istifadəçinin hələ də mövcud və aktiv olduğunu yoxlayırıq —
+   * əks halda silinmiş istifadəçinin tokeni 8 saat işləyərdi.
+   */
+  async validate(payload: JwtPayload): Promise&lt;CariIstifadeci&gt; {
+    const setirler = await this.prisma.$queryRaw&lt;IstifadeciSetri[]&gt;`
+      SELECT id::int AS id, email, ad_soyad, rol, aktiv
+        FROM kadrlar.istifadeciler
+       WHERE id = ${payload.sub}`;
+
+    const istifadeci = setirler[0];
+
+    if (!istifadeci) {
+      throw new UnauthorizedException('İstifadəçi tapılmadı');
+    }
+    if (!istifadeci.aktiv) {
+      throw new UnauthorizedException('İstifadəçi deaktiv edilib');
+    }
+
+    return {
+      id: istifadeci.id,
+      email: istifadeci.email,
+      ad_soyad: istifadeci.ad_soyad,
+      rol: istifadeci.rol,
+    };
+  }
+}
+EOF</code></pre>
+    </div>
+
+    <div class="hisse hisse-c">
+      <span class="hisse-basliq">C · Yoxlama — kod düzgün yazıldı?</span>
+      <p>Aşağıdaki əmrləri işlədin və nəticəni yoxlayın:</p>
+<pre><code>cd ~/Deepseek_ARTI/DS_Backend
+
+# 1) Fayl yerindədirmi?
+ls -l src/auth/strategies/jwt.strategy.ts
+
+# 2) Token Bearer başlığından oxunurmu?
+grep -n 'fromAuthHeaderAsBearerToken\|ignoreExpiration\|secretOrKey' \
+  src/auth/strategies/jwt.strategy.ts
+
+# 3) ⚠️ validate() bazadan istifadəçi oxuyurmu?
+grep -n 'kadrlar.istifadeciler\|aktiv\|UnauthorizedException' \
+  src/auth/strategies/jwt.strategy.ts
+
+# 4) ⚠️ Açar ConfigService-dən gəlirmi?
+grep -n 'ConfigService\|config.get' src/auth/strategies/jwt.strategy.ts
+
+# 5) Tip yoxlaması
+npx tsc --noEmit -p tsconfig.build.json &amp;&amp; echo "✓ tip yoxlaması keçdi"
+</code></pre>
+      <div class="olmaz">
+        <span class="olmaz-basliq">⚠️ Bu kod olmasa nə olardı</span>
+<pre><code>$ node dist/main.js
+   # JwtStrategy providers-də olmasa:
+
+[Nest] ERROR [NestApplication] Error: Unknown authentication
+  strategy "jwt"
+
+   # validate() bazadan oxumasa — silinmiş istifadəçinin tokeni
+   # 8 saat DAHA işləyərdi:
+$ curl localhost:4000/api/v1/auth/profil \
+    -H "Authorization: Bearer &lt;silinmis-istifadecinin-tokeni&gt;"
+{"id":99,"email":"silinmis@arti.edu.az","rol":"admin"}   ← TƏHLÜKƏ!</code></pre>
+        <p><code>validate()</code> metodu strategiyanın <strong>ürəyidir</strong>.
+    O olmasa token özü kifayət edər və iki problem yaranar: (1) silinmiş
+    istifadəçi tokenin müddəti bitənə qədər işləyə bilər, (2) rol dəyişdirilibsə
+    köhnə rol qüvvədə qalar. Hər iki halda "icazə ləğv etmək" mümkün olmaz.
+    <code>Unknown authentication strategy "jwt"</code> xətası isə
+    <code>JwtStrategy</code>-nin <code>AuthModule</code> <code>providers</code>-ına
+    əlavə olunmadığını göstərir.</p>
+      </div>
+    </div>
+
+    <div class="hisse hisse-d">
+      <span class="hisse-basliq">D · Bu koddan sonra sistemin durumu — ÇIXIŞ</span>
+      <p class="cixis-xeber">⚠️ Bu blok <strong>çıxışdır</strong> — kopyalayıb terminala yapıştırmayın. Sadəcə oxuyun. Əmrlər B hissəsindədir.</p>
+<pre><code>$ npx tsc --noEmit -p tsconfig.build.json
+   (çıxış yoxdur — KEÇDİ)
+
+$ node -e "
+const b = Buffer.from('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIsImVtYWlsIjoiYWRtaW5AYXJ0aS5lZHUuYXoiLCJyb2wiOiJhZG1pbiIsImlhdCI6MTc4OTk2OTM2MywiZXhwIjoxNzg5OTk4MTYzfQ.x', 'base64url');
+console.log('payload:', b.toString('utf8'));
+"
+payload: {"alg":"HS256","typ":"JWT"}{"sub":2,"email":"admin@arti.edu.az","rol":"admin",
+         "iat":1789969363,"exp":1789998163}</code></pre>
+      <div class="oldu">
+        <span class="oldu-basliq">✔ Nəticə</span>
+        <p>Sistemin vəziyyəti: strategiya hazırdır və tokenin içində
+    <code>sub</code> (istifadəçi id), <code>email</code> və <code>rol</code>
+    daşıyır. Bu məlumat <strong>şifrəli deyil</strong> — base64-dür, yəni hər kəs
+    oxuya bilər. Ona görə tokenə <em>heç vaxt</em> sirr qoyulmamalıdır. Tokenin
+    qorunması <strong>imza</strong> ilə təmin olunur: payload dəyişdirilsə imza
+    uyğun gəlməz və strategiya <code>401</code> verər. <code>iat</code> və
+    <code>exp</code> isə tokenin verilmə və bitmə vaxtıdır (8 saat fərq).</p>
       </div>
     </div>
 
