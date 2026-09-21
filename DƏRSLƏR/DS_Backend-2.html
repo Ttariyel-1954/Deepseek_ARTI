@@ -372,7 +372,7 @@
   <p class="meta">
     <span>NestJS 12</span>
     <span>Prisma 7</span>
-    <span>12 addım</span>
+    <span>13 addım</span>
     <span>11 marshrut</span>
     <span>45 test</span>
   </p>
@@ -440,6 +440,7 @@ curl -s localhost:4000/api/v1/saglamliq</code></pre>
     <li><a href="#a10">10. Unit testlər</a></li>
     <li><a href="#a11">11. e2e testlər — struktur</a></li>
     <li><a href="#a12">12. e2e testlər — kadrlar</a></li>
+    <li><a href="#a13">13. Serveri tam qaldır və bütün endpoint-ləri yoxla (arayış)</a></li>
   </ol>
 </div>
 
@@ -456,6 +457,7 @@ curl -s localhost:4000/api/v1/saglamliq</code></pre>
   <a href="#a10"><b>ADDIM 10</b>Unit testlər</a>
   <a href="#a11"><b>ADDIM 11</b>e2e testlər — struktur</a>
   <a href="#a12"><b>ADDIM 12</b>e2e testlər — kadrlar</a>
+  <a href="#a13"><b>ADDIM 13</b>Serveri tam qaldır və bütün endpoint-ləri yoxla (arayış)</a>
 </div>
 
 <div class="addim">
@@ -620,7 +622,7 @@ console.log(JSON.stringify(sehifelenmis([], 10, 1, 3)));"
 
   </div>
   <div class="addim-icmal">
-    <span>Addım 1 / 12</span>
+    <span>Addım 1 / 13</span>
     <span>A · niyə</span><span>B · kod</span>
     <span>C · yoxlama</span><span>D · durum</span>
   </div>
@@ -757,7 +759,7 @@ aktiv=belke      → aktiv yalnız 'true' və ya 'false' ola bilər</code></pre>
 
   </div>
   <div class="addim-icmal">
-    <span>Addım 2 / 12</span>
+    <span>Addım 2 / 13</span>
     <span>A · niyə</span><span>B · kod</span>
     <span>C · yoxlama</span><span>D · durum</span>
   </div>
@@ -944,7 +946,7 @@ yeniləmə — yalnız telefon → ✓ keçdi</code></pre>
 
   </div>
   <div class="addim-icmal">
-    <span>Addım 3 / 12</span>
+    <span>Addım 3 / 13</span>
     <span>A · niyə</span><span>B · kod</span>
     <span>C · yoxlama</span><span>D · durum</span>
   </div>
@@ -1250,7 +1252,7 @@ $ psql -U arti_user -w -d arti_baza -c "
 
   </div>
   <div class="addim-icmal">
-    <span>Addım 4 / 12</span>
+    <span>Addım 4 / 13</span>
     <span>A · niyə</span><span>B · kod</span>
     <span>C · yoxlama</span><span>D · durum</span>
   </div>
@@ -1458,7 +1460,7 @@ $ node dist/main.js
 
   </div>
   <div class="addim-icmal">
-    <span>Addım 5 / 12</span>
+    <span>Addım 5 / 13</span>
     <span>A · niyə</span><span>B · kod</span>
     <span>C · yoxlama</span><span>D · durum</span>
   </div>
@@ -1592,7 +1594,7 @@ MİRAS: sehife=0      → sehife ən azı 1 olmalıdır</code></pre>
 
   </div>
   <div class="addim-icmal">
-    <span>Addım 6 / 12</span>
+    <span>Addım 6 / 13</span>
     <span>A · niyə</span><span>B · kod</span>
     <span>C · yoxlama</span><span>D · durum</span>
   </div>
@@ -1858,7 +1860,7 @@ cemi: 14 sehife_sayi: 7</code></pre>
 
   </div>
   <div class="addim-icmal">
-    <span>Addım 7 / 12</span>
+    <span>Addım 7 / 13</span>
     <span>A · niyə</span><span>B · kod</span>
     <span>C · yoxlama</span><span>D · durum</span>
   </div>
@@ -2033,7 +2035,7 @@ $ curl -s localhost:4000/api/v1/kadrlar/emekdaslar/icmal | python3 -m json.tool 
 
   </div>
   <div class="addim-icmal">
-    <span>Addım 8 / 12</span>
+    <span>Addım 8 / 13</span>
     <span>A · niyə</span><span>B · kod</span>
     <span>C · yoxlama</span><span>D · durum</span>
   </div>
@@ -2238,7 +2240,7 @@ patch telefon: +994 12 111 22 33
 
   </div>
   <div class="addim-icmal">
-    <span>Addım 9 / 12</span>
+    <span>Addım 9 / 13</span>
     <span>A · niyə</span><span>B · kod</span>
     <span>C · yoxlama</span><span>D · durum</span>
   </div>
@@ -2482,7 +2484,7 @@ npm test</code></pre>
 
   </div>
   <div class="addim-icmal">
-    <span>Addım 10 / 12</span>
+    <span>Addım 10 / 13</span>
     <span>A · niyə</span><span>B · kod</span>
     <span>C · yoxlama</span><span>D · durum</span>
   </div>
@@ -2743,7 +2745,7 @@ $ psql -U arti_user -w -d arti_baza -tAc \
 
   </div>
   <div class="addim-icmal">
-    <span>Addım 11 / 12</span>
+    <span>Addım 11 / 13</span>
     <span>A · niyə</span><span>B · kod</span>
     <span>C · yoxlama</span><span>D · durum</span>
   </div>
@@ -2941,7 +2943,474 @@ YEKUN: 21 unit + 24 e2e = 45 test</code></pre>
 
   </div>
   <div class="addim-icmal">
-    <span>Addım 12 / 12</span>
+    <span>Addım 12 / 13</span>
+    <span>A · niyə</span><span>B · kod</span>
+    <span>C · yoxlama</span><span>D · durum</span>
+  </div>
+</div>
+
+<div class="addim">
+  <h2 class="addim-basliq" id="a13">
+    <span class="addim-no">13</span> Serveri tam qaldır və bütün endpoint-ləri yoxla (arayış)
+  </h2>
+  <div class="addim-govde">
+
+    <div class="hisse hisse-a">
+      <span class="hisse-basliq">A · Bu addım nəyə görədir</span>
+      <p>Bu addım bir <strong>arayış səhifəsidir</strong> — gündəlik işdə ən çox
+    açacağınız yer. Serveri əvvəldən sona qədər qaldırırıq və bu vaxta qədər
+    yazdığımız <strong>11 endpoint-in hamısını</strong> bir-bir yoxlayırıq. Hər
+    endpoint üçün üç şey verilir: hansı qatlardan keçdiyi, nə etdiyi və nəticənin
+    necə olması. Sonda üç xəta kodu (<code>400</code>, <code>404</code>,
+    <code>409</code>) və onların real cavabları göstərilir.</p>
+    </div>
+
+    <div class="hisse hisse-b">
+      <span class="hisse-basliq">B · Kod</span>
+  <p class="fayl-ad">Terminal 1 — serveri əvvəldən sona qaldır</p>
+<pre><code>cd ~/Deepseek_ARTI/DS_Backend
+unset DATABASE_URL PGHOST
+
+# 1) Əvvəlcə portu təmizlə (köhnə server varsa)
+lsof -ti:4000 &amp;&amp; kill $(lsof -ti:4000) &amp;&amp; sleep 2
+
+# 2) Yığ
+npm run build
+
+# 3) Serveri qaldır — bu terminal AÇIQ QALIR
+node dist/main.js
+
+# İnkişaf üçün (hər dəyişiklikdə özü yenilənir):
+#   npm run start:dev
+# Dayandırmaq: Ctrl + C</code></pre>
+  <p>Server qalxanda <strong>aşağıdaki logu</strong> görməlisiniz. Sətirləri sıra ilə oxuyun — bu, sistemin özünü necə qurduğunun xəritəsidir. Tam çıxış D hissəsindədir.</p>
+  <p class="fayl-ad">Terminal 2 — hər endpoint-i bir-bir yoxla</p>
+  <p>Aşağıda <strong>11 endpoint-in hamısı</strong> verilir. Hər biri üçün üç şey yazılıb: <strong>keçdiyi mərhələlər</strong>, <strong>nə etdiyi</strong> və <strong>gözlənilən nəticə</strong>. Əmrləri sıra ilə işlədin.</p>
+  <h4>1 · <code>GET /api/v1</code> — Kök endpoint</h4>
+  <p><strong>Keçdiyi mərhələlər:</strong> Express → qlobal prefiks → <code>SaglamliqController.kok()</code> → <em>servis yoxdur</em> → JSON</p>
+  <p><strong>Nə edir:</strong> API-nin ünvanını, versiyasını, prefiksini və sənədləşdirmə yolunu qaytarır. Frontend işə düşəndə ilk bunu çağırıb API-nin yerində olduğunu yoxlayır.</p>
+  <p><strong>Gözlənilən:</strong> <code>200</code> · <code>{ ad, versiya, prefiks, senedlesdirme }</code></p>
+<pre><code>curl -s http://localhost:4000/api/v1/ | python3 -m json.tool</code></pre>
+  <h4>2 · <code>GET /api/v1/saglamliq</code> — Sağlamlıq yoxlaması</h4>
+  <p><strong>Keçdiyi mərhələlər:</strong> Express → prefiks → <code>SaglamliqController.yoxla()</code> → <code>SaglamliqService.yoxla()</code> → <code>PrismaService.yoxla()</code> → <code>$queryRaw</code> (information_schema) → JSON</p>
+  <p><strong>Nə edir:</strong> Bazaya <strong>real sorğu</strong> göndərib cədvəl sayını sayır. Sadəcə «işləyirəm» demir — baza qopsa <code>500</code> verir. Monitorinq sistemləri bu endpoint-i mütəmadi çağırır.</p>
+  <p><strong>Gözlənilən:</strong> <code>200</code> · <code>{ status: "saglam", baza: { qosulub: true, cedvel_sayi: 48, gecikme_ms }, versiya, vaxt }</code></p>
+<pre><code>curl -s http://localhost:4000/api/v1/saglamliq | python3 -m json.tool</code></pre>
+  <h4>3 · <code>GET /api/v1/struktur/merkezler</code> — Mərkəzlərin siyahısı</h4>
+  <p><strong>Keçdiyi mərhələlər:</strong> Express → prefiks → <strong>ValidationPipe</strong> (<code>MerkezFiltrDto</code>) → <code>StrukturController.siyahi()</code> → <code>StrukturService.merkezler()</code> → Prisma <code>findMany</code> + <code>count</code> (paralel) → <code>sehifelenmis()</code> → JSON</p>
+  <p><strong>Nə edir:</strong> Səhifələnmiş siyahı qaytarır. Altı sorğu parametri dəstəklənir: <code>sehife</code>, <code>limit</code>, <code>axtar</code> (ad üzrə), <code>tip</code>, <code>aktiv</code>, <code>sirala</code> + <code>siralama</code>.</p>
+  <p><strong>Gözlənilən:</strong> <code>200</code> · <code>{ setirler: [...], cemi: 10, sehife: 1, limit: 2, sehife_sayi: 5 }</code></p>
+<pre><code>curl -s "http://localhost:4000/api/v1/struktur/merkezler?limit=2" | python3 -m json.tool</code></pre>
+  <h4>4 · <code>GET /api/v1/struktur/merkezler/statistika</code> — Mərkəz statistikası</h4>
+  <p><strong>Keçdiyi mərhələlər:</strong> Express → prefiks → <em>ValidationPipe yoxdur — parametr yoxdur</em> → <code>StrukturController.statistika()</code> → <code>StrukturService.merkezStatistikasi()</code> → <code>$queryRaw</code>: <code>GROUP BY</code> + 2 × <code>LEFT JOIN</code> → JSON</p>
+  <p><strong>Nə edir:</strong> Hər mərkəz üzrə şöbə və əməkdaş sayını hesablayır. <code>count(DISTINCT ...)</code> işlədilir, çünki iki <code>LEFT JOIN</code> bir-birini çoxaldır.</p>
+  <p><strong>Gözlənilən:</strong> <code>200</code> · massiv <code>[{ merkez_id, ad, shobe_sayi, emekdas_sayi }]</code> · <strong>10 sətir</strong></p>
+<pre><code>curl -s http://localhost:4000/api/v1/struktur/merkezler/statistika | python3 -m json.tool</code></pre>
+  <h4>5 · <code>GET /api/v1/struktur/merkezler/:id</code> — Bir mərkəz</h4>
+  <p><strong>Keçdiyi mərhələlər:</strong> Express → prefiks → <strong>ParseIntPipe</strong> (<code>:id</code> → ədəd) → <code>StrukturController.bir()</code> → <code>StrukturService.merkez()</code> → Prisma <code>findUnique</code> → JSON</p>
+  <p><strong>Nə edir:</strong> Bir mərkəzin bütün sahələrini qaytarır. Tapılmasa <code>NotFoundException</code> atılır və filtr onu <code>404</code>-ə çevirir. <code>:id</code> rəqəm deyilsə <code>ParseIntPipe</code> <code>400</code> verir.</p>
+  <p><strong>Gözlənilən:</strong> <code>200</code> · tək obyekt · tapılmasa <code>404</code> · rəqəm deyilsə <code>400</code></p>
+<pre><code>curl -s http://localhost:4000/api/v1/struktur/merkezler/2 | python3 -m json.tool</code></pre>
+  <h4>6 · <code>POST /api/v1/struktur/merkezler</code> — Yeni mərkəz</h4>
+  <p><strong>Keçdiyi mərhələlər:</strong> Express → prefiks → <strong>ValidationPipe</strong> (<code>CreateMerkezDto</code>, 9 qayda) → <code>StrukturController.yarat()</code> → <code>StrukturService.yarat()</code> → Prisma <code>create</code> → JSON</p>
+  <p><strong>Nə edir:</strong> Yeni mərkəz yaradır. <code>ad</code> sütunu unikaldır — eyni adla ikinci cəhd <code>P2002</code> xətası verir və servis onu aydın <code>409</code> cavabına çevirir.</p>
+  <p><strong>Gözlənilən:</strong> <code>201</code> · yaradılmış obyekt (<code>id</code> ilə) · ad təkrarı <code>409</code> · validasiya <code>400</code></p>
+<pre><code>ID=$(curl -s -X POST http://localhost:4000/api/v1/struktur/merkezler \
+  -H 'Content-Type: application/json' \
+  -d '{"ad":"Nümunə Test Mərkəzi","tip":"sektor","email":"numune@arti.edu.az","telefon":"+994 12 555 44 33"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['id'])")
+echo "yaradıldı: id=$ID"
+echo $ID &gt; /tmp/test_merkez_id.txt      # sonrakı addımlar üçün</code></pre>
+  <h4>7 · <code>PATCH /api/v1/struktur/merkezler/:id</code> — Mərkəzi yenilə</h4>
+  <p><strong>Keçdiyi mərhələlər:</strong> Express → prefiks → ParseIntPipe → <strong>ValidationPipe</strong> (<code>UpdateMerkezDto</code> = <code>PartialType</code>) → <code>StrukturController.yenile()</code> → <code>StrukturService.yenile()</code> → Prisma <code>update</code> → JSON</p>
+  <p><strong>Nə edir:</strong> Yalnız göndərilən sahələri dəyişir. <code>PartialType</code> sayəsində bütün sahələr istəyə bağlıdır — yalnız <code>telefon</code> göndərsəniz qalan 8 sahə <strong>toxunulmur</strong>.</p>
+  <p><strong>Gözlənilən:</strong> <code>200</code> · yenilənmiş obyekt · yoxdursa <code>404</code> · ad təkrarı <code>409</code></p>
+<pre><code>ID=$(cat /tmp/test_merkez_id.txt)
+curl -s -X PATCH http://localhost:4000/api/v1/struktur/merkezler/$ID \
+  -H 'Content-Type: application/json' \
+  -d '{"telefon":"+994 12 999 88 77","tesvir":"Yenilənmiş təsvir"}' \
+  | python3 -m json.tool</code></pre>
+  <h4>8 · <code>DELETE /api/v1/struktur/merkezler/:id</code> — Mərkəzi sil</h4>
+  <p><strong>Keçdiyi mərhələlər:</strong> Express → prefiks → ParseIntPipe → <code>StrukturController.sil()</code> → <code>StrukturService.sil()</code> → <strong>3 × count</strong> (əvvəlcədən FK yoxlaması) → Prisma <code>delete</code> → JSON</p>
+  <p><strong>Nə edir:</strong> Mərkəzi silir. Əvvəlcə <code>shobeler</code>, <code>emekdaslar</code> və <code>rehberlik</code> cədvəlləri sayılır — bağlı sətir varsa silmə <strong>dayandırılır</strong> və nəyin mane olduğu mesajda göstərilir.</p>
+  <p><strong>Gözlənilən:</strong> <code>200</code> · <code>{ silindi, ad }</code> · bağlı sətir varsa <code>409</code> · yoxdursa <code>404</code></p>
+<pre><code>ID=$(cat /tmp/test_merkez_id.txt)
+curl -s -X DELETE http://localhost:4000/api/v1/struktur/merkezler/$ID \
+  | python3 -m json.tool</code></pre>
+  <h4>9 · <code>GET /api/v1/kadrlar/emekdaslar</code> — Əməkdaşların siyahısı</h4>
+  <p><strong>Keçdiyi mərhələlər:</strong> Express → prefiks → <strong>ValidationPipe</strong> (<code>EmekdasFiltrDto</code>, mirasla) → <code>KadrlarController.siyahi()</code> → <code>KadrlarService.emekdaslar()</code> → <code>serh()</code> + <code>$queryRaw</code> — <strong>6 LEFT JOIN</strong> + <code>count</code> → JSON</p>
+  <p><strong>Nə edir:</strong> Səhifələnmiş siyahı qaytarır, amma hər sətir <strong>tam profildir</strong>: mərkəzin, şöbənin, vəzifənin, elmi dərəcənin və statusun <em>adı</em> gəlir. Filtr: <code>merkez_id</code>, <code>shobe_id</code>, <code>aktiv</code>, <code>axtar</code>.</p>
+  <p><strong>Gözlənilən:</strong> <code>200</code> · <code>{ setirler, cemi: 14, sehife_sayi: 14 }</code> · <code>id</code> və <code>maas</code> <strong>rəqəm</strong> olmalıdır</p>
+<pre><code>curl -s "http://localhost:4000/api/v1/kadrlar/emekdaslar?limit=1" | python3 -m json.tool</code></pre>
+  <h4>10 · <code>GET /api/v1/kadrlar/emekdaslar/icmal</code> — Kadr icmalı</h4>
+  <p><strong>Keçdiyi mərhələlər:</strong> Express → prefiks → <em>ValidationPipe yoxdur</em> → <code>KadrlarController.icmal()</code> → <code>KadrlarService.icmal()</code> → <strong>3 × <code>$queryRaw</code> paralel</strong> (<code>count</code>, <code>GROUP BY</code> ×2, <code>FILTER</code>) → JSON</p>
+  <p><strong>Nə edir:</strong> Ümumi mənzərə: cəmi və aktiv əməkdaş sayı, mərkəzlər üzrə bölgü və vəzifələr üzrə ilk 10. Üç sorğu <code>Promise.all</code> ilə <strong>eyni anda</strong> göndərilir.</p>
+  <p><strong>Gözlənilən:</strong> <code>200</code> · <code>{ cemi: 14, aktiv: 14, merkez_uzre: [...], vezife_uzre: [...] }</code></p>
+<pre><code>curl -s http://localhost:4000/api/v1/kadrlar/emekdaslar/icmal | python3 -m json.tool</code></pre>
+  <h4>11 · <code>GET /api/v1/kadrlar/emekdaslar/:id</code> — Bir əməkdaş</h4>
+  <p><strong>Keçdiyi mərhələlər:</strong> Express → prefiks → ParseIntPipe → <code>KadrlarController.bir()</code> → <code>KadrlarService.emekdas()</code> → <code>$queryRaw</code> — <code>WHERE e.id = $1</code>, 6 <code>LEFT JOIN</code> → JSON</p>
+  <p><strong>Nə edir:</strong> Bir əməkdaşın tam profili. Siyahı sorğusu ilə <strong>eyni</strong> JOIN-ları işlədir, sadəcə <code>LIMIT 1</code> və <code>WHERE</code> əlavə olunur.</p>
+  <p><strong>Gözlənilən:</strong> <code>200</code> · tək obyekt · tapılmasa <code>404</code></p>
+<pre><code>curl -s http://localhost:4000/api/v1/kadrlar/emekdaslar/4 | python3 -m json.tool</code></pre>
+    </div>
+
+    <div class="hisse hisse-c">
+      <span class="hisse-basliq">C · Yoxlama — kod düzgün yazıldı?</span>
+      <p>Aşağıdaki əmrləri işlədin və nəticəni yoxlayın:</p>
+<pre><code>cd ~/Deepseek_ARTI/DS_Backend
+
+# 1) Server işləyirmi?
+curl -s -o /dev/null -w 'sağlamlıq → %{http_code}\n' \
+  http://localhost:4000/api/v1/saglamliq
+
+# 2) Neçə marshrut qeydiyyatdadır? (11 olmalıdır)
+curl -s http://localhost:4000/docs-json | python3 -c "
+import json, sys
+d = json.load(sys.stdin)
+say = 0
+for yol in sorted(d['paths']):
+    for m in d['paths'][yol]:
+        say += 1
+        print(f'  {m.upper():6s} {yol}')
+print('  CƏMİ:', say, 'marshrut')
+"
+
+# 3) Hər endpoint bir dəfə cavab verirmi? (kodları topla)
+A=http://localhost:4000/api/v1
+for yol in "" "saglamliq" "struktur/merkezler?limit=1" \
+           "struktur/merkezler/statistika" "struktur/merkezler/2" \
+           "kadrlar/emekdaslar?limit=1" "kadrlar/emekdaslar/icmal" \
+           "kadrlar/emekdaslar/4"; do
+  printf '  GET /%-34s → %s\n' "$yol" \
+    "$(curl -s -o /dev/null -w '%{http_code}' "$A/$yol")"
+done
+
+# 4) Portu kim tutur?
+lsof -nP -iTCP:4000 | tail -1
+
+# 5) Baza təmiz qaldı?
+export PGPASSWORD=arti_secret_2025
+psql -U arti_user -w -d arti_baza -tAc \
+  "SELECT '  mərkəz sayı: ' || count(*)::int FROM struktur.merkezler"</code></pre>
+      <div class="olmaz">
+        <span class="olmaz-basliq">⚠️ Bu kod olmasa nə olardı</span>
+<pre><code>$ curl -s -o /dev/null -w '%{http_code}\n' http://localhost:4000/api/v1/struktur/merkezler
+000
+
+$ curl -s http://localhost:4000/api/v1/struktur/merkezler
+curl: (7) Failed to connect to localhost port 4000: Connection refused
+
+   # Yaxud server qalxmayıbsa:
+[Nest] ERROR [ExceptionHandler] Error: listen EADDRINUSE:
+  address already in use :::4000</code></pre>
+        <p><code>000</code> kodu <code>curl</code>-un öz kodudur — <strong>server
+    ümumiyyətlə cavab vermir</strong>. Səbəb ikidir: ya server qalxmamışdır
+    (<code>node dist/main.js</code> işlədilməyib), ya da port məşğuldur
+    (<code>EADDRINUSE</code>). Hər iki halda kömək edən əmrlər:
+    <code>lsof -ti:4000</code> (portu kim tutur) və
+    <code>npm run build</code> (yığım varmı).</p>
+      </div>
+    </div>
+
+    <div class="hisse hisse-d">
+      <span class="hisse-basliq">D · Bu koddan sonra sistemin durumu — ÇIXIŞ</span>
+      <p class="cixis-xeber">⚠️ Bu blok <strong>çıxışdır</strong> — kopyalayıb terminala yapıştırmayın. Sadəcə oxuyun. Əmrlər B hissəsindədir.</p>
+<pre><code>════════════ TERMINAL 1 — SERVERİN TAM LOGU ════════════
+
+$ npm run build
+&gt; ds-backend@0.1.0 build
+&gt; nest build
+
+$ node dist/main.js
+
+[Nest] LOG [NestFactory] Starting Nest application...
+[Nest] LOG [InstanceLoader] AppModule dependencies initialized +8ms
+[Nest] LOG [InstanceLoader] PrismaModule dependencies initialized +0ms
+[Nest] LOG [InstanceLoader] ConfigHostModule dependencies initialized +0ms
+[Nest] LOG [InstanceLoader] ConfigModule dependencies initialized +0ms
+[Nest] LOG [InstanceLoader] SaglamliqModule dependencies initialized +0ms
+[Nest] LOG [InstanceLoader] StrukturModule dependencies initialized +0ms
+[Nest] LOG [InstanceLoader] KadrlarModule dependencies initialized +0ms
+[Nest] LOG [RoutesResolver] SaglamliqController {/api/v1}: +7ms
+[Nest] LOG [RouterExplorer] Mapped {/api/v1, GET} route +1ms
+[Nest] LOG [RouterExplorer] Mapped {/api/v1/saglamliq, GET} route +0ms
+[Nest] LOG [RoutesResolver] StrukturController {/api/v1/struktur/merkezler}: +0ms
+[Nest] LOG [RouterExplorer] Mapped {/api/v1/struktur/merkezler, GET} route +0ms
+[Nest] LOG [RouterExplorer] Mapped {/api/v1/struktur/merkezler/statistika, GET} route +0ms
+[Nest] LOG [RouterExplorer] Mapped {/api/v1/struktur/merkezler/:id, GET} route +0ms
+[Nest] LOG [RouterExplorer] Mapped {/api/v1/struktur/merkezler, POST} route +0ms
+[Nest] LOG [RouterExplorer] Mapped {/api/v1/struktur/merkezler/:id, PATCH} route +0ms
+[Nest] LOG [RouterExplorer] Mapped {/api/v1/struktur/merkezler/:id, DELETE} route +0ms
+[Nest] LOG [RoutesResolver] KadrlarController {/api/v1/kadrlar/emekdaslar}: +0ms
+[Nest] LOG [RouterExplorer] Mapped {/api/v1/kadrlar/emekdaslar, GET} route +1ms
+[Nest] LOG [RouterExplorer] Mapped {/api/v1/kadrlar/emekdaslar/icmal, GET} route +0ms
+[Nest] LOG [RouterExplorer] Mapped {/api/v1/kadrlar/emekdaslar/:id, GET} route +0ms
+[Nest] LOG [BAZA] Baza bağlantısı açıldı
+[Nest] LOG [NestApplication] Nest application successfully started +0ms
+[Nest] LOG [BAŞLANGIC] API hazırdır → http://localhost:4000/api/v1
+[Nest] LOG [BAŞLANGIC] Sənədləşdirmə → http://localhost:4000/docs
+
+
+════════════ TERMINAL 2 — 11 ENDPOINT ════════════
+
+── 1 · GET /api/v1 ──────────────────────────────
+$ curl -s http://localhost:4000/api/v1/ | python3 -m json.tool
+{
+    "ad": "ARTİ ERP API",
+    "versiya": "0.1.0",
+    "prefiks": "/api/v1",
+    "senedlesdirme": "/docs"
+}
+
+── 2 · GET /api/v1/saglamliq ────────────────────
+$ curl -s http://localhost:4000/api/v1/saglamliq | python3 -m json.tool
+{
+    "status": "saglam",
+    "baza": {
+        "qosulub": true,
+        "cedvel_sayi": 48,
+        "gecikme_ms": 19
+    },
+    "versiya": "0.1.0",
+    "vaxt": "2026-09-21T05:03:01.172Z"
+}
+
+── 3 · GET /api/v1/struktur/merkezler?limit=2 ───
+$ curl -s "http://localhost:4000/api/v1/struktur/merkezler?limit=2" | python3 -m json.tool
+{
+    "setirler": [
+        {
+            "id": 1,
+            "ad": "Elmi katiblik",
+            "tip": "katiblik",
+            "tesvir": "Elmi Şuranın işinin təşkili və sənədləşdirilməsi",
+            "unvan": "Zərifə Əliyeva 96, Bakı",
+            "telefon": "+994 12 599 08 08",
+            "email": "elmi.katib@arti.edu.az",
+            "yaradilma_tarixi": "2016-11-14T00:00:00.000Z",
+            "aktiv": true
+        },
+        {
+            "id": 2,
+            "ad": "Elmi-pedaqoji tədqiqatlar mərkəzi",
+            "tip": "merkez",
+            "tesvir": "Təhsilin nəzəriyyəsi, tarixi, iqtisadiyyatı üzrə tədqiqatlar",
+            "unvan": "Zərifə Əliyeva 96, Bakı",
+            "telefon": "+994 12 599 08 08",
+            "email": "tedqiqat@arti.edu.az",
+            "yaradilma_tarixi": "2016-11-14T00:00:00.000Z",
+            "aktiv": true
+        }
+    ],
+    "cemi": 10,
+    "sehife": 1,
+    "limit": 2,
+    "sehife_sayi": 5
+}
+
+── 4 · GET /api/v1/struktur/merkezler/statistika ─
+$ curl -s http://localhost:4000/api/v1/struktur/merkezler/statistika | python3 -m json.tool
+[
+    { "merkez_id": 1,  "ad": "Elmi katiblik",                        "shobe_sayi": 0, "emekdas_sayi": 2 },
+    { "merkez_id": 2,  "ad": "Elmi-pedaqoji tədqiqatlar mərkəzi",    "shobe_sayi": 7, "emekdas_sayi": 2 },
+    { "merkez_id": 10, "ad": "Funksional şöbələr",                   "shobe_sayi": 8, "emekdas_sayi": 3 }
+    ...
+]
+   → cəmi 10 sətir
+
+── 5 · GET /api/v1/struktur/merkezler/2 ─────────
+$ curl -s http://localhost:4000/api/v1/struktur/merkezler/2 | python3 -m json.tool
+{
+    "id": 2,
+    "ad": "Elmi-pedaqoji tədqiqatlar mərkəzi",
+    "tip": "merkez",
+    "tesvir": "Təhsilin nəzəriyyəsi, tarixi, iqtisadiyyatı üzrə tədqiqatlar",
+    "unvan": "Zərifə Əliyeva 96, Bakı",
+    "telefon": "+994 12 599 08 08",
+    "email": "tedqiqat@arti.edu.az",
+    "yaradilma_tarixi": "2016-11-14T00:00:00.000Z",
+    "aktiv": true
+}
+
+── 6 · POST /api/v1/struktur/merkezler ──────────
+$ curl -s -X POST http://localhost:4000/api/v1/struktur/merkezler \
+    -H 'Content-Type: application/json' \
+    -d '{"ad":"Nümunə Test Mərkəzi","tip":"sektor",
+         "email":"numune@arti.edu.az","telefon":"+994 12 555 44 33"}'
+{
+    "id": 280,
+    "ad": "Nümunə Test Mərkəzi",
+    "tip": "sektor",
+    "tesvir": null,
+    "unvan": null,
+    "telefon": "+994 12 555 44 33",
+    "email": "numune@arti.edu.az",
+    "yaradilma_tarixi": null,
+    "aktiv": true
+}
+
+── 7 · PATCH /api/v1/struktur/merkezler/280 ─────
+$ curl -s -X PATCH http://localhost:4000/api/v1/struktur/merkezler/280 \
+    -H 'Content-Type: application/json' \
+    -d '{"telefon":"+994 12 999 88 77","tesvir":"Yenilənmiş təsvir"}'
+{
+    "id": 280,
+    "ad": "Nümunə Test Mərkəzi",      ← DƏYİŞMƏDİ (göndərilmədi)
+    "tip": "sektor",
+    "tesvir": "Yenilənmiş təsvir",    ← dəyişdi
+    "unvan": null,
+    "telefon": "+994 12 999 88 77",   ← dəyişdi
+    "email": "numune@arti.edu.az",
+    "yaradilma_tarixi": null,
+    "aktiv": true
+}
+
+── 8 · DELETE /api/v1/struktur/merkezler/280 ────
+$ curl -s -X DELETE http://localhost:4000/api/v1/struktur/merkezler/280
+{
+    "silindi": 280,
+    "ad": "Nümunə Test Mərkəzi"
+}
+
+── 9 · GET /api/v1/kadrlar/emekdaslar?limit=1 ───
+$ curl -s "http://localhost:4000/api/v1/kadrlar/emekdaslar?limit=1" | python3 -m json.tool
+{
+    "setirler": [
+        {
+            "id": 13,
+            "ad": "Elçin",
+            "soyad": "Babayev",
+            "ata_adi": "Sərvər",
+            "email": "elcin.babayev@arti.edu.az",
+            "telefon": "+994 50 211 01 13",
+            "maas": 1300,
+            "ise_baslama": "2023-03-08",
+            "aktiv": true,
+            "merkez": "Təhsil texnologiyaları mərkəzi",
+            "shobe": null,
+            "vezife": "Aparıcı mütəxəssis",
+            "elmi_derece": "Magistr",
+            "elmi_ad": null,
+            "is_statusu": "Aktiv"
+        }
+    ],
+    "cemi": 14,
+    "sehife": 1,
+    "limit": 1,
+    "sehife_sayi": 14
+}
+
+── 10 · GET /api/v1/kadrlar/emekdaslar/icmal ────
+$ curl -s http://localhost:4000/api/v1/kadrlar/emekdaslar/icmal | python3 -m json.tool
+{
+    "cemi": 14,
+    "aktiv": 14,
+    "merkez_uzre": [
+        { "ad": "Funksional şöbələr",                        "say": 3 },
+        { "ad": "Elmi katiblik",                             "say": 2 },
+        { "ad": "Elmi-pedaqoji tədqiqatlar mərkəzi",         "say": 2 },
+        { "ad": "Qiymətləndirmə, təhlil və monitorinq mərkəzi", "say": 2 },
+        { "ad": "Metodik dəstək mərkəzi",                    "say": 1 }
+    ],
+    "vezife_uzre": [
+        { "ad": "Direktor müavini",       "say": 6 },
+        { "ad": "Mərkəz rəhbəri",         "say": 2 },
+        { "ad": "Aparıcı mütəxəssis",     "say": 1 },
+        { "ad": "Baş mütəxəssis",         "say": 1 }
+    ]
+}
+
+── 11 · GET /api/v1/kadrlar/emekdaslar/4 ────────
+$ curl -s http://localhost:4000/api/v1/kadrlar/emekdaslar/4 | python3 -m json.tool
+{
+    "id": 4,
+    "ad": "İlham",
+    "soyad": "Cavadov",
+    "ata_adi": "Ağaqardaş",
+    "email": "ilham.cavadov@arti.edu.az",
+    "telefon": "+994 50 211 01 04",
+    "maas": 2800,
+    "ise_baslama": "2020-05-10",
+    "aktiv": true,
+    "merkez": "Metodik dəstək mərkəzi",
+    "shobe": "Metodik xidmətin təşkili və monitorinqi şöbəsi",
+    "vezife": "Direktor müavini",
+    "elmi_derece": "Fəlsəfə doktoru",
+    "elmi_ad": null,
+    "is_statusu": "Aktiv"
+}
+
+════════════ XƏTA CAVABLARI ════════════
+
+── 400 · Validasiya (limit=500) ──
+{
+    "ugur": false,
+    "xeta": {
+        "kod": "YANLIS_SORGU",
+        "mesaj": "Validasiya xətası",
+        "detallar": ["limit 100-dən çox ola bilməz"]
+    },
+    "yol": "/api/v1/struktur/merkezler?limit=500",
+    "vaxt": "2026-09-21T05:04:33.353Z"
+}
+
+── 404 · Tapılmadı (id=999999) ──
+{
+    "ugur": false,
+    "xeta": { "kod": "TAPILMADI", "mesaj": "999999 nömrəli mərkəz tapılmadı" },
+    "yol": "/api/v1/struktur/merkezler/999999",
+    "vaxt": "2026-09-21T05:04:33.396Z"
+}
+
+── 409 · Konflikt (bağlı mərkəzi silmək) ──
+{
+    "ugur": false,
+    "xeta": {
+        "kod": "TOQQUSMA",
+        "mesaj": "«Elmi-pedaqoji tədqiqatlar mərkəzi» silinmir — ona bağlı 7 şöbə, 2 əməkdaş var"
+    },
+    "yol": "/api/v1/struktur/merkezler/2",
+    "vaxt": "2026-09-21T05:04:33.426Z"
+}
+
+════════════ ƏLAVƏ ÜNVANLAR ════════════
+
+  GET /docs              → 200   (Swagger interfeysi — brauzerdə açın)
+  GET /docs-json         → 200   (OpenAPI spesifikasiyası, JSON)
+  GET /saglamliq         → 404   (prefiks olmadan — düzgün davranış)</code></pre>
+      <div class="oldu">
+        <span class="oldu-basliq">✔ Nəticə</span>
+        <p><strong>Backend-2 tam işlək vəziyyətdədir.</strong> Serverin logunu
+    yuxarıdan aşağı oxusanız, sistemin necə qurulduğunu görürsünüz:
+    <ol>
+      <li><strong>7 modul</strong> sıra ilə yükləndi —
+          <code>AppModule</code>, <code>PrismaModule</code>,
+          <code>ConfigHostModule</code>, <code>ConfigModule</code>,
+          <code>SaglamliqModule</code>, <code>StrukturModule</code>,
+          <code>KadrlarModule</code>.</li>
+      <li><strong>11 marshrut</strong> üç controller altında qeydiyyatdan keçdi.</li>
+      <li><code>[BAZA] Baza bağlantısı açıldı</code> — Prisma
+          <code>onModuleInit</code> işlədi.</li>
+      <li>Yalnız bundan <em>sonra</em> server "hazırdır" dedi.</li>
+    </ol>
+    <p><strong>Müşahidə etməyə dəyər iki şey:</strong></p>
+    <ul>
+      <li>Birinci sorğu <code>1.2 ms</code>, sonrakılar <code>0.6 ms</code> çəkir
+          (3-cü endpoint) — bu, sorğunun yerli şəbəkədə getdiyini göstərir.</li>
+      <li><code>PATCH</code> cavabında <code>ad</code> sahəsi
+          <strong>dəyişməyib</strong> — çünki göndərilməmişdi.
+          <code>PartialType</code> məhz bunun üçündür.</li>
+    </ul>
+    <p>Bu andan etibarən backend <strong>11 endpoint</strong> ilə işləyir, amma
+    hələ də <strong>açıqdır</strong> — istənilən şəxs <code>DELETE</code> edə bilər.
+    Növbəti dərs məhz bunu bağlayır: JWT token, <code>@Public()</code> və
+    <code>@Roles()</code> dekoratorları, audit jurnalı.</p></p>
+      </div>
+    </div>
+
+  </div>
+  <div class="addim-icmal">
+    <span>Addım 13 / 13</span>
     <span>A · niyə</span><span>B · kod</span>
     <span>C · yoxlama</span><span>D · durum</span>
   </div>
@@ -2949,7 +3418,7 @@ YEKUN: 21 unit + 24 e2e = 45 test</code></pre>
 
 
 <div class="success-box">
-  <strong>Backend-2 tamamlandı — 12 addım.</strong> 11 marshrut ·
+  <strong>Backend-2 tamamlandı — 13 addım.</strong> 11 marshrut ·
   səhifələmə və filtr hər siyahıda · 6 cədvəlli JOIN ·
   tam CRUD + konflikt idarəsi · 21 unit + 24 e2e = <strong>45 test</strong>.
   <strong>Növbəti dərs:</strong> autentifikasiya və rollar (JWT),

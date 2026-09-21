@@ -157,9 +157,9 @@ ELAVE_CSS = """
 ADDIMLAR: list = []
 
 
-def addim(n, ad, a, b, c_yoxla, c_olmaz, c_izah, d, d_izah):
+def addim(n, ad, a, b, c_yoxla, c_olmaz, c_izah, d, d_izah, b_html=None):
     ADDIMLAR.append(dict(
-        n=n, ad=ad, a=a, b=b, c_yoxla=c_yoxla,
+        n=n, ad=ad, a=a, b=b, b_html=b_html, c_yoxla=c_yoxla,
         c_olmaz=c_olmaz, c_izah=c_izah, d=d, d_izah=d_izah,
     ))
 
@@ -1112,12 +1112,576 @@ YEKUN: 21 unit + 24 e2e = 45 test""",
 )
 
 
+
+# ─────────────────────────────────────────────────────────────────
+#  ADDIM 13 — ENDPOINT ARAYIŞI (serverin tam qaldırılması + 11 endpoint)
+# ─────────────────────────────────────────────────────────────────
+ENDPOINTLER = [
+    dict(
+        n=1, metod="GET", yol="/api/v1", ad="Kök endpoint",
+        qatlar=("Express → qlobal prefiks → <code>SaglamliqController.kok()</code> "
+                "→ <em>servis yoxdur</em> → JSON"),
+        ne=("API-nin ünvanını, versiyasını, prefiksini və sənədləşdirmə yolunu "
+            "qaytarır. Frontend işə düşəndə ilk bunu çağırıb API-nin yerində "
+            "olduğunu yoxlayır."),
+        gozle="<code>200</code> · <code>{ ad, versiya, prefiks, senedlesdirme }</code>",
+        curl="curl -s http://localhost:4000/api/v1/ | python3 -m json.tool",
+    ),
+    dict(
+        n=2, metod="GET", yol="/api/v1/saglamliq", ad="Sağlamlıq yoxlaması",
+        qatlar=("Express → prefiks → <code>SaglamliqController.yoxla()</code> → "
+                "<code>SaglamliqService.yoxla()</code> → "
+                "<code>PrismaService.yoxla()</code> → <code>$queryRaw</code> "
+                "(information_schema) → JSON"),
+        ne=("Bazaya <strong>real sorğu</strong> göndərib cədvəl sayını sayır. "
+            "Sadəcə «işləyirəm» demir — baza qopsa <code>500</code> verir. "
+            "Monitorinq sistemləri bu endpoint-i mütəmadi çağırır."),
+        gozle=("<code>200</code> · <code>{ status: \"saglam\", baza: { qosulub: true, "
+               "cedvel_sayi: 48, gecikme_ms }, versiya, vaxt }</code>"),
+        curl="curl -s http://localhost:4000/api/v1/saglamliq | python3 -m json.tool",
+    ),
+    dict(
+        n=3, metod="GET", yol="/api/v1/struktur/merkezler",
+        ad="Mərkəzlərin siyahısı",
+        qatlar=("Express → prefiks → <strong>ValidationPipe</strong> "
+                "(<code>MerkezFiltrDto</code>) → "
+                "<code>StrukturController.siyahi()</code> → "
+                "<code>StrukturService.merkezler()</code> → Prisma "
+                "<code>findMany</code> + <code>count</code> (paralel) → "
+                "<code>sehifelenmis()</code> → JSON"),
+        ne=("Səhifələnmiş siyahı qaytarır. Altı sorğu parametri dəstəklənir: "
+            "<code>sehife</code>, <code>limit</code>, <code>axtar</code> (ad üzrə), "
+            "<code>tip</code>, <code>aktiv</code>, <code>sirala</code> + "
+            "<code>siralama</code>."),
+        gozle=("<code>200</code> · <code>{ setirler: [...], cemi: 10, sehife: 1, "
+               "limit: 2, sehife_sayi: 5 }</code>"),
+        curl=("curl -s \"http://localhost:4000/api/v1/struktur/merkezler?limit=2\" | python3 -m json.tool"),
+    ),
+    dict(
+        n=4, metod="GET", yol="/api/v1/struktur/merkezler/statistika",
+        ad="Mərkəz statistikası",
+        qatlar=("Express → prefiks → <em>ValidationPipe yoxdur — parametr yoxdur</em> "
+                "→ <code>StrukturController.statistika()</code> → "
+                "<code>StrukturService.merkezStatistikasi()</code> → "
+                "<code>$queryRaw</code>: <code>GROUP BY</code> + 2 × "
+                "<code>LEFT JOIN</code> → JSON"),
+        ne=("Hər mərkəz üzrə şöbə və əməkdaş sayını hesablayır. "
+            "<code>count(DISTINCT ...)</code> işlədilir, çünki iki "
+            "<code>LEFT JOIN</code> bir-birini çoxaldır."),
+        gozle=("<code>200</code> · massiv <code>[{ merkez_id, ad, shobe_sayi, "
+               "emekdas_sayi }]</code> · <strong>10 sətir</strong>"),
+        curl=("curl -s http://localhost:4000/api/v1/struktur/merkezler/statistika | python3 -m json.tool"),
+    ),
+    dict(
+        n=5, metod="GET", yol="/api/v1/struktur/merkezler/:id", ad="Bir mərkəz",
+        qatlar=("Express → prefiks → <strong>ParseIntPipe</strong> "
+                "(<code>:id</code> → ədəd) → <code>StrukturController.bir()</code> → "
+                "<code>StrukturService.merkez()</code> → Prisma "
+                "<code>findUnique</code> → JSON"),
+        ne=("Bir mərkəzin bütün sahələrini qaytarır. Tapılmasa "
+            "<code>NotFoundException</code> atılır və filtr onu <code>404</code>-ə "
+            "çevirir. <code>:id</code> rəqəm deyilsə <code>ParseIntPipe</code> "
+            "<code>400</code> verir."),
+        gozle="<code>200</code> · tək obyekt · tapılmasa <code>404</code> · rəqəm deyilsə <code>400</code>",
+        curl="curl -s http://localhost:4000/api/v1/struktur/merkezler/2 | python3 -m json.tool",
+    ),
+    dict(
+        n=6, metod="POST", yol="/api/v1/struktur/merkezler", ad="Yeni mərkəz",
+        qatlar=("Express → prefiks → <strong>ValidationPipe</strong> "
+                "(<code>CreateMerkezDto</code>, 9 qayda) → "
+                "<code>StrukturController.yarat()</code> → "
+                "<code>StrukturService.yarat()</code> → Prisma <code>create</code> → "
+                "JSON"),
+        ne=("Yeni mərkəz yaradır. <code>ad</code> sütunu unikaldır — eyni adla "
+            "ikinci cəhd <code>P2002</code> xətası verir və servis onu aydın "
+            "<code>409</code> cavabına çevirir."),
+        gozle=("<code>201</code> · yaradılmış obyekt (<code>id</code> ilə) · "
+               "ad təkrarı <code>409</code> · validasiya <code>400</code>"),
+        curl=("ID=$(curl -s -X POST http://localhost:4000/api/v1/struktur/merkezler \\\n"
+              "  -H 'Content-Type: application/json' \\\n"
+              "  -d '{\"ad\":\"Nümunə Test Mərkəzi\",\"tip\":\"sektor\",\"email\":\"numune@arti.edu.az\",\"telefon\":\"+994 12 555 44 33\"}' \\\n"
+              "  | python3 -c \"import json,sys;print(json.load(sys.stdin)['id'])\")\n"
+              "echo \"yaradıldı: id=$ID\"\n"
+              "echo $ID > /tmp/test_merkez_id.txt      # sonrakı addımlar üçün"),
+    ),
+    dict(
+        n=7, metod="PATCH", yol="/api/v1/struktur/merkezler/:id", ad="Mərkəzi yenilə",
+        qatlar=("Express → prefiks → ParseIntPipe → <strong>ValidationPipe</strong> "
+                "(<code>UpdateMerkezDto</code> = <code>PartialType</code>) → "
+                "<code>StrukturController.yenile()</code> → "
+                "<code>StrukturService.yenile()</code> → Prisma <code>update</code> → JSON"),
+        ne=("Yalnız göndərilən sahələri dəyişir. <code>PartialType</code> sayəsində "
+            "bütün sahələr istəyə bağlıdır — yalnız <code>telefon</code> göndərsəniz "
+            "qalan 8 sahə <strong>toxunulmur</strong>."),
+        gozle=("<code>200</code> · yenilənmiş obyekt · yoxdursa <code>404</code> · "
+               "ad təkrarı <code>409</code>"),
+        curl=("ID=$(cat /tmp/test_merkez_id.txt)\n"
+              "curl -s -X PATCH http://localhost:4000/api/v1/struktur/merkezler/$ID \\\n"
+              "  -H 'Content-Type: application/json' \\\n"
+              "  -d '{\"telefon\":\"+994 12 999 88 77\",\"tesvir\":\"Yenilənmiş təsvir\"}' \\\n"
+              "  | python3 -m json.tool"),
+    ),
+    dict(
+        n=8, metod="DELETE", yol="/api/v1/struktur/merkezler/:id", ad="Mərkəzi sil",
+        qatlar=("Express → prefiks → ParseIntPipe → "
+                "<code>StrukturController.sil()</code> → "
+                "<code>StrukturService.sil()</code> → <strong>3 × count</strong> "
+                "(əvvəlcədən FK yoxlaması) → Prisma <code>delete</code> → JSON"),
+        ne=("Mərkəzi silir. Əvvəlcə <code>shobeler</code>, <code>emekdaslar</code> və "
+            "<code>rehberlik</code> cədvəlləri sayılır — bağlı sətir varsa silmə "
+            "<strong>dayandırılır</strong> və nəyin mane olduğu mesajda göstərilir."),
+        gozle=("<code>200</code> · <code>{ silindi, ad }</code> · bağlı sətir varsa "
+               "<code>409</code> · yoxdursa <code>404</code>"),
+        curl=("ID=$(cat /tmp/test_merkez_id.txt)\n"
+              "curl -s -X DELETE http://localhost:4000/api/v1/struktur/merkezler/$ID \\\n"
+              "  | python3 -m json.tool"),
+    ),
+    dict(
+        n=9, metod="GET", yol="/api/v1/kadrlar/emekdaslar", ad="Əməkdaşların siyahısı",
+        qatlar=("Express → prefiks → <strong>ValidationPipe</strong> "
+                "(<code>EmekdasFiltrDto</code>, mirasla) → "
+                "<code>KadrlarController.siyahi()</code> → "
+                "<code>KadrlarService.emekdaslar()</code> → "
+                "<code>serh()</code> + <code>$queryRaw</code> — <strong>6 LEFT JOIN</strong> "
+                "+ <code>count</code> → JSON"),
+        ne=("Səhifələnmiş siyahı qaytarır, amma hər sətir <strong>tam profildir</strong>: "
+            "mərkəzin, şöbənin, vəzifənin, elmi dərəcənin və statusun <em>adı</em> "
+            "gəlir. Filtr: <code>merkez_id</code>, <code>shobe_id</code>, "
+            "<code>aktiv</code>, <code>axtar</code>."),
+        gozle=("<code>200</code> · <code>{ setirler, cemi: 14, sehife_sayi: 14 }</code> · "
+               "<code>id</code> və <code>maas</code> <strong>rəqəm</strong> olmalıdır"),
+        curl=("curl -s \"http://localhost:4000/api/v1/kadrlar/emekdaslar?limit=1\" | python3 -m json.tool"),
+    ),
+    dict(
+        n=10, metod="GET", yol="/api/v1/kadrlar/emekdaslar/icmal", ad="Kadr icmalı",
+        qatlar=("Express → prefiks → <em>ValidationPipe yoxdur</em> → "
+                "<code>KadrlarController.icmal()</code> → "
+                "<code>KadrlarService.icmal()</code> → <strong>3 × "
+                "<code>$queryRaw</code> paralel</strong> "
+                "(<code>count</code>, <code>GROUP BY</code> ×2, "
+                "<code>FILTER</code>) → JSON"),
+        ne=("Ümumi mənzərə: cəmi və aktiv əməkdaş sayı, mərkəzlər üzrə bölgü və "
+            "vəzifələr üzrə ilk 10. Üç sorğu <code>Promise.all</code> ilə "
+            "<strong>eyni anda</strong> göndərilir."),
+        gozle=("<code>200</code> · <code>{ cemi: 14, aktiv: 14, merkez_uzre: [...], "
+               "vezife_uzre: [...] }</code>"),
+        curl="curl -s http://localhost:4000/api/v1/kadrlar/emekdaslar/icmal | python3 -m json.tool",
+    ),
+    dict(
+        n=11, metod="GET", yol="/api/v1/kadrlar/emekdaslar/:id", ad="Bir əməkdaş",
+        qatlar=("Express → prefiks → ParseIntPipe → "
+                "<code>KadrlarController.bir()</code> → "
+                "<code>KadrlarService.emekdas()</code> → "
+                "<code>$queryRaw</code> — <code>WHERE e.id = $1</code>, "
+                "6 <code>LEFT JOIN</code> → JSON"),
+        ne=("Bir əməkdaşın tam profili. Siyahı sorğusu ilə <strong>eyni</strong> "
+            "JOIN-ları işlədir, sadəcə <code>LIMIT 1</code> və <code>WHERE</code> "
+            "əlavə olunur."),
+        gozle="<code>200</code> · tək obyekt · tapılmasa <code>404</code>",
+        curl="curl -s http://localhost:4000/api/v1/kadrlar/emekdaslar/4 | python3 -m json.tool",
+    ),
+]
+
+# ── B hissəsi: server qaldırma + hər endpoint ──
+B13 = (
+    '  <p class="fayl-ad">Terminal 1 — serveri əvvəldən sona qaldır</p>\n'
+    '<pre><code>' + e("""cd ~/Deepseek_ARTI/DS_Backend
+unset DATABASE_URL PGHOST
+
+# 1) Əvvəlcə portu təmizlə (köhnə server varsa)
+lsof -ti:4000 && kill $(lsof -ti:4000) && sleep 2
+
+# 2) Yığ
+npm run build
+
+# 3) Serveri qaldır — bu terminal AÇIQ QALIR
+node dist/main.js
+
+# İnkişaf üçün (hər dəyişiklikdə özü yenilənir):
+#   npm run start:dev
+# Dayandırmaq: Ctrl + C""") + '</code></pre>\n'
+    '  <p>Server qalxanda <strong>aşağıdaki logu</strong> görməlisiniz. '
+    'Sətirləri sıra ilə oxuyun — bu, sistemin özünü necə qurduğunun xəritəsidir. '
+    'Tam çıxış D hissəsindədir.</p>\n'
+    '  <p class="fayl-ad">Terminal 2 — hər endpoint-i bir-bir yoxla</p>\n'
+    '  <p>Aşağıda <strong>11 endpoint-in hamısı</strong> verilir. Hər biri üçün '
+    'üç şey yazılıb: <strong>keçdiyi mərhələlər</strong>, <strong>nə etdiyi</strong> '
+    'və <strong>gözlənilən nəticə</strong>. Əmrləri sıra ilə işlədin.</p>\n'
+)
+
+for _ep in ENDPOINTLER:
+    B13 += (
+        f'  <h4>{_ep["n"]} · <code>{_ep["metod"]} {e(_ep["yol"])}</code> — {e(_ep["ad"])}</h4>\n'
+        f'  <p><strong>Keçdiyi mərhələlər:</strong> {_ep["qatlar"]}</p>\n'
+        f'  <p><strong>Nə edir:</strong> {_ep["ne"]}</p>\n'
+        f'  <p><strong>Gözlənilən:</strong> {_ep["gozle"]}</p>\n'
+        f'<pre><code>{e(_ep["curl"])}</code></pre>\n'
+    )
+
+# ── D hissəsi: real çıxışlar ──
+D13 = """════════════ TERMINAL 1 — SERVERİN TAM LOGU ════════════
+
+$ npm run build
+> ds-backend@0.1.0 build
+> nest build
+
+$ node dist/main.js
+
+[Nest] LOG [NestFactory] Starting Nest application...
+[Nest] LOG [InstanceLoader] AppModule dependencies initialized +8ms
+[Nest] LOG [InstanceLoader] PrismaModule dependencies initialized +0ms
+[Nest] LOG [InstanceLoader] ConfigHostModule dependencies initialized +0ms
+[Nest] LOG [InstanceLoader] ConfigModule dependencies initialized +0ms
+[Nest] LOG [InstanceLoader] SaglamliqModule dependencies initialized +0ms
+[Nest] LOG [InstanceLoader] StrukturModule dependencies initialized +0ms
+[Nest] LOG [InstanceLoader] KadrlarModule dependencies initialized +0ms
+[Nest] LOG [RoutesResolver] SaglamliqController {/api/v1}: +7ms
+[Nest] LOG [RouterExplorer] Mapped {/api/v1, GET} route +1ms
+[Nest] LOG [RouterExplorer] Mapped {/api/v1/saglamliq, GET} route +0ms
+[Nest] LOG [RoutesResolver] StrukturController {/api/v1/struktur/merkezler}: +0ms
+[Nest] LOG [RouterExplorer] Mapped {/api/v1/struktur/merkezler, GET} route +0ms
+[Nest] LOG [RouterExplorer] Mapped {/api/v1/struktur/merkezler/statistika, GET} route +0ms
+[Nest] LOG [RouterExplorer] Mapped {/api/v1/struktur/merkezler/:id, GET} route +0ms
+[Nest] LOG [RouterExplorer] Mapped {/api/v1/struktur/merkezler, POST} route +0ms
+[Nest] LOG [RouterExplorer] Mapped {/api/v1/struktur/merkezler/:id, PATCH} route +0ms
+[Nest] LOG [RouterExplorer] Mapped {/api/v1/struktur/merkezler/:id, DELETE} route +0ms
+[Nest] LOG [RoutesResolver] KadrlarController {/api/v1/kadrlar/emekdaslar}: +0ms
+[Nest] LOG [RouterExplorer] Mapped {/api/v1/kadrlar/emekdaslar, GET} route +1ms
+[Nest] LOG [RouterExplorer] Mapped {/api/v1/kadrlar/emekdaslar/icmal, GET} route +0ms
+[Nest] LOG [RouterExplorer] Mapped {/api/v1/kadrlar/emekdaslar/:id, GET} route +0ms
+[Nest] LOG [BAZA] Baza bağlantısı açıldı
+[Nest] LOG [NestApplication] Nest application successfully started +0ms
+[Nest] LOG [BAŞLANGIC] API hazırdır → http://localhost:4000/api/v1
+[Nest] LOG [BAŞLANGIC] Sənədləşdirmə → http://localhost:4000/docs
+
+
+════════════ TERMINAL 2 — 11 ENDPOINT ════════════
+
+── 1 · GET /api/v1 ──────────────────────────────
+$ curl -s http://localhost:4000/api/v1/ | python3 -m json.tool
+{
+    "ad": "ARTİ ERP API",
+    "versiya": "0.1.0",
+    "prefiks": "/api/v1",
+    "senedlesdirme": "/docs"
+}
+
+── 2 · GET /api/v1/saglamliq ────────────────────
+$ curl -s http://localhost:4000/api/v1/saglamliq | python3 -m json.tool
+{
+    "status": "saglam",
+    "baza": {
+        "qosulub": true,
+        "cedvel_sayi": 48,
+        "gecikme_ms": 19
+    },
+    "versiya": "0.1.0",
+    "vaxt": "2026-09-21T05:03:01.172Z"
+}
+
+── 3 · GET /api/v1/struktur/merkezler?limit=2 ───
+$ curl -s "http://localhost:4000/api/v1/struktur/merkezler?limit=2" | python3 -m json.tool
+{
+    "setirler": [
+        {
+            "id": 1,
+            "ad": "Elmi katiblik",
+            "tip": "katiblik",
+            "tesvir": "Elmi Şuranın işinin təşkili və sənədləşdirilməsi",
+            "unvan": "Zərifə Əliyeva 96, Bakı",
+            "telefon": "+994 12 599 08 08",
+            "email": "elmi.katib@arti.edu.az",
+            "yaradilma_tarixi": "2016-11-14T00:00:00.000Z",
+            "aktiv": true
+        },
+        {
+            "id": 2,
+            "ad": "Elmi-pedaqoji tədqiqatlar mərkəzi",
+            "tip": "merkez",
+            "tesvir": "Təhsilin nəzəriyyəsi, tarixi, iqtisadiyyatı üzrə tədqiqatlar",
+            "unvan": "Zərifə Əliyeva 96, Bakı",
+            "telefon": "+994 12 599 08 08",
+            "email": "tedqiqat@arti.edu.az",
+            "yaradilma_tarixi": "2016-11-14T00:00:00.000Z",
+            "aktiv": true
+        }
+    ],
+    "cemi": 10,
+    "sehife": 1,
+    "limit": 2,
+    "sehife_sayi": 5
+}
+
+── 4 · GET /api/v1/struktur/merkezler/statistika ─
+$ curl -s http://localhost:4000/api/v1/struktur/merkezler/statistika | python3 -m json.tool
+[
+    { "merkez_id": 1,  "ad": "Elmi katiblik",                        "shobe_sayi": 0, "emekdas_sayi": 2 },
+    { "merkez_id": 2,  "ad": "Elmi-pedaqoji tədqiqatlar mərkəzi",    "shobe_sayi": 7, "emekdas_sayi": 2 },
+    { "merkez_id": 10, "ad": "Funksional şöbələr",                   "shobe_sayi": 8, "emekdas_sayi": 3 }
+    ...
+]
+   → cəmi 10 sətir
+
+── 5 · GET /api/v1/struktur/merkezler/2 ─────────
+$ curl -s http://localhost:4000/api/v1/struktur/merkezler/2 | python3 -m json.tool
+{
+    "id": 2,
+    "ad": "Elmi-pedaqoji tədqiqatlar mərkəzi",
+    "tip": "merkez",
+    "tesvir": "Təhsilin nəzəriyyəsi, tarixi, iqtisadiyyatı üzrə tədqiqatlar",
+    "unvan": "Zərifə Əliyeva 96, Bakı",
+    "telefon": "+994 12 599 08 08",
+    "email": "tedqiqat@arti.edu.az",
+    "yaradilma_tarixi": "2016-11-14T00:00:00.000Z",
+    "aktiv": true
+}
+
+── 6 · POST /api/v1/struktur/merkezler ──────────
+$ curl -s -X POST http://localhost:4000/api/v1/struktur/merkezler \\
+    -H 'Content-Type: application/json' \\
+    -d '{"ad":"Nümunə Test Mərkəzi","tip":"sektor",
+         "email":"numune@arti.edu.az","telefon":"+994 12 555 44 33"}'
+{
+    "id": 280,
+    "ad": "Nümunə Test Mərkəzi",
+    "tip": "sektor",
+    "tesvir": null,
+    "unvan": null,
+    "telefon": "+994 12 555 44 33",
+    "email": "numune@arti.edu.az",
+    "yaradilma_tarixi": null,
+    "aktiv": true
+}
+
+── 7 · PATCH /api/v1/struktur/merkezler/280 ─────
+$ curl -s -X PATCH http://localhost:4000/api/v1/struktur/merkezler/280 \\
+    -H 'Content-Type: application/json' \\
+    -d '{"telefon":"+994 12 999 88 77","tesvir":"Yenilənmiş təsvir"}'
+{
+    "id": 280,
+    "ad": "Nümunə Test Mərkəzi",      ← DƏYİŞMƏDİ (göndərilmədi)
+    "tip": "sektor",
+    "tesvir": "Yenilənmiş təsvir",    ← dəyişdi
+    "unvan": null,
+    "telefon": "+994 12 999 88 77",   ← dəyişdi
+    "email": "numune@arti.edu.az",
+    "yaradilma_tarixi": null,
+    "aktiv": true
+}
+
+── 8 · DELETE /api/v1/struktur/merkezler/280 ────
+$ curl -s -X DELETE http://localhost:4000/api/v1/struktur/merkezler/280
+{
+    "silindi": 280,
+    "ad": "Nümunə Test Mərkəzi"
+}
+
+── 9 · GET /api/v1/kadrlar/emekdaslar?limit=1 ───
+$ curl -s "http://localhost:4000/api/v1/kadrlar/emekdaslar?limit=1" | python3 -m json.tool
+{
+    "setirler": [
+        {
+            "id": 13,
+            "ad": "Elçin",
+            "soyad": "Babayev",
+            "ata_adi": "Sərvər",
+            "email": "elcin.babayev@arti.edu.az",
+            "telefon": "+994 50 211 01 13",
+            "maas": 1300,
+            "ise_baslama": "2023-03-08",
+            "aktiv": true,
+            "merkez": "Təhsil texnologiyaları mərkəzi",
+            "shobe": null,
+            "vezife": "Aparıcı mütəxəssis",
+            "elmi_derece": "Magistr",
+            "elmi_ad": null,
+            "is_statusu": "Aktiv"
+        }
+    ],
+    "cemi": 14,
+    "sehife": 1,
+    "limit": 1,
+    "sehife_sayi": 14
+}
+
+── 10 · GET /api/v1/kadrlar/emekdaslar/icmal ────
+$ curl -s http://localhost:4000/api/v1/kadrlar/emekdaslar/icmal | python3 -m json.tool
+{
+    "cemi": 14,
+    "aktiv": 14,
+    "merkez_uzre": [
+        { "ad": "Funksional şöbələr",                        "say": 3 },
+        { "ad": "Elmi katiblik",                             "say": 2 },
+        { "ad": "Elmi-pedaqoji tədqiqatlar mərkəzi",         "say": 2 },
+        { "ad": "Qiymətləndirmə, təhlil və monitorinq mərkəzi", "say": 2 },
+        { "ad": "Metodik dəstək mərkəzi",                    "say": 1 }
+    ],
+    "vezife_uzre": [
+        { "ad": "Direktor müavini",       "say": 6 },
+        { "ad": "Mərkəz rəhbəri",         "say": 2 },
+        { "ad": "Aparıcı mütəxəssis",     "say": 1 },
+        { "ad": "Baş mütəxəssis",         "say": 1 }
+    ]
+}
+
+── 11 · GET /api/v1/kadrlar/emekdaslar/4 ────────
+$ curl -s http://localhost:4000/api/v1/kadrlar/emekdaslar/4 | python3 -m json.tool
+{
+    "id": 4,
+    "ad": "İlham",
+    "soyad": "Cavadov",
+    "ata_adi": "Ağaqardaş",
+    "email": "ilham.cavadov@arti.edu.az",
+    "telefon": "+994 50 211 01 04",
+    "maas": 2800,
+    "ise_baslama": "2020-05-10",
+    "aktiv": true,
+    "merkez": "Metodik dəstək mərkəzi",
+    "shobe": "Metodik xidmətin təşkili və monitorinqi şöbəsi",
+    "vezife": "Direktor müavini",
+    "elmi_derece": "Fəlsəfə doktoru",
+    "elmi_ad": null,
+    "is_statusu": "Aktiv"
+}
+
+════════════ XƏTA CAVABLARI ════════════
+
+── 400 · Validasiya (limit=500) ──
+{
+    "ugur": false,
+    "xeta": {
+        "kod": "YANLIS_SORGU",
+        "mesaj": "Validasiya xətası",
+        "detallar": ["limit 100-dən çox ola bilməz"]
+    },
+    "yol": "/api/v1/struktur/merkezler?limit=500",
+    "vaxt": "2026-09-21T05:04:33.353Z"
+}
+
+── 404 · Tapılmadı (id=999999) ──
+{
+    "ugur": false,
+    "xeta": { "kod": "TAPILMADI", "mesaj": "999999 nömrəli mərkəz tapılmadı" },
+    "yol": "/api/v1/struktur/merkezler/999999",
+    "vaxt": "2026-09-21T05:04:33.396Z"
+}
+
+── 409 · Konflikt (bağlı mərkəzi silmək) ──
+{
+    "ugur": false,
+    "xeta": {
+        "kod": "TOQQUSMA",
+        "mesaj": "«Elmi-pedaqoji tədqiqatlar mərkəzi» silinmir — ona bağlı 7 şöbə, 2 əməkdaş var"
+    },
+    "yol": "/api/v1/struktur/merkezler/2",
+    "vaxt": "2026-09-21T05:04:33.426Z"
+}
+
+════════════ ƏLAVƏ ÜNVANLAR ════════════
+
+  GET /docs              → 200   (Swagger interfeysi — brauzerdə açın)
+  GET /docs-json         → 200   (OpenAPI spesifikasiyası, JSON)
+  GET /saglamliq         → 404   (prefiks olmadan — düzgün davranış)"""
+
+
+addim(
+    n=13,
+    ad="Serveri tam qaldır və bütün endpoint-ləri yoxla (arayış)",
+    a="""Bu addım bir <strong>arayış səhifəsidir</strong> — gündəlik işdə ən çox
+    açacağınız yer. Serveri əvvəldən sona qədər qaldırırıq və bu vaxta qədər
+    yazdığımız <strong>11 endpoint-in hamısını</strong> bir-bir yoxlayırıq. Hər
+    endpoint üçün üç şey verilir: hansı qatlardan keçdiyi, nə etdiyi və nəticənin
+    necə olması. Sonda üç xəta kodu (<code>400</code>, <code>404</code>,
+    <code>409</code>) və onların real cavabları göstərilir.""",
+    b=[],
+    b_html=B13,
+    c_yoxla="""cd ~/Deepseek_ARTI/DS_Backend
+
+# 1) Server işləyirmi?
+curl -s -o /dev/null -w 'sağlamlıq → %{http_code}\\n' \\
+  http://localhost:4000/api/v1/saglamliq
+
+# 2) Neçə marshrut qeydiyyatdadır? (11 olmalıdır)
+curl -s http://localhost:4000/docs-json | python3 -c "
+import json, sys
+d = json.load(sys.stdin)
+say = 0
+for yol in sorted(d['paths']):
+    for m in d['paths'][yol]:
+        say += 1
+        print(f'  {m.upper():6s} {yol}')
+print('  CƏMİ:', say, 'marshrut')
+"
+
+# 3) Hər endpoint bir dəfə cavab verirmi? (kodları topla)
+A=http://localhost:4000/api/v1
+for yol in "" "saglamliq" "struktur/merkezler?limit=1" \\
+           "struktur/merkezler/statistika" "struktur/merkezler/2" \\
+           "kadrlar/emekdaslar?limit=1" "kadrlar/emekdaslar/icmal" \\
+           "kadrlar/emekdaslar/4"; do
+  printf '  GET /%-34s → %s\\n' "$yol" \\
+    "$(curl -s -o /dev/null -w '%{http_code}' "$A/$yol")"
+done
+
+# 4) Portu kim tutur?
+lsof -nP -iTCP:4000 | tail -1
+
+# 5) Baza təmiz qaldı?
+export PGPASSWORD=arti_secret_2025
+psql -U arti_user -w -d arti_baza -tAc \\
+  "SELECT '  mərkəz sayı: ' || count(*)::int FROM struktur.merkezler\"""",
+    c_olmaz="""$ curl -s -o /dev/null -w '%{http_code}\\n' http://localhost:4000/api/v1/struktur/merkezler
+000
+
+$ curl -s http://localhost:4000/api/v1/struktur/merkezler
+curl: (7) Failed to connect to localhost port 4000: Connection refused
+
+   # Yaxud server qalxmayıbsa:
+[Nest] ERROR [ExceptionHandler] Error: listen EADDRINUSE:
+  address already in use :::4000""",
+    c_izah="""<code>000</code> kodu <code>curl</code>-un öz kodudur — <strong>server
+    ümumiyyətlə cavab vermir</strong>. Səbəb ikidir: ya server qalxmamışdır
+    (<code>node dist/main.js</code> işlədilməyib), ya da port məşğuldur
+    (<code>EADDRINUSE</code>). Hər iki halda kömək edən əmrlər:
+    <code>lsof -ti:4000</code> (portu kim tutur) və
+    <code>npm run build</code> (yığım varmı).""",
+    d=D13,
+    d_izah="""<strong>Backend-2 tam işlək vəziyyətdədir.</strong> Serverin logunu
+    yuxarıdan aşağı oxusanız, sistemin necə qurulduğunu görürsünüz:
+    <ol>
+      <li><strong>7 modul</strong> sıra ilə yükləndi —
+          <code>AppModule</code>, <code>PrismaModule</code>,
+          <code>ConfigHostModule</code>, <code>ConfigModule</code>,
+          <code>SaglamliqModule</code>, <code>StrukturModule</code>,
+          <code>KadrlarModule</code>.</li>
+      <li><strong>11 marshrut</strong> üç controller altında qeydiyyatdan keçdi.</li>
+      <li><code>[BAZA] Baza bağlantısı açıldı</code> — Prisma
+          <code>onModuleInit</code> işlədi.</li>
+      <li>Yalnız bundan <em>sonra</em> server "hazırdır" dedi.</li>
+    </ol>
+    <p><strong>Müşahidə etməyə dəyər iki şey:</strong></p>
+    <ul>
+      <li>Birinci sorğu <code>1.2 ms</code>, sonrakılar <code>0.6 ms</code> çəkir
+          (3-cü endpoint) — bu, sorğunun yerli şəbəkədə getdiyini göstərir.</li>
+      <li><code>PATCH</code> cavabında <code>ad</code> sahəsi
+          <strong>dəyişməyib</strong> — çünki göndərilməmişdi.
+          <code>PartialType</code> məhz bunun üçündür.</li>
+    </ul>
+    <p>Bu andan etibarən backend <strong>11 endpoint</strong> ilə işləyir, amma
+    hələ də <strong>açıqdır</strong> — istənilən şəxs <code>DELETE</code> edə bilər.
+    Növbəti dərs məhz bunu bağlayır: JWT token, <code>@Public()</code> və
+    <code>@Roles()</code> dekoratorları, audit jurnalı.</p>""",
+)
+
 # ══════════════════════════════════════════════════════════════════
 #  HTML QURULMASI
 # ══════════════════════════════════════════════════════════════════
 def addim_html(x: dict) -> str:
-    b_hisse = ""
-    for fayl_ad, kod in x["b"]:
+    b_hisse = x.get("b_html") or ""
+    if x.get("b_html"):
+        pass
+    else:
+      for fayl_ad, kod in x["b"]:
         b_hisse += (
             f'    <p class="fayl-ad">{e(fayl_ad)}</p>\n'
             f'<pre><code>{e(kod)}</code></pre>\n'
