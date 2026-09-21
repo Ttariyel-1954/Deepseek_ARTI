@@ -723,7 +723,7 @@ done
     ],
     c_yoxla="""cd ~/Deepseek_ARTI/DS_Backend
 
-# 1) Neçə marshrut var? (21 olmalıdır — 15 əvvəlki + 5 AI + 2 ixrac)
+# 1) Neçə marshrut var? (23 olmalıdır — 15 əvvəlki + 6 AI + 2 ixrac)
 curl -s http://localhost:4000/docs-json | python3 -c "
 import json, sys
 d = json.load(sys.stdin)
@@ -782,7 +782,7 @@ done
   GET    /api/v1/ixrac/emekdaslar.xlsx               IXRAC
   GET    /api/v1/ixrac/merkezler.xlsx                IXRAC
   ... (struktur, kadrlar, sağlamlıq)
-  CƏMİ: 22 marshrut
+  CƏMİ: 23 marshrut
 
 ════════ EXCEL FAYLLARI ════════
   merkezler    → 7121 bayt · Microsoft Excel 2007+
@@ -792,8 +792,8 @@ done
   admin      vektorlasdir → 200
   baxici     vektorlasdir → 403""",
     d_izah="""<strong>Backend-4 tam işlək vəziyyətdədir.</strong> Əlavə olunan
-    <strong>7 marshrut</strong> (5 AI + 2 ixrac) digər 15 ilə birlikdə işləyir —
-    cəmi <strong>22 marshrut</strong>. Excel faylları həqiqi Excel formatındadır
+    <strong>8 marshrut</strong> (6 AI + 2 ixrac) digər 15 ilə birlikdə işləyir —
+    cəmi <strong>23 marshrut</strong>. Excel faylları həqiqi Excel formatındadır
     və brauzer onları yükləyir. Vektorlaşdırma isə rol ilə qorunur:
     <code>admin</code> <code>200</code>, <code>baxici</code>
     <code>403</code>. Bu andan etibarən institutun məlumatları həm
@@ -872,7 +872,7 @@ YEKUN: 42 unit + 39 e2e = 81 test""",
     d_izah="""<strong>Backend-4 tamamlandı.</strong> Bütün backend kursunun yekunu:
     <ul>
       <li><strong>42 unit + 39 e2e = 81 test</strong> — Dərs 1-də 7 test idi.</li>
-      <li><strong>22 marshrut</strong> — sağlamlıq, struktur, kadrlar, auth,
+      <li><strong>23 marshrut</strong> — sağlamlıq, struktur, kadrlar, auth,
           AI və ixrac.</li>
       <li><strong>AI qatı</strong> — RAG axtarışı, 10 reseptli təbii dil
           sorğusu, demo rejim.</li>
@@ -982,298 +982,359 @@ ELAVE_CSS = """
 
 
 # ─────────────────────────────────────────────────────────────────
-#  ADDIM 14 — TAM QƏBUL TESTİ
+#  ADDIM 11 — BACKEND-4 TAM QƏBUL TESTİ
 # ─────────────────────────────────────────────────────────────────
 _CEDVEL = """<table>
   <tr><th>#</th><th>Nə yoxlanılır</th><th>Rol</th><th>Gözlənilən cavab</th></tr>
-  <tr><td>1</td><td>Auth paketləri (5) + <code>JWT_SECRET</code></td><td>—</td>
-      <td>5 paket <code>var</code> · <code>.env</code>-də 1 sətir</td></tr>
-  <tr><td>2</td><td>DTO validasiyası: düzgün / pis email / qısa şifrə / boş cisim</td>
-      <td>—</td><td><code>200 · 400 · 400 · 400</code></td></tr>
-  <tr><td>3</td><td><code>@Public()</code> — açıq endpoint-lər</td><td>—</td>
-      <td><code>200</code> (tokensiz)</td></tr>
-  <tr><td>4</td><td><code>JwtAuthGuard</code> — qorunan endpoint-lər</td><td>—</td>
-      <td><code>401</code> (tokensiz və səhv tokenlə)</td></tr>
-  <tr><td>5</td><td>Login və token strukturu</td><td>admin</td>
-      <td><code>200</code> · token 3 hissə · müddət 8 saat · <code>parol_hash</code> yoxdur</td></tr>
-  <tr><td>6</td><td>Timing attack qoruması</td><td>—</td>
-      <td>eyni mesaj · vaxt fərqi &lt; 20 ms</td></tr>
-  <tr><td>7</td><td><code>POST /struktur/merkezler</code></td>
-      <td><strong>admin</strong>, <strong>muhendis</strong></td><td><code>201</code></td></tr>
-  <tr><td>7</td><td><code>POST /struktur/merkezler</code></td>
+  <tr><td>1</td><td>Fayllar və paketlər — 13 AI/ixrac faylı, Docker, CI</td><td>—</td>
+      <td>hamısı <code>var</code> · <code>exceljs 4.4.0</code></td></tr>
+  <tr><td>2</td><td><code>.env</code> → <code>DEEPSEEK_API_KEY</code> boşdur</td><td>—</td>
+      <td>boş sətir → <strong>demo rejim</strong> işə düşür</td></tr>
+  <tr><td>3</td><td>⚠️ SQL xidməti LLM-ə qoşulmur</td><td>—</td>
+      <td><code>fetch = 0</code> · <code>deepseek = 0</code></td></tr>
+  <tr><td>4</td><td><code>GET /ai/statistika</code></td>
+      <td><strong>4 rolun hamısı</strong></td><td><code>200</code> · tokensiz <code>401</code></td></tr>
+  <tr><td>5</td><td>Statistikanın məzmunu</td><td>admin</td>
+      <td><code>rejim=demo</code> · <code>olcu=64</code> · <code>resept_sayi=10</code></td></tr>
+  <tr><td>6</td><td><code>GET /ai/reseptler</code></td><td>admin</td>
+      <td><code>say=10</code> · hər reseptdə <code>açar</code> + <code>izah</code></td></tr>
+  <tr><td>7</td><td>⚠️ <strong>Resept SIRASI</strong></td><td>—</td>
+      <td>«orta maaş» ümumi «maaş»-dan <strong>ƏVVƏL</strong></td></tr>
+  <tr><td>8</td><td><code>POST /ai/sual</code> — uyğun sual</td><td>admin</td>
+      <td><code>uygun_resept=true</code> · <code>setir_sayi ≥ 1</code></td></tr>
+  <tr><td>9</td><td>⚠️ «Orta maaş nə qədərdir?»</td><td>admin</td>
+      <td><strong>Orta əmək haqqı</strong> — səhv reseptə düşmür</td></tr>
+  <tr><td>10</td><td>Naməlum sual</td><td>admin</td>
+      <td><code>200</code> · <code>uygun_resept=false</code> — <strong>500 DEYİL</strong></td></tr>
+  <tr><td>11</td><td>DTO validasiyası: boş · 2 simvol · sahəsiz</td><td>—</td>
+      <td><code>400 · 400 · 400</code></td></tr>
+  <tr><td>12</td><td>⚠️ <strong>SQL inyeksiya cəhdi</strong></td><td>admin</td>
+      <td><code>200</code> · cədvəllər <strong>SALAMAT</strong> qalır</td></tr>
+  <tr><td>13</td><td><code>POST /ai/rag</code> — kosinus axtarışı</td><td>admin</td>
+      <td>3 nəticə · <strong>azalan</strong> · ballar <code>0..1</code></td></tr>
+  <tr><td>14</td><td><code>POST /ai/cavab</code></td><td>admin</td>
+      <td><code>demo=true</code> · <code>token_sayi=0</code></td></tr>
+  <tr><td>15</td><td><code>POST /ai/vektorlasdir</code></td>
+      <td><strong>admin</strong>, <strong>muhendis</strong></td><td><code>200</code></td></tr>
+  <tr><td>16</td><td><code>POST /ai/vektorlasdir</code></td>
       <td><strong>maliyyeci</strong>, <strong>baxici</strong></td><td><code>403</code></td></tr>
-  <tr><td>8</td><td><code>DELETE /struktur/merkezler/:id</code></td>
-      <td>yalnız <strong>admin</strong></td><td><code>200</code> (digərləri <code>403</code>)</td></tr>
-  <tr><td>8</td><td>Bağlı mərkəzi silmək</td><td>admin</td>
-      <td><code>409</code> — <strong>500 DEYİL</strong></td></tr>
-  <tr><td>9</td><td><code>GET /auth/istifadeciler</code></td>
-      <td>yalnız <strong>admin</strong></td><td><code>200</code> (digər 3 rol <code>403</code>)</td></tr>
-  <tr><td>10</td><td>Oxuma (GET) endpoint-ləri</td>
-      <td><strong>4 rolun hamısı</strong></td><td><code>200</code></td></tr>
-  <tr><td>11</td><td>403 cavabının strukturu</td><td>baxici</td>
-      <td><code>xeta.kod = ICAZE_YOXDUR</code> + hansı rolun lazım olduğu</td></tr>
-  <tr><td>12</td><td>admin super-rolu</td><td>admin</td>
-      <td>hər endpointə <code>200</code>/<code>201</code></td></tr>
-  <tr><td>12</td><td>Qeydiyyat hüququ</td><td>baxici</td><td><code>403</code></td></tr>
-  <tr><td>13</td><td>Audit jurnalı</td><td>admin</td>
-      <td>POST <code>+1</code> · 3 × GET <code>+0</code> · uğursuz cəhd də yazılır</td></tr>
-  <tr><td>14</td><td>Seed idempotentliyi</td><td>—</td>
-      <td>2 dəfə işlət → <strong>4</strong> istifadəçi</td></tr>
-  <tr><td>15</td><td>Unit + e2e testlər</td><td>—</td>
-      <td><code>29 unit</code> + <code>39 e2e</code></td></tr>
+  <tr><td>17</td><td>Excel ixracı — <code>PK</code> baytları</td>
+      <td><strong>4 rolun hamısı</strong></td>
+      <td><code>200</code> · <code>504b</code> · sətir = baza + 1</td></tr>
+  <tr><td>18</td><td>Docker və GitHub Actions</td><td>—</td>
+      <td>2 × <code>FROM node</code> · <code>npm ci</code> · <code>vitest.config.e2e.ts</code></td></tr>
+  <tr><td>19</td><td>Marshrutlar</td><td>—</td>
+      <td><strong>20 yol</strong> · <strong>23 metod+yol</strong></td></tr>
+  <tr><td>20</td><td>Testlər</td><td>—</td>
+      <td><strong>42 unit + 39 e2e = 81</strong></td></tr>
 </table>"""
 
-_A14 = """Bu dərsdə <strong>12 addımda</strong> çox şey əlavə etdik: JWT autentifikasiya,
-dörd rollu RBAC, audit jurnalı, timing attack qoruması, seed skripti. İndi isə
-hamısını <strong>bir dəfəlik yoxlayan</strong> qəbul testi yazırıq. Bu skript
-serveri ayağa qaldırdıqdan sonra <strong>72 yoxlama</strong> aparır və hər biri
-üçün <em>hansı rolu</em> yoxladığını və <em>cavabın necə olmalı olduğunu</em>
-göstərir. Sonda tək bir sətir çap edir: «bütün yeniliklər işləyir» və ya
-«N yoxlama uğursuz»."""
+_A11 = """Bu dərsdə <strong>10 addımda</strong> backend-in üstünə tamamilə yeni bir
+qat qurduq: AI. İndi isə hamısını <strong>bir dəfəlik yoxlayan</strong> qəbul
+testi yazırıq. Bu, Backend-3-dəki qəbul testindən <em>tamamilə fərqlidir</em> —
+o test autentifikasiyanı yoxlayırdı, bu test isə <strong>süni intellekt qatını,
+RAG axtarışını, resept ağ siyahısını, Excel ixracını və Docker quruluşunu</strong>
+yoxlayır. Skript serveri ayağa qaldırdıqdan sonra <strong>122 yoxlama</strong>
+aparır və hər biri üçün <em>hansı rolu</em> yoxladığını və <em>cavabın necə
+olmalı olduğunu</em> göstərir."""
 
 _C_YOXLA = """cd ~/Deepseek_ARTI/DS_Backend
 unset DATABASE_URL PGHOST
 
 # 1) Sintaksis düzgündürmü?
-bash -n scripts/yoxla-backend3.sh && echo "✓ sintaksis OK"
+bash -n scripts/yoxla-backend4.sh && echo "✓ sintaksis OK"
 
 # 2) Server AYRI terminalda işləməlidir
-npm run start:dev
+PORT=4000 npm run start:prod
 
 # 3) Digər terminalda — tam qəbul testi
-bash scripts/yoxla-backend3.sh
+bash scripts/yoxla-backend4.sh
 
 # 4) Çıxış kodu (CI üçün)
 echo "exit: $?"
 #   0 → bütün yeniliklər işləyir
 #   1 → ən azı bir yoxlama uğursuz
 
-# 5) Server başqa portdadırsa
-A=http://localhost:4001/api/v1 bash scripts/yoxla-backend3.sh"""
+# 5) ⚠️ Ən vacib yoxlama tək başına — SQL inyeksiyası
+psql -U arti_user -d arti_baza -tA \
+  -c "SELECT count(*) FROM struktur.merkezler"      # 10
+# serveri işlək saxlayaraq inyeksiya göndərin:
+curl -s -X POST http://localhost:4000/api/v1/ai/sual \
+  -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer $ADMIN" \
+  -d '{"sual":"mərkəz'"'"'; DROP TABLE struktur.merkezler; --"}'
+psql -U arti_user -d arti_baza -tA \
+  -c "SELECT count(*) FROM struktur.merkezler"      # YENƏ 10 — cədvəl yerindədir
 
-_C_OLMAZ = """$ bash scripts/yoxla-backend3.sh      # server işləmirsə:
+# 6) Server başqa portdadırsa
+A=http://localhost:4100/api/v1 bash scripts/yoxla-backend4.sh"""
 
-XƏTA: server cavab vermir — http://localhost:4000/api/v1
-Ayrı terminalda: npm run start:dev
-
-$ bash scripts/yoxla-backend3.sh      # guard-lar qeyd olunmasa:
-
-  ✗ GET  /struktur/merkezler                       200 (gözlənilən: 401)
-  ✗ GET  /kadrlar/emekdaslar                       200 (gözlənilən: 401)
-  ✗ POST /struktur/merkezler                       201 (gözlənilən: 401)
-  ✗ maliyyeci → 403                                201 (gözlənilən: 403)
-  ✗ baxici → 403                                   201 (gözlənilən: 403)
-  ...
-  NƏTİCƏ:  52 keçdi   20 xəta
-  ❌ 20 YOXLAMA UĞURSUZ
-
-   # QRUP: 20 xətanın HAMISI autentifikasiya və rollarla bağlıdır.
-   # DTO, seed və audit yoxlamaları yenə KEÇİR — çünki onlar
-   # guard-lardan asılı deyil."""
-
-_C_IZAH = """Bu testin ən faydalı xüsusiyyəti <strong>xətaları qruplaşdırmasıdır</strong>.
-Əgər 20 yoxlama uğursuz olubsa və hamısı <code>401</code>/<code>403</code> ilə
-bağlıdırsa, problem tək bir yerdədir — guard qeydiyyatında və ya
-<code>AuthModule</code>-da. Əksinə, xətalar <em>müxtəlif bölmələrə səpələnibsə</em>,
-problem daha dərindədir. Bu, nasazlığı 10 dəqiqə yerinə 10 saniyəyə tapmağa
-imkan verir. Skript həm də <strong>CI üçün yararlıdır</strong>: çıxış kodu
-<code>0</code>/<code>1</code> olduğu üçün GitHub Actions-da birbaşa işlədilə bilər."""
-
-_D14 = """╔══════════════════════════════════════════════════════════════╗
-║   BACKEND-3 — TAM QƏBUL TESTİ                              ║
-╚══════════════════════════════════════════════════════════════╝
+_C_OLMAZ = """$ A=http://localhost:4101/api/v1 bash scripts/yoxla-backend4.sh
+     # ⚠️ SIRA TƏRS ÇEVRİLMİŞ: ümumi 'maaş' resepti xüsusi 'orta maaş'-dan ƏVVƏL
 
 ════════════════════════════════════════════════════════════
-  0 · DÖRD ROL ÜÇÜN TOKEN
+  3 · GET /ai/reseptler — 10 resept və SIRA qaydası
 ════════════════════════════════════════════════════════════
-  admin      → 195 simvol
-  muhendis   → 203 simvol
-  maliyyeci  → 205 simvol
-  baxici     → 197 simvol
+  ✗ xüsusi resept ümumidən ƏVVƏLdir               yox (gözlənilən: var)
 
 ════════════════════════════════════════════════════════════
-  1 · AUTH PAKETLƏRİ VƏ JWT AÇARI
+  4 · POST /ai/sual — təbii dil → cədvəl (LLM SQL YAZMIR)
 ════════════════════════════════════════════════════════════
-  ✓ paket: @nestjs/jwt                             var
-  ✓ paket: @nestjs/passport                        var
-  ✓ paket: passport                                var
-  ✓ paket: passport-jwt                            var
-  ✓ paket: bcryptjs                                var
-  ✓ JWT_SECRET .env-də                            1
-  ✓ JWT_MUDDET .env-də                            1
+  ✗ «Orta maaş…» → xüsusi resept      Ən çox maaş alan 5 nəfər (gözlənilən: Orta əmək haqqı)
+  ✗ «Orta maaş…» SƏHV reseptə düşmür                var (gözlənilən: yox)
 
 ════════════════════════════════════════════════════════════
-  2 · DTO VALİDASİYASI (rol tələb olunmur — @Public)
+  12 · ADDIM 10 — unit və e2e testlər
 ════════════════════════════════════════════════════════════
-  ✓ login: düzgün email + şifrə                200
-  ✓ login: email formatı səhv                    400
-  ✓ login: şifrə 6-dan qısa                     400
-  ✓ login: boş cisim                              400
+  ✗ unit testlər keçir = 42                          0 (gözlənilən: 42)
+  ✗ cəmi test = 81                                    39 (gözlənilən: 81)
 
 ════════════════════════════════════════════════════════════
-  3 · @Public() — TOKENSİZ AÇIQ ENDPOINT-LƏR
+  ✗ 5 YOXLAMA UĞURSUZ — 117 keçdi
 ════════════════════════════════════════════════════════════
-  ✓ GET  /saglamliq                                200
-  ✓ GET  /                                         200
-  ✓ POST /auth/login                               200
+
+     # ⚠️ DİQQƏT: XƏTA VERMİR — sadəcə SƏHV CAVAB verir.
+     # «Orta maaş nə qədərdir?» sualına «Ən çox maaş alan 5 nəfər»
+     # cavabı gəlir. HTTP 200 qayıdır, jurnal təmizdir, heç nə
+     # qırılmır — istifadəçi sadəcə YANLIŞ rəqəm görür.
+     # Bu, ən təhlükəli xəta növüdür: səssiz səhv cavab."""
+
+_C_IZAH = """Bu, bütün kursun <strong>ən vacib dərsi</strong>dir. Yuxarıdaki çıxışda
+skript <em>xəta vermir</em> — <code>npm run build</code> təmiz keçir, server
+işləyir, jurnal təmizdir. Sadəcə <strong>səhv cavab</strong> qayıdır. Bu cür
+səssiz səhvlər ən təhlükəlidir, çünki heç bir siqnal yoxdur: istifadəçi
+«Orta maaş nə qədərdir?» soruşur, sistem «Ən çox maaş alan 5 nəfər» cavabını
+verir və bunu <em>düzgün cavab</em> kimi təqdim edir. Qərar verən şəxs yanlış
+rəqəmə baxaraq qərar verir. Qəbul testi məhz bu səhvi tutur: <code>117 keçdi,
+5 xəta</code> — və xətaların hamısı <strong>eyni səbəbdən</strong>dir. Skript
+həm də <strong>CI üçün yararlıdır</strong>: çıxış kodu <code>0</code>/<code>1</code>
+olduğu üçün GitHub Actions-da birbaşa işlədilə bilər."""
+
+_D11 = """
+════════════════════════════════════════════════════════════
+  0 · GİRİŞ — dörd rol üçün token
+════════════════════════════════════════════════════════════
+  ✓ admin token alındı                               var
+  ✓ muhendis token alındı                            var
+  ✓ maliyyeci token alındı                           var
+  ✓ baxici token alındı                              var
 
 ════════════════════════════════════════════════════════════
-  4 · JwtAuthGuard — TOKENSİZ 401
+  1 · ADDIM 1, 2, 7, 8 — fayllar və paketlər
 ════════════════════════════════════════════════════════════
-  ✓ GET  /struktur/merkezler                       401
-  ✓ GET  /kadrlar/emekdaslar                       401
-  ✓ GET  /auth/profil                              401
-  ✓ GET  /auth/istifadeciler                       401
-  ✓ POST /struktur/merkezler                       401
-  ✓ səhv token                                    401
-  ✓ prefikssiz yol                                 404
+  ✓ exceljs package.json-da                            4.4.0
+  ✓ src/ai/embedding.service.ts                        var
+  ✓ src/ai/rag.service.ts                              var
+  ✓ src/ai/sql-komlekci.service.ts                     var
+  ✓ src/ai/deepseek.service.ts                         var
+  ✓ src/ai/ai.service.ts                               var
+  ✓ src/ai/dto/sual.dto.ts                             var
+  ✓ src/ixrac/excel.service.ts                         var
+  ✓ Dockerfile                                         var
+  ✓ .dockerignore                                      var
+  ✓ docker-compose.yml                                 var
+  ✓ .github/workflows/ci.yml                           var
+  ✓ .env → DEEPSEEK_API_KEY boşdur (demo)           
+  ✓ .env → DEEPSEEK_MODEL                            deepseek-chat
+  ✓ .env → DEEPSEEK_URL                              https://api.deepseek.com
+  ✓ sql-komlekci fetch çağırmır                    0
+  ✓ sql-komlekci DeepseekService-i import etmir        0
 
 ════════════════════════════════════════════════════════════
-  5 · LOGIN VƏ TOKEN STRUKTURU
+  2 · GET /ai/statistika — AI qatının vəziyyəti (rol: HAMISI)
 ════════════════════════════════════════════════════════════
-  ✓ cavabda token var                              1
-  ✓ cavabda istifadeci var                         1
-  ✓ cavabda bitme var                              1
-  ✓ ⚠️ parol_hash SIZMIR                       0
-  ✓ ⚠️ bcrypt hash SIZMIR                      0
-  ✓ token 3 hissəli                               3
-  ✓ token payload: rol=admin                       admin
-  ✓ token müddəti 8 saat                         8
-  ✓ GET /auth/profil (tokenlə)                    200
+  ✓ admin     → 200                                  200
+  ✓ muhendis  → 200                                  200
+  ✓ maliyyeci → 200                                  200
+  ✓ baxici    → 200                                  200
+  ✓ tokensiz  → 401                                  401
+  ✓ rejim = demo (açar boş)                          demo
+  ✓ olcu = 64                                          64
+  ✓ resept_sayi = 10                                   10
+  ✓ vektor bazası JSONB-dir                           var
 
 ════════════════════════════════════════════════════════════
-  6 · TIMING ATTACK QORUMASI (rol tələb olunmur)
+  3 · GET /ai/reseptler — 10 resept və SIRA qaydası
 ════════════════════════════════════════════════════════════
-  ✓ mövcud olmayan e-poçt → mesaj              E-poçt və ya şifrə yanlışdır
-  ✓ səhv şifrə → EYNİ mesaj                  E-poçt və ya şifrə yanlışdır
-  ✓ vaxt fərqi < 20 ms                            1
-  mövcud deyil: 0.050903s · mövcud: 0.051185s
+  ✓ resept sayı = 10                                  10
+  ✓ hər reseptdə 'açar' sahəsi                     10
+  ✓ hər reseptdə 'izah' sahəsi                      10
+  ✓ tokensiz → 401                                   401
+  ✓ «orta maaş» resepti mövcuddur                  var
+  ✓ «ümumi maaş» resepti mövcuddur                var
+  ✓ xüsusi resept ümumidən ƏVVƏLdir               var
 
 ════════════════════════════════════════════════════════════
-  7 · RBAC — POST /struktur/merkezler (admin, muhendis → 201)
+  4 · POST /ai/sual — təbii dil → cədvəl (LLM SQL YAZMIR)
 ════════════════════════════════════════════════════════════
-  ✓ admin → 201                                  201
-  ✓ muhendis → 201                               201
-  ✓ maliyyeci → 403                              403
-  ✓ baxici → 403                                 403
+  ✓ «Neçə əməkdaş var?» → 200                 200
+  ✓ uygun_resept = true                                true
+  ✓ izah = «Ümumi əməkdaş sayı»                 Ümumi əməkdaş sayı
+  ✓ setir_sayi ≥ 1                                   var
+  ✓ «Orta maaş…» → xüsusi resept               Orta əmək haqqı
+  ✓ «Orta maaş…» SƏHV reseptə düşmür         yox
+  ✓ «Ən çox maaş…» → ümumi resept            Ən çox maaş alan 5 nəfər
+  ✓ naməlum sual → uygun_resept = false             false
+  ✓ naməlum sual → setir_sayi = 0                   0
+  ✓ naməlum sual → 500 DEYİL                       200
+  ✓ naməlum sual → mövcud reseptləri sadalayır   var
+  ✓ boş sual → 400                                  400
+  ✓ 2 simvolluq sual → 400                           400
+  ✓ sual sahəsi yoxdur → 400                        400
+  ✓ tokensiz → 401                                   401
 
 ════════════════════════════════════════════════════════════
-  8 · RBAC — DELETE /struktur/merkezler/:id (yalnız admin)
+  5 · SQL inyeksiya cəhdi — SQL KODDADIR, bazaya çatmır
 ════════════════════════════════════════════════════════════
-  ✓ muhendis → 403                               403
-  ✓ maliyyeci → 403                              403
-  ✓ baxici → 403                                 403
-  ✓ admin → 200                                  200
-  ✓ ⚠️ bağlı mərkəz → 409 (500 DEYİL)   409
+  ✓ inyeksiya mətni reseptə uyğun gəlir            true
+  ✓ …amma 200 qaytarır (xəta yox)                  200
+  ✓ uyğunsuz inyeksiya → uygun_resept = false       false
+  ✓ struktur.merkezler cədvəli SALAMATDIR            10
+  ✓ kadrlar.emekdaslar cədvəli SALAMATDIR            14
+  ✓ struktur.merkezler hələ də mövcuddur           t
+  ✓ kadrlar.emekdaslar hələ də mövcuddur           t
 
 ════════════════════════════════════════════════════════════
-  9 · RBAC — GET /auth/istifadeciler (yalnız admin)
+  6 · POST /ai/rag — kosinus oxşarlığı, azalan sıra
 ════════════════════════════════════════════════════════════
-  ✓ admin → 200                                  200
-  ✓ muhendis → 403                               403
-  ✓ maliyyeci → 403                              403
-  ✓ baxici → 403                                 403
+  ✓ rag → 200                                        200
+  ✓ default limit = 3                                  3
+  ✓ hər nəticədə sened_id var                      3
+  ✓ hər nəticədə oxsarlıq var                     3
+  ✓ oxşarlıqlar AZALAN sıradadır                   
+  ✓ ballar 0..1 aralığındadır                      
+  ✓ normallaşdırma: vahid vektor uzunluğu           var
+  ✓ limit=1 → 1 nəticə                             1
+  ✓ limit=11 → 400 (Max 10)                          400
+  ✓ limit=0 → 400 (Min 1)                            400
+  ✓ tokensiz → 401                                   401
 
 ════════════════════════════════════════════════════════════
-  10 · RBAC — OXUMA (GET) BÜTÜN ROLLAR ÜÇÜN AÇIQ
+  7 · POST /ai/cavab — API açarı OLMADAN işləyir
 ════════════════════════════════════════════════════════════
-  ✓ admin     → GET /struktur/merkezler          200
-  ✓ muhendis  → GET /struktur/merkezler          200
-  ✓ maliyyeci → GET /struktur/merkezler          200
-  ✓ baxici    → GET /struktur/merkezler          200
-  ✓ baxici    → GET /kadrlar/emekdaslar          200
+  ✓ cavab → 200                                      200
+  ✓ demo = true                                        true
+  ✓ model adında «demo» işarəsi                   var
+  ✓ cavab boş deyil                                   var
+  ✓ istifadə_olunan_senedler var                      var
+  ✓ token_sayi = 0 (demo)                              0
 
 ════════════════════════════════════════════════════════════
-  11 · 403 CAVABININ STRUKTURU
+  8 · POST /ai/vektorlasdir — RBAC (yalnız admin, mühendis)
 ════════════════════════════════════════════════════════════
-  ✓ xeta.kod = ICAZE_YOXDUR                        1
-  ✓ mesajda tələb olunan rol                     1
-  ✓ mesajda istifadəçinin rolu                   1
-  ✓ cavabda ugur:false                             1
+  ✓ admin     → 200                                  200
+  ✓ muhendis  → 200                                  200
+  ✓ maliyyeci → 403                                  403
+  ✓ baxici    → 403                                  403
+  ✓ tokensiz  → 401                                  401
+  ✓ 403 → xeta.kod = ICAZE_YOXDUR                    var
+  ✓ vektorlaşdırmadan sonra embedding > 0            var
 
 ════════════════════════════════════════════════════════════
-  12 · ADMIN SUPER-ROL
+  9 · GET /ixrac/*.xlsx — həqiqi Excel faylı
 ════════════════════════════════════════════════════════════
-  ✓ admin → @Roles('admin') endpoint             200
-  ✓ admin → @Roles('admin','muhendis') endpoint  200
-  ✓ admin → qeydiyyat hüququ                    201
-  ✓ baxici → qeydiyyat qadağan                  403
+  ✓ merkezler.xlsx → 200                             200
+  ✓ emekdaslar.xlsx → 200                            200
+  ✓ Content-Type düzgündür                          application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+  ✓ Content-Disposition = attachment                   var
+  ✓ fayl adı .xlsx ilə bitir                         var
+  ✓ merkezler PK baytları ilə başlayır             504b
+  ✓ emekdaslar PK baytları ilə başlayır            504b
+  ✓ merkezler ölçüsü > 5000 bayt                   var
+  ✓ emekdaslar ölçüsü > 5000 bayt                  var
+  ✓ file: merkezler = Excel 2007+                      var
+  ✓ file: emekdaslar = Excel 2007+                     var
+  ✓ merkezler: Excel sətri = baza + başlıq          11
+  ✓ emekdaslar: Excel sətri = baza + başlıq         15
+  ✓ Excel boş deyil (başlıqdan çox sətir)         var
+  ✓ baxici    → merkezler.xlsx 200                   200
+  ✓ maliyyeci → emekdaslar.xlsx 200                  200
+  ✓ tokensiz  → 401                                  401
 
 ════════════════════════════════════════════════════════════
-  13 · AuditInterceptor — JURNAL
+  10 · ADDIM 8 — Docker, docker-compose, GitHub Actions
 ════════════════════════════════════════════════════════════
-  ✓ POST → jurnal +1                             1
-  ✓ ⚠️ 3 × GET → jurnal +0                  2332
-  ✓ cədvəl adı struktur.merkezler               1
-  ✓ əməliyyat POST                               1
-  ✓ istifadəçi email-i yazılıb                 1
-  ✓ ⚠️ uğursuz əməliyyat da yazılır       1
+  ✓ Dockerfile → FROM node                           var
+  ✓ Dockerfile çoxmərhələlidir (2+ FROM)           var
+  ✓ Dockerfile → prisma generate                     var
+  ✓ Dockerfile yalnız istehsalat asılılıqları     var
+  ✓ .dockerignore → node_modules                     var
+  ✓ compose → postgres xidməti                      var
+  ✓ compose → depends_on                             var
+  ✓ CI → npm ci                                      var
+  ✓ CI → npm run build                               var
+  ✓ CI → vitest.config.e2e.ts                        var
+  ✓ CI → postgres health check                       var
 
 ════════════════════════════════════════════════════════════
-  14 · SEED SKRİPTİ
+  11 · Bütün marshrutlar — Backend-4 sonrası
 ════════════════════════════════════════════════════════════
-  ✓ seed:auth əmri var                            1
-  ✓ seed-auth.ts var                               var
-  ✓ ⚠️ İDEMPOTENT: 2-ci işə salma           4
-  ✓ hər roldan 1 nəfər                          4
-  ✓ şifrələr hash-lənib                        0
+  ✓ Swagger cavab verir                                var
+  ✓ fərqli yol sayı = 20                             20
+  ✓ AI marshrutları = 6                               6
+  ✓ ixrac marshrutları = 2                            2
+  ✓ auth marshrutları = 4                             4
+  ✓ kadrlar marshrutları = 3                          3
+  ✓ struktur marshrutları = 3                         3
+  ✓ metod+yol cütü = 23                              23
 
 ════════════════════════════════════════════════════════════
-  15 · TESTLƏR (unit + e2e)
+  12 · ADDIM 10 — unit və e2e testlər
 ════════════════════════════════════════════════════════════
-  ✓ unit testlər keçir                           1
-  → 29 unit test
-  ✓ e2e testlər keçir                            1
-  → 39 e2e test
+  ✓ unit testlər keçir = 42                          42
+  ✓ e2e testlər keçir = 39                           39
+  ✓ cəmi test = 81                                    81
 
 ════════════════════════════════════════════════════════════
-  NƏTİCƏ:  72 keçdi
-  ✅ BACKEND-3-ÜN BÜTÜN YENİLİKLƏRİ İŞLƏYİR
+  ✓ BÜTÜN YENİLİKLƏR İŞLƏYİR — 122 yoxlama keçdi
 ════════════════════════════════════════════════════════════"""
 
-_D_IZAH = """<strong>Backend-3-ün bütün yenilikləri işləyir — 72 yoxlama, 0 xəta.</strong>
+_D_IZAH = """<strong>Backend-4-ün bütün yenilikləri işləyir — 122 yoxlama, 0 xəta.</strong>
 Çıxışı yuxarıdan aşağı oxusanız, dərsin hər addımının canlı sübutunu görürsünüz:
 <ul>
-  <li><strong>Bölmə 1–2:</strong> paketlər, açar və DTO validasiyası —
-      autentifikasiyanın <em>giriş qapısı</em>.</li>
-  <li><strong>Bölmə 3–4:</strong> <code>@Public()</code> açıqdır, qalan hər şey
-      <code>401</code> verir — yəni API <strong>bağlıdır</strong>.</li>
-  <li><strong>Bölmə 5–6:</strong> token 3 hissəli, 8 saatlıq və
-      <code>parol_hash</code> sızmır; timing fərqi
-      <strong>0.000053 saniyədir</strong> (50.898 ms vs 50.845 ms) — bu, saxta
-      hash-ın işlədiyini sübut edir.</li>
-  <li><strong>Bölmə 7–12:</strong> RBAC matrisi tam gözlənilən kimidir —
-      <code>admin</code> hər şeyi edir, <code>muhendis</code> yaradır amma silmir,
-      <code>maliyyeci</code> və <code>baxici</code> yalnız oxuyur.</li>
-  <li><strong>Bölmə 13:</strong> audit jurnalı yalnız yazma əməliyyatlarını yazır;
-      üç GET sorğusu jurnala <strong>heç nə</strong> əlavə etməyib.</li>
-  <li><strong>Bölmə 14–15:</strong> seed idempotentdir və
-      <strong>29 unit + 39 e2e = 68 test</strong> keçir.</li>
+  <li><strong>Bölmə 1:</strong> 13 yeni fayl yerindədir, <code>exceljs</code>
+      quraşdırılıb və <code>DEEPSEEK_API_KEY</code> <strong>boşdur</strong> —
+      yəni aşağıdaki bütün AI nəticələri API açarı olmadan alınıb.</li>
+  <li><strong>Bölmə 3:</strong> 10 reseptin <em>sırası</em> yoxlanılır: xüsusi
+      «orta maaş» ümumi «maaş»-dan əvvəldir. Bu, ADDIM 4-də tapılan real
+      səhvin bir daha təkrarlanmamasını təmin edir.</li>
+  <li><strong>Bölmə 5:</strong> <code>'; DROP TABLE struktur.merkezler; --</code>
+      mətni göndərilir, server <code>200</code> qaytarır və cədvəl
+      <strong>10 sətirlə yerində qalır</strong>. Səbəb sadədir: SQL koddadır,
+      istifadəçi mətnindən SQL-ə <em>heç nə</em> düşmür.</li>
+  <li><strong>Bölmə 6:</strong> RAG nəticələri azalan sıradadır və ballar
+      <code>0..1</code> aralığındadır — normallaşdırma işləyir.</li>
+  <li><strong>Bölmə 8:</strong> vektorlaşdırma rol ilə qorunur:
+      <code>admin</code>/<code>muhendis</code> <code>200</code>,
+      <code>maliyyeci</code>/<code>baxici</code> <code>403</code>.</li>
+  <li><strong>Bölmə 9:</strong> Excel faylları <code>PK</code> baytları ilə
+      başlayır (həqiqi ZIP konteyneri) və sətir sayı <strong>bazadakı ilə
+      üst-üstə düşür</strong> — 10 mərkəz + başlıq = 11 sətir.</li>
+  <li><strong>Bölmə 11–12:</strong> 20 fərqli yol, 23 metod+yol cütü və
+      <strong>42 unit + 39 e2e = 81 test</strong> keçir.</li>
 </ul>
-<p>Bu andan etibarən <strong>Backend-3 tamamlandı</strong> sayılır. Növbəti dərs
-(Backend-4) AI qatından başlayır: DeepSeek API inteqrasiyası, RAG vektor
-axtarışı, təbii dil → SQL kəməkçisi, Excel/PDF ixracı və Docker ilə
-yerləşdirmə.</p>"""
+<p>Bu andan etibarən <strong>backend tamamlandı</strong> sayılır. Növbəti
+mərhələ frontend-dir: eyni API-ni brauzerdə göstərən interfeys.</p>"""
 
-_B14 = chr(10).join([
+_B11 = chr(10).join([
     '  <p><strong>Əvvəlcə — hər yoxlamanın nəyi, hansı rolu və nə gözlədiyi:</strong></p>',
     '  ' + _CEDVEL,
-    '  <p>Aşağıdaki skript məhz bu 72 yoxlamanı sıra ilə aparır. '
+    '  <p>Aşağıdaki skript məhz bu yoxlamaları sıra ilə aparır. '
     'Onu <code>scripts/</code> qovluğuna yazın.</p>',
-    '  <p class="fayl-ad">scripts/yoxla-backend3.sh</p>',
-    '<pre><code>' + e(fayl("scripts/yoxla-backend3.sh")) + '</code></pre>',
+    '  <p class="fayl-ad">scripts/yoxla-backend4.sh</p>',
+    '<pre><code>' + e(fayl("scripts/yoxla-backend4.sh")) + '</code></pre>',
 ]) + chr(10)
 
 addim(
-    n=14,
+    n=11,
     ad="Tam qəbul testi — bütün yenilikləri bir-bir yoxla",
-    a=_A14,
+    a=_A11,
     b=[],
-    b_html=_B14,
+    b_html=_B11,
     c_yoxla=_C_YOXLA,
     c_olmaz=_C_OLMAZ,
     c_izah=_C_IZAH,
-    d=_D14,
+    d=_D11,
     d_izah=_D_IZAH,
 )
 
@@ -1379,7 +1440,7 @@ def main() -> None:
     <span>NestJS 12</span>
     <span>Prisma 7</span>
     <span>{n} addım</span>
-    <span>22 marshrut</span>
+    <span>23 marshrut</span>
     <span>81 test</span>
   </p>
 </header>

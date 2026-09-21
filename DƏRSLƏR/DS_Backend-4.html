@@ -373,7 +373,7 @@
     <span>NestJS 12</span>
     <span>Prisma 7</span>
     <span>11 addım</span>
-    <span>22 marshrut</span>
+    <span>23 marshrut</span>
     <span>81 test</span>
   </p>
 </header>
@@ -434,7 +434,7 @@
     <li><a href="#a8">8. Docker və CI/CD</a></li>
     <li><a href="#a9">9. Build və tam canlı yoxlama</a></li>
     <li><a href="#a10">10. Testlər — AI və ixrac</a></li>
-    <li><a href="#a14">14. Tam qəbul testi — bütün yenilikləri bir-bir yoxla</a></li>
+    <li><a href="#a11">11. Tam qəbul testi — bütün yenilikləri bir-bir yoxla</a></li>
   </ol>
 </div>
 
@@ -449,7 +449,7 @@
   <a href="#a8"><b>ADDIM 8</b>Docker və CI/CD</a>
   <a href="#a9"><b>ADDIM 9</b>Build və tam canlı yoxlama</a>
   <a href="#a10"><b>ADDIM 10</b>Testlər — AI və ixrac</a>
-  <a href="#a14"><b>ADDIM 14</b>Tam qəbul testi — bütün yenilikləri bir-bir yoxla</a>
+  <a href="#a11"><b>ADDIM 11</b>Tam qəbul testi — bütün yenilikləri bir-bir yoxla</a>
 </div>
 
 <div class="addim">
@@ -2270,7 +2270,7 @@ done</code></pre>
       <p>Aşağıdaki əmrləri işlədin və nəticəni yoxlayın:</p>
 <pre><code>cd ~/Deepseek_ARTI/DS_Backend
 
-# 1) Neçə marshrut var? (21 olmalıdır — 15 əvvəlki + 5 AI + 2 ixrac)
+# 1) Neçə marshrut var? (23 olmalıdır — 15 əvvəlki + 6 AI + 2 ixrac)
 curl -s http://localhost:4000/docs-json | python3 -c "
 import json, sys
 d = json.load(sys.stdin)
@@ -2337,7 +2337,7 @@ done
   GET    /api/v1/ixrac/emekdaslar.xlsx               IXRAC
   GET    /api/v1/ixrac/merkezler.xlsx                IXRAC
   ... (struktur, kadrlar, sağlamlıq)
-  CƏMİ: 22 marshrut
+  CƏMİ: 23 marshrut
 
 ════════ EXCEL FAYLLARI ════════
   merkezler    → 7121 bayt · Microsoft Excel 2007+
@@ -2349,8 +2349,8 @@ done
       <div class="oldu">
         <span class="oldu-basliq">✔ Nəticə</span>
         <p><strong>Backend-4 tam işlək vəziyyətdədir.</strong> Əlavə olunan
-    <strong>7 marshrut</strong> (5 AI + 2 ixrac) digər 15 ilə birlikdə işləyir —
-    cəmi <strong>22 marshrut</strong>. Excel faylları həqiqi Excel formatındadır
+    <strong>8 marshrut</strong> (6 AI + 2 ixrac) digər 15 ilə birlikdə işləyir —
+    cəmi <strong>23 marshrut</strong>. Excel faylları həqiqi Excel formatındadır
     və brauzer onları yükləyir. Vektorlaşdırma isə rol ilə qorunur:
     <code>admin</code> <code>200</code>, <code>baxici</code>
     <code>403</code>. Bu andan etibarən institutun məlumatları həm
@@ -2559,7 +2559,7 @@ YEKUN: 42 unit + 39 e2e = 81 test</code></pre>
         <p><strong>Backend-4 tamamlandı.</strong> Bütün backend kursunun yekunu:
     <ul>
       <li><strong>42 unit + 39 e2e = 81 test</strong> — Dərs 1-də 7 test idi.</li>
-      <li><strong>22 marshrut</strong> — sağlamlıq, struktur, kadrlar, auth,
+      <li><strong>23 marshrut</strong> — sağlamlıq, struktur, kadrlar, auth,
           AI və ixrac.</li>
       <li><strong>AI qatı</strong> — RAG axtarışı, 10 reseptli təbii dil
           sorğusu, demo rejim.</li>
@@ -2581,20 +2581,21 @@ YEKUN: 42 unit + 39 e2e = 81 test</code></pre>
 </div>
 
 <div class="addim">
-  <h2 class="addim-basliq" id="a14">
-    <span class="addim-no">14</span> Tam qəbul testi — bütün yenilikləri bir-bir yoxla
+  <h2 class="addim-basliq" id="a11">
+    <span class="addim-no">11</span> Tam qəbul testi — bütün yenilikləri bir-bir yoxla
   </h2>
   <div class="addim-govde">
 
     <div class="hisse hisse-a">
       <span class="hisse-basliq">A · Bu addım nəyə görədir</span>
-      <p>Bu dərsdə <strong>12 addımda</strong> çox şey əlavə etdik: JWT autentifikasiya,
-dörd rollu RBAC, audit jurnalı, timing attack qoruması, seed skripti. İndi isə
-hamısını <strong>bir dəfəlik yoxlayan</strong> qəbul testi yazırıq. Bu skript
-serveri ayağa qaldırdıqdan sonra <strong>72 yoxlama</strong> aparır və hər biri
-üçün <em>hansı rolu</em> yoxladığını və <em>cavabın necə olmalı olduğunu</em>
-göstərir. Sonda tək bir sətir çap edir: «bütün yeniliklər işləyir» və ya
-«N yoxlama uğursuz».</p>
+      <p>Bu dərsdə <strong>10 addımda</strong> backend-in üstünə tamamilə yeni bir
+qat qurduq: AI. İndi isə hamısını <strong>bir dəfəlik yoxlayan</strong> qəbul
+testi yazırıq. Bu, Backend-3-dəki qəbul testindən <em>tamamilə fərqlidir</em> —
+o test autentifikasiyanı yoxlayırdı, bu test isə <strong>süni intellekt qatını,
+RAG axtarışını, resept ağ siyahısını, Excel ixracını və Docker quruluşunu</strong>
+yoxlayır. Skript serveri ayağa qaldırdıqdan sonra <strong>122 yoxlama</strong>
+aparır və hər biri üçün <em>hansı rolu</em> yoxladığını və <em>cavabın necə
+olmalı olduğunu</em> göstərir.</p>
     </div>
 
     <div class="hisse hisse-b">
@@ -2602,78 +2603,85 @@ göstərir. Sonda tək bir sətir çap edir: «bütün yeniliklər işləyir» v
   <p><strong>Əvvəlcə — hər yoxlamanın nəyi, hansı rolu və nə gözlədiyi:</strong></p>
   <table>
   <tr><th>#</th><th>Nə yoxlanılır</th><th>Rol</th><th>Gözlənilən cavab</th></tr>
-  <tr><td>1</td><td>Auth paketləri (5) + <code>JWT_SECRET</code></td><td>—</td>
-      <td>5 paket <code>var</code> · <code>.env</code>-də 1 sətir</td></tr>
-  <tr><td>2</td><td>DTO validasiyası: düzgün / pis email / qısa şifrə / boş cisim</td>
-      <td>—</td><td><code>200 · 400 · 400 · 400</code></td></tr>
-  <tr><td>3</td><td><code>@Public()</code> — açıq endpoint-lər</td><td>—</td>
-      <td><code>200</code> (tokensiz)</td></tr>
-  <tr><td>4</td><td><code>JwtAuthGuard</code> — qorunan endpoint-lər</td><td>—</td>
-      <td><code>401</code> (tokensiz və səhv tokenlə)</td></tr>
-  <tr><td>5</td><td>Login və token strukturu</td><td>admin</td>
-      <td><code>200</code> · token 3 hissə · müddət 8 saat · <code>parol_hash</code> yoxdur</td></tr>
-  <tr><td>6</td><td>Timing attack qoruması</td><td>—</td>
-      <td>eyni mesaj · vaxt fərqi &lt; 20 ms</td></tr>
-  <tr><td>7</td><td><code>POST /struktur/merkezler</code></td>
-      <td><strong>admin</strong>, <strong>muhendis</strong></td><td><code>201</code></td></tr>
-  <tr><td>7</td><td><code>POST /struktur/merkezler</code></td>
+  <tr><td>1</td><td>Fayllar və paketlər — 13 AI/ixrac faylı, Docker, CI</td><td>—</td>
+      <td>hamısı <code>var</code> · <code>exceljs 4.4.0</code></td></tr>
+  <tr><td>2</td><td><code>.env</code> → <code>DEEPSEEK_API_KEY</code> boşdur</td><td>—</td>
+      <td>boş sətir → <strong>demo rejim</strong> işə düşür</td></tr>
+  <tr><td>3</td><td>⚠️ SQL xidməti LLM-ə qoşulmur</td><td>—</td>
+      <td><code>fetch = 0</code> · <code>deepseek = 0</code></td></tr>
+  <tr><td>4</td><td><code>GET /ai/statistika</code></td>
+      <td><strong>4 rolun hamısı</strong></td><td><code>200</code> · tokensiz <code>401</code></td></tr>
+  <tr><td>5</td><td>Statistikanın məzmunu</td><td>admin</td>
+      <td><code>rejim=demo</code> · <code>olcu=64</code> · <code>resept_sayi=10</code></td></tr>
+  <tr><td>6</td><td><code>GET /ai/reseptler</code></td><td>admin</td>
+      <td><code>say=10</code> · hər reseptdə <code>açar</code> + <code>izah</code></td></tr>
+  <tr><td>7</td><td>⚠️ <strong>Resept SIRASI</strong></td><td>—</td>
+      <td>«orta maaş» ümumi «maaş»-dan <strong>ƏVVƏL</strong></td></tr>
+  <tr><td>8</td><td><code>POST /ai/sual</code> — uyğun sual</td><td>admin</td>
+      <td><code>uygun_resept=true</code> · <code>setir_sayi ≥ 1</code></td></tr>
+  <tr><td>9</td><td>⚠️ «Orta maaş nə qədərdir?»</td><td>admin</td>
+      <td><strong>Orta əmək haqqı</strong> — səhv reseptə düşmür</td></tr>
+  <tr><td>10</td><td>Naməlum sual</td><td>admin</td>
+      <td><code>200</code> · <code>uygun_resept=false</code> — <strong>500 DEYİL</strong></td></tr>
+  <tr><td>11</td><td>DTO validasiyası: boş · 2 simvol · sahəsiz</td><td>—</td>
+      <td><code>400 · 400 · 400</code></td></tr>
+  <tr><td>12</td><td>⚠️ <strong>SQL inyeksiya cəhdi</strong></td><td>admin</td>
+      <td><code>200</code> · cədvəllər <strong>SALAMAT</strong> qalır</td></tr>
+  <tr><td>13</td><td><code>POST /ai/rag</code> — kosinus axtarışı</td><td>admin</td>
+      <td>3 nəticə · <strong>azalan</strong> · ballar <code>0..1</code></td></tr>
+  <tr><td>14</td><td><code>POST /ai/cavab</code></td><td>admin</td>
+      <td><code>demo=true</code> · <code>token_sayi=0</code></td></tr>
+  <tr><td>15</td><td><code>POST /ai/vektorlasdir</code></td>
+      <td><strong>admin</strong>, <strong>muhendis</strong></td><td><code>200</code></td></tr>
+  <tr><td>16</td><td><code>POST /ai/vektorlasdir</code></td>
       <td><strong>maliyyeci</strong>, <strong>baxici</strong></td><td><code>403</code></td></tr>
-  <tr><td>8</td><td><code>DELETE /struktur/merkezler/:id</code></td>
-      <td>yalnız <strong>admin</strong></td><td><code>200</code> (digərləri <code>403</code>)</td></tr>
-  <tr><td>8</td><td>Bağlı mərkəzi silmək</td><td>admin</td>
-      <td><code>409</code> — <strong>500 DEYİL</strong></td></tr>
-  <tr><td>9</td><td><code>GET /auth/istifadeciler</code></td>
-      <td>yalnız <strong>admin</strong></td><td><code>200</code> (digər 3 rol <code>403</code>)</td></tr>
-  <tr><td>10</td><td>Oxuma (GET) endpoint-ləri</td>
-      <td><strong>4 rolun hamısı</strong></td><td><code>200</code></td></tr>
-  <tr><td>11</td><td>403 cavabının strukturu</td><td>baxici</td>
-      <td><code>xeta.kod = ICAZE_YOXDUR</code> + hansı rolun lazım olduğu</td></tr>
-  <tr><td>12</td><td>admin super-rolu</td><td>admin</td>
-      <td>hər endpointə <code>200</code>/<code>201</code></td></tr>
-  <tr><td>12</td><td>Qeydiyyat hüququ</td><td>baxici</td><td><code>403</code></td></tr>
-  <tr><td>13</td><td>Audit jurnalı</td><td>admin</td>
-      <td>POST <code>+1</code> · 3 × GET <code>+0</code> · uğursuz cəhd də yazılır</td></tr>
-  <tr><td>14</td><td>Seed idempotentliyi</td><td>—</td>
-      <td>2 dəfə işlət → <strong>4</strong> istifadəçi</td></tr>
-  <tr><td>15</td><td>Unit + e2e testlər</td><td>—</td>
-      <td><code>29 unit</code> + <code>39 e2e</code></td></tr>
+  <tr><td>17</td><td>Excel ixracı — <code>PK</code> baytları</td>
+      <td><strong>4 rolun hamısı</strong></td>
+      <td><code>200</code> · <code>504b</code> · sətir = baza + 1</td></tr>
+  <tr><td>18</td><td>Docker və GitHub Actions</td><td>—</td>
+      <td>2 × <code>FROM node</code> · <code>npm ci</code> · <code>vitest.config.e2e.ts</code></td></tr>
+  <tr><td>19</td><td>Marshrutlar</td><td>—</td>
+      <td><strong>20 yol</strong> · <strong>23 metod+yol</strong></td></tr>
+  <tr><td>20</td><td>Testlər</td><td>—</td>
+      <td><strong>42 unit + 39 e2e = 81</strong></td></tr>
 </table>
-  <p>Aşağıdaki skript məhz bu 72 yoxlamanı sıra ilə aparır. Onu <code>scripts/</code> qovluğuna yazın.</p>
-  <p class="fayl-ad">scripts/yoxla-backend3.sh</p>
+  <p>Aşağıdaki skript məhz bu yoxlamaları sıra ilə aparır. Onu <code>scripts/</code> qovluğuna yazın.</p>
+  <p class="fayl-ad">scripts/yoxla-backend4.sh</p>
 <pre><code>mkdir -p scripts
-cat &gt; scripts/yoxla-backend3.sh &lt;&lt;'EOF'
+cat &gt; scripts/yoxla-backend4.sh &lt;&lt;'EOF'
 #!/bin/bash
 # ══════════════════════════════════════════════════════════════════════
-#  BACKEND-3 — TAM QƏBUL TESTİ
+#  BACKEND-4 — TAM QƏBUL TESTİ
 #
 #  Bu dərsdə əlavə edilən HƏR yeniliyi bir-bir yoxlayır:
-#    • auth paketləri və JWT açarı
-#    • DTO validasiyası (login / qeydiyyat)
-#    • @Public() — açıq endpoint-lər
-#    • JwtAuthGuard — tokensiz 401
-#    • Login, token strukturu və müddəti
-#    • Timing attack qoruması
-#    • JwtStrategy — tokenin bazadan yoxlanılması
-#    • RolesGuard — RBAC matrisi (4 rol × 5 endpoint)
-#    • 403 cavabının strukturu
-#    • admin super-rolu
-#    • AuditInterceptor — jurnal
-#    • Seed skriptinin idempotentliyi
-#    • Unit + e2e testlər
+#    • exceljs paketi və DEEPSEEK_* dəyişənləri
+#    • EmbeddingService — 64 ölçülü normallaşdırılmış vektor
+#    • RagService — sənədlər arasında kosinus axtarışı
+#    • SqlKomlekciService — 10 reseptli AĞ SİYAHI (LLM SQL YAZMIR)
+#    • Resept SIRASI — xüsusi «orta maaş» ümumi «maaş»-dan əvvəl
+#    • DeepseekService — API açarı olmadan DEMO REJİM
+#    • 6 AI + 2 Excel endpoint, RBAC matrisi ilə (cəmi 23 marshrut)
+#    • SQL inyeksiya cəhdi — baza salamat qalır
+#    • Excel faylının həqiqətən .xlsx olduğu (PK baytları)
+#    • Excel sətirlərinin baza ilə üst-üstə düşməsi
+#    • Dockerfile, docker-compose və GitHub Actions CI
+#    • 42 unit + 39 e2e test
 #
 #  İSTİFADƏ:
-#    # 1) Server ayrı terminalda işləməlidir
-#    npm run start:dev
+#    # 1) Server ayrı terminalda işləməlidir:
+#    PORT=4000 npm run start:prod
 #    # 2) Digər terminalda:
-#    bash scripts/yoxla-backend3.sh
+#    bash scripts/yoxla-backend4.sh
 # ══════════════════════════════════════════════════════════════════════
 
 unset DATABASE_URL PGHOST
 export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
 
 A="${A:-http://localhost:4000/api/v1}"
+KOK="${A%/api/v1}"
 BAZA="${BAZA:-arti_baza}"
 DB_ISTIFADECI="${DB_ISTIFADECI:-arti_user}"
+PAROL="${PAROL:-123456}"
 
 YASIL=$'\033[32m'; QIRMIZI=$'\033[31m'; SARI=$'\033[33m'
 MAVI=$'\033[36m';  BOZ=$'\033[90m';     SIFIR=$'\033[0m'
@@ -2689,10 +2697,10 @@ bashliq() {
 
 yoxla() {   # yoxla "ad" "gözlənilən" "faktiki"
   if [ "$2" = "$3" ]; then
-    printf "  ${YASIL}✓${SIFIR} %-46s ${BOZ}%s${SIFIR}\n" "$1" "$3"
+    printf "  ${YASIL}✓${SIFIR} %-50s ${BOZ}%s${SIFIR}\n" "$1" "$3"
     KECDI=$((KECDI + 1))
   else
-    printf "  ${QIRMIZI}✗${SIFIR} %-46s ${QIRMIZI}%s${SIFIR} ${BOZ}(gözlənilən: %s)${SIFIR}\n" \
+    printf "  ${QIRMIZI}✗${SIFIR} %-50s ${QIRMIZI}%s${SIFIR} ${BOZ}(gözlənilən: %s)${SIFIR}\n" \
       "$1" "$3" "$2"
     XETA=$((XETA + 1))
   fi
@@ -2701,289 +2709,395 @@ yoxla() {   # yoxla "ad" "gözlənilən" "faktiki"
 # kod "metod" "yol" [token]
 kod() {
   if [ -n "${3:-}" ]; then
-    curl -s -o /dev/null -w '%{http_code}' -X "$1" "$A$2" \
+    curl -s -o /dev/null -w '%{http_code}' -X "$1" "$A/$2" \
       -H "Authorization: Bearer $3" 2&gt;/dev/null
   else
-    curl -s -o /dev/null -w '%{http_code}' -X "$1" "$A$2" 2&gt;/dev/null
+    curl -s -o /dev/null -w '%{http_code}' -X "$1" "$A/$2" 2&gt;/dev/null
   fi
 }
 
-# kod_cisim "metod" "yol" "cisim" [token]
+# kod_cisim "yol" "cisim" [token]
 kod_cisim() {
-  if [ -n "${4:-}" ]; then
-    curl -s -o /dev/null -w '%{http_code}' -X "$1" "$A$2" \
+  if [ -n "${3:-}" ]; then
+    curl -s -o /dev/null -w '%{http_code}' -X POST "$A/$1" \
       -H 'Content-Type: application/json' \
-      -H "Authorization: Bearer $4" -d "$3" 2&gt;/dev/null
+      -H "Authorization: Bearer $3" -d "$2" 2&gt;/dev/null
   else
-    curl -s -o /dev/null -w '%{http_code}' -X "$1" "$A$2" \
-      -H 'Content-Type: application/json' -d "$3" 2&gt;/dev/null
+    curl -s -o /dev/null -w '%{http_code}' -X POST "$A/$1" \
+      -H 'Content-Type: application/json' -d "$2" 2&gt;/dev/null
   fi
 }
 
-token_al() {   # token_al "rol" → TOKEN
-  local cisim="{\"email\":\"$1@arti.edu.az\",\"parol\":\"123456\"}"
-  TOKEN=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
-    -d "$cisim" 2&gt;/dev/null \
-    | python3 -c "import json,sys;print(json.load(sys.stdin).get('token',''))" 2&gt;/dev/null)
+# getir "yol" [token] → gövdə
+getir() {
+  if [ -n "${2:-}" ]; then
+    curl -s "$A/$1" -H "Authorization: Bearer $2" 2&gt;/dev/null
+  else
+    curl -s "$A/$1" 2&gt;/dev/null
+  fi
 }
 
-P="psql -U $DB_ISTIFADECI -w -d $BAZA -tAc"
+# gonder "yol" "cisim" [token] → gövdə
+gonder() {
+  if [ -n "${3:-}" ]; then
+    curl -s -X POST "$A/$1" -H 'Content-Type: application/json' \
+      -H "Authorization: Bearer $3" -d "$2" 2&gt;/dev/null
+  else
+    curl -s -X POST "$A/$1" -H 'Content-Type: application/json' -d "$2" 2&gt;/dev/null
+  fi
+}
 
-# ── SERVER HAZIRDIR? ──────────────────────────────────────────────────
-if [ "$(kod GET /saglamliq)" != "200" ]; then
-  printf "${QIRMIZI}XƏTA: server cavab vermir — $A${SIFIR}\n"
-  printf "${BOZ}Ayrı terminalda: npm run start:dev${SIFIR}\n"
+# sahe "cisim" "açar" → sadə skalyar dəyər
+sahe() {
+  printf '%s' "$1" | grep -o "\"$2\":[^,}]*" | head -1 | sed "s/\"$2\"://" \
+    | sed 's/^"//; s/"$//'
+}
+
+# sayi "cisim" "açar" → massivdəki element sayı (sadə üsul)
+sayi() {
+  printf '%s' "$1" | grep -o "\"$2\"" | wc -l | tr -d ' '
+}
+
+psq() { psql -U "$DB_ISTIFADECI" -d "$BAZA" -tA -c "$1" 2&gt;/dev/null; }
+
+# ── 0 · GİRİŞ ─────────────────────────────────────────────────────────
+bashliq "0 · GİRİŞ — dörd rol üçün token"
+
+gir() {   # gir "email"
+  local c
+  c="$(gonder 'auth/login' "{\"email\":\"$1\",\"parol\":\"$PAROL\"}")"
+  printf '%s' "$c" | grep -o '"token":"[^"]*"' | head -1 | sed 's/"token":"//; s/"$//'
+}
+
+ADMIN="$(gir 'admin@arti.edu.az')"
+MUHENDIS="$(gir 'muhendis@arti.edu.az')"
+MALIYYECI="$(gir 'maliyyeci@arti.edu.az')"
+BAXICI="$(gir 'baxici@arti.edu.az')"
+
+yoxla "admin token alındı"     "var" "$([ -n "$ADMIN" ]     &amp;&amp; echo var || echo yox)"
+yoxla "muhendis token alındı"  "var" "$([ -n "$MUHENDIS" ]  &amp;&amp; echo var || echo yox)"
+yoxla "maliyyeci token alındı" "var" "$([ -n "$MALIYYECI" ] &amp;&amp; echo var || echo yox)"
+yoxla "baxici token alındı"    "var" "$([ -n "$BAXICI" ]    &amp;&amp; echo var || echo yox)"
+
+if [ -z "$ADMIN" ]; then
+  printf "\n${QIRMIZI}Server işləmir və ya seed edilməyib — test dayandırıldı.${SIFIR}\n"
+  printf "${SARI}  Əvvəlcə: PORT=4000 npm run start:prod${SIFIR}\n"
   exit 1
 fi
 
-printf "\n${MAVI}╔══════════════════════════════════════════════════════════════╗${SIFIR}\n"
-printf   "${MAVI}║   BACKEND-3 — TAM QƏBUL TESTİ                              ║${SIFIR}\n"
-printf   "${MAVI}╚══════════════════════════════════════════════════════════════╝${SIFIR}\n"
+# ── 1 · FAYLLAR VƏ PAKETLƏR ───────────────────────────────────────────
+bashliq "1 · ADDIM 1, 2, 7, 8 — fayllar və paketlər"
 
-# ── TOKENLƏRİ AL ──────────────────────────────────────────────────────
-bashliq "0 · DÖRD ROL ÜÇÜN TOKEN"
-for rol in admin muhendis maliyyeci baxici; do
-  token_al "$rol"
-  printf "  %-10s → %s simvol\n" "$rol" "${#TOKEN}"
-  echo "$TOKEN" &gt; "/tmp/b3tok_$rol.txt"
-done
-TA=$(cat /tmp/b3tok_admin.txt)
-TM=$(cat /tmp/b3tok_muhendis.txt)
-TL=$(cat /tmp/b3tok_maliyyeci.txt)
-TB=$(cat /tmp/b3tok_baxici.txt)
+yoxla "exceljs package.json-da"      "4.4.0" \
+  "$(python3 -c "import json;print(json.load(open('package.json'))['dependencies'].get('exceljs','').lstrip('^'))" 2&gt;/dev/null)"
 
-# ══════════════════════════════════════════════════════════════════════
-bashliq "1 · AUTH PAKETLƏRİ VƏ JWT AÇARI"
-# ══════════════════════════════════════════════════════════════════════
-for pk in @nestjs/jwt @nestjs/passport passport passport-jwt bcryptjs; do
-  yoxla "paket: $pk" "var" "$([ -d "node_modules/$pk" ] &amp;&amp; echo var || echo YOXDUR)"
-done
-yoxla "JWT_SECRET .env-də" "1" "$(grep -c '^JWT_SECRET=' .env 2&gt;/dev/null || echo 0)"
-yoxla "JWT_MUDDET .env-də" "1" "$(grep -c '^JWT_MUDDET=' .env 2&gt;/dev/null || echo 0)"
+yoxla "src/ai/embedding.service.ts"    "var" "$([ -f src/ai/embedding.service.ts ] &amp;&amp; echo var || echo yox)"
+yoxla "src/ai/rag.service.ts"          "var" "$([ -f src/ai/rag.service.ts ] &amp;&amp; echo var || echo yox)"
+yoxla "src/ai/sql-komlekci.service.ts" "var" "$([ -f src/ai/sql-komlekci.service.ts ] &amp;&amp; echo var || echo yox)"
+yoxla "src/ai/deepseek.service.ts"     "var" "$([ -f src/ai/deepseek.service.ts ] &amp;&amp; echo var || echo yox)"
+yoxla "src/ai/ai.service.ts"           "var" "$([ -f src/ai/ai.service.ts ] &amp;&amp; echo var || echo yox)"
+yoxla "src/ai/dto/sual.dto.ts"         "var" "$([ -f src/ai/dto/sual.dto.ts ] &amp;&amp; echo var || echo yox)"
+yoxla "src/ixrac/excel.service.ts"     "var" "$([ -f src/ixrac/excel.service.ts ] &amp;&amp; echo var || echo yox)"
+yoxla "Dockerfile"                     "var" "$([ -f Dockerfile ] &amp;&amp; echo var || echo yox)"
+yoxla ".dockerignore"                  "var" "$([ -f .dockerignore ] &amp;&amp; echo var || echo yox)"
+yoxla "docker-compose.yml"             "var" "$([ -f docker-compose.yml ] &amp;&amp; echo var || echo yox)"
+yoxla ".github/workflows/ci.yml"       "var" "$([ -f .github/workflows/ci.yml ] &amp;&amp; echo var || echo yox)"
 
-# ══════════════════════════════════════════════════════════════════════
-bashliq "2 · DTO VALİDASİYASI (rol tələb olunmur — @Public)"
-# ══════════════════════════════════════════════════════════════════════
-yoxla "login: düzgün email + şifrə" "200" \
-  "$(kod_cisim POST /auth/login '{"email":"admin@arti.edu.az","parol":"123456"}')"
-yoxla "login: email formatı səhv" "400" \
-  "$(kod_cisim POST /auth/login '{"email":"pis","parol":"123456"}')"
-yoxla "login: şifrə 6-dan qısa" "400" \
-  "$(kod_cisim POST /auth/login '{"email":"admin@arti.edu.az","parol":"123"}')"
-yoxla "login: boş cisim" "400" "$(kod_cisim POST /auth/login '{}')"
+yoxla ".env → DEEPSEEK_API_KEY boşdur (demo)" "" \
+  "$(grep '^DEEPSEEK_API_KEY=' .env | sed 's/^DEEPSEEK_API_KEY=//; s/"//g')"
+yoxla ".env → DEEPSEEK_MODEL"  "deepseek-chat" \
+  "$(grep '^DEEPSEEK_MODEL=' .env | sed 's/^DEEPSEEK_MODEL=//; s/"//g')"
+yoxla ".env → DEEPSEEK_URL"    "https://api.deepseek.com" \
+  "$(grep '^DEEPSEEK_URL=' .env | sed 's/^DEEPSEEK_URL=//; s/"//g')"
 
-# ══════════════════════════════════════════════════════════════════════
-bashliq "3 · @Public() — TOKENSİZ AÇIQ ENDPOINT-LƏR"
-# ══════════════════════════════════════════════════════════════════════
-yoxla "GET  /saglamliq" "200" "$(kod GET /saglamliq)"
-yoxla "GET  /" "200" "$(kod GET /)"
-yoxla "POST /auth/login" "200" \
-  "$(kod_cisim POST /auth/login '{"email":"admin@arti.edu.az","parol":"123456"}')"
+# ⚠️ TƏHLÜKƏSİZLİK: SQL xidməti LLM-ə qoşulmur, SQL koddadır
+yoxla "sql-komlekci fetch çağırmır" "0" "$(grep -c 'fetch' src/ai/sql-komlekci.service.ts)"
+yoxla "sql-komlekci DeepseekService-i import etmir" "0" \
+  "$(grep -c 'deepseek' src/ai/sql-komlekci.service.ts)"
 
-# ══════════════════════════════════════════════════════════════════════
-bashliq "4 · JwtAuthGuard — TOKENSİZ 401"
-# ══════════════════════════════════════════════════════════════════════
-yoxla "GET  /struktur/merkezler" "401" "$(kod GET /struktur/merkezler)"
-yoxla "GET  /kadrlar/emekdaslar" "401" "$(kod GET /kadrlar/emekdaslar)"
-yoxla "GET  /auth/profil" "401" "$(kod GET /auth/profil)"
-yoxla "GET  /auth/istifadeciler" "401" "$(kod GET /auth/istifadeciler)"
-yoxla "POST /struktur/merkezler" "401" \
-  "$(kod_cisim POST /struktur/merkezler '{"ad":"Test Merkez"}')"
-yoxla "səhv token" "401" "$(kod GET /struktur/merkezler 'sehv.token.deyeri')"
-yoxla "prefikssiz yol" "404" \
-  "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:4000/struktur/merkezler 2&gt;/dev/null)"
+# ── 2 · GET /ai/statistika ────────────────────────────────────────────
+bashliq "2 · GET /ai/statistika — AI qatının vəziyyəti (rol: HAMISI)"
 
-# ══════════════════════════════════════════════════════════════════════
-bashliq "5 · LOGIN VƏ TOKEN STRUKTURU"
-# ══════════════════════════════════════════════════════════════════════
-CAVAB=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
-  -d '{"email":"admin@arti.edu.az","parol":"123456"}')
-yoxla "cavabda token var" "1" "$(echo "$CAVAB" | grep -c '"token"')"
-yoxla "cavabda istifadeci var" "1" "$(echo "$CAVAB" | grep -c '"istifadeci"')"
-yoxla "cavabda bitme var" "1" "$(echo "$CAVAB" | grep -c '"bitme"')"
-yoxla "⚠️ parol_hash SIZMIR" "0" "$(echo "$CAVAB" | grep -c 'parol_hash')"
-yoxla "⚠️ bcrypt hash SIZMIR" "0" "$(echo "$CAVAB" | grep -c '\$2b\$')"
-yoxla "token 3 hissəli" "3" "$(echo "$TA" | awk -F. '{print NF}')"
-yoxla "token payload: rol=admin" "admin" \
-  "$(echo "$TA" | cut -d. -f2 | python3 -c "
-import sys,base64,json
-s=sys.stdin.read().strip(); s+='='*(-len(s)%4)
-print(json.loads(base64.urlsafe_b64decode(s)).get('rol',''))" 2&gt;/dev/null)"
-yoxla "token müddəti 8 saat" "8" \
-  "$(echo "$TA" | cut -d. -f2 | python3 -c "
-import sys,base64,json
-s=sys.stdin.read().strip(); s+='='*(-len(s)%4)
-p=json.loads(base64.urlsafe_b64decode(s))
-print((p['exp']-p['iat'])//3600)" 2&gt;/dev/null)"
-yoxla "GET /auth/profil (tokenlə)" "200" "$(kod GET /auth/profil "$TA")"
+yoxla "admin     → 200" "200" "$(kod GET 'ai/statistika' "$ADMIN")"
+yoxla "muhendis  → 200" "200" "$(kod GET 'ai/statistika' "$MUHENDIS")"
+yoxla "maliyyeci → 200" "200" "$(kod GET 'ai/statistika' "$MALIYYECI")"
+yoxla "baxici    → 200" "200" "$(kod GET 'ai/statistika' "$BAXICI")"
+yoxla "tokensiz  → 401" "401" "$(kod GET 'ai/statistika')"
 
-# ══════════════════════════════════════════════════════════════════════
-bashliq "6 · TIMING ATTACK QORUMASI (rol tələb olunmur)"
-# ══════════════════════════════════════════════════════════════════════
-M1=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
-  -d '{"email":"yoxdur@arti.edu.az","parol":"sehv-sifre-2026"}' \
-  | python3 -c "import json,sys;print(json.load(sys.stdin)['xeta']['mesaj'])" 2&gt;/dev/null)
-M2=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
-  -d '{"email":"admin@arti.edu.az","parol":"sehv-sifre-2026"}' \
-  | python3 -c "import json,sys;print(json.load(sys.stdin)['xeta']['mesaj'])" 2&gt;/dev/null)
-yoxla "mövcud olmayan e-poçt → mesaj" "E-poçt və ya şifrə yanlışdır" "$M1"
-yoxla "səhv şifrə → EYNİ mesaj" "$M1" "$M2"
-T1=$(curl -s -o /dev/null -w '%{time_total}' -X POST "$A/auth/login" \
-  -H 'Content-Type: application/json' -d '{"email":"yoxdur@arti.edu.az","parol":"sehv-sifre-2026"}')
-T2=$(curl -s -o /dev/null -w '%{time_total}' -X POST "$A/auth/login" \
-  -H 'Content-Type: application/json' -d '{"email":"admin@arti.edu.az","parol":"sehv-sifre-2026"}')
-FARQ=$(python3 -c "print(abs(float('$T1')-float('$T2')) &lt; 0.02 and '1' or '0')" 2&gt;/dev/null)
-yoxla "vaxt fərqi &lt; 20 ms" "1" "$FARQ"
-printf "  ${BOZ}mövcud deyil: ${T1}s · mövcud: ${T2}s${SIFIR}\n"
+ST="$(getir 'ai/statistika' "$ADMIN")"
+yoxla "rejim = demo (açar boş)"  "demo" "$(sahe "$ST" rejim)"
+yoxla "olcu = 64"                "64"   "$(sahe "$ST" olcu)"
+yoxla "resept_sayi = 10"         "10"   "$(sahe "$ST" resept_sayi)"
+yoxla "vektor bazası JSONB-dir"  "var" \
+  "$(printf '%s' "$ST" | grep -q 'JSONB' &amp;&amp; echo var || echo yox)"
 
-# ══════════════════════════════════════════════════════════════════════
-bashliq "7 · RBAC — POST /struktur/merkezler (admin, muhendis → 201)"
-# ══════════════════════════════════════════════════════════════════════
-YARADILAN=""
-for cift in "admin:$TA" "muhendis:$TM"; do
-  rol="${cift%%:*}"; tok="${cift#*:}"
-  cisim="{\"ad\":\"B3 Test $rol $(date +%s)\"}"
-  NETICE=$(curl -s -X POST "$A/struktur/merkezler" -H 'Content-Type: application/json' \
-    -H "Authorization: Bearer $tok" -d "$cisim" 2&gt;/dev/null)
-  ID=$(echo "$NETICE" | python3 -c "import json,sys;print(json.load(sys.stdin).get('id',''))" 2&gt;/dev/null)
-  [ -n "$ID" ] &amp;&amp; YARADILAN="$YARADILAN $ID"
-  yoxla "$rol → 201" "201" "$([ -n "$ID" ] &amp;&amp; echo 201 || echo XƏTA)"
-done
-yoxla "maliyyeci → 403" "403" \
-  "$(kod_cisim POST /struktur/merkezler '{"ad":"B3 qadağan"}' "$TL")"
-yoxla "baxici → 403" "403" \
-  "$(kod_cisim POST /struktur/merkezler '{"ad":"B3 qadağan"}' "$TB")"
+# ── 3 · GET /ai/reseptler — AĞ SİYAHI VƏ SIRA ─────────────────────────
+bashliq "3 · GET /ai/reseptler — 10 resept və SIRA qaydası"
 
-# ══════════════════════════════════════════════════════════════════════
-bashliq "8 · RBAC — DELETE /struktur/merkezler/:id (yalnız admin)"
-# ══════════════════════════════════════════════════════════════════════
-set -- $YARADILAN
-ILK="${1:-}"
-yoxla "muhendis → 403" "403" "$(kod DELETE "/struktur/merkezler/$ILK" "$TM")"
-yoxla "maliyyeci → 403" "403" "$(kod DELETE "/struktur/merkezler/$ILK" "$TL")"
-yoxla "baxici → 403" "403" "$(kod DELETE "/struktur/merkezler/$ILK" "$TB")"
-yoxla "admin → 200" "200" "$(kod DELETE "/struktur/merkezler/$ILK" "$TA")"
-yoxla "⚠️ bağlı mərkəz → 409 (500 DEYİL)" "409" \
-  "$(kod DELETE /struktur/merkezler/2 "$TA")"
+RS="$(getir 'ai/reseptler' "$ADMIN")"
+yoxla "resept sayı = 10"            "10" "$(sahe "$RS" say)"
+yoxla "hər reseptdə 'açar' sahəsi"  "10" "$(sayi "$RS" 'açar')"
+yoxla "hər reseptdə 'izah' sahəsi"  "10" "$(sayi "$RS" 'izah')"
+yoxla "tokensiz → 401"              "401" "$(kod GET 'ai/reseptler')"
 
-# ══════════════════════════════════════════════════════════════════════
-bashliq "9 · RBAC — GET /auth/istifadeciler (yalnız admin)"
-# ══════════════════════════════════════════════════════════════════════
-yoxla "admin → 200" "200" "$(kod GET /auth/istifadeciler "$TA")"
-yoxla "muhendis → 403" "403" "$(kod GET /auth/istifadeciler "$TM")"
-yoxla "maliyyeci → 403" "403" "$(kod GET /auth/istifadeciler "$TL")"
-yoxla "baxici → 403" "403" "$(kod GET /auth/istifadeciler "$TB")"
+# Resept sırası: ADDIM 4-də tapılan REAL SƏHVİN qarşısını alır
+IZAHLAR="$(printf '%s' "$RS" | grep -o '"izah":"[^"]*"' | sed 's/"izah":"//; s/"$//')"
+ORTA="$(printf '%s\n' "$IZAHLAR" | grep -n 'Orta əmək haqqı' | cut -d: -f1)"
+UMUMI="$(printf '%s\n' "$IZAHLAR" | grep -n 'Ən çox maaş alan' | cut -d: -f1)"
+yoxla "«orta maaş» resepti mövcuddur"   "var" "$([ -n "$ORTA" ] &amp;&amp; echo var || echo yox)"
+yoxla "«ümumi maaş» resepti mövcuddur"  "var" "$([ -n "$UMUMI" ] &amp;&amp; echo var || echo yox)"
+yoxla "xüsusi resept ümumidən ƏVVƏLdir" "var" \
+  "$([ -n "$ORTA" ] &amp;&amp; [ -n "$UMUMI" ] &amp;&amp; [ "$ORTA" -lt "$UMUMI" ] &amp;&amp; echo var || echo yox)"
 
-# ══════════════════════════════════════════════════════════════════════
-bashliq "10 · RBAC — OXUMA (GET) BÜTÜN ROLLAR ÜÇÜN AÇIQ"
-# ══════════════════════════════════════════════════════════════════════
-yoxla "admin     → GET /struktur/merkezler" "200" "$(kod GET /struktur/merkezler "$TA")"
-yoxla "muhendis  → GET /struktur/merkezler" "200" "$(kod GET /struktur/merkezler "$TM")"
-yoxla "maliyyeci → GET /struktur/merkezler" "200" "$(kod GET /struktur/merkezler "$TL")"
-yoxla "baxici    → GET /struktur/merkezler" "200" "$(kod GET /struktur/merkezler "$TB")"
-yoxla "baxici    → GET /kadrlar/emekdaslar" "200" "$(kod GET /kadrlar/emekdaslar "$TB")"
+# ── 4 · POST /ai/sual — TƏBİİ DİL ─────────────────────────────────────
+bashliq "4 · POST /ai/sual — təbii dil → cədvəl (LLM SQL YAZMIR)"
 
-# ══════════════════════════════════════════════════════════════════════
-bashliq "11 · 403 CAVABININ STRUKTURU"
-# ══════════════════════════════════════════════════════════════════════
-X403=$(curl -s "$A/auth/istifadeciler" -H "Authorization: Bearer $TB" 2&gt;/dev/null)
-yoxla "xeta.kod = ICAZE_YOXDUR" "1" "$(echo "$X403" | grep -c 'ICAZE_YOXDUR')"
-yoxla "mesajda tələb olunan rol" "1" "$(echo "$X403" | grep -c 'Tələb olunan rol')"
-yoxla "mesajda istifadəçinin rolu" "1" "$(echo "$X403" | grep -c 'baxici')"
-yoxla "cavabda ugur:false" "1" "$(echo "$X403" | grep -c '"ugur": *false\|"ugur":false')"
+yoxla "«Neçə əməkdaş var?» → 200" "200" \
+  "$(kod_cisim 'ai/sual' '{"sual":"Neçə əməkdaş var?"}' "$ADMIN")"
 
-# ══════════════════════════════════════════════════════════════════════
-bashliq "12 · ADMIN SUPER-ROL"
-# ══════════════════════════════════════════════════════════════════════
-yoxla "admin → @Roles('admin') endpoint" "200" "$(kod GET /auth/istifadeciler "$TA")"
-yoxla "admin → @Roles('admin','muhendis') endpoint" "200" \
-  "$(kod GET /struktur/merkezler/statistika "$TA")"
-YENI_ISTIFADECI="{\"email\":\"b3test$(date +%s)@arti.edu.az\",\"parol\":\"test12345\",\"ad_soyad\":\"Test Testov\",\"rol\":\"baxici\"}"
-yoxla "admin → qeydiyyat hüququ" "201" \
-  "$(kod_cisim POST /auth/qeydiyyat "$YENI_ISTIFADECI" "$TA")"
-yoxla "baxici → qeydiyyat qadağan" "403" \
-  "$(kod_cisim POST /auth/qeydiyyat '{"email":"x@arti.edu.az","parol":"test12345","ad_soyad":"Test Testov"}' "$TB")"
+S1="$(gonder 'ai/sual' '{"sual":"Neçə əməkdaş var?"}' "$ADMIN")"
+yoxla "uygun_resept = true"          "true" "$(sahe "$S1" uygun_resept)"
+yoxla "izah = «Ümumi əməkdaş sayı»"  "Ümumi əməkdaş sayı" "$(sahe "$S1" izah)"
+yoxla "setir_sayi ≥ 1"               "var" \
+  "$([ "$(sahe "$S1" setir_sayi)" -ge 1 ] 2&gt;/dev/null &amp;&amp; echo var || echo yox)"
 
-# ── Qeydiyyat testindən qalan istifadəçini sil ──
-$P "DELETE FROM kadrlar.istifadeciler WHERE email LIKE 'b3test%@arti.edu.az'" &gt; /dev/null 2&gt;&amp;1
+S2="$(gonder 'ai/sual' '{"sual":"Orta maaş nə qədərdir?"}' "$ADMIN")"
+yoxla "«Orta maaş…» → xüsusi resept"      "Orta əmək haqqı" "$(sahe "$S2" izah)"
+yoxla "«Orta maaş…» SƏHV reseptə düşmür"  "yox" \
+  "$(printf '%s' "$(sahe "$S2" izah)" | grep -q 'Ən çox maaş' &amp;&amp; echo var || echo yox)"
 
-# ══════════════════════════════════════════════════════════════════════
-bashliq "13 · AuditInterceptor — JURNAL"
-# ══════════════════════════════════════════════════════════════════════
-EVVEL=$($P "SELECT count(*)::int FROM audit.audit_log" 2&gt;/dev/null || echo 0)
-ID=$(curl -s -X POST "$A/struktur/merkezler" -H 'Content-Type: application/json' \
-  -H "Authorization: Bearer $TA" -d "{\"ad\":\"Audit B3 $(date +%s)\"}" 2&gt;/dev/null \
-  | python3 -c "import json,sys;print(json.load(sys.stdin).get('id',''))" 2&gt;/dev/null)
-kod GET /struktur/merkezler "$TA" &gt; /dev/null
-kod GET /kadrlar/emekdaslar "$TA" &gt; /dev/null
-kod GET /hesabatlar/icmal "$TA" &gt; /dev/null
-sleep 1
-SONRA=$($P "SELECT count(*)::int FROM audit.audit_log" 2&gt;/dev/null || echo 0)
-yoxla "POST → jurnal +1" "1" "$([ "$SONRA" -gt "$EVVEL" ] &amp;&amp; echo 1 || echo 0)"
-yoxla "⚠️ 3 × GET → jurnal +0" "$((EVVEL + 1))" "$SONRA"
+S3="$(gonder 'ai/sual' '{"sual":"Ən çox maaş alan kimdir?"}' "$ADMIN")"
+yoxla "«Ən çox maaş…» → ümumi resept" "Ən çox maaş alan 5 nəfər" "$(sahe "$S3" izah)"
 
-QEYD=$($P "SELECT cedvel_adi || '|' || emeliyyat || '|' || COALESCE(istifadeci,'?')
-             FROM audit.audit_log ORDER BY id DESC LIMIT 1" 2&gt;/dev/null)
-yoxla "cədvəl adı struktur.merkezler" "1" "$(echo "$QEYD" | grep -c 'struktur.merkezler')"
-yoxla "əməliyyat POST" "1" "$(echo "$QEYD" | grep -c 'POST')"
-yoxla "istifadəçi email-i yazılıb" "1" "$(echo "$QEYD" | grep -c 'admin@arti.edu.az')"
+S4="$(gonder 'ai/sual' '{"sual":"Banana qiyməti nə qədərdir?"}' "$ADMIN")"
+yoxla "naməlum sual → uygun_resept = false" "false" "$(sahe "$S4" uygun_resept)"
+yoxla "naməlum sual → setir_sayi = 0"       "0"     "$(sahe "$S4" setir_sayi)"
+yoxla "naməlum sual → 500 DEYİL"            "200" \
+  "$(kod_cisim 'ai/sual' '{"sual":"Banana qiyməti nə qədərdir?"}' "$ADMIN")"
+yoxla "naməlum sual → mövcud reseptləri sadalayır" "var" \
+  "$(printf '%s' "$(sahe "$S4" izah)" | grep -q 'əməkdaş' &amp;&amp; echo var || echo yox)"
 
-kod DELETE /struktur/merkezler/2 "$TA" &gt; /dev/null
-sleep 1
-QX=$($P "SELECT qeyd FROM audit.audit_log ORDER BY id DESC LIMIT 1" 2&gt;/dev/null)
-yoxla "⚠️ uğursuz əməliyyat da yazılır" "1" "$(echo "$QX" | grep -c 'XƏTA')"
+yoxla "boş sual → 400"           "400" "$(kod_cisim 'ai/sual' '{"sual":""}' "$ADMIN")"
+yoxla "2 simvolluq sual → 400"   "400" "$(kod_cisim 'ai/sual' '{"sual":"ab"}' "$ADMIN")"
+yoxla "sual sahəsi yoxdur → 400" "400" "$(kod_cisim 'ai/sual' '{}' "$ADMIN")"
+yoxla "tokensiz → 401"           "401" "$(kod_cisim 'ai/sual' '{"sual":"Neçə əməkdaş var?"}')"
 
-# ══════════════════════════════════════════════════════════════════════
-bashliq "14 · SEED SKRİPTİ"
-# ══════════════════════════════════════════════════════════════════════
-yoxla "seed:auth əmri var" "1" "$(grep -c 'seed:auth' package.json)"
-yoxla "seed-auth.ts var" "var" "$([ -f scripts/seed-auth.ts ] &amp;&amp; echo var || echo YOXDUR)"
-npm run seed:auth &gt; /dev/null 2&gt;&amp;1
-S1=$($P "SELECT count(*)::int FROM kadrlar.istifadeciler" 2&gt;/dev/null || echo 0)
-npm run seed:auth &gt; /dev/null 2&gt;&amp;1
-S2=$($P "SELECT count(*)::int FROM kadrlar.istifadeciler" 2&gt;/dev/null || echo 0)
-yoxla "⚠️ İDEMPOTENT: 2-ci işə salma" "$S1" "$S2"
-yoxla "hər roldan 1 nəfər" "4" \
-  "$($P "SELECT count(DISTINCT rol)::int FROM kadrlar.istifadeciler" 2&gt;/dev/null || echo 0)"
-yoxla "şifrələr hash-lənib" "0" \
-  "$($P "SELECT count(*)::int FROM kadrlar.istifadeciler WHERE parol_hash NOT LIKE '\$2%'" 2&gt;/dev/null || echo 9)"
+# ── 5 · SQL İNTEKKSİYASI — ƏN VACİB YOXLAMA ──────────────────────────
+bashliq "5 · SQL inyeksiya cəhdi — SQL KODDADIR, bazaya çatmır"
 
-# ── TƏMİZLİK ──────────────────────────────────────────────────────────
-for x in $YARADILAN; do
-  [ "$x" = "$ILK" ] &amp;&amp; continue
-  kod DELETE "/struktur/merkezler/$x" "$TA" &gt; /dev/null
-done
-[ -n "$ID" ] &amp;&amp; kod DELETE "/struktur/merkezler/$ID" "$TA" &gt; /dev/null
-$P "DELETE FROM kadrlar.istifadeciler WHERE email LIKE 'b3test%@arti.edu.az'" &gt; /dev/null 2&gt;&amp;1
+EVVEL="$(psq 'SELECT count(*) FROM kadrlar.emekdaslar')"
+MERKEZ_EVVEL="$(psq 'SELECT count(*) FROM struktur.merkezler')"
 
-# ══════════════════════════════════════════════════════════════════════
-bashliq "15 · TESTLƏR (unit + e2e)"
-# ══════════════════════════════════════════════════════════════════════
-U=$(NO_COLOR=1 npm test 2&gt;&amp;1 | grep -E '^[[:space:]]*Tests[[:space:]]' | grep -oE '[0-9]+ passed' | grep -oE '^[0-9]+' | head -1)
-yoxla "unit testlər keçir" "1" "$([ "${U:-0}" -gt 0 ] &amp;&amp; echo 1 || echo 0)"
-printf "  ${BOZ}→ %s unit test${SIFIR}\n" "${U:-0}"
+INJ1="$(gonder 'ai/sual' '{"sual":"mərkəz'"'"'; DROP TABLE struktur.merkezler; --"}' "$ADMIN")"
+yoxla "inyeksiya mətni reseptə uyğun gəlir" "true" "$(sahe "$INJ1" uygun_resept)"
+yoxla "…amma 200 qaytarır (xəta yox)" "200" \
+  "$(kod_cisim 'ai/sual' '{"sual":"mərkəz'"'"'; DROP TABLE struktur.merkezler; --"}' "$ADMIN")"
 
-E=$(NO_COLOR=1 npx vitest run --config vitest.config.e2e.ts 2&gt;&amp;1 \
-  | grep -E '^[[:space:]]*Tests[[:space:]]' | grep -oE '[0-9]+ passed' | grep -oE '^[0-9]+' | head -1)
-yoxla "e2e testlər keçir" "1" "$([ "${E:-0}" -gt 0 ] &amp;&amp; echo 1 || echo 0)"
-printf "  ${BOZ}→ %s e2e test${SIFIR}\n" "${E:-0}"
+INJ2="$(gonder 'ai/sual' '{"sual":"'"'"'; DROP TABLE kadrlar.emekdaslar; --"}' "$ADMIN")"
+yoxla "uyğunsuz inyeksiya → uygun_resept = false" "false" "$(sahe "$INJ2" uygun_resept)"
 
-# ══════════════════════════════════════════════════════════════════════
-#  NƏTİCƏ
-# ══════════════════════════════════════════════════════════════════════
+yoxla "struktur.merkezler cədvəli SALAMATDIR" "$MERKEZ_EVVEL" \
+  "$(psq 'SELECT count(*) FROM struktur.merkezler')"
+yoxla "kadrlar.emekdaslar cədvəli SALAMATDIR" "$EVVEL" \
+  "$(psq 'SELECT count(*) FROM kadrlar.emekdaslar')"
+yoxla "struktur.merkezler hələ də mövcuddur" "t" \
+  "$(psq "SELECT to_regclass('struktur.merkezler') IS NOT NULL")"
+yoxla "kadrlar.emekdaslar hələ də mövcuddur" "t" \
+  "$(psq "SELECT to_regclass('kadrlar.emekdaslar') IS NOT NULL")"
+
+# ── 6 · POST /ai/rag — SƏNƏD AXTARIŞI ─────────────────────────────────
+bashliq "6 · POST /ai/rag — kosinus oxşarlığı, azalan sıra"
+
+yoxla "rag → 200" "200" \
+  "$(kod_cisim 'ai/rag' '{"sual":"elm və təhsil haqqında sənəd"}' "$ADMIN")"
+
+R1="$(gonder 'ai/rag' '{"sual":"elm və təhsil haqqında sənəd"}' "$ADMIN")"
+yoxla "default limit = 3"         "3" "$(sahe "$R1" tapildi)"
+yoxla "hər nəticədə sened_id var" "3" "$(sayi "$R1" sened_id)"
+yoxla "hər nəticədə oxsarlıq var" "3" "$(sayi "$R1" oxsarlıq)"
+
+# ballar AZALAN sıradadır
+BALLAR="$(printf '%s' "$R1" | grep -o '"oxsarlıq":[0-9.]*' | sed 's/.*://')"
+yoxla "oxşarlıqlar AZALAN sıradadır" "" \
+  "$(printf '%s\n' "$BALLAR" | awk 'NR&gt;1 &amp;&amp; $1&gt;e {print "xeta"} {e=$1}')"
+
+# ballar 0..1 aralığındadır (normallaşdırma olmasa 1-dən böyük olardı)
+yoxla "ballar 0..1 aralığındadır" "" \
+  "$(printf '%s\n' "$BALLAR" | awk '$1&lt;0 || $1&gt;1 {print "xeta"}' | head -1)"
+
+yoxla "normallaşdırma: vahid vektor uzunluğu" "var" \
+  "$(printf '%s' "$BALLAR" | grep -qE '^(0|1)\.[0-9]+$' &amp;&amp; echo var || echo yox)"
+
+R2="$(gonder 'ai/rag' '{"sual":"elm və təhsil haqqında sənəd","limit":1}' "$ADMIN")"
+yoxla "limit=1 → 1 nəticə" "1" "$(sahe "$R2" tapildi)"
+
+yoxla "limit=11 → 400 (Max 10)" "400" \
+  "$(kod_cisim 'ai/rag' '{"sual":"elm və təhsil","limit":11}' "$ADMIN")"
+yoxla "limit=0 → 400 (Min 1)"   "400" \
+  "$(kod_cisim 'ai/rag' '{"sual":"elm və təhsil","limit":0}' "$ADMIN")"
+yoxla "tokensiz → 401" "401" "$(kod_cisim 'ai/rag' '{"sual":"elm və təhsil"}')"
+
+# ── 7 · POST /ai/cavab — DEMO REJİM ───────────────────────────────────
+bashliq "7 · POST /ai/cavab — API açarı OLMADAN işləyir"
+
+yoxla "cavab → 200" "200" \
+  "$(kod_cisim 'ai/cavab' '{"sual":"Elmi dərəcə ilə bağlı sənədlər hansılardır?"}' "$ADMIN")"
+
+C1="$(gonder 'ai/cavab' '{"sual":"Elmi dərəcə ilə bağlı sənədlər hansılardır?"}' "$ADMIN")"
+yoxla "demo = true"            "true" "$(sahe "$C1" demo)"
+yoxla "model adında «demo» işarəsi" "var" \
+  "$(printf '%s' "$(sahe "$C1" model)" | grep -q 'demo' &amp;&amp; echo var || echo yox)"
+yoxla "cavab boş deyil"        "var" \
+  "$([ -n "$(sahe "$C1" cavab)" ] &amp;&amp; echo var || echo yox)"
+yoxla "istifadə_olunan_senedler var" "var" \
+  "$(printf '%s' "$C1" | grep -q 'istifade_olunan_senedler' &amp;&amp; echo var || echo yox)"
+yoxla "token_sayi = 0 (demo)"  "0" "$(sahe "$C1" token_sayi)"
+
+# ── 8 · POST /ai/vektorlasdir — RBAC ──────────────────────────────────
+bashliq "8 · POST /ai/vektorlasdir — RBAC (yalnız admin, mühendis)"
+
+yoxla "admin     → 200" "200" "$(kod POST 'ai/vektorlasdir' "$ADMIN")"
+yoxla "muhendis  → 200" "200" "$(kod POST 'ai/vektorlasdir' "$MUHENDIS")"
+yoxla "maliyyeci → 403" "403" "$(kod POST 'ai/vektorlasdir' "$MALIYYECI")"
+yoxla "baxici    → 403" "403" "$(kod POST 'ai/vektorlasdir' "$BAXICI")"
+yoxla "tokensiz  → 401" "401" "$(kod POST 'ai/vektorlasdir')"
+
+R403="$(gonder 'ai/vektorlasdir' '{}' "$BAXICI")"
+yoxla "403 → xeta.kod = ICAZE_YOXDUR" "var" \
+  "$(printf '%s' "$R403" | grep -q 'ICAZE_YOXDUR' &amp;&amp; echo var || echo yox)"
+
+ST2="$(getir 'ai/statistika' "$ADMIN")"
+yoxla "vektorlaşdırmadan sonra embedding &gt; 0" "var" \
+  "$([ "$(sahe "$ST2" embedding_sayi)" -gt 0 ] 2&gt;/dev/null &amp;&amp; echo var || echo yox)"
+
+# ── 9 · EXCEL İXRACI ──────────────────────────────────────────────────
+bashliq "9 · GET /ixrac/*.xlsx — həqiqi Excel faylı"
+
+M="/tmp/arti_merkezler.xlsx"; E="/tmp/arti_emekdaslar.xlsx"
+rm -f "$M" "$E"
+
+KM="$(curl -s -o "$M" -w '%{http_code}' "$A/ixrac/merkezler.xlsx" \
+  -H "Authorization: Bearer $ADMIN")"
+KE="$(curl -s -o "$E" -w '%{http_code}' "$A/ixrac/emekdaslar.xlsx" \
+  -H "Authorization: Bearer $ADMIN")"
+
+yoxla "merkezler.xlsx → 200"  "200" "$KM"
+yoxla "emekdaslar.xlsx → 200" "200" "$KE"
+
+CT="$(curl -s -o /dev/null -D - "$A/ixrac/merkezler.xlsx" \
+  -H "Authorization: Bearer $ADMIN" | grep -i '^content-type' | tr -d '\r' \
+  | sed 's/^[Cc]ontent-[Tt]ype: //')"
+yoxla "Content-Type düzgündür" \
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" "$CT"
+
+CD="$(curl -s -o /dev/null -D - "$A/ixrac/merkezler.xlsx" \
+  -H "Authorization: Bearer $ADMIN" | grep -i '^content-disposition' | tr -d '\r')"
+yoxla "Content-Disposition = attachment" "var" \
+  "$(printf '%s' "$CD" | grep -q 'attachment' &amp;&amp; echo var || echo yox)"
+yoxla "fayl adı .xlsx ilə bitir" "var" \
+  "$(printf '%s' "$CD" | grep -q '\.xlsx' &amp;&amp; echo var || echo yox)"
+
+# ⚠️ Ən vacib yoxlama: fayl həqiqətən ZIP-dir (xlsx = ZIP konteyneri), PK baytları
+yoxla "merkezler PK baytları ilə başlayır" "504b" \
+  "$(xxd -p -l 2 "$M" 2&gt;/dev/null | tr 'A-Z' 'a-z')"
+yoxla "emekdaslar PK baytları ilə başlayır" "504b" \
+  "$(xxd -p -l 2 "$E" 2&gt;/dev/null | tr 'A-Z' 'a-z')"
+
+yoxla "merkezler ölçüsü &gt; 5000 bayt" "var" \
+  "$([ "$(wc -c &lt; "$M" | tr -d ' ')" -gt 5000 ] &amp;&amp; echo var || echo yox)"
+yoxla "emekdaslar ölçüsü &gt; 5000 bayt" "var" \
+  "$([ "$(wc -c &lt; "$E" | tr -d ' ')" -gt 5000 ] &amp;&amp; echo var || echo yox)"
+
+yoxla "file: merkezler = Excel 2007+" "var" \
+  "$(file -b "$M" | grep -q 'Microsoft Excel 2007' &amp;&amp; echo var || echo yox)"
+yoxla "file: emekdaslar = Excel 2007+" "var" \
+  "$(file -b "$E" | grep -q 'Microsoft Excel 2007' &amp;&amp; echo var || echo yox)"
+
+# Sətir sayı bazadakı ilə üst-üstə düşməlidir (+1 başlıq sətri)
+DB_M="$(psq 'SELECT count(*) FROM struktur.merkezler')"
+DB_E="$(psq 'SELECT count(*) FROM kadrlar.emekdaslar')"
+XM="$(unzip -p "$M" xl/worksheets/sheet1.xml 2&gt;/dev/null | grep -o '&lt;row ' | wc -l | tr -d ' ')"
+XE="$(unzip -p "$E" xl/worksheets/sheet1.xml 2&gt;/dev/null | grep -o '&lt;row ' | wc -l | tr -d ' ')"
+
+yoxla "merkezler: Excel sətri = baza + başlıq"  "$((DB_M + 1))" "$XM"
+yoxla "emekdaslar: Excel sətri = baza + başlıq" "$((DB_E + 1))" "$XE"
+yoxla "Excel boş deyil (başlıqdan çox sətir)" "var" \
+  "$([ "$XM" -gt 1 ] &amp;&amp; echo var || echo yox)"
+
+# İxrac oxuma əməliyyatıdır — dörd rolun hamısı ala bilər
+yoxla "baxici    → merkezler.xlsx 200"  "200" "$(kod GET 'ixrac/merkezler.xlsx' "$BAXICI")"
+yoxla "maliyyeci → emekdaslar.xlsx 200" "200" "$(kod GET 'ixrac/emekdaslar.xlsx' "$MALIYYECI")"
+yoxla "tokensiz  → 401"                 "401" "$(kod GET 'ixrac/merkezler.xlsx')"
+
+rm -f "$M" "$E"
+
+# ── 10 · DOCKER VƏ CI/CD ──────────────────────────────────────────────
+bashliq "10 · ADDIM 8 — Docker, docker-compose, GitHub Actions"
+
+yoxla "Dockerfile → FROM node"                "var" \
+  "$(grep -q 'FROM node' Dockerfile &amp;&amp; echo var || echo yox)"
+yoxla "Dockerfile çoxmərhələlidir (2+ FROM)"  "var" \
+  "$([ "$(grep -c '^FROM' Dockerfile)" -ge 2 ] &amp;&amp; echo var || echo yox)"
+yoxla "Dockerfile → prisma generate"          "var" \
+  "$(grep -q 'prisma generate' Dockerfile &amp;&amp; echo var || echo yox)"
+yoxla "Dockerfile yalnız istehsalat asılılıqları" "var" \
+  "$(grep -q 'omit=dev' Dockerfile &amp;&amp; echo var || echo yox)"
+yoxla ".dockerignore → node_modules"          "var" \
+  "$(grep -q 'node_modules' .dockerignore &amp;&amp; echo var || echo yox)"
+yoxla "compose → postgres xidməti"            "var" \
+  "$(grep -q 'postgres' docker-compose.yml &amp;&amp; echo var || echo yox)"
+yoxla "compose → depends_on"                  "var" \
+  "$(grep -q 'depends_on' docker-compose.yml &amp;&amp; echo var || echo yox)"
+yoxla "CI → npm ci"                           "var" \
+  "$(grep -q 'npm ci' .github/workflows/ci.yml &amp;&amp; echo var || echo yox)"
+yoxla "CI → npm run build"                    "var" \
+  "$(grep -q 'npm run build' .github/workflows/ci.yml &amp;&amp; echo var || echo yox)"
+yoxla "CI → vitest.config.e2e.ts"             "var" \
+  "$(grep -q 'vitest.config.e2e.ts' .github/workflows/ci.yml &amp;&amp; echo var || echo yox)"
+yoxla "CI → postgres health check"            "var" \
+  "$(grep -q 'health-cmd pg_isready' .github/workflows/ci.yml &amp;&amp; echo var || echo yox)"
+
+# ── 11 · MARSHRUTLAR ──────────────────────────────────────────────────
+bashliq "11 · Bütün marshrutlar — Backend-4 sonrası"
+
+SW="$(curl -s "$KOK/docs-json" 2&gt;/dev/null)"
+yollar() { printf '%s' "$SW" | grep -o "\"/api/v1$1[^\"]*\"" | sort -u | wc -l | tr -d ' '; }
+
+yoxla "Swagger cavab verir"          "var" "$([ -n "$SW" ] &amp;&amp; echo var || echo yox)"
+yoxla "fərqli yol sayı = 20"         "20"  "$(yollar '')"
+yoxla "AI marshrutları = 6"          "6"   "$(yollar '/ai')"
+yoxla "ixrac marshrutları = 2"       "2"   "$(yollar '/ixrac')"
+yoxla "auth marshrutları = 4"        "4"   "$(yollar '/auth')"
+yoxla "kadrlar marshrutları = 3"     "3"   "$(yollar '/kadrlar')"
+yoxla "struktur marshrutları = 3"    "3"   "$(yollar '/struktur')"
+
+# Backend-3-də 15 idi → +8 (6 AI + 2 ixrac) = 23 metod+yol cütü
+CUT="$(printf '%s' "$SW" | grep -oE '"(get|post|patch|put|delete)":' | wc -l | tr -d ' ')"
+yoxla "metod+yol cütü = 23" "23" "$CUT"
+
+# ── 12 · TESTLƏR ──────────────────────────────────────────────────────
+bashliq "12 · ADDIM 10 — unit və e2e testlər"
+
+UNIT_XAM="$(npm test 2&gt;&amp;1 | tr -d '\r')"
+UNIT="$(printf '%s' "$UNIT_XAM" | grep -oE 'Tests +[0-9]+ passed' | head -1 | grep -oE '[0-9]+')"
+yoxla "unit testlər keçir = 42" "42" "${UNIT:-0}"
+
+E2E_XAM="$(npx vitest run --config vitest.config.e2e.ts 2&gt;&amp;1 | tr -d '\r')"
+E2E="$(printf '%s' "$E2E_XAM" | grep -oE 'Tests +[0-9]+ passed' | head -1 | grep -oE '[0-9]+')"
+yoxla "e2e testlər keçir = 39" "39" "${E2E:-0}"
+
+yoxla "cəmi test = 81" "81" "$(( ${UNIT:-0} + ${E2E:-0} ))"
+
+# ── NƏTİCƏ ────────────────────────────────────────────────────────────
 printf "\n${MAVI}════════════════════════════════════════════════════════════${SIFIR}\n"
-printf "  NƏTİCƏ:  ${YASIL}%d keçdi${SIFIR}" "$KECDI"
-[ "$XETA" -gt 0 ] &amp;&amp; printf "   ${QIRMIZI}%d xəta${SIFIR}" "$XETA"
-printf "\n"
 if [ "$XETA" -eq 0 ]; then
-  printf "  ${YASIL}✅ BACKEND-3-ÜN BÜTÜN YENİLİKLƏRİ İŞLƏYİR${SIFIR}\n"
+  printf "  ${YASIL}✓ BÜTÜN YENİLİKLƏR İŞLƏYİR${SIFIR} — ${YASIL}%d${SIFIR} yoxlama keçdi\n" "$KECDI"
 else
-  printf "  ${QIRMIZI}❌ %d YOXLAMA UĞURSUZ${SIFIR}\n" "$XETA"
+  printf "  ${QIRMIZI}✗ %d YOXLAMA UĞURSUZ${SIFIR} — ${YASIL}%d${SIFIR} keçdi\n" "$XETA" "$KECDI"
 fi
-printf "${MAVI}════════════════════════════════════════════════════════════${SIFIR}\n\n"
+printf "${MAVI}════════════════════════════════════════════════════════════${SIFIR}\n"
 
-rm -f /tmp/b3tok_*.txt
-[ "$XETA" -eq 0 ]
+[ "$XETA" -eq 0 ] &amp;&amp; exit 0 || exit 1
 EOF</code></pre>
     </div>
 
@@ -2994,237 +3108,286 @@ EOF</code></pre>
 unset DATABASE_URL PGHOST
 
 # 1) Sintaksis düzgündürmü?
-bash -n scripts/yoxla-backend3.sh &amp;&amp; echo "✓ sintaksis OK"
+bash -n scripts/yoxla-backend4.sh &amp;&amp; echo "✓ sintaksis OK"
 
 # 2) Server AYRI terminalda işləməlidir
-npm run start:dev
+PORT=4000 npm run start:prod
 
 # 3) Digər terminalda — tam qəbul testi
-bash scripts/yoxla-backend3.sh
+bash scripts/yoxla-backend4.sh
 
 # 4) Çıxış kodu (CI üçün)
 echo "exit: $?"
 #   0 → bütün yeniliklər işləyir
 #   1 → ən azı bir yoxlama uğursuz
 
-# 5) Server başqa portdadırsa
-A=http://localhost:4001/api/v1 bash scripts/yoxla-backend3.sh</code></pre>
+# 5) ⚠️ Ən vacib yoxlama tək başına — SQL inyeksiyası
+psql -U arti_user -d arti_baza -tA   -c "SELECT count(*) FROM struktur.merkezler"      # 10
+# serveri işlək saxlayaraq inyeksiya göndərin:
+curl -s -X POST http://localhost:4000/api/v1/ai/sual   -H 'Content-Type: application/json'   -H "Authorization: Bearer $ADMIN"   -d '{"sual":"mərkəz'"'"'; DROP TABLE struktur.merkezler; --"}'
+psql -U arti_user -d arti_baza -tA   -c "SELECT count(*) FROM struktur.merkezler"      # YENƏ 10 — cədvəl yerindədir
+
+# 6) Server başqa portdadırsa
+A=http://localhost:4100/api/v1 bash scripts/yoxla-backend4.sh</code></pre>
       <div class="olmaz">
         <span class="olmaz-basliq">⚠️ Bu kod olmasa nə olardı</span>
-<pre><code>$ bash scripts/yoxla-backend3.sh      # server işləmirsə:
+<pre><code>$ A=http://localhost:4101/api/v1 bash scripts/yoxla-backend4.sh
+     # ⚠️ SIRA TƏRS ÇEVRİLMİŞ: ümumi 'maaş' resepti xüsusi 'orta maaş'-dan ƏVVƏL
 
-XƏTA: server cavab vermir — http://localhost:4000/api/v1
-Ayrı terminalda: npm run start:dev
+════════════════════════════════════════════════════════════
+  3 · GET /ai/reseptler — 10 resept və SIRA qaydası
+════════════════════════════════════════════════════════════
+  ✗ xüsusi resept ümumidən ƏVVƏLdir               yox (gözlənilən: var)
 
-$ bash scripts/yoxla-backend3.sh      # guard-lar qeyd olunmasa:
+════════════════════════════════════════════════════════════
+  4 · POST /ai/sual — təbii dil → cədvəl (LLM SQL YAZMIR)
+════════════════════════════════════════════════════════════
+  ✗ «Orta maaş…» → xüsusi resept      Ən çox maaş alan 5 nəfər (gözlənilən: Orta əmək haqqı)
+  ✗ «Orta maaş…» SƏHV reseptə düşmür                var (gözlənilən: yox)
 
-  ✗ GET  /struktur/merkezler                       200 (gözlənilən: 401)
-  ✗ GET  /kadrlar/emekdaslar                       200 (gözlənilən: 401)
-  ✗ POST /struktur/merkezler                       201 (gözlənilən: 401)
-  ✗ maliyyeci → 403                                201 (gözlənilən: 403)
-  ✗ baxici → 403                                   201 (gözlənilən: 403)
-  ...
-  NƏTİCƏ:  52 keçdi   20 xəta
-  ❌ 20 YOXLAMA UĞURSUZ
+════════════════════════════════════════════════════════════
+  12 · ADDIM 10 — unit və e2e testlər
+════════════════════════════════════════════════════════════
+  ✗ unit testlər keçir = 42                          0 (gözlənilən: 42)
+  ✗ cəmi test = 81                                    39 (gözlənilən: 81)
 
-   # QRUP: 20 xətanın HAMISI autentifikasiya və rollarla bağlıdır.
-   # DTO, seed və audit yoxlamaları yenə KEÇİR — çünki onlar
-   # guard-lardan asılı deyil.</code></pre>
-        <p>Bu testin ən faydalı xüsusiyyəti <strong>xətaları qruplaşdırmasıdır</strong>.
-Əgər 20 yoxlama uğursuz olubsa və hamısı <code>401</code>/<code>403</code> ilə
-bağlıdırsa, problem tək bir yerdədir — guard qeydiyyatında və ya
-<code>AuthModule</code>-da. Əksinə, xətalar <em>müxtəlif bölmələrə səpələnibsə</em>,
-problem daha dərindədir. Bu, nasazlığı 10 dəqiqə yerinə 10 saniyəyə tapmağa
-imkan verir. Skript həm də <strong>CI üçün yararlıdır</strong>: çıxış kodu
-<code>0</code>/<code>1</code> olduğu üçün GitHub Actions-da birbaşa işlədilə bilər.</p>
+════════════════════════════════════════════════════════════
+  ✗ 5 YOXLAMA UĞURSUZ — 117 keçdi
+════════════════════════════════════════════════════════════
+
+     # ⚠️ DİQQƏT: XƏTA VERMİR — sadəcə SƏHV CAVAB verir.
+     # «Orta maaş nə qədərdir?» sualına «Ən çox maaş alan 5 nəfər»
+     # cavabı gəlir. HTTP 200 qayıdır, jurnal təmizdir, heç nə
+     # qırılmır — istifadəçi sadəcə YANLIŞ rəqəm görür.
+     # Bu, ən təhlükəli xəta növüdür: səssiz səhv cavab.</code></pre>
+        <p>Bu, bütün kursun <strong>ən vacib dərsi</strong>dir. Yuxarıdaki çıxışda
+skript <em>xəta vermir</em> — <code>npm run build</code> təmiz keçir, server
+işləyir, jurnal təmizdir. Sadəcə <strong>səhv cavab</strong> qayıdır. Bu cür
+səssiz səhvlər ən təhlükəlidir, çünki heç bir siqnal yoxdur: istifadəçi
+«Orta maaş nə qədərdir?» soruşur, sistem «Ən çox maaş alan 5 nəfər» cavabını
+verir və bunu <em>düzgün cavab</em> kimi təqdim edir. Qərar verən şəxs yanlış
+rəqəmə baxaraq qərar verir. Qəbul testi məhz bu səhvi tutur: <code>117 keçdi,
+5 xəta</code> — və xətaların hamısı <strong>eyni səbəbdən</strong>dir. Skript
+həm də <strong>CI üçün yararlıdır</strong>: çıxış kodu <code>0</code>/<code>1</code>
+olduğu üçün GitHub Actions-da birbaşa işlədilə bilər.</p>
       </div>
     </div>
 
     <div class="hisse hisse-d">
       <span class="hisse-basliq">D · Bu koddan sonra sistemin durumu — ÇIXIŞ</span>
       <p class="cixis-xeber">⚠️ Bu blok <strong>çıxışdır</strong> — kopyalayıb terminala yapıştırmayın. Sadəcə oxuyun. Əmrlər B hissəsindədir.</p>
-<pre><code>╔══════════════════════════════════════════════════════════════╗
-║   BACKEND-3 — TAM QƏBUL TESTİ                              ║
-╚══════════════════════════════════════════════════════════════╝
+<pre><code>
+════════════════════════════════════════════════════════════
+  0 · GİRİŞ — dörd rol üçün token
+════════════════════════════════════════════════════════════
+  ✓ admin token alındı                               var
+  ✓ muhendis token alındı                            var
+  ✓ maliyyeci token alındı                           var
+  ✓ baxici token alındı                              var
 
 ════════════════════════════════════════════════════════════
-  0 · DÖRD ROL ÜÇÜN TOKEN
+  1 · ADDIM 1, 2, 7, 8 — fayllar və paketlər
 ════════════════════════════════════════════════════════════
-  admin      → 195 simvol
-  muhendis   → 203 simvol
-  maliyyeci  → 205 simvol
-  baxici     → 197 simvol
+  ✓ exceljs package.json-da                            4.4.0
+  ✓ src/ai/embedding.service.ts                        var
+  ✓ src/ai/rag.service.ts                              var
+  ✓ src/ai/sql-komlekci.service.ts                     var
+  ✓ src/ai/deepseek.service.ts                         var
+  ✓ src/ai/ai.service.ts                               var
+  ✓ src/ai/dto/sual.dto.ts                             var
+  ✓ src/ixrac/excel.service.ts                         var
+  ✓ Dockerfile                                         var
+  ✓ .dockerignore                                      var
+  ✓ docker-compose.yml                                 var
+  ✓ .github/workflows/ci.yml                           var
+  ✓ .env → DEEPSEEK_API_KEY boşdur (demo)           
+  ✓ .env → DEEPSEEK_MODEL                            deepseek-chat
+  ✓ .env → DEEPSEEK_URL                              https://api.deepseek.com
+  ✓ sql-komlekci fetch çağırmır                    0
+  ✓ sql-komlekci DeepseekService-i import etmir        0
 
 ════════════════════════════════════════════════════════════
-  1 · AUTH PAKETLƏRİ VƏ JWT AÇARI
+  2 · GET /ai/statistika — AI qatının vəziyyəti (rol: HAMISI)
 ════════════════════════════════════════════════════════════
-  ✓ paket: @nestjs/jwt                             var
-  ✓ paket: @nestjs/passport                        var
-  ✓ paket: passport                                var
-  ✓ paket: passport-jwt                            var
-  ✓ paket: bcryptjs                                var
-  ✓ JWT_SECRET .env-də                            1
-  ✓ JWT_MUDDET .env-də                            1
+  ✓ admin     → 200                                  200
+  ✓ muhendis  → 200                                  200
+  ✓ maliyyeci → 200                                  200
+  ✓ baxici    → 200                                  200
+  ✓ tokensiz  → 401                                  401
+  ✓ rejim = demo (açar boş)                          demo
+  ✓ olcu = 64                                          64
+  ✓ resept_sayi = 10                                   10
+  ✓ vektor bazası JSONB-dir                           var
 
 ════════════════════════════════════════════════════════════
-  2 · DTO VALİDASİYASI (rol tələb olunmur — @Public)
+  3 · GET /ai/reseptler — 10 resept və SIRA qaydası
 ════════════════════════════════════════════════════════════
-  ✓ login: düzgün email + şifrə                200
-  ✓ login: email formatı səhv                    400
-  ✓ login: şifrə 6-dan qısa                     400
-  ✓ login: boş cisim                              400
+  ✓ resept sayı = 10                                  10
+  ✓ hər reseptdə 'açar' sahəsi                     10
+  ✓ hər reseptdə 'izah' sahəsi                      10
+  ✓ tokensiz → 401                                   401
+  ✓ «orta maaş» resepti mövcuddur                  var
+  ✓ «ümumi maaş» resepti mövcuddur                var
+  ✓ xüsusi resept ümumidən ƏVVƏLdir               var
 
 ════════════════════════════════════════════════════════════
-  3 · @Public() — TOKENSİZ AÇIQ ENDPOINT-LƏR
+  4 · POST /ai/sual — təbii dil → cədvəl (LLM SQL YAZMIR)
 ════════════════════════════════════════════════════════════
-  ✓ GET  /saglamliq                                200
-  ✓ GET  /                                         200
-  ✓ POST /auth/login                               200
+  ✓ «Neçə əməkdaş var?» → 200                 200
+  ✓ uygun_resept = true                                true
+  ✓ izah = «Ümumi əməkdaş sayı»                 Ümumi əməkdaş sayı
+  ✓ setir_sayi ≥ 1                                   var
+  ✓ «Orta maaş…» → xüsusi resept               Orta əmək haqqı
+  ✓ «Orta maaş…» SƏHV reseptə düşmür         yox
+  ✓ «Ən çox maaş…» → ümumi resept            Ən çox maaş alan 5 nəfər
+  ✓ naməlum sual → uygun_resept = false             false
+  ✓ naməlum sual → setir_sayi = 0                   0
+  ✓ naməlum sual → 500 DEYİL                       200
+  ✓ naməlum sual → mövcud reseptləri sadalayır   var
+  ✓ boş sual → 400                                  400
+  ✓ 2 simvolluq sual → 400                           400
+  ✓ sual sahəsi yoxdur → 400                        400
+  ✓ tokensiz → 401                                   401
 
 ════════════════════════════════════════════════════════════
-  4 · JwtAuthGuard — TOKENSİZ 401
+  5 · SQL inyeksiya cəhdi — SQL KODDADIR, bazaya çatmır
 ════════════════════════════════════════════════════════════
-  ✓ GET  /struktur/merkezler                       401
-  ✓ GET  /kadrlar/emekdaslar                       401
-  ✓ GET  /auth/profil                              401
-  ✓ GET  /auth/istifadeciler                       401
-  ✓ POST /struktur/merkezler                       401
-  ✓ səhv token                                    401
-  ✓ prefikssiz yol                                 404
+  ✓ inyeksiya mətni reseptə uyğun gəlir            true
+  ✓ …amma 200 qaytarır (xəta yox)                  200
+  ✓ uyğunsuz inyeksiya → uygun_resept = false       false
+  ✓ struktur.merkezler cədvəli SALAMATDIR            10
+  ✓ kadrlar.emekdaslar cədvəli SALAMATDIR            14
+  ✓ struktur.merkezler hələ də mövcuddur           t
+  ✓ kadrlar.emekdaslar hələ də mövcuddur           t
 
 ════════════════════════════════════════════════════════════
-  5 · LOGIN VƏ TOKEN STRUKTURU
+  6 · POST /ai/rag — kosinus oxşarlığı, azalan sıra
 ════════════════════════════════════════════════════════════
-  ✓ cavabda token var                              1
-  ✓ cavabda istifadeci var                         1
-  ✓ cavabda bitme var                              1
-  ✓ ⚠️ parol_hash SIZMIR                       0
-  ✓ ⚠️ bcrypt hash SIZMIR                      0
-  ✓ token 3 hissəli                               3
-  ✓ token payload: rol=admin                       admin
-  ✓ token müddəti 8 saat                         8
-  ✓ GET /auth/profil (tokenlə)                    200
+  ✓ rag → 200                                        200
+  ✓ default limit = 3                                  3
+  ✓ hər nəticədə sened_id var                      3
+  ✓ hər nəticədə oxsarlıq var                     3
+  ✓ oxşarlıqlar AZALAN sıradadır                   
+  ✓ ballar 0..1 aralığındadır                      
+  ✓ normallaşdırma: vahid vektor uzunluğu           var
+  ✓ limit=1 → 1 nəticə                             1
+  ✓ limit=11 → 400 (Max 10)                          400
+  ✓ limit=0 → 400 (Min 1)                            400
+  ✓ tokensiz → 401                                   401
 
 ════════════════════════════════════════════════════════════
-  6 · TIMING ATTACK QORUMASI (rol tələb olunmur)
+  7 · POST /ai/cavab — API açarı OLMADAN işləyir
 ════════════════════════════════════════════════════════════
-  ✓ mövcud olmayan e-poçt → mesaj              E-poçt və ya şifrə yanlışdır
-  ✓ səhv şifrə → EYNİ mesaj                  E-poçt və ya şifrə yanlışdır
-  ✓ vaxt fərqi &lt; 20 ms                            1
-  mövcud deyil: 0.050903s · mövcud: 0.051185s
+  ✓ cavab → 200                                      200
+  ✓ demo = true                                        true
+  ✓ model adında «demo» işarəsi                   var
+  ✓ cavab boş deyil                                   var
+  ✓ istifadə_olunan_senedler var                      var
+  ✓ token_sayi = 0 (demo)                              0
 
 ════════════════════════════════════════════════════════════
-  7 · RBAC — POST /struktur/merkezler (admin, muhendis → 201)
+  8 · POST /ai/vektorlasdir — RBAC (yalnız admin, mühendis)
 ════════════════════════════════════════════════════════════
-  ✓ admin → 201                                  201
-  ✓ muhendis → 201                               201
-  ✓ maliyyeci → 403                              403
-  ✓ baxici → 403                                 403
+  ✓ admin     → 200                                  200
+  ✓ muhendis  → 200                                  200
+  ✓ maliyyeci → 403                                  403
+  ✓ baxici    → 403                                  403
+  ✓ tokensiz  → 401                                  401
+  ✓ 403 → xeta.kod = ICAZE_YOXDUR                    var
+  ✓ vektorlaşdırmadan sonra embedding &gt; 0            var
 
 ════════════════════════════════════════════════════════════
-  8 · RBAC — DELETE /struktur/merkezler/:id (yalnız admin)
+  9 · GET /ixrac/*.xlsx — həqiqi Excel faylı
 ════════════════════════════════════════════════════════════
-  ✓ muhendis → 403                               403
-  ✓ maliyyeci → 403                              403
-  ✓ baxici → 403                                 403
-  ✓ admin → 200                                  200
-  ✓ ⚠️ bağlı mərkəz → 409 (500 DEYİL)   409
+  ✓ merkezler.xlsx → 200                             200
+  ✓ emekdaslar.xlsx → 200                            200
+  ✓ Content-Type düzgündür                          application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+  ✓ Content-Disposition = attachment                   var
+  ✓ fayl adı .xlsx ilə bitir                         var
+  ✓ merkezler PK baytları ilə başlayır             504b
+  ✓ emekdaslar PK baytları ilə başlayır            504b
+  ✓ merkezler ölçüsü &gt; 5000 bayt                   var
+  ✓ emekdaslar ölçüsü &gt; 5000 bayt                  var
+  ✓ file: merkezler = Excel 2007+                      var
+  ✓ file: emekdaslar = Excel 2007+                     var
+  ✓ merkezler: Excel sətri = baza + başlıq          11
+  ✓ emekdaslar: Excel sətri = baza + başlıq         15
+  ✓ Excel boş deyil (başlıqdan çox sətir)         var
+  ✓ baxici    → merkezler.xlsx 200                   200
+  ✓ maliyyeci → emekdaslar.xlsx 200                  200
+  ✓ tokensiz  → 401                                  401
 
 ════════════════════════════════════════════════════════════
-  9 · RBAC — GET /auth/istifadeciler (yalnız admin)
+  10 · ADDIM 8 — Docker, docker-compose, GitHub Actions
 ════════════════════════════════════════════════════════════
-  ✓ admin → 200                                  200
-  ✓ muhendis → 403                               403
-  ✓ maliyyeci → 403                              403
-  ✓ baxici → 403                                 403
+  ✓ Dockerfile → FROM node                           var
+  ✓ Dockerfile çoxmərhələlidir (2+ FROM)           var
+  ✓ Dockerfile → prisma generate                     var
+  ✓ Dockerfile yalnız istehsalat asılılıqları     var
+  ✓ .dockerignore → node_modules                     var
+  ✓ compose → postgres xidməti                      var
+  ✓ compose → depends_on                             var
+  ✓ CI → npm ci                                      var
+  ✓ CI → npm run build                               var
+  ✓ CI → vitest.config.e2e.ts                        var
+  ✓ CI → postgres health check                       var
 
 ════════════════════════════════════════════════════════════
-  10 · RBAC — OXUMA (GET) BÜTÜN ROLLAR ÜÇÜN AÇIQ
+  11 · Bütün marshrutlar — Backend-4 sonrası
 ════════════════════════════════════════════════════════════
-  ✓ admin     → GET /struktur/merkezler          200
-  ✓ muhendis  → GET /struktur/merkezler          200
-  ✓ maliyyeci → GET /struktur/merkezler          200
-  ✓ baxici    → GET /struktur/merkezler          200
-  ✓ baxici    → GET /kadrlar/emekdaslar          200
+  ✓ Swagger cavab verir                                var
+  ✓ fərqli yol sayı = 20                             20
+  ✓ AI marshrutları = 6                               6
+  ✓ ixrac marshrutları = 2                            2
+  ✓ auth marshrutları = 4                             4
+  ✓ kadrlar marshrutları = 3                          3
+  ✓ struktur marshrutları = 3                         3
+  ✓ metod+yol cütü = 23                              23
 
 ════════════════════════════════════════════════════════════
-  11 · 403 CAVABININ STRUKTURU
+  12 · ADDIM 10 — unit və e2e testlər
 ════════════════════════════════════════════════════════════
-  ✓ xeta.kod = ICAZE_YOXDUR                        1
-  ✓ mesajda tələb olunan rol                     1
-  ✓ mesajda istifadəçinin rolu                   1
-  ✓ cavabda ugur:false                             1
+  ✓ unit testlər keçir = 42                          42
+  ✓ e2e testlər keçir = 39                           39
+  ✓ cəmi test = 81                                    81
 
 ════════════════════════════════════════════════════════════
-  12 · ADMIN SUPER-ROL
-════════════════════════════════════════════════════════════
-  ✓ admin → @Roles('admin') endpoint             200
-  ✓ admin → @Roles('admin','muhendis') endpoint  200
-  ✓ admin → qeydiyyat hüququ                    201
-  ✓ baxici → qeydiyyat qadağan                  403
-
-════════════════════════════════════════════════════════════
-  13 · AuditInterceptor — JURNAL
-════════════════════════════════════════════════════════════
-  ✓ POST → jurnal +1                             1
-  ✓ ⚠️ 3 × GET → jurnal +0                  2332
-  ✓ cədvəl adı struktur.merkezler               1
-  ✓ əməliyyat POST                               1
-  ✓ istifadəçi email-i yazılıb                 1
-  ✓ ⚠️ uğursuz əməliyyat da yazılır       1
-
-════════════════════════════════════════════════════════════
-  14 · SEED SKRİPTİ
-════════════════════════════════════════════════════════════
-  ✓ seed:auth əmri var                            1
-  ✓ seed-auth.ts var                               var
-  ✓ ⚠️ İDEMPOTENT: 2-ci işə salma           4
-  ✓ hər roldan 1 nəfər                          4
-  ✓ şifrələr hash-lənib                        0
-
-════════════════════════════════════════════════════════════
-  15 · TESTLƏR (unit + e2e)
-════════════════════════════════════════════════════════════
-  ✓ unit testlər keçir                           1
-  → 29 unit test
-  ✓ e2e testlər keçir                            1
-  → 39 e2e test
-
-════════════════════════════════════════════════════════════
-  NƏTİCƏ:  72 keçdi
-  ✅ BACKEND-3-ÜN BÜTÜN YENİLİKLƏRİ İŞLƏYİR
+  ✓ BÜTÜN YENİLİKLƏR İŞLƏYİR — 122 yoxlama keçdi
 ════════════════════════════════════════════════════════════</code></pre>
       <div class="oldu">
         <span class="oldu-basliq">✔ Nəticə</span>
-        <p><strong>Backend-3-ün bütün yenilikləri işləyir — 72 yoxlama, 0 xəta.</strong>
+        <p><strong>Backend-4-ün bütün yenilikləri işləyir — 122 yoxlama, 0 xəta.</strong>
 Çıxışı yuxarıdan aşağı oxusanız, dərsin hər addımının canlı sübutunu görürsünüz:
 <ul>
-  <li><strong>Bölmə 1–2:</strong> paketlər, açar və DTO validasiyası —
-      autentifikasiyanın <em>giriş qapısı</em>.</li>
-  <li><strong>Bölmə 3–4:</strong> <code>@Public()</code> açıqdır, qalan hər şey
-      <code>401</code> verir — yəni API <strong>bağlıdır</strong>.</li>
-  <li><strong>Bölmə 5–6:</strong> token 3 hissəli, 8 saatlıq və
-      <code>parol_hash</code> sızmır; timing fərqi
-      <strong>0.000053 saniyədir</strong> (50.898 ms vs 50.845 ms) — bu, saxta
-      hash-ın işlədiyini sübut edir.</li>
-  <li><strong>Bölmə 7–12:</strong> RBAC matrisi tam gözlənilən kimidir —
-      <code>admin</code> hər şeyi edir, <code>muhendis</code> yaradır amma silmir,
-      <code>maliyyeci</code> və <code>baxici</code> yalnız oxuyur.</li>
-  <li><strong>Bölmə 13:</strong> audit jurnalı yalnız yazma əməliyyatlarını yazır;
-      üç GET sorğusu jurnala <strong>heç nə</strong> əlavə etməyib.</li>
-  <li><strong>Bölmə 14–15:</strong> seed idempotentdir və
-      <strong>29 unit + 39 e2e = 68 test</strong> keçir.</li>
+  <li><strong>Bölmə 1:</strong> 13 yeni fayl yerindədir, <code>exceljs</code>
+      quraşdırılıb və <code>DEEPSEEK_API_KEY</code> <strong>boşdur</strong> —
+      yəni aşağıdaki bütün AI nəticələri API açarı olmadan alınıb.</li>
+  <li><strong>Bölmə 3:</strong> 10 reseptin <em>sırası</em> yoxlanılır: xüsusi
+      «orta maaş» ümumi «maaş»-dan əvvəldir. Bu, ADDIM 4-də tapılan real
+      səhvin bir daha təkrarlanmamasını təmin edir.</li>
+  <li><strong>Bölmə 5:</strong> <code>'; DROP TABLE struktur.merkezler; --</code>
+      mətni göndərilir, server <code>200</code> qaytarır və cədvəl
+      <strong>10 sətirlə yerində qalır</strong>. Səbəb sadədir: SQL koddadır,
+      istifadəçi mətnindən SQL-ə <em>heç nə</em> düşmür.</li>
+  <li><strong>Bölmə 6:</strong> RAG nəticələri azalan sıradadır və ballar
+      <code>0..1</code> aralığındadır — normallaşdırma işləyir.</li>
+  <li><strong>Bölmə 8:</strong> vektorlaşdırma rol ilə qorunur:
+      <code>admin</code>/<code>muhendis</code> <code>200</code>,
+      <code>maliyyeci</code>/<code>baxici</code> <code>403</code>.</li>
+  <li><strong>Bölmə 9:</strong> Excel faylları <code>PK</code> baytları ilə
+      başlayır (həqiqi ZIP konteyneri) və sətir sayı <strong>bazadakı ilə
+      üst-üstə düşür</strong> — 10 mərkəz + başlıq = 11 sətir.</li>
+  <li><strong>Bölmə 11–12:</strong> 20 fərqli yol, 23 metod+yol cütü və
+      <strong>42 unit + 39 e2e = 81 test</strong> keçir.</li>
 </ul>
-<p>Bu andan etibarən <strong>Backend-3 tamamlandı</strong> sayılır. Növbəti dərs
-(Backend-4) AI qatından başlayır: DeepSeek API inteqrasiyası, RAG vektor
-axtarışı, təbii dil → SQL kəməkçisi, Excel/PDF ixracı və Docker ilə
-yerləşdirmə.</p></p>
+<p>Bu andan etibarən <strong>backend tamamlandı</strong> sayılır. Növbəti
+mərhələ frontend-dir: eyni API-ni brauzerdə göstərən interfeys.</p></p>
       </div>
     </div>
 
   </div>
   <div class="addim-icmal">
-    <span>Addım 14 / 11</span>
+    <span>Addım 11 / 11</span>
     <span>A · niyə</span><span>B · kod</span>
     <span>C · yoxlama</span><span>D · durum</span>
   </div>
