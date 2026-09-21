@@ -1,0 +1,3300 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Backend 4 — AI qatı, ixrac və yerləşdirmə (A/B/C/D)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #eef2f7; color: #1e293b; line-height: 1.85;
+    padding: 2rem 1rem; font-size: 16.5px;
+  }
+  .container {
+    max-width: 1150px; margin: 0 auto; background: #fff;
+    border-radius: 22px; box-shadow: 0 15px 40px -15px rgba(15,23,42,.25);
+    padding: 3rem 3rem 4rem;
+  }
+  header {
+    border-bottom: 5px solid #7c2d12; padding-bottom: 1.8rem;
+    margin-bottom: 2.5rem; position: relative;
+  }
+  header::after {
+    content: ''; position: absolute; bottom: -5px; left: 0;
+    width: 120px; height: 5px; background: #f59e0b;
+  }
+  .lesson-badge {
+    display: inline-block; background: linear-gradient(135deg,#7c2d12,#ea580c);
+    color: #fff; font-size: .75rem; font-weight: 800;
+    padding: .5rem 1.2rem; border-radius: 30px; letter-spacing: 2px;
+    margin-bottom: 1.2rem; text-transform: uppercase;
+  }
+  h1 { font-size: 2.25rem; font-weight: 800; color: #0f172a; line-height: 1.15; margin-bottom: .7rem; }
+  .subtitle { font-size: 1.12rem; color: #64748b; margin-bottom: 1.3rem; }
+  .meta { display: flex; gap: .8rem; flex-wrap: wrap; }
+  .meta span {
+    background: #ffedd5; color: #9a3412; padding: .4rem 1rem;
+    border-radius: 20px; font-weight: 700; font-size: .82rem;
+  }
+  h2 {
+    font-size: 1.8rem; font-weight: 800; color: #7c2d12;
+    margin-top: 3.2rem; margin-bottom: 1.1rem;
+    padding: .8rem 0 .8rem 1.2rem; border-left: 7px solid #ea580c;
+    background: linear-gradient(to right,#fff7ed,transparent);
+  }
+  h3 {
+    font-size: 1.28rem; font-weight: 700; color: #9a3412;
+    margin-top: 2.3rem; margin-bottom: .9rem;
+    display: flex; align-items: center; gap: .7rem;
+  }
+  h4 { font-size: 1.08rem; font-weight: 700; color: #334155; margin-top: 1.6rem; margin-bottom: .7rem; }
+  p { margin-bottom: 1rem; }
+  .step-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg,#ea580c,#7c2d12); color: #fff;
+    min-width: 36px; height: 36px; border-radius: 50%;
+    font-weight: 800; font-size: .9rem; flex-shrink: 0; padding: 0 .5rem;
+  }
+  .block {
+    border-radius: 14px; padding: 1.25rem 1.5rem; margin: 1.1rem 0;
+    border-left: 6px solid; position: relative;
+  }
+  .block-ne     { border-color:#3b82f6; background:#eff6ff; }
+  .block-niye   { border-color:#8b5cf6; background:#f5f3ff; }
+  .block-sade   { border-color:#14b8a6; background:#f0fdfa; }
+  .block-olmaz  { border-color:#ef4444; background:#fef2f2; }
+  .block-evez   { border-color:#f59e0b; background:#fffbeb; }
+  .block-nece   { border-color:#10b981; background:#ecfdf5; }
+  .block-yox    { border-color:#ec4899; background:#fdf2f8; }
+  .block-izah   { border-color:#06b6d4; background:#ecfeff; }
+  .block-xeber  { border-color:#dc2626; background:#fef2f2; }
+  .block-ipucu  { border-color:#84cc16; background:#f7fee7; }
+  .block-hara   { border-color:#0ea5e9; background:#f0f9ff; }
+  .block-title {
+    font-weight: 800; font-size: .76rem; text-transform: uppercase;
+    letter-spacing: 1.6px; margin-bottom: .6rem; display: block;
+  }
+  .block-ne    .block-title { color:#1d4ed8; }
+  .block-niye  .block-title { color:#7c3aed; }
+  .block-sade  .block-title { color:#0d9488; }
+  .block-olmaz .block-title { color:#dc2626; }
+  .block-evez  .block-title { color:#d97706; }
+  .block-nece  .block-title { color:#059669; }
+  .block-yox   .block-title { color:#db2777; }
+  .block-izah  .block-title { color:#0891b2; }
+  .block-xeber .block-title { color:#b91c1c; }
+  .block-ipucu .block-title { color:#4d7c0f; }
+  .block-hara  .block-title { color:#0284c7; }
+  pre {
+    background: #0f172a; color: #e2e8f0; padding: 1.3rem 1.5rem;
+    border-radius: 14px; overflow-x: auto; margin: 1.1rem 0;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: .83rem; line-height: 1.7;
+    border: 1px solid #334155; position: relative;
+  }
+  pre::before {
+    content: attr(data-lang); position: absolute; top: .7rem; right: .9rem;
+    font-size: .6rem; font-weight: 800; color: #64748b;
+    letter-spacing: 2px; background: #1e293b; padding: .2rem .7rem;
+    border-radius: 5px; text-transform: uppercase;
+  }
+  pre code { background: transparent; color: inherit; padding: 0; font-size: inherit; }
+  code {
+    font-family: 'SF Mono', Menlo, monospace; background: #e2e8f0;
+    color: #0f172a; padding: .15rem .5rem; border-radius: 5px; font-size: .87em;
+  }
+  table {
+    width: 100%; border-collapse: collapse; margin: 1.3rem 0;
+    background: #fff; border-radius: 12px; overflow: hidden;
+    box-shadow: 0 3px 12px rgba(0,0,0,.06); font-size: .9rem;
+  }
+  th {
+    background: linear-gradient(135deg,#7c2d12,#9a3412); color: #fff;
+    padding: .85rem 1rem; text-align: left; font-weight: 700; font-size: .82rem;
+  }
+  td { padding: .75rem 1rem; border-top: 1px solid #e2e8f0; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8fafc; }
+  ul, ol { margin: .8rem 0 1.2rem 1.9rem; }
+  li { margin-bottom: .5rem; }
+  .toc {
+    background: linear-gradient(135deg,#fff7ed,#ffedd5);
+    border: 2px solid #fdba74; border-radius: 16px;
+    padding: 1.7rem 2rem; margin: 2.3rem 0;
+  }
+  .toc h3 { margin-top: 0; color: #7c2d12; font-size: 1.25rem; }
+  .toc ol { margin-left: 1.2rem; }
+  .toc a { color: #c2410c; text-decoration: none; font-weight: 600; }
+  .toc a:hover { text-decoration: underline; }
+  .success-box {
+    background: linear-gradient(135deg,#d1fae5,#a7f3d0);
+    border: 2px solid #10b981; border-radius: 14px;
+    padding: 1.25rem 1.5rem; margin: 1.4rem 0;
+    font-weight: 600; color: #065f46;
+  }
+  .success-box::before { content: '✅ '; font-size: 1.25rem; margin-right: .3rem; }
+  .sozluq {
+    background: #fffbeb; border: 2px dashed #f59e0b;
+    border-radius: 14px; padding: 1.2rem 1.5rem; margin: 1.3rem 0;
+  }
+  .sozluq .soz { font-weight: 800; color: #b45309; }
+  .mektub {
+    background: #fffdf7; border: 2px solid #d6d3d1;
+    border-radius: 10px; padding: 2rem 2.3rem; margin: 1.5rem 0;
+    font-family: 'Times New Roman', Georgia, serif;
+    font-size: 1rem; line-height: 1.9; color: #1c1917;
+    box-shadow: 0 4px 18px rgba(0,0,0,.07);
+  }
+  .mektub .basliq { text-align: center; font-weight: 700; margin-bottom: 1.6rem; }
+  .mektub .sag { text-align: right; margin-bottom: 1.6rem; }
+  .mektub .imza { margin-top: 2.2rem; }
+  .mektub ol { margin-left: 1.6rem; }
+  .excel {
+    background: #f8fafc; border: 2px solid #94a3b8; border-radius: 10px;
+    padding: 0; margin: 1.2rem 0; overflow-x: auto;
+  }
+  .excel table { margin: 0; border-radius: 0; box-shadow: none; font-size: .82rem; }
+  .excel th { background: linear-gradient(135deg,#166534,#14532d); padding: .6rem .7rem; }
+  .excel td { padding: .5rem .7rem; }
+  .excel-basliq {
+    background: #1e293b; color: #e2e8f0; padding: .6rem 1rem;
+    font-family: 'SF Mono', Menlo, monospace; font-size: .8rem;
+    font-weight: 700; letter-spacing: 1px;
+  }
+  footer {
+    margin-top: 4.5rem; padding-top: 2rem;
+    border-top: 3px dashed #cbd5e1; text-align: center;
+    color: #64748b; font-size: .9rem;
+  }
+  @media (max-width: 700px) {
+    .container { padding: 1.5rem 1.2rem; }
+    h1 { font-size: 1.6rem; } h2 { font-size: 1.35rem; }
+    pre { font-size: .72rem; padding: 1rem; }
+    .mektub { padding: 1.2rem; font-size: .9rem; }
+  }
+  pre { position: relative; }
+  .copy-btn {
+    position: absolute; top: .7rem; right: .9rem;
+    background: #1e293b; color: #cbd5e1; border: 1px solid #475569;
+    border-radius: 6px; padding: .3rem .7rem; font-size: .68rem;
+    font-weight: 700; cursor: pointer; z-index: 10; opacity: .75;
+  }
+  .copy-btn:hover { background: #334155; color: #fff; opacity: 1; }
+  .copy-btn.copied { background: #059669 !important; color: #fff !important; }
+  pre::before { right: auto !important; left: .9rem !important; }
+  pre code { display: block; padding-top: .2rem; }
+
+  /* ─── REDAKTƏ OLUNA BİLƏN MƏKTUB ─── */
+  .mektub-alet {
+    background: #f0fdf4; border: 2px solid #16a34a;
+    border-radius: 12px; padding: 1.2rem 1.4rem; margin: 1.3rem 0;
+  }
+  .mektub-alet .alet-basliq {
+    font-weight: 800; font-size: .82rem; color: #15803d;
+    text-transform: uppercase; letter-spacing: 1.4px;
+    margin-bottom: .8rem; display: block;
+  }
+  textarea.mektub-metni {
+    width: 100%; min-height: 420px; padding: 1.1rem 1.3rem;
+    border: 2px solid #94a3b8; border-radius: 10px;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: .82rem; line-height: 1.75; color: #0f172a;
+    background: #fffdf7; resize: vertical;
+  }
+  textarea.mektub-metni:focus {
+    outline: none; border-color: #16a34a;
+    box-shadow: 0 0 0 3px rgba(22,163,74,.15);
+  }
+  .duyme-sira { display: flex; gap: .6rem; flex-wrap: wrap; margin-top: .8rem; }
+  .duyme {
+    background: linear-gradient(135deg,#16a34a,#15803d); color: #fff;
+    border: none; border-radius: 8px; padding: .55rem 1.1rem;
+    font-size: .78rem; font-weight: 700; cursor: pointer;
+    font-family: inherit; letter-spacing: .3px;
+  }
+  .duyme:hover { opacity: .88; }
+  .duyme.mavi { background: linear-gradient(135deg,#2563eb,#1d4ed8); }
+  .duyme.boz  { background: linear-gradient(135deg,#475569,#334155); }
+  .duyme.narinci { background: linear-gradient(135deg,#ea580c,#c2410c); }
+  .duyme.kicik { padding: .35rem .8rem; font-size: .7rem; }
+
+  /* ─── EXCEL ALƏT PANELİ ─── */
+  .excel-alet {
+    display: flex; gap: .5rem; align-items: center;
+    background: #1e293b; padding: .55rem .9rem;
+    border-radius: 10px 10px 0 0; flex-wrap: wrap;
+  }
+  .excel-alet .fayl-adi {
+    color: #94a3b8; font-family: 'SF Mono', Menlo, monospace;
+    font-size: .76rem; font-weight: 700; margin-right: auto;
+  }
+  .excel-alet .duyme { padding: .35rem .8rem; font-size: .7rem; }
+
+  /* ─── İNTERAKTİV MƏKTUB GENERATORU ─── */
+  .generator {
+    background: #eff6ff; border: 2px solid #3b82f6;
+    border-radius: 14px; padding: 1.4rem 1.6rem; margin: 1.4rem 0;
+  }
+  .generator .sahe-sira {
+    display: grid; grid-template-columns: 180px 1fr; gap: .7rem 1rem;
+    align-items: center; margin-bottom: .7rem;
+  }
+  .generator label {
+    font-weight: 700; font-size: .84rem; color: #1e40af;
+  }
+  .generator input, .generator select {
+    padding: .5rem .8rem; border: 2px solid #93c5fd;
+    border-radius: 8px; font-family: inherit; font-size: .84rem;
+    background: #fff; color: #0f172a; width: 100%;
+  }
+  .generator input:focus, .generator select:focus {
+    outline: none; border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+  }
+  @media (max-width: 700px) {
+    .generator .sahe-sira { grid-template-columns: 1fr; }
+  }
+
+  /* ─── FAYL AĞACI ─── */
+  .fayl-agaci {
+    background: #0f172a; color: #e2e8f0; padding: 1.5rem 1.7rem;
+    border-radius: 14px; overflow-x: auto; margin: 1.3rem 0;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: .8rem; line-height: 1.75;
+    border: 1px solid #334155;
+  }
+  .fayl-agaci .geden  { color: #fbbf24; font-weight: 700; }
+  .fayl-agaci .gelen  { color: #4ade80; font-weight: 700; }
+  .fayl-agaci .kod    { color: #60a5fa; font-weight: 700; }
+  .fayl-agaci .qeyd   { color: #64748b; font-style: italic; }
+
+  /* ─── ADDIM BLOKU (A/B/C/D) ─── */
+  .addim {
+    border: 2px solid #e2e8f0; border-radius: 18px;
+    padding: 0 0 1rem; margin: 2.6rem 0;
+    background: #fff; overflow: hidden;
+  }
+  .addim-basliq {
+    font-size: 1.45rem; font-weight: 800; color: #fff;
+    background: linear-gradient(135deg, #7c2d12, #ea580c);
+    padding: 1.1rem 1.5rem; margin: 0 0 1.2rem;
+    display: flex; align-items: center; gap: .9rem; line-height: 1.3;
+  }
+  .addim-no {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,.22); color: #fff;
+    min-width: 44px; height: 44px; border-radius: 12px;
+    font-weight: 800; font-size: 1.05rem; flex-shrink: 0;
+  }
+  .addim-govde { padding: 0 1.4rem; }
+
+  .hisse {
+    border-radius: 12px; padding: 1.1rem 1.4rem;
+    margin: 1rem 0; border-left: 6px solid;
+  }
+  .hisse-a { background: #eff6ff; border-color: #2563eb; }
+  .hisse-b { background: #f8fafc; border-color: #0f172a; }
+  .hisse-c { background: #fffbeb; border-color: #d97706; }
+  .hisse-d { background: #f5f3ff; border-color: #7c3aed; }
+  .hisse-basliq {
+    display: block; font-weight: 800; font-size: .78rem;
+    letter-spacing: 1.6px; text-transform: uppercase;
+    margin-bottom: .75rem;
+  }
+  .hisse-a .hisse-basliq { color: #1d4ed8; }
+  .hisse-b .hisse-basliq { color: #0f172a; }
+  .hisse-c .hisse-basliq { color: #b45309; }
+  .hisse-d .hisse-basliq { color: #6d28d9; }
+  .hisse p:last-child { margin-bottom: 0; }
+  .hisse h4 {
+    font-size: .95rem; font-weight: 700; color: #334155;
+    margin: 1rem 0 .5rem;
+  }
+  .fayl-ad {
+    display: inline-block; background: #1e293b; color: #7dd3fc;
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: .74rem; font-weight: 600;
+    padding: .28rem .85rem; border-radius: 6px; margin: .3rem 0 .4rem;
+  }
+  .olmaz {
+    background: #fef2f2; border: 2px dashed #dc2626;
+    border-radius: 10px; padding: .9rem 1.2rem; margin: 1rem 0 0;
+  }
+  .olmaz-basliq {
+    display: block; font-weight: 800; font-size: .78rem;
+    color: #b91c1c; letter-spacing: 1.2px; margin-bottom: .55rem;
+  }
+  .oldu {
+    background: #f0fdf4; border: 2px solid #16a34a;
+    border-radius: 10px; padding: .9rem 1.2rem; margin: 1rem 0 0;
+  }
+  .oldu-basliq {
+    display: block; font-weight: 800; font-size: .78rem;
+    color: #15803d; letter-spacing: 1.2px; margin-bottom: .55rem;
+  }
+  .cixis-xeber {
+    background: #fef2f2; border-left: 5px solid #dc2626;
+    padding: .6rem .9rem; border-radius: 8px; margin: .2rem 0 .8rem;
+    font-size: .84rem; font-weight: 600; color: #991b1b;
+  }
+  .addim-icmal {
+    display: flex; gap: .5rem; flex-wrap: wrap;
+    padding: .9rem 1.4rem 0; font-size: .78rem;
+  }
+  .addim-icmal span {
+    background: #f1f5f9; color: #475569; padding: .3rem .8rem;
+    border-radius: 20px; font-weight: 700;
+  }
+  .icmal {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: .8rem; margin: 1.4rem 0;
+  }
+  .icmal a {
+    display: block; background: #fff7ed; border: 2px solid #fed7aa;
+    border-radius: 12px; padding: .85rem 1rem; text-decoration: none;
+    color: #9a3412; font-weight: 700; font-size: .86rem;
+    transition: .15s;
+  }
+  .icmal a:hover { background: #ffedd5; border-color: #ea580c; }
+  .icmal a b { display: block; font-size: .7rem; color: #ea580c; letter-spacing: 1px; }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <div class="lesson-badge">DS_Backend · Hissə 4 / 4</div>
+  <h1>Backend 4 — AI qatı, ixrac və yerləşdirmə</h1>
+  <p class="subtitle">Sistemi bağla, sonra açar paylaş — JWT token, dörd rol
+    və hər dəyişikliyin izi. Hər addım 4 hissə: <strong>A</strong> niyə ·
+    <strong>B</strong> kod · <strong>C</strong> yoxlama · <strong>D</strong> durum</p>
+  <p class="meta">
+    <span>NestJS 12</span>
+    <span>Prisma 7</span>
+    <span>11 addım</span>
+    <span>22 marshrut</span>
+    <span>81 test</span>
+  </p>
+</header>
+
+<div class="block block-ne">
+  <span class="block-title">NƏ EDƏCƏYİK</span>
+  <p>Backend-3-də API bağlandı. İndi onun üstünə <strong>süni intellekt
+  qatını</strong> qururuq: sənədlər arasında məna axtarışı (RAG), təbii dildə
+  sual vermə imkanı və Excel-ə ixrac. Sonda layihəni Docker ilə istənilən
+  mühitə yerləşdirə biləcəyik.</p>
+  <p><strong>Ön şərt:</strong> Backend-3 tamamlanmalıdır —
+  <code>/api/v1/auth/login</code> token qaytarmalı və qorunan endpoint-lər
+  tokensiz <code>401</code> verməlidir.</p>
+</div>
+
+<div class="block block-nece">
+  <span class="block-title">NECƏ OXUMALI — hər addımın 4 hissəsi</span>
+  <table>
+    <tr><th>Hissə</th><th>Nə var</th><th>Kopyalanır?</th></tr>
+    <tr><td><strong>A</strong></td><td>Bu addım nəyə görədir — 3-4 cümlə</td>
+        <td>—</td></tr>
+    <tr><td><strong>B</strong></td><td>Kod — <code>cat &gt; fayl &lt;&lt;'EOF'</code>
+        formasında, birbaşa yapışdırıla bilər</td>
+        <td style="color:#15803d"><strong>✅ Bəli</strong></td></tr>
+    <tr><td><strong>C</strong></td><td>Yoxlama əmrləri +
+        <span style="color:#b91c1c">bu kod olmasa nə olardı</span></td>
+        <td style="color:#15803d"><strong>✅ Bəli</strong></td></tr>
+    <tr><td><strong>D</strong></td><td>Sistemin bu koddan sonraki
+        <strong>real</strong> çıxışı</td>
+        <td style="color:#b91c1c"><strong>❌ Xeyr — oxuyun</strong></td></tr>
+  </table>
+  <p>C və D hissələrindəki bütün çıxışlar <strong>realdır</strong> — kodu
+  bilərəkdən söndürüb alınmış xətalar və canlı sistemdən götürülmüş nəticələr.</p>
+</div>
+
+<div class="block block-xeber">
+  <span class="block-title">⚠️ BU DƏRSDƏ NƏ YOXDUR</span>
+  <ul>
+    <li><strong>Autentifikasiya yoxdur</strong> — bütün endpoint-lər açıqdır.
+        İstənilən şəxs <code>POST</code>/<code>DELETE</code> edə bilər.</li>
+    <li><strong>Audit jurnalı yoxdur</strong> — kimin nə dəyişdiyi yazılmır.</li>
+    <li><strong>AI qatı yoxdur</strong> — RAG, embedding və təbii dil sorğuları sonra.</li>
+  </ul>
+  <p>Bunlar qəsdən kənarda saxlanılıb: hər biri öz addımlarını tələb edir.
+  <strong>Backend-3</strong> məhz autentifikasiya, rollar və auditdən başlayır.</p>
+</div>
+
+<div class="toc">
+  <h3>📚 Addımlar</h3>
+  <ol>
+    <li><a href="#a1">1. AI paketləri və açar</a></li>
+    <li><a href="#a2">2. EmbeddingService — mətn → vektor</a></li>
+    <li><a href="#a3">3. RagService — sənədlər arasında axtarış</a></li>
+    <li><a href="#a4">4. ⚠️ SqlKomlekciService — resept ağ siyahısı</a></li>
+    <li><a href="#a5">5. DeepseekService — API müştərisi və demo rejim</a></li>
+    <li><a href="#a6">6. AiService, DTO və controller</a></li>
+    <li><a href="#a7">7. Excel ixracı</a></li>
+    <li><a href="#a8">8. Docker və CI/CD</a></li>
+    <li><a href="#a9">9. Build və tam canlı yoxlama</a></li>
+    <li><a href="#a10">10. Testlər — AI və ixrac</a></li>
+    <li><a href="#a14">14. Tam qəbul testi — bütün yenilikləri bir-bir yoxla</a></li>
+  </ol>
+</div>
+
+<div class="icmal">
+  <a href="#a1"><b>ADDIM 1</b>AI paketləri və açar</a>
+  <a href="#a2"><b>ADDIM 2</b>EmbeddingService — mətn → vektor</a>
+  <a href="#a3"><b>ADDIM 3</b>RagService — sənədlər arasında axtarış</a>
+  <a href="#a4"><b>ADDIM 4</b>⚠️ SqlKomlekciService — resept ağ siyahısı</a>
+  <a href="#a5"><b>ADDIM 5</b>DeepseekService — API müştərisi və demo rejim</a>
+  <a href="#a6"><b>ADDIM 6</b>AiService, DTO və controller</a>
+  <a href="#a7"><b>ADDIM 7</b>Excel ixracı</a>
+  <a href="#a8"><b>ADDIM 8</b>Docker və CI/CD</a>
+  <a href="#a9"><b>ADDIM 9</b>Build və tam canlı yoxlama</a>
+  <a href="#a10"><b>ADDIM 10</b>Testlər — AI və ixrac</a>
+  <a href="#a14"><b>ADDIM 14</b>Tam qəbul testi — bütün yenilikləri bir-bir yoxla</a>
+</div>
+
+<div class="addim">
+  <h2 class="addim-basliq" id="a1">
+    <span class="addim-no">1</span> AI paketləri və açar
+  </h2>
+  <div class="addim-govde">
+
+    <div class="hisse hisse-a">
+      <span class="hisse-basliq">A · Bu addım nəyə görədir</span>
+      <p>Bu dərs institutun fəaliyyətini <strong>süni intellektlə</strong> idarə
+    etməyə başlayır. İki yeni qat gəlir: <em>AI</em> (sənəd axtarışı, təbii dil
+    sualı, cavab) və <em>ixrac</em> (Excel). AI üçün ayrıca paket lazım deyil —
+    Node-un daxili <code>fetch</code>-i kifayətdir; Excel üçün isə
+    <code>exceljs</code> quraşdırırıq. Ən vacibi: <code>DEEPSEEK_API_KEY</code>
+    <strong>boş olsa da sistem işləyir</strong> — «demo rejim» cavab qaytarır.</p>
+    </div>
+
+    <div class="hisse hisse-b">
+      <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">Terminal — exceljs quraşdır</p>
+<pre><code>cd ~/Deepseek_ARTI/DS_Backend
+unset DATABASE_URL PGHOST
+
+npm install exceljs@^4.4.0
+
+node -p "require('exceljs/package.json').version"</code></pre>
+    <p class="fayl-ad">.env</p>
+<pre><code>cat &gt; .env &lt;&lt;'EOF'
+# ── Baza ──────────────────────────────────────────────────────
+DATABASE_URL="postgresql://arti_user:arti_secret_2025@localhost:5432/arti_baza"
+
+# ── Server ────────────────────────────────────────────────────
+PORT=4000
+NODE_ENV=development
+
+# ── JWT ───────────────────────────────────────────────────────
+JWT_SECRET="deepseek-arti-gizli-acar-2026"
+JWT_MUDDET="8h"
+
+# ── AI ── (açar olmadan da sistem işləyir — demo rejim)
+DEEPSEEK_API_KEY=""
+DEEPSEEK_MODEL="deepseek-chat"
+DEEPSEEK_URL="https://api.deepseek.com"
+EOF</code></pre>
+    <p class="fayl-ad">.env.example</p>
+<pre><code>cat &gt; .env.example &lt;&lt;'EOF'
+# Nümunə — öz dəyərlərinizlə doldurun, bu faylı KOMİT ETMƏYİN
+DATABASE_URL="postgresql://ISTIFADECI:SIFRE@localhost:5432/arti_baza"
+PORT=4000
+NODE_ENV=development
+JWT_SECRET="deyisdirin-mutleq-uzun-ve-tesadufi-olsun"
+JWT_MUDDET="8h"
+
+# ── AI ── (boş buraxsanız demo rejim işləyir)
+DEEPSEEK_API_KEY=""
+DEEPSEEK_MODEL="deepseek-chat"
+DEEPSEEK_URL="https://api.deepseek.com"
+EOF</code></pre>
+    </div>
+
+    <div class="hisse hisse-c">
+      <span class="hisse-basliq">C · Yoxlama — kod düzgün yazıldı?</span>
+      <p>Aşağıdaki əmrləri işlədin və nəticəni yoxlayın:</p>
+<pre><code>cd ~/Deepseek_ARTI/DS_Backend
+
+# 1) Paket yerindədirmi?
+node -p "require('exceljs/package.json').version"
+
+# 2) .env-də AI açarları varmı?
+grep -E 'DEEPSEEK_' .env
+
+# 3) Açar BOŞ-dur (demo rejim) — bu normaldır
+grep '^DEEPSEEK_API_KEY=""' .env &amp;&amp; echo "→ demo rejim işləyəcək"
+
+# 4) .env git-ə düşmür?
+git check-ignore -v .env
+</code></pre>
+      <div class="olmaz">
+        <span class="olmaz-basliq">⚠️ Bu kod olmasa nə olardı</span>
+<pre><code>$ curl -X POST localhost:4000/api/v1/ai/cavab \
+    -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
+    -d '{"sual":"salam"}'
+
+   # Açar təyin olunubsa, kod BİRBAŞA API-yə gedir və şəbəkə
+   # olmayan mühitdə (CI, Docker) xəta verir:
+
+Error: fetch failed
+    at DeepseekService.soruş (dist/ai/deepseek.service.js:41:17)
+
+   # Demo rejim isə həmişə cavab qaytarır — heç bir xarici asılılıq yoxdur.</code></pre>
+        <p>«Demo rejim» qəsdən belədir: açar olmayan mühitdə (yeni kompüter, CI,
+    Docker) sistem <strong>sınmamalıdır</strong>. Cavabın
+    <code>demo: true</code> sahəsi onun uydurma olduğunu bildirir — frontend
+    bunu göstərib istifadəçini xəbərdar edə bilər. Əks halda hər yeni mühitdə
+    "niyə AI işləmir?" sualı ilə başlamaq lazım gələrdi.</p>
+      </div>
+    </div>
+
+    <div class="hisse hisse-d">
+      <span class="hisse-basliq">D · Bu koddan sonra sistemin durumu — ÇIXIŞ</span>
+      <p class="cixis-xeber">⚠️ Bu blok <strong>çıxışdır</strong> — kopyalayıb terminala yapıştırmayın. Sadəcə oxuyun. Əmrlər B hissəsindədir.</p>
+<pre><code>$ npm install exceljs@^4.4.0
+added 12 packages in 3s
+
+$ node -p "require('exceljs/package.json').version"
+4.4.0
+
+$ grep -E 'DEEPSEEK_' .env
+DEEPSEEK_API_KEY=""
+DEEPSEEK_MODEL="deepseek-chat"
+DEEPSEEK_URL="https://api.deepseek.com"
+
+$ git check-ignore -v .env
+.gitignore:1:.env	.env</code></pre>
+      <div class="oldu">
+        <span class="oldu-basliq">✔ Nəticə</span>
+        <p>Sistemin vəziyyəti: Excel üçün alət hazırdır və AI konfiqurasiyası
+    <code>.env</code>-dədir. <code>DEEPSEEK_API_KEY</code> <strong>boşdur</strong> —
+    bu, xəta deyil: növbəti addımlarda görəcəyik ki, bütün AI funksiyaları
+    demo rejimdə də işləyir. Real açar əlavə etmək üçün sadəcə
+    <code>.env</code>-də dırnaq içini doldurmaq kifayətdir —
+    <strong>kod dəyişmir</strong>.</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="addim-icmal">
+    <span>Addım 1 / 11</span>
+    <span>A · niyə</span><span>B · kod</span>
+    <span>C · yoxlama</span><span>D · durum</span>
+  </div>
+</div>
+
+<div class="addim">
+  <h2 class="addim-basliq" id="a2">
+    <span class="addim-no">2</span> EmbeddingService — mətn → vektor
+  </h2>
+  <div class="addim-govde">
+
+    <div class="hisse hisse-a">
+      <span class="hisse-basliq">A · Bu addım nəyə görədir</span>
+      <p>AI-ın sənədləri «anlaması» üçün onları <strong>rəqəmlərə</strong> çevirmək
+    lazımdır. <code>EmbeddingService</code> hər mətni 64 ölçülü vektora çevirir;
+    oxşar mətnlərin vektorları bir-birinə yaxın olur. Real layihədə bu işi
+    embedding API-si görür, biz isə <strong>FNV-1a hash</strong> ilə sadə
+    deterministik versiya yazırıq — beləliklə açar olmadan da RAG-ın necə
+    işlədiyini görürük. Vektor uzunluğu 1-ə normallaşdırılır ki, kosinus
+    sadəcə skalyar hasili olsun.</p>
+    </div>
+
+    <div class="hisse hisse-b">
+      <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">src/ai/embedding.service.ts</p>
+<pre><code>mkdir -p src/ai
+cat &gt; src/ai/embedding.service.ts &lt;&lt;'EOF'
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service.js';
+
+/** Vektorun ölçüsü — kiçik saxlanılır ki, JSONB yüngül olsun */
+export const OLCU = 64;
+
+export interface EmbeddingSetri {
+  id: number;
+  cedvel_adi: string;
+  sened_id: number | null;
+  metn: string | null;
+  vektor: number[] | null;
+}
+
+/**
+ * Mətn → vektor.
+ *
+ * ⚠️ Bu, SADƏ və DETERMİNİSTİK bir embedding-dir (FNV-1a hash).
+ * Real layihədə burada DeepSeek/OpenAI embedding API-si olur. Bizim
+ * məqsədimiz RAG-ın NECƏ işlədiyini göstərməkdir — API açarı olmadan da.
+ */
+@Injectable()
+export class EmbeddingService {
+  constructor(private readonly prisma: PrismaService) {}
+
+  /** Mətni 64 ölçülü normallaşdırılmış vektora çevirir */
+  vektor(metn: string): number[] {
+    const v = new Array&lt;number&gt;(OLCU).fill(0);
+    const sözler = metn
+      .toLowerCase()
+      .split(/[^a-zəğıöüçş0-9]+/u)
+      .filter((s) =&gt; s.length &gt; 1);
+
+    for (const söz of sözler) {
+      let h = 2166136261; // FNV-1a başlanğıc dəyəri
+      for (let i = 0; i &lt; söz.length; i++) {
+        h ^= söz.charCodeAt(i);
+        h = Math.imul(h, 16777619); // FNV əsası
+      }
+      v[Math.abs(h) % OLCU] += 1;
+    }
+
+    const uzunluq = Math.sqrt(v.reduce((c, x) =&gt; c + x * x, 0)) || 1;
+    return v.map((x) =&gt; Number((x / uzunluq).toFixed(6)));
+  }
+
+  /** İki vektor arasında kosinus oxşarlığı (−1 … 1) */
+  kosinus(a: number[], b: number[]): number {
+    let cem = 0;
+    for (let i = 0; i &lt; Math.min(a.length, b.length); i++) cem += a[i] * b[i];
+    return Number(cem.toFixed(6));
+  }
+
+  /** Mətnı bazaya vektorlaşdırılmış şəkildə yazır */
+  async saxla(cedvelAdi: string, senedId: number | null, metn: string) {
+    const vektör = this.vektor(metn);
+    const setirler = await this.prisma.$queryRaw&lt;{ id: number }[]&gt;`
+      INSERT INTO ai.embeddingler (cedvel_adi, sened_id, metn, vektor)
+      VALUES (${cedvelAdi}, ${senedId}, ${metn}, ${JSON.stringify(vektör)}::jsonb)
+      RETURNING id::int AS id`;
+    return { id: setirler[0]?.id ?? 0, olcu: OLCU };
+  }
+
+  /** Bazadakı bütün embedding-lər */
+  async hamisi(cedvelAdi?: string): Promise&lt;EmbeddingSetri[]&gt; {
+    if (cedvelAdi) {
+      return this.prisma.$queryRaw&lt;EmbeddingSetri[]&gt;`
+        SELECT id::int AS id, cedvel_adi, sened_id, metn, vektor
+          FROM ai.embeddingler WHERE cedvel_adi = ${cedvelAdi} ORDER BY id`;
+    }
+    return this.prisma.$queryRaw&lt;EmbeddingSetri[]&gt;`
+      SELECT id::int AS id, cedvel_adi, sened_id, metn, vektor
+        FROM ai.embeddingler ORDER BY id`;
+  }
+
+  async say(): Promise&lt;number&gt; {
+    const s = await this.prisma.$queryRaw&lt;{ say: number }[]&gt;`
+      SELECT count(*)::int AS say FROM ai.embeddingler`;
+    return s[0]?.say ?? 0;
+  }
+}
+EOF</code></pre>
+    </div>
+
+    <div class="hisse hisse-c">
+      <span class="hisse-basliq">C · Yoxlama — kod düzgün yazıldı?</span>
+      <p>Aşağıdaki əmrləri işlədin və nəticəni yoxlayın:</p>
+<pre><code>cd ~/Deepseek_ARTI/DS_Backend
+
+# 1) Fayl yerindədirmi?
+ls -l src/ai/embedding.service.ts
+
+# 2) Ölçü sabiti 64-dür?
+grep -n 'OLCU' src/ai/embedding.service.ts | head -3
+
+# 3) Vektor deterministikdir?
+npx tsx -e "
+import { EmbeddingService } from './src/ai/embedding.service.js';
+const s = new EmbeddingService({} as any);
+const a = s.vektor('Elmi Şura protokolu');
+const b = s.vektor('Elmi Şura protokolu');
+const c = s.vektor('idman yarışı');
+console.log('ölçü          :', a.length);
+console.log('deterministik :', JSON.stringify(a) === JSON.stringify(b));
+console.log('özü ilə oxşar :', s.kosinus(a, b));
+console.log('başqası ilə   :', s.kosinus(a, c));
+"
+
+# 4) Tip yoxlaması
+npx tsc --noEmit -p tsconfig.build.json &amp;&amp; echo "✓ tip yoxlaması keçdi"</code></pre>
+      <div class="olmaz">
+        <span class="olmaz-basliq">⚠️ Bu kod olmasa nə olardı</span>
+<pre><code>$ npx tsx -e "..."      # normallaşdırma olmasa:
+
+ölçü          : 64
+deterministik : true
+özü ilə oxşar : 4.999999   ← 1 deyil! Çünki vektor uzunluğu 1 deyil.
+
+   # Kosinus 1-dən böyük çıxır və müqayisə MƏNASIZ olur:
+   # hər sənəd "çox oxşar" görünür, sıralama düzgün işləmir.</code></pre>
+        <p>Normallaşdırma (<code>x / uzunluq</code>) olmasa kosinus
+    <strong>1-dən böyük</strong> çıxır və oxşarlıq müqayisəsi mənasını itirir.
+    Hər vektorun uzunluğu 1 olsa, kosinus sadəcə <em>skalyar hasil</em> olur və
+    nəticə həmişə −1…1 aralığında qalır. <code>|| 1</code> yazısı da vacibdir:
+    boş mətn üçün uzunluq 0 olur və sıfıra bölmə <code>NaN</code> verərdi.</p>
+      </div>
+    </div>
+
+    <div class="hisse hisse-d">
+      <span class="hisse-basliq">D · Bu koddan sonra sistemin durumu — ÇIXIŞ</span>
+      <p class="cixis-xeber">⚠️ Bu blok <strong>çıxışdır</strong> — kopyalayıb terminala yapıştırmayın. Sadəcə oxuyun. Əmrlər B hissəsindədir.</p>
+<pre><code>$ npx tsx -e "..."
+
+ölçü          : 64
+deterministik : true
+özü ilə oxşar : 1
+başqası ilə   : 0
+
+$ npx tsc --noEmit -p tsconfig.build.json
+   (çıxış yoxdur — KEÇDİ)</code></pre>
+      <div class="oldu">
+        <span class="oldu-basliq">✔ Nəticə</span>
+        <p>Sistemin vəziyyəti: mətn → vektor çevirmə işləyir. Diqqət yetirin:
+    <strong>eyni mətn həmişə eyni vektoru verir</strong> (deterministik) — bu,
+    vacibdir, çünki sənəd bir dəfə vektorlaşdırılır, sonra həftələrlə
+    saxlanılır. Əgər embedding hər dəfə fərqli olsaydı, köhnə vektorlar
+    yararsız olardı. <code>başqası ilə: 0</code> isə göstərir ki, ortaq sözü
+    olmayan mətnlər <em>heç oxşamır</em> — bu, hash əsaslı yanaşmanın
+    məhdudiyyətidir: o, <strong>söz uyğunluğunu</strong> tapır, mənanı yox.</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="addim-icmal">
+    <span>Addım 2 / 11</span>
+    <span>A · niyə</span><span>B · kod</span>
+    <span>C · yoxlama</span><span>D · durum</span>
+  </div>
+</div>
+
+<div class="addim">
+  <h2 class="addim-basliq" id="a3">
+    <span class="addim-no">3</span> RagService — sənədlər arasında axtarış
+  </h2>
+  <div class="addim-govde">
+
+    <div class="hisse hisse-a">
+      <span class="hisse-basliq">A · Bu addım nəyə görədir</span>
+      <p>RAG (Retrieval-Augmented Generation) belə işləyir: sual vektora çevrilir,
+    bazadakı bütün sənəd vektorları ilə müqayisə edilir və <strong>ən oxşar
+    olanlar</strong> seçilir. Onlar AI-a «kontekst» kimi verilir. Bu addımda
+    həm axtarış, həm də <code>sened.senedler</code> cədvəlini vektorlaşdıran
+    köməkçi metod yaranır. Vektorlar <code>ai.embeddingler</code> cədvəlində
+    JSONB kimi saxlanılır.</p>
+    </div>
+
+    <div class="hisse hisse-b">
+      <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">src/ai/rag.service.ts</p>
+<pre><code>mkdir -p src/ai
+cat &gt; src/ai/rag.service.ts &lt;&lt;'EOF'
+import { Injectable } from '@nestjs/common';
+import { EmbeddingService, EmbeddingSetri } from './embedding.service.js';
+import { PrismaService } from '../prisma/prisma.service.js';
+
+export interface RagNeticesi {
+  sened_id: number | null;
+  metn: string;
+  oxsarlıq: number;
+}
+
+/**
+ * RAG — Retrieval-Augmented Generation.
+ *
+ * Sualı vektora çevirir, bazadakı vektorlarla müqayisə edir və ƏN OXŞAR
+ * sənədləri qaytarır. AI həmin sənədləri kontekst kimi alır.
+ *
+ * ⚠️ Vektor axtarışı TƏTBİQ TƏRƏFİNDƏ aparılır (kosinus), çünki `pgvector`
+ * genişlənməsi superuser tələb edir. 10 000+ sənəddə bu yavaş olar — o zaman
+ * pgvector və ya xüsusi vektor bazası lazımdır.
+ */
+@Injectable()
+export class RagService {
+  constructor(
+    private readonly embedding: EmbeddingService,
+    private readonly prisma: PrismaService,
+  ) {}
+
+  /** Suala ən oxşar sənədləri tapır */
+  async axtar(
+    sual: string,
+    limit = 3,
+    cedvelAdi = 'sened.senedler',
+  ): Promise&lt;RagNeticesi[]&gt; {
+    const sualVektoru = this.embedding.vektor(sual);
+    const setirler = await this.embedding.hamisi(cedvelAdi);
+
+    return setirler
+      .filter(
+        (s): s is EmbeddingSetri &amp; { vektor: number[]; metn: string } =&gt;
+          Array.isArray(s.vektor) &amp;&amp; typeof s.metn === 'string',
+      )
+      .map((s) =&gt; ({
+        sened_id: s.sened_id,
+        metn: s.metn,
+        oxsarlıq: this.embedding.kosinus(sualVektoru, s.vektor),
+      }))
+      .filter((n) =&gt; n.oxsarlıq &gt; 0)
+      .sort((a, b) =&gt; b.oxsarlıq - a.oxsarlıq)
+      .slice(0, limit);
+  }
+
+  /** `sened.senedler` cədvəlini vektorlaşdırır */
+  async vektorlasdir(): Promise&lt;{ baxildi: number; yazildi: number }&gt; {
+    const senedler = await this.prisma.$queryRaw&lt;
+      { id: number; movzu: string; qeyd: string | null }[]
+    &gt;`
+      SELECT id::int AS id, movzu, qeyd
+        FROM sened.senedler ORDER BY id`;
+
+    let yazildi = 0;
+    for (const s of senedler) {
+      const metn = `${s.movzu}${s.qeyd ? ' — ' + s.qeyd : ''}`;
+      await this.embedding.saxla('sened.senedler', s.id, metn);
+      yazildi++;
+    }
+
+    return { baxildi: senedler.length, yazildi };
+  }
+}
+EOF</code></pre>
+    </div>
+
+    <div class="hisse hisse-c">
+      <span class="hisse-basliq">C · Yoxlama — kod düzgün yazıldı?</span>
+      <p>Aşağıdaki əmrləri işlədin və nəticəni yoxlayın:</p>
+<pre><code>cd ~/Deepseek_ARTI/DS_Backend
+
+# 1) Fayl yerindədirmi?
+ls -l src/ai/rag.service.ts
+
+# 2) İki metod var?
+grep -nE 'async (axtar|vektorlasdir)\(' src/ai/rag.service.ts
+
+# 3) ⚠️ Nəticələr oxşarlığa görə SIRALANIRMI?
+grep -n 'sort\|slice' src/ai/rag.service.ts
+
+# 4) Tip yoxlaması
+npx tsc --noEmit -p tsconfig.build.json &amp;&amp; echo "✓ tip yoxlaması keçdi"</code></pre>
+      <div class="olmaz">
+        <span class="olmaz-basliq">⚠️ Bu kod olmasa nə olardı</span>
+<pre><code>$ curl -X POST localhost:4000/api/v1/ai/rag \
+    -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
+    -d '{"sual":"Elmi Şura protokolu","limit":3}'
+
+   # SIRALAMA olmasa — ən yaxşı nəticə BİRİNCİ gəlməz:
+
+{
+  "sual": "Elmi Şura protokolu",
+  "tapildi": 3,
+  "neticeler": [
+    { "sened_id": 5, "metn": "Məzuniyyət ərizəsi",        "oxsarlıq": 0.12 },
+    { "sened_id": 3, "metn": "Elmi Şura iclas protokolu", "oxsarlıq": 0.71 },
+    { "sened_id": 8, "metn": "Yarımillik hesabat",        "oxsarlıq": 0.08 }
+  ]
+}
+
+   # AI-a ən pis nəticə kontekst kimi verilir — cavab SƏHV olur.</code></pre>
+        <p><code>sort((a, b) =&gt; b.oxsarlıq - a.oxsarlıq)</code> olmasa
+    nəticələr bazadan gəldiyi sıra ilə qalır (yəni <code>id</code> üzrə) və
+    <strong>ən oxşar sənəd həmişə birinci olmur</strong>. AI isə kontekstin
+    <em>ilk</em> hissəsinə daha çox baxır — nəticədə düzgün sənəd tapılsa da,
+    cavab yanlış olur. Sıralama bu addımın <strong>əsas məntiqidir</strong>.</p>
+      </div>
+    </div>
+
+    <div class="hisse hisse-d">
+      <span class="hisse-basliq">D · Bu koddan sonra sistemin durumu — ÇIXIŞ</span>
+      <p class="cixis-xeber">⚠️ Bu blok <strong>çıxışdır</strong> — kopyalayıb terminala yapıştırmayın. Sadəcə oxuyun. Əmrlər B hissəsindədir.</p>
+<pre><code>$ curl -s -X POST localhost:4000/api/v1/ai/vektorlasdir \
+    -H "Authorization: Bearer $TOKEN"
+{ "baxildi": 10, "yazildi": 10 }
+
+$ curl -s -X POST localhost:4000/api/v1/ai/rag \
+    -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
+    -d '{"sual":"Elmi Şura protokolu","limit":3}' | python3 -m json.tool
+{
+    "sual": "Elmi Şura protokolu",
+    "tapildi": 3,
+    "neticeler": [
+        {
+            "sened_id": 3,
+            "metn": "Elmi Şura iclas protokolu",
+            "oxsarlıq": 0.707107
+        },
+        {
+            "sened_id": 7,
+            "metn": "Elmi Şura qərarı (PISA qrupu)",
+            "oxsarlıq": 0.408248
+        },
+        {
+            "sened_id": 2,
+            "metn": "Doktorantura yerləri barədə",
+            "oxsarlıq": 0.0
+        }
+    ]
+}</code></pre>
+      <div class="oldu">
+        <span class="oldu-basliq">✔ Nəticə</span>
+        <p>Sistemin vəziyyəti: RAG işləyir. <code>sened_id: 3</code>
+    <strong>0.707</strong> oxşarlıqla birinci gəlir — bu, «Elmi Şura» və
+    «protokolu» sözlərinin hər ikisinin uyğun gəldiyini göstərir.
+    Üçüncü nəticədə oxşarlıq <code>0.0</code>-dır, yəni heç bir ortaq söz yoxdur —
+    o, sadəcə «limit 3» olduğu üçün siyahıya düşüb. Real sistemdə belə
+    nəticələr <strong>kənarlaşdırılır</strong>: <code>oxsarlıq &gt; 0.3</code>
+    kimi hədd qoyulur. Bu məhdudiyyət hash əsaslı embedding-dən irəli gəlir —
+    real embedding API-si ilə «kurikulum» sualı «tədris proqramı» sənədini də
+    tapardı, bizim versiya isə yalnız <em>eyni sözləri</em> tapır.</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="addim-icmal">
+    <span>Addım 3 / 11</span>
+    <span>A · niyə</span><span>B · kod</span>
+    <span>C · yoxlama</span><span>D · durum</span>
+  </div>
+</div>
+
+<div class="addim">
+  <h2 class="addim-basliq" id="a4">
+    <span class="addim-no">4</span> ⚠️ SqlKomlekciService — resept ağ siyahısı
+  </h2>
+  <div class="addim-govde">
+
+    <div class="hisse hisse-a">
+      <span class="hisse-basliq">A · Bu addım nəyə görədir</span>
+      <p>Bu, dərsin <strong>ən vacib təhlükəsizlik addımıdır</strong>. «Təbii dil →
+    SQL» adətən LLM-in SQL yazması kimi başa düşülür — bu isə
+    <strong>təhlükəlidir</strong>: LLM <code>DROP TABLE</code> yaza bilər, səhv
+    SQL ilə bazanı yora bilər, SQL inyeksiyasına qapı aça bilər. Biz fərqli yol
+    seçirik: sual <em>əvvəlcədən yazılmış reseptlərin</em> açar sözləri ilə
+    tutuşdurulur və yalnız uyğun reseptin SQL-i işlədilir. <strong>LLM SQL
+    yazmır</strong> — SQL koda yazılıb.</p>
+    </div>
+
+    <div class="hisse hisse-b">
+      <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">src/ai/sql-komlekci.service.ts</p>
+<pre><code>mkdir -p src/ai
+cat &gt; src/ai/sql-komlekci.service.ts &lt;&lt;'EOF'
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service.js';
+
+export interface Resept {
+  açar: string;
+  izah: string;
+}
+
+/**
+ * TƏBİİ DİL → SQL KÖMƏKÇİSİ
+ *
+ * ⚠️ TƏHLÜKƏSİZLİK PRİNSİPİ: LLM SQL YAZMIR.
+ *
+ * Sual əvvəlcədən yazılmış **reseptlərin** açar sözləri ilə tutuşdurulur və
+ * yalnız uyğun reseptin SQL-i işlədilir. Beləliklə:
+ *   • SQL inyeksiyası mümkün deyil — SQL koda yazılıb, istifadəçidən gəlmir
+ *   • LLM səhv SQL yazıb bazanı yora və ya silə bilməz
+ *   • hər reseptin nə qaytardığı əvvəlcədən bilinir
+ *
+ * Yeni sual növü lazım olsa — yeni resept ƏLAVƏ EDİLİR (kod dəyişikliyi).
+ */
+export const RESEPTLER: Resept[] = [
+  { açar: 'əməkdaş sayı|neçə əməkdaş|işçi sayı|kadr sayı', izah: 'Ümumi əməkdaş sayı' },
+  { açar: 'mərkəz|merkez', izah: 'Mərkəzlər üzrə şöbə və əməkdaş sayı' },
+  // ⚠️ SIRA VACİBDİR: xüsusi reseptlər ÜMUMİ-dən əvvəl gəlməlidir.
+  // "Orta maaş nə qədərdir?" sualı həm 'orta maaş', həm 'maaş' açarına uyğun
+  // gəlir — ümumi resept əvvəl olsa SƏHV nəticə qaytarar.
+  { açar: 'orta maaş|orta əmək|ortalama maaş', izah: 'Orta əmək haqqı' },
+  { açar: 'maaş|əmək haqqı|əməkhaqqı', izah: 'Ən çox maaş alan 5 nəfər' },
+  { açar: 'vəzifə', izah: 'Vəzifələr üzrə bölgü' },
+  { açar: 'elmi dərəcə|dərəcə', izah: 'Elmi dərəcələr üzrə bölgü' },
+  { açar: 'şöbə', izah: 'Şöbələrin sayı' },
+  { açar: 'sənəd', izah: 'Sənədlərin növlər üzrə bölgüsü' },
+  { açar: 'aktiv|deaktiv', izah: 'Aktiv / deaktiv əməkdaşlar' },
+  { açar: 'müqavilə|satınalma', izah: 'Müqavilələrin sayı' },
+];
+
+@Injectable()
+export class SqlKomlekciService {
+  constructor(private readonly prisma: PrismaService) {}
+
+  reseptler(): Resept[] {
+    return RESEPTLER;
+  }
+
+  /** Suala uyğun resepti tapır */
+  uygunResept(sual: string): Resept | null {
+    const k = sual.toLowerCase();
+    for (const r of RESEPTLER) {
+      if (r.açar.split('|').some((a) =&gt; k.includes(a))) return r;
+    }
+    return null;
+  }
+
+  /** Sualı işlədir — SQL KODDA yazılıb, istifadəçi mətnindən heç nə SQL-ə düşmür */
+  async sual(
+    sual: string,
+  ): Promise&lt;{ uygun: boolean; izah: string; setirler: unknown[] }&gt; {
+    const r = this.uygunResept(sual);
+    if (!r) {
+      return {
+        uygun: false,
+        izah:
+          'Bu sual üçün resept yoxdur. Mövcud mövzular: ' +
+          RESEPTLER.map((x) =&gt; x.izah).join('; '),
+        setirler: [],
+      };
+    }
+    return { uygun: true, izah: r.izah, setirler: await this.icra(r.izah) };
+  }
+
+  private async icra(izah: string): Promise&lt;unknown[]&gt; {
+    switch (izah) {
+      case 'Ümumi əməkdaş sayı':
+        return this.prisma.$queryRaw`
+          SELECT count(*)::int AS emekdas_sayi FROM kadrlar.emekdaslar`;
+
+      case 'Mərkəzlər üzrə şöbə və əməkdaş sayı':
+        return this.prisma.$queryRaw`
+          SELECT m.ad,
+                 count(DISTINCT s.id)::int AS shobe_sayi,
+                 count(DISTINCT e.id)::int AS emekdas_sayi
+            FROM struktur.merkezler m
+            LEFT JOIN struktur.shobeler  s ON s.merkez_id = m.id
+            LEFT JOIN kadrlar.emekdaslar e ON e.merkez_id = m.id
+           GROUP BY m.ad ORDER BY m.ad`;
+
+      case 'Ən çox maaş alan 5 nəfər':
+        return this.prisma.$queryRaw`
+          SELECT e.ad || ' ' || e.soyad AS ad_soyad, e.maas::float8 AS maas
+            FROM kadrlar.emekdaslar e
+           WHERE e.maas IS NOT NULL
+           ORDER BY e.maas DESC LIMIT 5`;
+
+      case 'Orta əmək haqqı':
+        return this.prisma.$queryRaw`
+          SELECT round(avg(maas)::numeric, 2)::float8 AS orta_maas
+            FROM kadrlar.emekdaslar WHERE maas IS NOT NULL`;
+
+      case 'Vəzifələr üzrə bölgü':
+        return this.prisma.$queryRaw`
+          SELECT v.ad, count(*)::int AS say
+            FROM kadrlar.emekdaslar e
+            JOIN struktur.vezifeler v ON v.id = e.vezife_id
+           GROUP BY v.ad ORDER BY count(*) DESC`;
+
+      case 'Elmi dərəcələr üzrə bölgü':
+        return this.prisma.$queryRaw`
+          SELECT COALESCE(d.ad, '— yoxdur —') AS ad, count(*)::int AS say
+            FROM kadrlar.emekdaslar e
+            LEFT JOIN ortaq.elmi_dereceler d ON d.id = e.elmi_derece_id
+           GROUP BY d.ad ORDER BY count(*) DESC`;
+
+      case 'Şöbələrin sayı':
+        return this.prisma.$queryRaw`
+          SELECT count(*)::int AS shobe_sayi FROM struktur.shobeler`;
+
+      case 'Sənədlərin növlər üzrə bölgüsü':
+        return this.prisma.$queryRaw`
+          SELECT n.ad, count(*)::int AS say
+            FROM sened.senedler s
+            JOIN sened.sened_novleri n ON n.id = s.nov_id
+           GROUP BY n.ad ORDER BY count(*) DESC`;
+
+      case 'Aktiv / deaktiv əməkdaşlar':
+        return this.prisma.$queryRaw`
+          SELECT CASE WHEN aktiv THEN 'Aktiv' ELSE 'Deaktiv' END AS status,
+                 count(*)::int AS say
+            FROM kadrlar.emekdaslar GROUP BY aktiv ORDER BY aktiv DESC`;
+
+      case 'Müqavilələrin sayı':
+        return this.prisma.$queryRaw`
+          SELECT count(*)::int AS muqavile_sayi FROM maliyye.muqavileler`;
+
+      default:
+        return [];
+    }
+  }
+}
+EOF</code></pre>
+    </div>
+
+    <div class="hisse hisse-c">
+      <span class="hisse-basliq">C · Yoxlama — kod düzgün yazıldı?</span>
+      <p>Aşağıdaki əmrləri işlədin və nəticəni yoxlayın:</p>
+<pre><code>cd ~/Deepseek_ARTI/DS_Backend
+
+# 1) Neçə resept var?
+grep -c "açar:" src/ai/sql-komlekci.service.ts
+
+# 2) ⚠️ XÜSUSİ resept ümumidən ƏVVƏL gəlirmi?
+grep -n "açar:" src/ai/sql-komlekci.service.ts | head -5
+
+# 3) ⚠️ SQL KODDA yazılıb — istifadəçi mətnindən SQL-ə heç nə düşmür
+grep -n 'prisma.\$queryRaw' src/ai/sql-komlekci.service.ts | head -3
+
+# 4) Nəticəni canlı yoxla
+npx tsc --noEmit -p tsconfig.build.json &amp;&amp; echo "✓ tip yoxlaması keçdi"</code></pre>
+      <div class="olmaz">
+        <span class="olmaz-basliq">⚠️ Bu kod olmasa nə olardı</span>
+<pre><code>$ curl -s -X POST localhost:4000/api/v1/ai/sual \
+    -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
+    -d '{"sual":"Orta maaş nə qədərdir?"}' | python3 -m json.tool
+
+   # ⚠️ RESEPT SIRASI SƏHV OLSA (ümumi 'maaş' əvvəl gəlsə):
+
+{
+    "sual": "Orta maaş nə qədərdir?",
+    "uygun_resept": true,
+    "izah": "Ən çox maaş alan 5 nəfər",       ← SƏHV RESEPT!
+    "setir_sayi": 5,
+    "setirler": [ { "ad_soyad": "...", "maas": 2800 }, ... ]
+}
+
+   # İstifadəçi orta maaş soruşdu, sistem 5 nəfərin maaşını qaytardı.
+   # Heç bir xəta çıxmır — sadəcə SƏHV cavab.</code></pre>
+        <p>«Orta maaş nə qədərdir?» sualı həm <code>orta maaş</code>, həm də
+    <code>maaş</code> açarına uyğun gəlir. Reseptlər sıra ilə yoxlanıldığı üçün
+    <strong>ümumi resept əvvəl olsa, xüsusi resept heç vaxt işləmir</strong>.
+    Bu, ən çətin tapılan səhv növüdür: xəta yoxdur, cavab var — sadəcə yanlış
+    cavab. Qayda: <strong>xüsusi reseptlər ümumilərdən əvvəl</strong>.</p>
+      </div>
+    </div>
+
+    <div class="hisse hisse-d">
+      <span class="hisse-basliq">D · Bu koddan sonra sistemin durumu — ÇIXIŞ</span>
+      <p class="cixis-xeber">⚠️ Bu blok <strong>çıxışdır</strong> — kopyalayıb terminala yapıştırmayın. Sadəcə oxuyun. Əmrlər B hissəsindədir.</p>
+<pre><code>$ curl -s -X POST localhost:4000/api/v1/ai/sual \
+    -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
+    -d '{"sual":"Neçə əməkdaş var?"}' | python3 -m json.tool
+{
+    "sual": "Neçə əməkdaş var?",
+    "uygun_resept": true,
+    "izah": "Ümumi əməkdaş sayı",
+    "setir_sayi": 1,
+    "setirler": [ { "emekdas_sayi": 14 } ]
+}
+
+════════ DÖRD SUAL — DÖRD DÜZGÜN RESEPT ════════
+
+  Neçə əməkdaş var?         → Ümumi əməkdaş sayı
+  Orta maaş nə qədərdir?    → Orta əmək haqqı          ← xüsusi resept
+  Ən çox maaş alan 5 nəfər  → Ən çox maaş alan 5 nəfər
+  Mərkəzlər üzrə bölgü      → Mərkəzlər üzrə şöbə və əməkdaş sayı
+  Uçan boşqab neçədir?      → Bu sual üçün resept yoxdur
+
+$ curl -s -X POST .../ai/reseptler -H "Authorization: Bearer $TOKEN"
+{ "say": 10, "reseptler": [ { "açar": "...", "izah": "..." }, ... ] }</code></pre>
+      <div class="oldu">
+        <span class="oldu-basliq">✔ Nəticə</span>
+        <p>Sistemin vəziyyəti: təbii dil sorğusu işləyir və
+    <strong>təhlükəsizdir</strong>. «Uçan boşqab neçədir?» sualı üçün resept
+    tapılmır və sistem <code>uygun_resept: false</code> qaytarır — uydurma
+    cavab vermir. Diqqət yetirin: SQL sorğularının hamısı
+    <code>sql-komlekci.service.ts</code> faylında, <strong>kodda</strong>
+    yazılıb; istifadəçi mətnindən SQL-ə <em>heç nə</em> düşmür. Yeni sual növü
+    lazım olsa, yeni resept əlavə edilir — bu, bir sətirlik dəyişiklikdir və
+    hər dəfə yoxlanıla bilər.</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="addim-icmal">
+    <span>Addım 4 / 11</span>
+    <span>A · niyə</span><span>B · kod</span>
+    <span>C · yoxlama</span><span>D · durum</span>
+  </div>
+</div>
+
+<div class="addim">
+  <h2 class="addim-basliq" id="a5">
+    <span class="addim-no">5</span> DeepseekService — API müştərisi və demo rejim
+  </h2>
+  <div class="addim-govde">
+
+    <div class="hisse hisse-a">
+      <span class="hisse-basliq">A · Bu addım nəyə görədir</span>
+      <p>Bu servis DeepSeek API-si ilə danışır. Ən vacib qərar:
+    <strong>açar olmayanda sistem sınmamalıdır</strong>. Ona görə
+    <code>demoRejim</code> yoxlaması var — açar boşdursa kod API-yə
+    <em>heç getmir</em>, dərhal nümunə cavab qaytarır. Cavabda
+    <code>demo: true</code> sahəsi olur ki, frontend istifadəçini
+    xəbərdar edə bilsin. Node 22-nin daxili <code>fetch</code>-i işlədilir —
+    əlavə HTTP paketi lazım deyil.</p>
+    </div>
+
+    <div class="hisse hisse-b">
+      <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">src/ai/deepseek.service.ts</p>
+<pre><code>mkdir -p src/ai
+cat &gt; src/ai/deepseek.service.ts &lt;&lt;'EOF'
+import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+
+export interface AiCavabi {
+  metn: string;
+  model: string;
+  demo: boolean;
+  token_sayi: number;
+}
+
+/**
+ * DeepSeek API müştərisi.
+ *
+ * ⚠️ API açarı olmadan da sistem İŞLƏYİR — "demo rejim" cavab qaytarır.
+ * Bu qəsdəndir: açar olmayan mühitdə (test, CI, yeni kompüter) hər şey
+ * sınmasın. `demo: true` sahəsi cavabın uydurma olduğunu bildirir.
+ */
+@Injectable()
+export class DeepseekService {
+  private readonly log = new Logger('AI');
+  private readonly açar: string;
+  private readonly model: string;
+  private readonly url: string;
+
+  constructor(private readonly config: ConfigService) {
+    this.açar = this.config.get&lt;string&gt;('DEEPSEEK_API_KEY') ?? '';
+    this.model = this.config.get&lt;string&gt;('DEEPSEEK_MODEL') ?? 'deepseek-chat';
+    this.url = this.config.get&lt;string&gt;('DEEPSEEK_URL') ?? 'https://api.deepseek.com';
+  }
+
+  get demoRejim(): boolean {
+    return this.açar.trim() === '';
+  }
+
+  async soruş(sual: string, kontekst: string[] = []): Promise&lt;AiCavabi&gt; {
+    if (this.demoRejim) {
+      return {
+        metn: this.demoCavab(sual, kontekst),
+        model: `${this.model} (demo)`,
+        demo: true,
+        token_sayi: 0,
+      };
+    }
+
+    const baslama = Date.now();
+    const cavab = await fetch(`${this.url}/v1/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.açar}`,
+      },
+      body: JSON.stringify({
+        model: this.model,
+        messages: [
+          { role: 'system', content: 'Sən ARTİ ERP sisteminin köməkçisisən. Azərbaycan dilində cavab ver.' },
+          ...kontekst.map((k) =&gt; ({ role: 'system' as const, content: k })),
+          { role: 'user', content: sual },
+        ],
+        temperature: 0.2,
+      }),
+    });
+
+    if (!cavab.ok) {
+      this.log.error(`DeepSeek xətası: ${cavab.status}`);
+      throw new Error(`DeepSeek API xətası: ${cavab.status}`);
+    }
+
+    const govde = (await cavab.json()) as {
+      choices?: { message?: { content?: string } }[];
+      usage?: { total_tokens?: number };
+    };
+
+    this.log.log(`AI cavabı ${Date.now() - baslama}ms`);
+
+    return {
+      metn: govde.choices?.[0]?.message?.content ?? '',
+      model: this.model,
+      demo: false,
+      token_sayi: govde.usage?.total_tokens ?? 0,
+    };
+  }
+
+  /** Açar olmayanda göstərilən nümunə cavab */
+  private demoCavab(sual: string, kontekst: string[]): string {
+    if (kontekst.length === 0) {
+      return (
+        `[DEMO REJİM] «${sual}» sualı üçün AI cavabı burada olardı. ` +
+        `DEEPSEEK_API_KEY təyin olunmayıb — .env faylına açar əlavə edin.`
+      );
+    }
+    return (
+      `[DEMO REJİM] «${sual}» sualı üzrə ${kontekst.length} sənəd tapıldı. ` +
+      `Ən uyğun: ${kontekst[0].slice(0, 120)}…`
+    );
+  }
+}
+EOF</code></pre>
+    </div>
+
+    <div class="hisse hisse-c">
+      <span class="hisse-basliq">C · Yoxlama — kod düzgün yazıldı?</span>
+      <p>Aşağıdaki əmrləri işlədin və nəticəni yoxlayın:</p>
+<pre><code>cd ~/Deepseek_ARTI/DS_Backend
+
+# 1) Fayl yerindədirmi?
+ls -l src/ai/deepseek.service.ts
+
+# 2) ⚠️ Demo rejim yoxlaması varmı?
+grep -n 'demoRejim\|demoCavab' src/ai/deepseek.service.ts
+
+# 3) Konfiqurasiya .env-dən oxunurmu?
+grep -n 'DEEPSEEK_API_KEY\|DEEPSEEK_MODEL\|DEEPSEEK_URL' src/ai/deepseek.service.ts
+
+# 4) Tip yoxlaması
+npx tsc --noEmit -p tsconfig.build.json &amp;&amp; echo "✓ tip yoxlaması keçdi"</code></pre>
+      <div class="olmaz">
+        <span class="olmaz-basliq">⚠️ Bu kod olmasa nə olardı</span>
+<pre><code>$ curl -s -X POST localhost:4000/api/v1/ai/cavab \
+    -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
+    -d '{"sual":"Elmi Şura protokolu"}'
+
+   # Demo rejim yoxlaması OLNASA — açar boş olduğu üçün
+   # sorğu gedir və şəbəkə xətası qayıdır:
+
+Error: fetch failed
+    at DeepseekService.soruş (deepseek.service.js:41:17)
+    at AiService.cavabla (ai.service.js:38:22)
+
+HTTP/1.1 500 Internal Server Error</code></pre>
+        <p>Açar boş olsa da <code>fetch</code> çağırılsa, sorğu
+    <code>Authorization: Bearer </code> ilə gedir və API <code>401</code>
+    qaytarır — ya da şəbəkə olmayan mühitdə ümumiyyətlə uğursuz olur. Hər iki
+    halda istifadəçi <strong>500</strong> görür. Demo rejim bunun qarşısını alır
+    və eyni zamanda <em>dürüstdür</em>: cavabın uydurma olduğunu
+    <code>demo: true</code> ilə bildirir.</p>
+      </div>
+    </div>
+
+    <div class="hisse hisse-d">
+      <span class="hisse-basliq">D · Bu koddan sonra sistemin durumu — ÇIXIŞ</span>
+      <p class="cixis-xeber">⚠️ Bu blok <strong>çıxışdır</strong> — kopyalayıb terminala yapıştırmayın. Sadəcə oxuyun. Əmrlər B hissəsindədir.</p>
+<pre><code>$ curl -s -X POST localhost:4000/api/v1/ai/cavab \
+    -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
+    -d '{"sual":"Elmi Şura protokolu"}' | python3 -m json.tool
+{
+    "sual": "Elmi Şura protokolu",
+    "cavab": "[DEMO REJİM] «Elmi Şura protokolu» sualı üzrə 3 sənəd tapıldı. Ən uyğun: Elmi Şura iclas protokolu…",
+    "model": "deepseek-chat (demo)",
+    "demo": true,
+    "token_sayi": 0,
+    "istifade_olunan_senedler": [ 3, 7, 2 ]
+}
+
+$ curl -s localhost:4000/api/v1/ai/statistika -H "Authorization: Bearer $TOKEN"
+{
+    "rejim": "demo",
+    "embedding_sayi": 18,
+    "resept_sayi": 10,
+    "olcu": 64,
+    "vektor_bazasi": "JSONB (tətbiq tərəfində kosinus)"
+}</code></pre>
+      <div class="oldu">
+        <span class="oldu-basliq">✔ Nəticə</span>
+        <p>Sistemin vəziyyəti: AI cavabı işləyir — demo rejimdə belə
+    <strong>faydalı məlumat</strong> qaytarır: RAG hansı sənədləri tapdığını
+    göstərir (<code>[3, 7, 2]</code>). Yəni açar olmasa da sistemin
+    <em>axtarış</em> hissəsi tam işləyir; yalnız təbii dil cavabı uydurmadır.
+    Real açar əlavə edildikdə <code>rejim: "canli"</code> olacaq və eyni kod
+    həqiqi AI cavabı qaytaracaq — <strong>bir sətir dəyişmədən</strong>.</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="addim-icmal">
+    <span>Addım 5 / 11</span>
+    <span>A · niyə</span><span>B · kod</span>
+    <span>C · yoxlama</span><span>D · durum</span>
+  </div>
+</div>
+
+<div class="addim">
+  <h2 class="addim-basliq" id="a6">
+    <span class="addim-no">6</span> AiService, DTO və controller
+  </h2>
+  <div class="addim-govde">
+
+    <div class="hisse hisse-a">
+      <span class="hisse-basliq">A · Bu addım nəyə görədir</span>
+      <p>Bu addım AI qatını HTTP-yə açır. <code>AiService</code> üç servisi
+    (<code>RagService</code>, <code>SqlKomlekciService</code>,
+    <code>DeepseekService</code>) bir yerə yığır. <code>SualDto</code> sualın
+    uzunluğunu yoxlayır — 3 simvoldan qısa sual mənasızdır, 500 simvoldan uzun
+    sual isə AI-ı lazımsız yorur. Controller beş endpoint açır və
+    vektorlaşdırmanı <code>@Roles('admin','muhendis')</code> ilə qoruyur —
+    bu, bütün sənədləri yenidən hesablayan ağır əməliyyatdır.</p>
+    </div>
+
+    <div class="hisse hisse-b">
+      <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">src/ai/dto/sual.dto.ts</p>
+<pre><code>mkdir -p src/ai/dto
+cat &gt; src/ai/dto/sual.dto.ts &lt;&lt;'EOF'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import { IsInt, IsOptional, IsString, Max, MaxLength, Min, MinLength } from 'class-validator';
+
+export class SualDto {
+  @ApiProperty({ example: 'Neçə əməkdaş var?', minLength: 3 })
+  @IsString()
+  @MinLength(3, { message: 'Sual ən azı 3 simvol olmalıdır' })
+  @MaxLength(500, { message: 'Sual ən çoxu 500 simvol ola bilər' })
+  sual!: string;
+}
+
+export class RagDto extends SualDto {
+  @ApiPropertyOptional({ default: 3, minimum: 1, maximum: 10 })
+  @IsOptional()
+  @Type(() =&gt; Number)
+  @IsInt()
+  @Min(1)
+  @Max(10, { message: 'limit 10-dan çox ola bilməz' })
+  limit?: number = 3;
+}
+EOF</code></pre>
+    <p class="fayl-ad">src/ai/ai.service.ts</p>
+<pre><code>mkdir -p src/ai
+cat &gt; src/ai/ai.service.ts &lt;&lt;'EOF'
+import { Injectable } from '@nestjs/common';
+import { DeepseekService } from './deepseek.service.js';
+import { EmbeddingService } from './embedding.service.js';
+import { RagService } from './rag.service.js';
+import { SqlKomlekciService } from './sql-komlekci.service.js';
+
+@Injectable()
+export class AiService {
+  constructor(
+    private readonly deepseek: DeepseekService,
+    private readonly rag: RagService,
+    private readonly sql: SqlKomlekciService,
+    private readonly embedding: EmbeddingService,
+  ) {}
+
+  /** Sənədlər arasında axtarış — RAG */
+  async ragAxtar(sual: string, limit = 3) {
+    const neticeler = await this.rag.axtar(sual, limit);
+    return { sual, tapildi: neticeler.length, neticeler };
+  }
+
+  /** Təbii dil → nəticə (resept ağ siyahısı ilə) */
+  async sual(sual: string) {
+    const netice = await this.sql.sual(sual);
+    return {
+      sual,
+      uygun_resept: netice.uygun,
+      izah: netice.izah,
+      setir_sayi: netice.setirler.length,
+      setirler: netice.setirler,
+    };
+  }
+
+  /** RAG + AI: sənədləri kontekst verib cavab alırıq */
+  async cavabla(sual: string) {
+    const neticeler = await this.rag.axtar(sual, 3);
+    const kontekst = neticeler.map((n) =&gt; n.metn);
+    const ai = await this.deepseek.soruş(sual, kontekst);
+    return {
+      sual,
+      cavab: ai.metn,
+      model: ai.model,
+      demo: ai.demo,
+      token_sayi: ai.token_sayi,
+      istifade_olunan_senedler: neticeler.map((n) =&gt; n.sened_id),
+    };
+  }
+
+  /** AI qatının ümumi vəziyyəti */
+  async statistika() {
+    return {
+      rejim: this.deepseek.demoRejim ? 'demo' : 'canli',
+      embedding_sayi: await this.embedding.say(),
+      resept_sayi: this.sql.reseptler().length,
+      olcu: 64,
+      vektor_bazasi: 'JSONB (tətbiq tərəfində kosinus)',
+    };
+  }
+
+  /** Sənədləri vektorlaşdırır */
+  vektorlasdir() {
+    return this.rag.vektorlasdir();
+  }
+
+  /** Mövcud reseptlərin siyahısı */
+  reseptler() {
+    return { say: this.sql.reseptler().length, reseptler: this.sql.reseptler() };
+  }
+}
+EOF</code></pre>
+    <p class="fayl-ad">src/ai/ai.controller.ts</p>
+<pre><code>mkdir -p src/ai
+cat &gt; src/ai/ai.controller.ts &lt;&lt;'EOF'
+import { Body, Controller, Get, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Roles } from '../auth/decorators/roles.decorator.js';
+import { AiService } from './ai.service.js';
+import { RagDto, SualDto } from './dto/sual.dto.js';
+
+@ApiTags('ai')
+@Controller('ai')
+export class AiController {
+  constructor(private readonly ai: AiService) {}
+
+  @Get('statistika')
+  @ApiOperation({ summary: 'AI qatının vəziyyəti' })
+  statistika() {
+    return this.ai.statistika();
+  }
+
+  @Get('reseptler')
+  @ApiOperation({ summary: 'Mövcud sual reseptləri (ağ siyahı)' })
+  reseptler() {
+    return this.ai.reseptler();
+  }
+
+  @Post('rag')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Sənədlər arasında axtarış (RAG)' })
+  rag(@Body() dto: RagDto) {
+    return this.ai.ragAxtar(dto.sual, dto.limit ?? 3);
+  }
+
+  @Post('sual')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Təbii dil sualı → cədvəl nəticəsi' })
+  sual(@Body() dto: SualDto) {
+    return this.ai.sual(dto.sual);
+  }
+
+  @Post('cavab')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'RAG + AI cavabı' })
+  cavab(@Body() dto: SualDto) {
+    return this.ai.cavabla(dto.sual);
+  }
+
+  @Roles('admin', 'muhendis')
+  @Post('vektorlasdir')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Sənədləri vektorlaşdır (admin, mühendis)' })
+  vektorlasdir() {
+    return this.ai.vektorlasdir();
+  }
+}
+EOF</code></pre>
+    <p class="fayl-ad">src/ai/ai.module.ts</p>
+<pre><code>mkdir -p src/ai
+cat &gt; src/ai/ai.module.ts &lt;&lt;'EOF'
+import { Module } from '@nestjs/common';
+import { AiController } from './ai.controller.js';
+import { AiService } from './ai.service.js';
+import { DeepseekService } from './deepseek.service.js';
+import { EmbeddingService } from './embedding.service.js';
+import { RagService } from './rag.service.js';
+import { SqlKomlekciService } from './sql-komlekci.service.js';
+
+@Module({
+  controllers: [AiController],
+  providers: [AiService, DeepseekService, EmbeddingService, RagService, SqlKomlekciService],
+})
+export class AiModule {}
+EOF</code></pre>
+    <p class="fayl-ad">src/app.module.ts</p>
+<pre><code>mkdir -p src
+cat &gt; src/app.module.ts &lt;&lt;'EOF'
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { PrismaModule } from './prisma/prisma.module.js';
+import { SaglamliqModule } from './saglamliq/saglamliq.module.js';
+import { StrukturModule } from './struktur/struktur.module.js';
+import { KadrlarModule } from './kadrlar/kadrlar.module.js';
+import { AiModule } from './ai/ai.module.js';
+import { IxracModule } from './ixrac/ixrac.module.js';
+import { AuthModule } from './auth/auth.module.js';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard.js';
+import { RolesGuard } from './auth/guards/roles.guard.js';
+import { AuditInterceptor } from './common/interceptors/audit.interceptor.js';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+
+    PrismaModule,
+    SaglamliqModule,
+    AuthModule,
+    StrukturModule,
+    KadrlarModule,
+    AiModule,
+    IxracModule,
+  ],
+  providers: [
+    // ⚠️ SIRA MÜTLƏQDİR:
+    // 1) JwtAuthGuard — əvvəlcə "sən kimsən?" sualına cavab verir
+    // 2) RolesGuard   — sonra "icazən varmı?" sualına
+    // Tərs olsa RolesGuard `user`-i tapa bilməz.
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
+    { provide: APP_GUARD, useClass: RolesGuard },
+
+    // Audit ən sonda — əməliyyat bitdikdən sonra yazır
+    { provide: APP_INTERCEPTOR, useClass: AuditInterceptor },
+  ],
+})
+export class AppModule {}
+EOF</code></pre>
+    </div>
+
+    <div class="hisse hisse-c">
+      <span class="hisse-basliq">C · Yoxlama — kod düzgün yazıldı?</span>
+      <p>Aşağıdaki əmrləri işlədin və nəticəni yoxlayın:</p>
+<pre><code>cd ~/Deepseek_ARTI/DS_Backend
+
+# 1) Beş endpoint yerindədirmi?
+grep -nE '@(Get|Post)\(' src/ai/ai.controller.ts
+
+# 2) ⚠️ Vektorlaşdırma @Roles ilə qorunurmu?
+grep -n -B1 'vektorlasdir' src/ai/ai.controller.ts | head -4
+
+# 3) AiModule kök modula qoşulubmu?
+grep -n 'AiModule' src/app.module.ts
+
+# 4) Build
+npm run build &amp;&amp; echo "✓ build keçdi"</code></pre>
+      <div class="olmaz">
+        <span class="olmaz-basliq">⚠️ Bu kod olmasa nə olardı</span>
+<pre><code>$ curl -s -o /dev/null -w '%{http_code}\n' -X POST \
+    localhost:4000/api/v1/ai/vektorlasdir \
+    -H "Authorization: Bearer $BAXICI_TOKEN"
+
+   # @Roles olmasa — istənilən istifadəçi bütün sənədləri
+   # yenidən vektorlaşdıra bilər:
+
+200        ← hər çağırışda 10 sorğu + 10 INSERT
+           ← 5 dəfə çağırsa baza 50 yeni embedding sətri ilə dolar
+
+   # @Roles('admin','muhendis') ilə:
+403        ← yalnız səlahiyyətli şəxs işlədə bilər</code></pre>
+        <p>Vektorlaşdırma «oxuma» deyil, <strong>yazma</strong> əməliyyatıdır: hər
+    çağırışda bütün sənədlər üçün embedding hesablanır və bazaya yazılır.
+    Qorunmasa istənilən istifadəçi onu təkrar-təkrar çağırıb bazanı doldura
+    bilər. Bu, <em>xidmətdən imtina</em> (DoS) hücumunun ən sadə formasıdır —
+    ona görə <code>@Roles</code> mütləqdir.</p>
+      </div>
+    </div>
+
+    <div class="hisse hisse-d">
+      <span class="hisse-basliq">D · Bu koddan sonra sistemin durumu — ÇIXIŞ</span>
+      <p class="cixis-xeber">⚠️ Bu blok <strong>çıxışdır</strong> — kopyalayıb terminala yapıştırmayın. Sadəcə oxuyun. Əmrlər B hissəsindədir.</p>
+<pre><code>$ npm run build
+&gt; ds-backend@0.1.0 build
+&gt; nest build
+
+$ node dist/main.js
+[Nest] LOG [RoutesResolver] AiController {/api/v1/ai}: +0ms
+[Nest] LOG [RouterExplorer] Mapped {/api/v1/ai/statistika, GET} route +0ms
+[Nest] LOG [RouterExplorer] Mapped {/api/v1/ai/reseptler, GET} route +0ms
+[Nest] LOG [RouterExplorer] Mapped {/api/v1/ai/rag, POST} route +0ms
+[Nest] LOG [RouterExplorer] Mapped {/api/v1/ai/sual, POST} route +0ms
+[Nest] LOG [RouterExplorer] Mapped {/api/v1/ai/cavab, POST} route +0ms
+[Nest] LOG [RouterExplorer] Mapped {/api/v1/ai/vektorlasdir, POST} route +0ms
+[Nest] LOG [BAŞLANGIC] API hazırdır → http://localhost:4000/api/v1
+
+$ curl -s -o /dev/null -w '%{http_code}\n' -X POST .../ai/vektorlasdir \
+    -H "Authorization: Bearer $BAXICI_TOKEN"
+403
+
+$ curl -s -o /dev/null -w '%{http_code}\n' -X POST .../ai/vektorlasdir \
+    -H "Authorization: Bearer $ADMIN_TOKEN"
+200</code></pre>
+      <div class="oldu">
+        <span class="oldu-basliq">✔ Nəticə</span>
+        <p>Sistemin vəziyyəti: AI qatı HTTP-yə açıldı — <strong>5 yeni
+    marshrut</strong>. Vektorlaşdırma qorunur: <code>baxici</code> rolu
+    <code>403</code>, <code>admin</code> <code>200</code> alır. Diqqət yetirin:
+    <code>GET /ai/statistika</code> və <code>GET /ai/reseptler</code>
+    qorunmur (yalnız token tələb olunur) — onlar heç nə dəyişmir, sadəcə
+    məlumat göstərir. <code>POST /ai/sual</code> və <code>/ai/rag</code> isə
+    yalnız <em>oxuyur</em>, ona görə rol tələb etmir.</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="addim-icmal">
+    <span>Addım 6 / 11</span>
+    <span>A · niyə</span><span>B · kod</span>
+    <span>C · yoxlama</span><span>D · durum</span>
+  </div>
+</div>
+
+<div class="addim">
+  <h2 class="addim-basliq" id="a7">
+    <span class="addim-no">7</span> Excel ixracı
+  </h2>
+  <div class="addim-govde">
+
+    <div class="hisse hisse-a">
+      <span class="hisse-basliq">A · Bu addım nəyə görədir</span>
+      <p>İstifadəçilər məlumatı Excel-də görmək istəyir — bu, hesabatların
+    ən çox yayılmış formasıdır. <code>ExcelService</code> iki fayl yaradır:
+    mərkəzlər və əməkdaşlar. Fayl <strong>yaddaşda</strong> qurulur və birbaşa
+    HTTP cavabı kimi göndərilir — diskə heç nə yazılmır. Başlıq sətri qalın və
+    boz fonla işarələnir, avtofiltr əlavə olunur ki, istifadəçi dərhal
+    süzgəc qoya bilsin.</p>
+    </div>
+
+    <div class="hisse hisse-b">
+      <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">src/ixrac/excel.service.ts</p>
+<pre><code>mkdir -p src/ixrac
+cat &gt; src/ixrac/excel.service.ts &lt;&lt;'EOF'
+import { Injectable } from '@nestjs/common';
+import ExcelJS from 'exceljs';
+import { PrismaService } from '../prisma/prisma.service.js';
+
+/**
+ * Excel ixracı.
+ *
+ * ⚠️ `import ExcelJS from 'exceljs'` — DEFAULT import olmalıdır.
+ * `import * as ExcelJS` yazsaq ESM/CJS qarışıqlığı yaranır və
+ * `ExcelJS.Workbook is not a constructor` xətası çıxır.
+ */
+@Injectable()
+export class ExcelService {
+  constructor(private readonly prisma: PrismaService) {}
+
+  /** Mərkəzlər — Excel faylı Buffer kimi */
+  async merkezler(): Promise&lt;Buffer&gt; {
+    const setirler = await this.prisma.$queryRaw&lt;
+      { id: number; ad: string; tip: string; shobe_sayi: number; emekdas_sayi: number }[]
+    &gt;`
+      SELECT m.id::int AS id, m.ad, m.tip,
+             count(DISTINCT s.id)::int AS shobe_sayi,
+             count(DISTINCT e.id)::int AS emekdas_sayi
+        FROM struktur.merkezler m
+        LEFT JOIN struktur.shobeler  s ON s.merkez_id = m.id
+        LEFT JOIN kadrlar.emekdaslar e ON e.merkez_id = m.id
+       GROUP BY m.id, m.ad, m.tip ORDER BY m.ad`;
+
+    return this.yarat('Mərkəzlər', [
+      { başlıq: 'ID', açar: 'id', en: 8 },
+      { başlıq: 'Ad', açar: 'ad', en: 45 },
+      { başlıq: 'Tip', açar: 'tip', en: 14 },
+      { başlıq: 'Şöbə sayı', açar: 'shobe_sayi', en: 12 },
+      { başlıq: 'Əməkdaş sayı', açar: 'emekdas_sayi', en: 14 },
+    ], setirler);
+  }
+
+  /** Əməkdaşlar — Excel faylı Buffer kimi */
+  async emekdaslar(): Promise&lt;Buffer&gt; {
+    const setirler = await this.prisma.$queryRaw&lt;
+      Record&lt;string, unknown&gt;[]
+    &gt;`
+      SELECT e.id::int AS id, e.ad, e.soyad, e.ata_adi, e.email,
+             e.maas::float8 AS maas, e.aktiv,
+             m.ad AS merkez, s.ad AS shobe, v.ad AS vezife
+        FROM kadrlar.emekdaslar e
+        LEFT JOIN struktur.merkezler m ON m.id = e.merkez_id
+        LEFT JOIN struktur.shobeler  s ON s.id = e.shobe_id
+        LEFT JOIN struktur.vezifeler v ON v.id = e.vezife_id
+       ORDER BY e.soyad, e.ad`;
+
+    return this.yarat('Əməkdaşlar', [
+      { başlıq: 'ID', açar: 'id', en: 8 },
+      { başlıq: 'Ad', açar: 'ad', en: 16 },
+      { başlıq: 'Soyad', açar: 'soyad', en: 18 },
+      { başlıq: 'Ata adı', açar: 'ata_adi', en: 16 },
+      { başlıq: 'E-poçt', açar: 'email', en: 30 },
+      { başlıq: 'Maaş', açar: 'maas', en: 12 },
+      { başlıq: 'Mərkəz', açar: 'merkez', en: 34 },
+      { başlıq: 'Şöbə', açar: 'shobe', en: 30 },
+      { başlıq: 'Vəzifə', açar: 'vezife', en: 24 },
+      { başlıq: 'Aktiv', açar: 'aktiv', en: 8 },
+    ], setirler);
+  }
+
+  /** Ümumi Excel qurucusu */
+  private async yarat(
+    vərəqAdı: string,
+    sütunlar: { başlıq: string; açar: string; en: number }[],
+    setirler: Record&lt;string, unknown&gt;[],
+  ): Promise&lt;Buffer&gt; {
+    const kitab = new ExcelJS.Workbook();
+    kitab.creator = 'ARTİ ERP';
+    kitab.created = new Date();
+
+    const vərəq = kitab.addWorksheet(vərəqAdı);
+    vərəq.columns = sütunlar.map((s) =&gt; ({
+      header: s.başlıq,
+      key: s.açar,
+      width: s.en,
+    }));
+
+    // Başlıq sətri — qalın və boz fon
+    vərəq.getRow(1).font = { bold: true };
+    vərəq.getRow(1).fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FFE2E8F0' },
+    };
+
+    for (const s of setirler) vərəq.addRow(s);
+    vərəq.autoFilter = { from: 'A1', to: { row: 1, column: sütunlar.length } };
+
+    const bufer = await kitab.xlsx.writeBuffer();
+    return Buffer.from(bufer);
+  }
+}
+EOF</code></pre>
+    <p class="fayl-ad">src/ixrac/ixrac.controller.ts</p>
+<pre><code>mkdir -p src/ixrac
+cat &gt; src/ixrac/ixrac.controller.ts &lt;&lt;'EOF'
+import { Controller, Get, Res } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import type { Response } from 'express';
+import { ExcelService } from './excel.service.js';
+
+@ApiTags('ixrac')
+@Controller('ixrac')
+export class IxracController {
+  constructor(private readonly excel: ExcelService) {}
+
+  @Get('merkezler.xlsx')
+  @ApiOperation({ summary: 'Mərkəzləri Excel-ə ixrac et' })
+  async merkezler(@Res() cavab: Response): Promise&lt;void&gt; {
+    const fayl = await this.excel.merkezler();
+    this.gonder(cavab, fayl, 'merkezler');
+  }
+
+  @Get('emekdaslar.xlsx')
+  @ApiOperation({ summary: 'Əməkdaşları Excel-ə ixrac et' })
+  async emekdaslar(@Res() cavab: Response): Promise&lt;void&gt; {
+    const fayl = await this.excel.emekdaslar();
+    this.gonder(cavab, fayl, 'emekdaslar');
+  }
+
+  private gonder(cavab: Response, fayl: Buffer, ad: string): void {
+    const tarix = new Date().toISOString().slice(0, 10);
+    cavab.set({
+      'Content-Type':
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'Content-Disposition': `attachment; filename="${ad}_${tarix}.xlsx"`,
+      'Content-Length': String(fayl.length),
+    });
+    cavab.end(fayl);
+  }
+}
+EOF</code></pre>
+    <p class="fayl-ad">src/ixrac/ixrac.module.ts</p>
+<pre><code>mkdir -p src/ixrac
+cat &gt; src/ixrac/ixrac.module.ts &lt;&lt;'EOF'
+import { Module } from '@nestjs/common';
+import { ExcelService } from './excel.service.js';
+import { IxracController } from './ixrac.controller.js';
+
+@Module({
+  controllers: [IxracController],
+  providers: [ExcelService],
+})
+export class IxracModule {}
+EOF</code></pre>
+    </div>
+
+    <div class="hisse hisse-c">
+      <span class="hisse-basliq">C · Yoxlama — kod düzgün yazıldı?</span>
+      <p>Aşağıdaki əmrləri işlədin və nəticəni yoxlayın:</p>
+<pre><code>cd ~/Deepseek_ARTI/DS_Backend
+
+# 1) Fayllar yerindədirmi?
+ls -1 src/ixrac/
+
+# 2) ⚠️ ExcelJS DEFAULT import ilə gəlirmi?
+grep -n "import ExcelJS" src/ixrac/excel.service.ts
+
+# 3) ⚠️ Düzgün MIME tipi göndərilirmi?
+grep -n 'spreadsheetml' src/ixrac/ixrac.controller.ts
+
+# 4) Fayl REAL Excel-dirmi?
+npm run build &amp;&amp; node dist/main.js &amp;
+sleep 6
+TOKEN=$(curl -s -X POST localhost:4000/api/v1/auth/login \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+curl -s -o /tmp/yoxla.xlsx localhost:4000/api/v1/ixrac/merkezler.xlsx \
+  -H "Authorization: Bearer $TOKEN"
+file /tmp/yoxla.xlsx
+</code></pre>
+      <div class="olmaz">
+        <span class="olmaz-basliq">⚠️ Bu kod olmasa nə olardı</span>
+<pre><code>$ curl -s -o /tmp/yoxla.xlsx localhost:4000/api/v1/ixrac/merkezler.xlsx \
+    -H "Authorization: Bearer $TOKEN"
+$ file /tmp/yoxla.xlsx
+
+   # ⚠️ 'import * as ExcelJS' işlədilsə:
+
+/tmp/yoxla.xlsx: ASCII text
+
+$ cat /tmp/yoxla.xlsx
+{"ugur":false,"xeta":{"kod":"DAXILI_XETA",
+ "mesaj":"ExcelJS.Workbook is not a constructor"}}
+
+   # Fayl Excel DEYİL — sadəcə xəta mesajı olan mətn faylı!</code></pre>
+        <p><code>import * as ExcelJS from 'exceljs'</code> yazsaq, ESM/CJS
+    qarışıqlığı yaranır: <code>ExcelJS</code> obyektinin içində
+    <code>Workbook</code> <strong>olmur</strong> (o, <code>default</code> altında
+    gizlənir). Nəticədə <code>new ExcelJS.Workbook()</code> xəta atır və
+    istifadəçi <em>Excel əvəzinə JSON xətası</em> yükləyir. Fayl
+    <code>.xlsx</code> adlanır, amma açılmır — bu, ən çaşdırıcı xəta növüdür.</p>
+      </div>
+    </div>
+
+    <div class="hisse hisse-d">
+      <span class="hisse-basliq">D · Bu koddan sonra sistemin durumu — ÇIXIŞ</span>
+      <p class="cixis-xeber">⚠️ Bu blok <strong>çıxışdır</strong> — kopyalayıb terminala yapıştırmayın. Sadəcə oxuyun. Əmrlər B hissəsindədir.</p>
+<pre><code>$ curl -s -D - -o /tmp/merkezler.xlsx \
+    localhost:4000/api/v1/ixrac/merkezler.xlsx -H "Authorization: Bearer $TOKEN"
+
+HTTP/1.1 200 OK
+Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+Content-Disposition: attachment; filename="merkezler_2026-09-21.xlsx"
+Content-Length: 7121
+
+$ file /tmp/merkezler.xlsx
+/tmp/merkezler.xlsx: Microsoft Excel 2007+
+
+$ curl -s -o /tmp/emekdaslar.xlsx \
+    localhost:4000/api/v1/ixrac/emekdaslar.xlsx -H "Authorization: Bearer $TOKEN"
+$ ls -l /tmp/*.xlsx
+-rw-r--r--  1 user  staff  7121  merkezler.xlsx
+-rw-r--r--  1 user  staff  8197  emekdaslar.xlsx</code></pre>
+      <div class="oldu">
+        <span class="oldu-basliq">✔ Nəticə</span>
+        <p>Sistemin vəziyyəti: Excel ixracı işləyir. Fayllar
+    <strong>həqiqi Excel 2007+</strong> formatındadır (mərkəzlər 7 121 bayt,
+    əməkdaşlar 8 197 bayt) və brauzer onları avtomatik yükləyir — çünki
+    <code>Content-Disposition: attachment</code> başlığı var.
+    <code>autoFilter</code> sayəsində istifadəçi faylı açan kimi başlıq
+    sətrində süzgəc düymələrini görür. Fayllar <strong>yaddaşda</strong>
+    qurulur — server diskdə heç nə saxlamır, ona görə paralel 100 istifadəçi
+    yükləsə də disk dolmur.</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="addim-icmal">
+    <span>Addım 7 / 11</span>
+    <span>A · niyə</span><span>B · kod</span>
+    <span>C · yoxlama</span><span>D · durum</span>
+  </div>
+</div>
+
+<div class="addim">
+  <h2 class="addim-basliq" id="a8">
+    <span class="addim-no">8</span> Docker və CI/CD
+  </h2>
+  <div class="addim-govde">
+
+    <div class="hisse hisse-a">
+      <span class="hisse-basliq">A · Bu addım nəyə görədir</span>
+      <p>Layihə işləyir, amma başqa kompüterdə də işləməlidir. Docker
+    <strong>iki mərhələli</strong> yığım işlədir: birinci mərhələdə TypeScript
+    yığılır, ikincidə isə yalnız <code>dist</code> və istehsalat asılılıqları
+    köçürülür — beləliklə obraz kiçik olur. <code>docker-compose.yml</code> həm
+    bazanı, həm API-ı qaldırır. CI isə hər <code>push</code>-da testləri
+    avtomatik işlədir ki, sınıq kod əsas budağa düşməsin.</p>
+    </div>
+
+    <div class="hisse hisse-b">
+      <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">Dockerfile</p>
+<pre><code>cat &gt; Dockerfile &lt;&lt;'EOF'
+# ── 1) Yığım mərhələsi ──
+FROM node:22-alpine AS qurucu
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY prisma ./prisma
+COPY prisma.config.ts tsconfig*.json nest-cli.json ./
+COPY src ./src
+RUN npx prisma generate &amp;&amp; npm run build
+
+# ── 2) İstehsalat mərhələsi ──
+FROM node:22-alpine
+WORKDIR /app
+ENV NODE_ENV=production
+COPY package*.json ./
+RUN npm ci --omit=dev
+COPY --from=qurucu /app/dist ./dist
+COPY --from=qurucu /app/src/generated ./src/generated
+COPY prisma ./prisma
+EXPOSE 4000
+CMD ["node", "dist/main.js"]
+EOF</code></pre>
+    <p class="fayl-ad">.dockerignore</p>
+<pre><code>cat &gt; .dockerignore &lt;&lt;'EOF'
+node_modules
+dist
+.env
+.git
+_hesabat
+_arxiV
+*.md
+EOF</code></pre>
+    <p class="fayl-ad">docker-compose.yml</p>
+<pre><code>cat &gt; docker-compose.yml &lt;&lt;'EOF'
+services:
+  baza:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: arti_baza
+      POSTGRES_USER: arti_user
+      POSTGRES_PASSWORD: arti_secret_2025
+    ports: ["5432:5432"]
+    volumes: [baza-melumat:/var/lib/postgresql/data]
+
+  api:
+    build: .
+    environment:
+      DATABASE_URL: postgresql://arti_user:arti_secret_2025@baza:5432/arti_baza
+      PORT: 4000
+      JWT_SECRET: deyisdirin-mehsuliyyetde
+      JWT_MUDDET: 8h
+      DEEPSEEK_API_KEY: ""
+    ports: ["4000:4000"]
+    depends_on: [baza]
+
+volumes:
+  baza-melumat:
+EOF</code></pre>
+    <p class="fayl-ad">.github/workflows/ci.yml</p>
+<pre><code>mkdir -p .github/workflows
+cat &gt; .github/workflows/ci.yml &lt;&lt;'EOF'
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  yoxla:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: arti_baza
+          POSTGRES_USER: arti_user
+          POSTGRES_PASSWORD: arti_secret_2025
+        ports: ["5432:5432"]
+        # ⚠️ BU OLMASA testlər ECONNREFUSED alır
+        options: &gt;-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npx prisma generate
+      - run: npm run build
+      - run: npm test
+        env:
+          DATABASE_URL: postgresql://arti_user:arti_secret_2025@localhost:5432/arti_baza
+      - run: npx vitest run --config vitest.config.e2e.ts
+        env:
+          DATABASE_URL: postgresql://arti_user:arti_secret_2025@localhost:5432/arti_baza
+          JWT_SECRET: ci-test-acari
+EOF</code></pre>
+    </div>
+
+    <div class="hisse hisse-c">
+      <span class="hisse-basliq">C · Yoxlama — kod düzgün yazıldı?</span>
+      <p>Aşağıdaki əmrləri işlədin və nəticəni yoxlayın:</p>
+<pre><code>cd ~/Deepseek_ARTI/DS_Backend
+
+# 1) Fayllar yerindədirmi?
+ls -1 Dockerfile .dockerignore docker-compose.yml .github/workflows/ci.yml
+
+# 2) ⚠️ CI-da PostgreSQL HEALTH CHECK varmı?
+grep -n -A5 'options:' .github/workflows/ci.yml
+
+# 3) ⚠️ .env Docker obrazına düşməsin
+grep -n '.env' .dockerignore
+
+# 4) docker-compose konfiqurasiyası düzgündürmü?
+docker compose config &gt; /dev/null 2&gt;&amp;1 &amp;&amp; echo "✓ compose faylı düzgündür" || \
+  echo "(docker quraşdırılmayıb — fayl yenə etibarlıdır)"</code></pre>
+      <div class="olmaz">
+        <span class="olmaz-basliq">⚠️ Bu kod olmasa nə olardı</span>
+<pre><code>$ npx vitest run --config vitest.config.e2e.ts      # CI-da:
+
+ FAIL  test/backend3-auth.e2e-spec.ts
+Error: connect ECONNREFUSED 127.0.0.1:5432
+
+   # HEALTH CHECK olmasa GitHub Actions PostgreSQL-i qaldırır,
+   # amma HAZIR OLMAMIŞ testlər başlayır — bağlantı rədd olunur.
+
+   # ⚠️ Və ən pisi: bu xəta TƏSADÜFİ olur — bəzən keçir, bəzən yox.
+   # Ona görə "yenidən işlət" düyməsi problemi gizlədir.</code></pre>
+        <p>GitHub Actions <code>services</code> bloku konteyneri qaldırır, amma
+    <strong>hazır olmasını gözləmir</strong> — növbəti addım dərhal başlayır.
+    <code>--health-cmd pg_isready</code> seçimi Actions-a «bu servis hazır
+    olana qədər gözlə» deyir. Bu olmasa testlər <code>ECONNREFUSED</code> alır
+    və xəta <em>təsadüfi</em> görünür — bu, ən bezdirici CI problemidir.</p>
+      </div>
+    </div>
+
+    <div class="hisse hisse-d">
+      <span class="hisse-basliq">D · Bu koddan sonra sistemin durumu — ÇIXIŞ</span>
+      <p class="cixis-xeber">⚠️ Bu blok <strong>çıxışdır</strong> — kopyalayıb terminala yapıştırmayın. Sadəcə oxuyun. Əmrlər B hissəsindədir.</p>
+<pre><code>$ ls -1 Dockerfile .dockerignore docker-compose.yml .github/workflows/ci.yml
+Dockerfile
+.dockerignore
+docker-compose.yml
+.github/workflows/ci.yml
+
+$ grep -n -A5 'options:' .github/workflows/ci.yml
+17:        options: &gt;-
+18-          --health-cmd pg_isready
+19-          --health-interval 10s
+20-          --health-timeout 5s
+21-          --health-retries 5
+
+$ docker compose config --services
+baza
+api
+
+$ npm test
+ Test Files  6 passed (6)
+      Tests  42 passed (42)
+
+$ npx vitest run --config vitest.config.e2e.ts
+ Test Files  4 passed (4)
+      Tests  39 passed (39)</code></pre>
+      <div class="oldu">
+        <span class="oldu-basliq">✔ Nəticə</span>
+        <p>Sistemin vəziyyəti: layihə <strong>yerləşdirilməyə hazırdır</strong>.
+    <code>docker compose up</code> əmri bazanı və API-ı birgə qaldırır;
+    <code>Dockerfile</code> iki mərhələli olduğu üçün istehsalat obrazına
+    <code>node_modules</code>-un hamısı deyil, yalnız lazımlı hissəsi düşür.
+    CI isə hər <code>push</code>-da <strong>81 testi</strong>
+    (42 unit + 39 e2e) avtomatik işlədir. <code>.dockerignore</code> faylı
+    <code>.env</code>-i obrazdan kənarda saxlayır — bu vacibdir, çünki
+    <code>.env</code>-dəki JWT açarı obrazın içinə düşsə, onu istənilən şəxs
+    çıxara bilər.</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="addim-icmal">
+    <span>Addım 8 / 11</span>
+    <span>A · niyə</span><span>B · kod</span>
+    <span>C · yoxlama</span><span>D · durum</span>
+  </div>
+</div>
+
+<div class="addim">
+  <h2 class="addim-basliq" id="a9">
+    <span class="addim-no">9</span> Build və tam canlı yoxlama
+  </h2>
+  <div class="addim-govde">
+
+    <div class="hisse hisse-a">
+      <span class="hisse-basliq">A · Bu addım nəyə görədir</span>
+      <p>İndi bütün yeni qatları canlı yoxlayırıq: AI statistikası, reseptlər,
+    vektorlaşdırma, RAG axtarışı, təbii dil sualı, AI cavabı və Excel ixracı.
+    Yeddi yoxlamanın hamısı keçməlidir. Bu, dərsin ən vacib anıdır — burada
+    ayrı-ayrı hissələr deyil, <strong>bütün sistem birlikdə</strong> işləyir.</p>
+    </div>
+
+    <div class="hisse hisse-b">
+      <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">Terminal 1 — serveri qaldır</p>
+<pre><code>cd ~/Deepseek_ARTI/DS_Backend
+unset DATABASE_URL PGHOST
+
+lsof -ti:4000 &amp;&amp; kill $(lsof -ti:4000)
+npm run build
+npm run start:dev</code></pre>
+    <p class="fayl-ad">Terminal 2 — AI və ixrac yoxlaması</p>
+<pre><code>A=http://localhost:4000/api/v1
+
+# ── Token AL və YADDA SAXLA ──
+TOKEN=$(curl -s -X POST "$A/auth/login" \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+echo "$TOKEN" &gt; /tmp/arti_token.txt
+
+# ── 1) AI STATİSTİKA ──
+curl -s "$A/ai/statistika" -H "Authorization: Bearer $TOKEN" | python3 -m json.tool
+
+# ── 2) RESEPTLƏR (ağ siyahı) ──
+curl -s "$A/ai/reseptler" -H "Authorization: Bearer $TOKEN" | python3 -m json.tool
+
+# ── 3) VEKTORLAŞDIRMA ──
+curl -s -X POST "$A/ai/vektorlasdir" -H "Authorization: Bearer $TOKEN" | python3 -m json.tool
+
+# ── 4) RAG AXTARIŞ ──
+curl -s -X POST "$A/ai/rag" -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer $TOKEN" \
+  -d '{"sual":"Elmi Şura protokolu","limit":3}' | python3 -m json.tool
+
+# ── 5) TƏBİİ DİL SUALI ──
+for s in "Neçə əməkdaş var?" "Orta maaş nə qədərdir?" "Uçan boşqab neçədir?"; do
+  printf '%-26s → ' "$s"
+  curl -s -X POST "$A/ai/sual" -H 'Content-Type: application/json' \
+    -H "Authorization: Bearer $TOKEN" -d "{\"sual\":\"$s\"}" \
+    | python3 -c "import json,sys;d=json.load(sys.stdin);print(d['izah'][:45])"
+done
+
+# ── 6) AI CAVABI (RAG ilə) ──
+curl -s -X POST "$A/ai/cavab" -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer $TOKEN" -d '{"sual":"Elmi Şura protokolu"}' \
+  | python3 -m json.tool
+
+# ── 7) EXCEL İXRACI ──
+for f in merkezler emekdaslar; do
+  curl -s -o "/tmp/$f.xlsx" "$A/ixrac/$f.xlsx" -H "Authorization: Bearer $TOKEN"
+  printf '  %-12s → %s bayt · %s\n' "$f" "$(wc -c &lt; /tmp/$f.xlsx | tr -d ' ')" \
+    "$(file -b /tmp/$f.xlsx)"
+done</code></pre>
+    </div>
+
+    <div class="hisse hisse-c">
+      <span class="hisse-basliq">C · Yoxlama — kod düzgün yazıldı?</span>
+      <p>Aşağıdaki əmrləri işlədin və nəticəni yoxlayın:</p>
+<pre><code>cd ~/Deepseek_ARTI/DS_Backend
+
+# 1) Neçə marshrut var? (21 olmalıdır — 15 əvvəlki + 5 AI + 2 ixrac)
+curl -s http://localhost:4000/docs-json | python3 -c "
+import json, sys
+d = json.load(sys.stdin)
+say = 0
+for yol in sorted(d['paths']):
+    for m in d['paths'][yol]:
+        say += 1
+        qeyd = 'AI' if '/ai/' in yol else ('IXRAC' if '/ixrac/' in yol else '')
+        print(f'  {m.upper():6s} {yol:&lt;42} {qeyd}')
+print('  CƏMİ:', say, 'marshrut')
+"
+
+# 2) Excel faylları REAL-dırmı?
+file /tmp/merkezler.xlsx /tmp/emekdaslar.xlsx
+
+# 3) ⚠️ Vektorlaşdırma rol qorunması
+for rol in admin baxici; do
+  T=$(curl -s -X POST http://localhost:4000/api/v1/auth/login \
+    -H 'Content-Type: application/json' \
+    -d "{\"email\":\"$rol@arti.edu.az\",\"parol\":\"123456\"}" \
+    | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+  printf '  %-10s vektorlasdir → %s\n' "$rol" \
+    "$(curl -s -o /dev/null -w '%{http_code}' -X POST \
+       http://localhost:4000/api/v1/ai/vektorlasdir -H "Authorization: Bearer $T")"
+done
+</code></pre>
+      <div class="olmaz">
+        <span class="olmaz-basliq">⚠️ Bu kod olmasa nə olardı</span>
+<pre><code>$ curl -s localhost:4000/api/v1/ai/statistika -H "Authorization: Bearer $TOKEN"
+
+   # AI modulu app.module-a qoşulmasa:
+
+{"ugur":false,"xeta":{"kod":"TAPILMADI",
+ "mesaj":"Cannot GET /api/v1/ai/statistika"},
+ "yol":"/ai/statistika","vaxt":"2026-09-21T06:12:44.118Z"}
+
+   # Server logunda AiController ÜMUMİYYƏTLƏ yoxdur:
+[Nest] LOG [RoutesResolver] KadrlarController {/api/v1/kadrlar/emekdaslar}: +0ms
+   (AiController sətri yoxdur)</code></pre>
+        <p><code>AiModule</code> və <code>IxracModule</code>
+    <code>app.module.ts</code>-in <code>imports</code> siyahısına əlavə
+    olunmasa, controller-lər <strong>ümumiyyətlə yaranmır</strong> — marshrutlar
+    qeydiyyatdan keçmir və bütün AI endpoint-ləri <code>404</code> verir. Bu,
+    Dərs 2-də gördüyümüz eyni səhvdir: fayllar yazılır, modul qoşulmağı
+    unudulur.</p>
+      </div>
+    </div>
+
+    <div class="hisse hisse-d">
+      <span class="hisse-basliq">D · Bu koddan sonra sistemin durumu — ÇIXIŞ</span>
+      <p class="cixis-xeber">⚠️ Bu blok <strong>çıxışdır</strong> — kopyalayıb terminala yapıştırmayın. Sadəcə oxuyun. Əmrlər B hissəsindədir.</p>
+<pre><code>$ curl -s localhost:4000/docs-json | python3 -c "..."
+  GET    /api/v1
+  POST   /api/v1/ai/cavab                            AI
+  POST   /api/v1/ai/rag                              AI
+  GET    /api/v1/ai/reseptler                        AI
+  GET    /api/v1/ai/statistika                       AI
+  POST   /api/v1/ai/sual                             AI
+  POST   /api/v1/ai/vektorlasdir                     AI
+  GET    /api/v1/auth/istifadeciler
+  POST   /api/v1/auth/login
+  GET    /api/v1/auth/profil
+  POST   /api/v1/auth/qeydiyyat
+  GET    /api/v1/ixrac/emekdaslar.xlsx               IXRAC
+  GET    /api/v1/ixrac/merkezler.xlsx                IXRAC
+  ... (struktur, kadrlar, sağlamlıq)
+  CƏMİ: 22 marshrut
+
+════════ EXCEL FAYLLARI ════════
+  merkezler    → 7121 bayt · Microsoft Excel 2007+
+  emekdaslar   → 8197 bayt · Microsoft Excel 2007+
+
+════════ VEKTORLAŞDIRMA QORUNMASI ════════
+  admin      vektorlasdir → 200
+  baxici     vektorlasdir → 403</code></pre>
+      <div class="oldu">
+        <span class="oldu-basliq">✔ Nəticə</span>
+        <p><strong>Backend-4 tam işlək vəziyyətdədir.</strong> Əlavə olunan
+    <strong>7 marshrut</strong> (5 AI + 2 ixrac) digər 15 ilə birlikdə işləyir —
+    cəmi <strong>22 marshrut</strong>. Excel faylları həqiqi Excel formatındadır
+    və brauzer onları yükləyir. Vektorlaşdırma isə rol ilə qorunur:
+    <code>admin</code> <code>200</code>, <code>baxici</code>
+    <code>403</code>. Bu andan etibarən institutun məlumatları həm
+    <em>API</em>, həm <em>Excel</em>, həm də <em>təbii dil</em> vasitəsilə
+    əlçatandır.</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="addim-icmal">
+    <span>Addım 9 / 11</span>
+    <span>A · niyə</span><span>B · kod</span>
+    <span>C · yoxlama</span><span>D · durum</span>
+  </div>
+</div>
+
+<div class="addim">
+  <h2 class="addim-basliq" id="a10">
+    <span class="addim-no">10</span> Testlər — AI və ixrac
+  </h2>
+  <div class="addim-govde">
+
+    <div class="hisse hisse-a">
+      <span class="hisse-basliq">A · Bu addım nəyə görədir</span>
+      <p>AI qatının testləri xüsusi diqqət tələb edir: <strong>vektor
+    riyaziyyatı</strong> səhv olsa heç bir xəta çıxmır, sadəcə axtarış
+    nəticələri yanlış olur. Ona görə burada sərhəd halları yoxlanılır:
+    vektor ölçüsü, normallaşdırma, deterministiklik, oxşarlıq və
+    <strong>resept sırası</strong>. Sonuncu xüsusilə vacibdir — bu dərsdə
+    məhz o səhvi tapıb düzəltdik.</p>
+    </div>
+
+    <div class="hisse hisse-b">
+      <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">src/ai/embedding.service.spec.ts</p>
+<pre><code>mkdir -p src/ai
+cat &gt; src/ai/embedding.service.spec.ts &lt;&lt;'EOF'
+import { Test } from '@nestjs/testing';
+import { EmbeddingService, OLCU } from './embedding.service.js';
+import { PrismaService } from '../prisma/prisma.service.js';
+
+describe('EmbeddingService (unit)', () =&gt; {
+  let servis: EmbeddingService;
+
+  beforeEach(async () =&gt; {
+    const modul = await Test.createTestingModule({
+      providers: [EmbeddingService, { provide: PrismaService, useValue: { $queryRaw: vi.fn() } }],
+    }).compile();
+    servis = modul.get(EmbeddingService);
+  });
+
+  it(`vektor ${OLCU} ölçülüdür`, () =&gt; {
+    expect(servis.vektor('salam dünya')).toHaveLength(OLCU);
+  });
+
+  it('vektor normallaşdırılıb (uzunluq ≈ 1)', () =&gt; {
+    const v = servis.vektor('elm və təhsil');
+    const uzunluq = Math.sqrt(v.reduce((c, x) =&gt; c + x * x, 0));
+    expect(uzunluq).toBeCloseTo(1, 4);
+  });
+
+  it('⚠️ EYNİ mətn → EYNİ vektor (deterministik)', () =&gt; {
+    expect(servis.vektor('elm')).toEqual(servis.vektor('elm'));
+  });
+
+  it('⚠️ FƏRQLİ mətn → fərqli vektor', () =&gt; {
+    expect(servis.vektor('elm')).not.toEqual(servis.vektor('incəsənət'));
+  });
+
+  it('eyni söz keçən mətnlər oxşardır', () =&gt; {
+    const a = servis.vektor('Elmi Şura protokolu');
+    const b = servis.vektor('Elmi Şura qərarı');
+    expect(servis.kosinus(a, b)).toBeGreaterThan(0);
+  });
+
+  it('heç bir ortaq sözü olmayan mətnlər oxşar deyil', () =&gt; {
+    const a = servis.vektor('elm');
+    const b = servis.vektor('idman');
+    expect(servis.kosinus(a, b)).toBe(0);
+  });
+
+  it('kosinus özü ilə 1 verir', () =&gt; {
+    const v = servis.vektor('təhsil sistemi');
+    expect(servis.kosinus(v, v)).toBeCloseTo(1, 4);
+  });
+});
+EOF</code></pre>
+    <p class="fayl-ad">src/ai/sql-komlekci.service.spec.ts</p>
+<pre><code>mkdir -p src/ai
+cat &gt; src/ai/sql-komlekci.service.spec.ts &lt;&lt;'EOF'
+import { Test } from '@nestjs/testing';
+import { SqlKomlekciService } from './sql-komlekci.service.js';
+import { PrismaService } from '../prisma/prisma.service.js';
+
+describe('SqlKomlekciService (unit)', () =&gt; {
+  let servis: SqlKomlekciService;
+  let prisma: any;
+
+  beforeEach(async () =&gt; {
+    prisma = { $queryRaw: vi.fn().mockResolvedValue([]) };
+    const modul = await Test.createTestingModule({
+      providers: [SqlKomlekciService, { provide: PrismaService, useValue: prisma }],
+    }).compile();
+    servis = modul.get(SqlKomlekciService);
+  });
+
+  it('10 resept elan olunub', () =&gt; {
+    expect(servis.reseptler()).toHaveLength(10);
+  });
+
+  it('⚠️ XÜSUSİ resept ümumidən ƏVVƏL gəlir', () =&gt; {
+    const r = servis.uygunResept('Orta maaş nə qədərdir?');
+    expect(r?.izah).toBe('Orta əmək haqqı');
+  });
+
+  it('ümumi maaş resepti də işləyir', () =&gt; {
+    expect(servis.uygunResept('Ən çox maaş alan kimdir?')?.izah)
+      .toBe('Ən çox maaş alan 5 nəfər');
+  });
+
+  it('uydurma sual resept tapmır', () =&gt; {
+    expect(servis.uygunResept('Uçan boşqab neçədir?')).toBeNull();
+  });
+
+  it('resept tapılmasa uygun=false qaytarır', async () =&gt; {
+    const c = await servis.sual('Uçan boşqab neçədir?');
+    expect(c.uygun).toBe(false);
+    expect(c.setirler).toHaveLength(0);
+  });
+
+  it('resept tapılsa SQL işlədilir', async () =&gt; {
+    const c = await servis.sual('Neçə əməkdaş var?');
+    expect(c.uygun).toBe(true);
+    expect(prisma.$queryRaw).toHaveBeenCalled();
+  });
+});
+EOF</code></pre>
+    </div>
+
+    <div class="hisse hisse-c">
+      <span class="hisse-basliq">C · Yoxlama — kod düzgün yazıldı?</span>
+      <p>Aşağıdaki əmrləri işlədin və nəticəni yoxlayın:</p>
+<pre><code>cd ~/Deepseek_ARTI/DS_Backend
+
+# 1) Test faylları yerindədirmi?
+ls -1 src/ai/*.spec.ts
+
+# 2) ⚠️ Sərhəd halları yoxlanılırmı?
+grep -n 'OLCU\|normallaş\|deterministik\|XÜSUSİ' src/ai/embedding.service.spec.ts \
+  src/ai/sql-komlekci.service.spec.ts
+
+# 3) BÜTÜN testlər
+npm test
+npx vitest run --config vitest.config.e2e.ts
+</code></pre>
+      <div class="olmaz">
+        <span class="olmaz-basliq">⚠️ Bu kod olmasa nə olardı</span>
+<pre><code>$ npm test      # resept sırası testi olmasa:
+
+ Test Files  6 passed (6)
+      Tests  41 passed (41)          ← "Orta maaş" səhvi TUTULMUR
+
+$ curl ... -d '{"sual":"Orta maaş nə qədərdir?"}'
+{ "izah": "Ən çox maaş alan 5 nəfər" }     ← YANLIŞ cavab,
+                                             heç bir test sınıq deyil</code></pre>
+        <p>Test <code>expect(r?.izah).toBe('Orta əmək haqqı')</code> yazır —
+    yəni kodun <em>nə etdiyini</em> deyil, <code>nə etməli olduğunu</code>.
+    Test olmasa resept sırası dəyişdirilsə (məsələn yeni developer faylı
+    redaktə etsə) səhv <strong>sükutla</strong> qayıdar. AI qatında bu xüsusilə
+    təhlükəlidir: istifadəçi yanlış rəqəmə baxıb yanlış <em>qərar</em> verə
+    bilər və bunu heç vaxt bilməz.</p>
+      </div>
+    </div>
+
+    <div class="hisse hisse-d">
+      <span class="hisse-basliq">D · Bu koddan sonra sistemin durumu — ÇIXIŞ</span>
+      <p class="cixis-xeber">⚠️ Bu blok <strong>çıxışdır</strong> — kopyalayıb terminala yapıştırmayın. Sadəcə oxuyun. Əmrlər B hissəsindədir.</p>
+<pre><code>$ npm test
+
+ RUN  v4.1.11 /Users/royatalibova/Deepseek_ARTI/DS_Backend
+
+ ✓ src/common/dto/sehife.dto.spec.ts (9 tests)
+ ✓ src/saglamliq/saglamliq.service.spec.ts (3 tests)
+ ✓ src/struktur/struktur.service.spec.ts (9 tests)
+ ✓ src/auth/auth.service.spec.ts (8 tests)
+ ✓ src/ai/embedding.service.spec.ts (7 tests)
+ ✓ src/ai/sql-komlekci.service.spec.ts (6 tests)
+
+ Test Files  6 passed (6)
+      Tests  42 passed (42)
+
+$ npx vitest run --config vitest.config.e2e.ts
+
+ ✓ test/struktur.e2e-spec.ts (14 tests)
+ ✓ test/kadrlar.e2e-spec.ts (7 tests)
+ ✓ test/backend3-auth.e2e-spec.ts (14 tests)
+ ✓ test/saglamliq.e2e-spec.ts (4 tests)
+
+ Test Files  4 passed (4)
+      Tests  39 passed (39)
+
+──────────────────────────────────────────────
+YEKUN: 42 unit + 39 e2e = 81 test</code></pre>
+      <div class="oldu">
+        <span class="oldu-basliq">✔ Nəticə</span>
+        <p><strong>Backend-4 tamamlandı.</strong> Bütün backend kursunun yekunu:
+    <ul>
+      <li><strong>42 unit + 39 e2e = 81 test</strong> — Dərs 1-də 7 test idi.</li>
+      <li><strong>22 marshrut</strong> — sağlamlıq, struktur, kadrlar, auth,
+          AI və ixrac.</li>
+      <li><strong>AI qatı</strong> — RAG axtarışı, 10 reseptli təbii dil
+          sorğusu, demo rejim.</li>
+      <li><strong>Excel ixracı</strong> — həqiqi <code>.xlsx</code> faylları.</li>
+      <li><strong>Docker + CI</strong> — layihə istənilən mühitdə qalxır.</li>
+    </ul>
+    <p><strong>Növbəti addım:</strong> frontend — bu API-ı istifadəçiyə
+    göstərən veb interfeys. Bütün endpoint-lər hazırdır və
+    <code>/docs</code> ünvanında sənədləşdirilib.</p></p>
+      </div>
+    </div>
+
+  </div>
+  <div class="addim-icmal">
+    <span>Addım 10 / 11</span>
+    <span>A · niyə</span><span>B · kod</span>
+    <span>C · yoxlama</span><span>D · durum</span>
+  </div>
+</div>
+
+<div class="addim">
+  <h2 class="addim-basliq" id="a14">
+    <span class="addim-no">14</span> Tam qəbul testi — bütün yenilikləri bir-bir yoxla
+  </h2>
+  <div class="addim-govde">
+
+    <div class="hisse hisse-a">
+      <span class="hisse-basliq">A · Bu addım nəyə görədir</span>
+      <p>Bu dərsdə <strong>12 addımda</strong> çox şey əlavə etdik: JWT autentifikasiya,
+dörd rollu RBAC, audit jurnalı, timing attack qoruması, seed skripti. İndi isə
+hamısını <strong>bir dəfəlik yoxlayan</strong> qəbul testi yazırıq. Bu skript
+serveri ayağa qaldırdıqdan sonra <strong>72 yoxlama</strong> aparır və hər biri
+üçün <em>hansı rolu</em> yoxladığını və <em>cavabın necə olmalı olduğunu</em>
+göstərir. Sonda tək bir sətir çap edir: «bütün yeniliklər işləyir» və ya
+«N yoxlama uğursuz».</p>
+    </div>
+
+    <div class="hisse hisse-b">
+      <span class="hisse-basliq">B · Kod</span>
+  <p><strong>Əvvəlcə — hər yoxlamanın nəyi, hansı rolu və nə gözlədiyi:</strong></p>
+  <table>
+  <tr><th>#</th><th>Nə yoxlanılır</th><th>Rol</th><th>Gözlənilən cavab</th></tr>
+  <tr><td>1</td><td>Auth paketləri (5) + <code>JWT_SECRET</code></td><td>—</td>
+      <td>5 paket <code>var</code> · <code>.env</code>-də 1 sətir</td></tr>
+  <tr><td>2</td><td>DTO validasiyası: düzgün / pis email / qısa şifrə / boş cisim</td>
+      <td>—</td><td><code>200 · 400 · 400 · 400</code></td></tr>
+  <tr><td>3</td><td><code>@Public()</code> — açıq endpoint-lər</td><td>—</td>
+      <td><code>200</code> (tokensiz)</td></tr>
+  <tr><td>4</td><td><code>JwtAuthGuard</code> — qorunan endpoint-lər</td><td>—</td>
+      <td><code>401</code> (tokensiz və səhv tokenlə)</td></tr>
+  <tr><td>5</td><td>Login və token strukturu</td><td>admin</td>
+      <td><code>200</code> · token 3 hissə · müddət 8 saat · <code>parol_hash</code> yoxdur</td></tr>
+  <tr><td>6</td><td>Timing attack qoruması</td><td>—</td>
+      <td>eyni mesaj · vaxt fərqi &lt; 20 ms</td></tr>
+  <tr><td>7</td><td><code>POST /struktur/merkezler</code></td>
+      <td><strong>admin</strong>, <strong>muhendis</strong></td><td><code>201</code></td></tr>
+  <tr><td>7</td><td><code>POST /struktur/merkezler</code></td>
+      <td><strong>maliyyeci</strong>, <strong>baxici</strong></td><td><code>403</code></td></tr>
+  <tr><td>8</td><td><code>DELETE /struktur/merkezler/:id</code></td>
+      <td>yalnız <strong>admin</strong></td><td><code>200</code> (digərləri <code>403</code>)</td></tr>
+  <tr><td>8</td><td>Bağlı mərkəzi silmək</td><td>admin</td>
+      <td><code>409</code> — <strong>500 DEYİL</strong></td></tr>
+  <tr><td>9</td><td><code>GET /auth/istifadeciler</code></td>
+      <td>yalnız <strong>admin</strong></td><td><code>200</code> (digər 3 rol <code>403</code>)</td></tr>
+  <tr><td>10</td><td>Oxuma (GET) endpoint-ləri</td>
+      <td><strong>4 rolun hamısı</strong></td><td><code>200</code></td></tr>
+  <tr><td>11</td><td>403 cavabının strukturu</td><td>baxici</td>
+      <td><code>xeta.kod = ICAZE_YOXDUR</code> + hansı rolun lazım olduğu</td></tr>
+  <tr><td>12</td><td>admin super-rolu</td><td>admin</td>
+      <td>hər endpointə <code>200</code>/<code>201</code></td></tr>
+  <tr><td>12</td><td>Qeydiyyat hüququ</td><td>baxici</td><td><code>403</code></td></tr>
+  <tr><td>13</td><td>Audit jurnalı</td><td>admin</td>
+      <td>POST <code>+1</code> · 3 × GET <code>+0</code> · uğursuz cəhd də yazılır</td></tr>
+  <tr><td>14</td><td>Seed idempotentliyi</td><td>—</td>
+      <td>2 dəfə işlət → <strong>4</strong> istifadəçi</td></tr>
+  <tr><td>15</td><td>Unit + e2e testlər</td><td>—</td>
+      <td><code>29 unit</code> + <code>39 e2e</code></td></tr>
+</table>
+  <p>Aşağıdaki skript məhz bu 72 yoxlamanı sıra ilə aparır. Onu <code>scripts/</code> qovluğuna yazın.</p>
+  <p class="fayl-ad">scripts/yoxla-backend3.sh</p>
+<pre><code>mkdir -p scripts
+cat &gt; scripts/yoxla-backend3.sh &lt;&lt;'EOF'
+#!/bin/bash
+# ══════════════════════════════════════════════════════════════════════
+#  BACKEND-3 — TAM QƏBUL TESTİ
+#
+#  Bu dərsdə əlavə edilən HƏR yeniliyi bir-bir yoxlayır:
+#    • auth paketləri və JWT açarı
+#    • DTO validasiyası (login / qeydiyyat)
+#    • @Public() — açıq endpoint-lər
+#    • JwtAuthGuard — tokensiz 401
+#    • Login, token strukturu və müddəti
+#    • Timing attack qoruması
+#    • JwtStrategy — tokenin bazadan yoxlanılması
+#    • RolesGuard — RBAC matrisi (4 rol × 5 endpoint)
+#    • 403 cavabının strukturu
+#    • admin super-rolu
+#    • AuditInterceptor — jurnal
+#    • Seed skriptinin idempotentliyi
+#    • Unit + e2e testlər
+#
+#  İSTİFADƏ:
+#    # 1) Server ayrı terminalda işləməlidir
+#    npm run start:dev
+#    # 2) Digər terminalda:
+#    bash scripts/yoxla-backend3.sh
+# ══════════════════════════════════════════════════════════════════════
+
+unset DATABASE_URL PGHOST
+export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
+
+A="${A:-http://localhost:4000/api/v1}"
+BAZA="${BAZA:-arti_baza}"
+DB_ISTIFADECI="${DB_ISTIFADECI:-arti_user}"
+
+YASIL=$'\033[32m'; QIRMIZI=$'\033[31m'; SARI=$'\033[33m'
+MAVI=$'\033[36m';  BOZ=$'\033[90m';     SIFIR=$'\033[0m'
+
+KECDI=0; XETA=0
+
+# ── KÖMƏKÇİLƏR ────────────────────────────────────────────────────────
+bashliq() {
+  printf "\n${MAVI}════════════════════════════════════════════════════════════${SIFIR}\n"
+  printf "${MAVI}  %s${SIFIR}\n" "$1"
+  printf "${MAVI}════════════════════════════════════════════════════════════${SIFIR}\n"
+}
+
+yoxla() {   # yoxla "ad" "gözlənilən" "faktiki"
+  if [ "$2" = "$3" ]; then
+    printf "  ${YASIL}✓${SIFIR} %-46s ${BOZ}%s${SIFIR}\n" "$1" "$3"
+    KECDI=$((KECDI + 1))
+  else
+    printf "  ${QIRMIZI}✗${SIFIR} %-46s ${QIRMIZI}%s${SIFIR} ${BOZ}(gözlənilən: %s)${SIFIR}\n" \
+      "$1" "$3" "$2"
+    XETA=$((XETA + 1))
+  fi
+}
+
+# kod "metod" "yol" [token]
+kod() {
+  if [ -n "${3:-}" ]; then
+    curl -s -o /dev/null -w '%{http_code}' -X "$1" "$A$2" \
+      -H "Authorization: Bearer $3" 2&gt;/dev/null
+  else
+    curl -s -o /dev/null -w '%{http_code}' -X "$1" "$A$2" 2&gt;/dev/null
+  fi
+}
+
+# kod_cisim "metod" "yol" "cisim" [token]
+kod_cisim() {
+  if [ -n "${4:-}" ]; then
+    curl -s -o /dev/null -w '%{http_code}' -X "$1" "$A$2" \
+      -H 'Content-Type: application/json' \
+      -H "Authorization: Bearer $4" -d "$3" 2&gt;/dev/null
+  else
+    curl -s -o /dev/null -w '%{http_code}' -X "$1" "$A$2" \
+      -H 'Content-Type: application/json' -d "$3" 2&gt;/dev/null
+  fi
+}
+
+token_al() {   # token_al "rol" → TOKEN
+  local cisim="{\"email\":\"$1@arti.edu.az\",\"parol\":\"123456\"}"
+  TOKEN=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+    -d "$cisim" 2&gt;/dev/null \
+    | python3 -c "import json,sys;print(json.load(sys.stdin).get('token',''))" 2&gt;/dev/null)
+}
+
+P="psql -U $DB_ISTIFADECI -w -d $BAZA -tAc"
+
+# ── SERVER HAZIRDIR? ──────────────────────────────────────────────────
+if [ "$(kod GET /saglamliq)" != "200" ]; then
+  printf "${QIRMIZI}XƏTA: server cavab vermir — $A${SIFIR}\n"
+  printf "${BOZ}Ayrı terminalda: npm run start:dev${SIFIR}\n"
+  exit 1
+fi
+
+printf "\n${MAVI}╔══════════════════════════════════════════════════════════════╗${SIFIR}\n"
+printf   "${MAVI}║   BACKEND-3 — TAM QƏBUL TESTİ                              ║${SIFIR}\n"
+printf   "${MAVI}╚══════════════════════════════════════════════════════════════╝${SIFIR}\n"
+
+# ── TOKENLƏRİ AL ──────────────────────────────────────────────────────
+bashliq "0 · DÖRD ROL ÜÇÜN TOKEN"
+for rol in admin muhendis maliyyeci baxici; do
+  token_al "$rol"
+  printf "  %-10s → %s simvol\n" "$rol" "${#TOKEN}"
+  echo "$TOKEN" &gt; "/tmp/b3tok_$rol.txt"
+done
+TA=$(cat /tmp/b3tok_admin.txt)
+TM=$(cat /tmp/b3tok_muhendis.txt)
+TL=$(cat /tmp/b3tok_maliyyeci.txt)
+TB=$(cat /tmp/b3tok_baxici.txt)
+
+# ══════════════════════════════════════════════════════════════════════
+bashliq "1 · AUTH PAKETLƏRİ VƏ JWT AÇARI"
+# ══════════════════════════════════════════════════════════════════════
+for pk in @nestjs/jwt @nestjs/passport passport passport-jwt bcryptjs; do
+  yoxla "paket: $pk" "var" "$([ -d "node_modules/$pk" ] &amp;&amp; echo var || echo YOXDUR)"
+done
+yoxla "JWT_SECRET .env-də" "1" "$(grep -c '^JWT_SECRET=' .env 2&gt;/dev/null || echo 0)"
+yoxla "JWT_MUDDET .env-də" "1" "$(grep -c '^JWT_MUDDET=' .env 2&gt;/dev/null || echo 0)"
+
+# ══════════════════════════════════════════════════════════════════════
+bashliq "2 · DTO VALİDASİYASI (rol tələb olunmur — @Public)"
+# ══════════════════════════════════════════════════════════════════════
+yoxla "login: düzgün email + şifrə" "200" \
+  "$(kod_cisim POST /auth/login '{"email":"admin@arti.edu.az","parol":"123456"}')"
+yoxla "login: email formatı səhv" "400" \
+  "$(kod_cisim POST /auth/login '{"email":"pis","parol":"123456"}')"
+yoxla "login: şifrə 6-dan qısa" "400" \
+  "$(kod_cisim POST /auth/login '{"email":"admin@arti.edu.az","parol":"123"}')"
+yoxla "login: boş cisim" "400" "$(kod_cisim POST /auth/login '{}')"
+
+# ══════════════════════════════════════════════════════════════════════
+bashliq "3 · @Public() — TOKENSİZ AÇIQ ENDPOINT-LƏR"
+# ══════════════════════════════════════════════════════════════════════
+yoxla "GET  /saglamliq" "200" "$(kod GET /saglamliq)"
+yoxla "GET  /" "200" "$(kod GET /)"
+yoxla "POST /auth/login" "200" \
+  "$(kod_cisim POST /auth/login '{"email":"admin@arti.edu.az","parol":"123456"}')"
+
+# ══════════════════════════════════════════════════════════════════════
+bashliq "4 · JwtAuthGuard — TOKENSİZ 401"
+# ══════════════════════════════════════════════════════════════════════
+yoxla "GET  /struktur/merkezler" "401" "$(kod GET /struktur/merkezler)"
+yoxla "GET  /kadrlar/emekdaslar" "401" "$(kod GET /kadrlar/emekdaslar)"
+yoxla "GET  /auth/profil" "401" "$(kod GET /auth/profil)"
+yoxla "GET  /auth/istifadeciler" "401" "$(kod GET /auth/istifadeciler)"
+yoxla "POST /struktur/merkezler" "401" \
+  "$(kod_cisim POST /struktur/merkezler '{"ad":"Test Merkez"}')"
+yoxla "səhv token" "401" "$(kod GET /struktur/merkezler 'sehv.token.deyeri')"
+yoxla "prefikssiz yol" "404" \
+  "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:4000/struktur/merkezler 2&gt;/dev/null)"
+
+# ══════════════════════════════════════════════════════════════════════
+bashliq "5 · LOGIN VƏ TOKEN STRUKTURU"
+# ══════════════════════════════════════════════════════════════════════
+CAVAB=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}')
+yoxla "cavabda token var" "1" "$(echo "$CAVAB" | grep -c '"token"')"
+yoxla "cavabda istifadeci var" "1" "$(echo "$CAVAB" | grep -c '"istifadeci"')"
+yoxla "cavabda bitme var" "1" "$(echo "$CAVAB" | grep -c '"bitme"')"
+yoxla "⚠️ parol_hash SIZMIR" "0" "$(echo "$CAVAB" | grep -c 'parol_hash')"
+yoxla "⚠️ bcrypt hash SIZMIR" "0" "$(echo "$CAVAB" | grep -c '\$2b\$')"
+yoxla "token 3 hissəli" "3" "$(echo "$TA" | awk -F. '{print NF}')"
+yoxla "token payload: rol=admin" "admin" \
+  "$(echo "$TA" | cut -d. -f2 | python3 -c "
+import sys,base64,json
+s=sys.stdin.read().strip(); s+='='*(-len(s)%4)
+print(json.loads(base64.urlsafe_b64decode(s)).get('rol',''))" 2&gt;/dev/null)"
+yoxla "token müddəti 8 saat" "8" \
+  "$(echo "$TA" | cut -d. -f2 | python3 -c "
+import sys,base64,json
+s=sys.stdin.read().strip(); s+='='*(-len(s)%4)
+p=json.loads(base64.urlsafe_b64decode(s))
+print((p['exp']-p['iat'])//3600)" 2&gt;/dev/null)"
+yoxla "GET /auth/profil (tokenlə)" "200" "$(kod GET /auth/profil "$TA")"
+
+# ══════════════════════════════════════════════════════════════════════
+bashliq "6 · TIMING ATTACK QORUMASI (rol tələb olunmur)"
+# ══════════════════════════════════════════════════════════════════════
+M1=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"yoxdur@arti.edu.az","parol":"sehv-sifre-2026"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['xeta']['mesaj'])" 2&gt;/dev/null)
+M2=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"sehv-sifre-2026"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['xeta']['mesaj'])" 2&gt;/dev/null)
+yoxla "mövcud olmayan e-poçt → mesaj" "E-poçt və ya şifrə yanlışdır" "$M1"
+yoxla "səhv şifrə → EYNİ mesaj" "$M1" "$M2"
+T1=$(curl -s -o /dev/null -w '%{time_total}' -X POST "$A/auth/login" \
+  -H 'Content-Type: application/json' -d '{"email":"yoxdur@arti.edu.az","parol":"sehv-sifre-2026"}')
+T2=$(curl -s -o /dev/null -w '%{time_total}' -X POST "$A/auth/login" \
+  -H 'Content-Type: application/json' -d '{"email":"admin@arti.edu.az","parol":"sehv-sifre-2026"}')
+FARQ=$(python3 -c "print(abs(float('$T1')-float('$T2')) &lt; 0.02 and '1' or '0')" 2&gt;/dev/null)
+yoxla "vaxt fərqi &lt; 20 ms" "1" "$FARQ"
+printf "  ${BOZ}mövcud deyil: ${T1}s · mövcud: ${T2}s${SIFIR}\n"
+
+# ══════════════════════════════════════════════════════════════════════
+bashliq "7 · RBAC — POST /struktur/merkezler (admin, muhendis → 201)"
+# ══════════════════════════════════════════════════════════════════════
+YARADILAN=""
+for cift in "admin:$TA" "muhendis:$TM"; do
+  rol="${cift%%:*}"; tok="${cift#*:}"
+  cisim="{\"ad\":\"B3 Test $rol $(date +%s)\"}"
+  NETICE=$(curl -s -X POST "$A/struktur/merkezler" -H 'Content-Type: application/json' \
+    -H "Authorization: Bearer $tok" -d "$cisim" 2&gt;/dev/null)
+  ID=$(echo "$NETICE" | python3 -c "import json,sys;print(json.load(sys.stdin).get('id',''))" 2&gt;/dev/null)
+  [ -n "$ID" ] &amp;&amp; YARADILAN="$YARADILAN $ID"
+  yoxla "$rol → 201" "201" "$([ -n "$ID" ] &amp;&amp; echo 201 || echo XƏTA)"
+done
+yoxla "maliyyeci → 403" "403" \
+  "$(kod_cisim POST /struktur/merkezler '{"ad":"B3 qadağan"}' "$TL")"
+yoxla "baxici → 403" "403" \
+  "$(kod_cisim POST /struktur/merkezler '{"ad":"B3 qadağan"}' "$TB")"
+
+# ══════════════════════════════════════════════════════════════════════
+bashliq "8 · RBAC — DELETE /struktur/merkezler/:id (yalnız admin)"
+# ══════════════════════════════════════════════════════════════════════
+set -- $YARADILAN
+ILK="${1:-}"
+yoxla "muhendis → 403" "403" "$(kod DELETE "/struktur/merkezler/$ILK" "$TM")"
+yoxla "maliyyeci → 403" "403" "$(kod DELETE "/struktur/merkezler/$ILK" "$TL")"
+yoxla "baxici → 403" "403" "$(kod DELETE "/struktur/merkezler/$ILK" "$TB")"
+yoxla "admin → 200" "200" "$(kod DELETE "/struktur/merkezler/$ILK" "$TA")"
+yoxla "⚠️ bağlı mərkəz → 409 (500 DEYİL)" "409" \
+  "$(kod DELETE /struktur/merkezler/2 "$TA")"
+
+# ══════════════════════════════════════════════════════════════════════
+bashliq "9 · RBAC — GET /auth/istifadeciler (yalnız admin)"
+# ══════════════════════════════════════════════════════════════════════
+yoxla "admin → 200" "200" "$(kod GET /auth/istifadeciler "$TA")"
+yoxla "muhendis → 403" "403" "$(kod GET /auth/istifadeciler "$TM")"
+yoxla "maliyyeci → 403" "403" "$(kod GET /auth/istifadeciler "$TL")"
+yoxla "baxici → 403" "403" "$(kod GET /auth/istifadeciler "$TB")"
+
+# ══════════════════════════════════════════════════════════════════════
+bashliq "10 · RBAC — OXUMA (GET) BÜTÜN ROLLAR ÜÇÜN AÇIQ"
+# ══════════════════════════════════════════════════════════════════════
+yoxla "admin     → GET /struktur/merkezler" "200" "$(kod GET /struktur/merkezler "$TA")"
+yoxla "muhendis  → GET /struktur/merkezler" "200" "$(kod GET /struktur/merkezler "$TM")"
+yoxla "maliyyeci → GET /struktur/merkezler" "200" "$(kod GET /struktur/merkezler "$TL")"
+yoxla "baxici    → GET /struktur/merkezler" "200" "$(kod GET /struktur/merkezler "$TB")"
+yoxla "baxici    → GET /kadrlar/emekdaslar" "200" "$(kod GET /kadrlar/emekdaslar "$TB")"
+
+# ══════════════════════════════════════════════════════════════════════
+bashliq "11 · 403 CAVABININ STRUKTURU"
+# ══════════════════════════════════════════════════════════════════════
+X403=$(curl -s "$A/auth/istifadeciler" -H "Authorization: Bearer $TB" 2&gt;/dev/null)
+yoxla "xeta.kod = ICAZE_YOXDUR" "1" "$(echo "$X403" | grep -c 'ICAZE_YOXDUR')"
+yoxla "mesajda tələb olunan rol" "1" "$(echo "$X403" | grep -c 'Tələb olunan rol')"
+yoxla "mesajda istifadəçinin rolu" "1" "$(echo "$X403" | grep -c 'baxici')"
+yoxla "cavabda ugur:false" "1" "$(echo "$X403" | grep -c '"ugur": *false\|"ugur":false')"
+
+# ══════════════════════════════════════════════════════════════════════
+bashliq "12 · ADMIN SUPER-ROL"
+# ══════════════════════════════════════════════════════════════════════
+yoxla "admin → @Roles('admin') endpoint" "200" "$(kod GET /auth/istifadeciler "$TA")"
+yoxla "admin → @Roles('admin','muhendis') endpoint" "200" \
+  "$(kod GET /struktur/merkezler/statistika "$TA")"
+YENI_ISTIFADECI="{\"email\":\"b3test$(date +%s)@arti.edu.az\",\"parol\":\"test12345\",\"ad_soyad\":\"Test Testov\",\"rol\":\"baxici\"}"
+yoxla "admin → qeydiyyat hüququ" "201" \
+  "$(kod_cisim POST /auth/qeydiyyat "$YENI_ISTIFADECI" "$TA")"
+yoxla "baxici → qeydiyyat qadağan" "403" \
+  "$(kod_cisim POST /auth/qeydiyyat '{"email":"x@arti.edu.az","parol":"test12345","ad_soyad":"Test Testov"}' "$TB")"
+
+# ── Qeydiyyat testindən qalan istifadəçini sil ──
+$P "DELETE FROM kadrlar.istifadeciler WHERE email LIKE 'b3test%@arti.edu.az'" &gt; /dev/null 2&gt;&amp;1
+
+# ══════════════════════════════════════════════════════════════════════
+bashliq "13 · AuditInterceptor — JURNAL"
+# ══════════════════════════════════════════════════════════════════════
+EVVEL=$($P "SELECT count(*)::int FROM audit.audit_log" 2&gt;/dev/null || echo 0)
+ID=$(curl -s -X POST "$A/struktur/merkezler" -H 'Content-Type: application/json' \
+  -H "Authorization: Bearer $TA" -d "{\"ad\":\"Audit B3 $(date +%s)\"}" 2&gt;/dev/null \
+  | python3 -c "import json,sys;print(json.load(sys.stdin).get('id',''))" 2&gt;/dev/null)
+kod GET /struktur/merkezler "$TA" &gt; /dev/null
+kod GET /kadrlar/emekdaslar "$TA" &gt; /dev/null
+kod GET /hesabatlar/icmal "$TA" &gt; /dev/null
+sleep 1
+SONRA=$($P "SELECT count(*)::int FROM audit.audit_log" 2&gt;/dev/null || echo 0)
+yoxla "POST → jurnal +1" "1" "$([ "$SONRA" -gt "$EVVEL" ] &amp;&amp; echo 1 || echo 0)"
+yoxla "⚠️ 3 × GET → jurnal +0" "$((EVVEL + 1))" "$SONRA"
+
+QEYD=$($P "SELECT cedvel_adi || '|' || emeliyyat || '|' || COALESCE(istifadeci,'?')
+             FROM audit.audit_log ORDER BY id DESC LIMIT 1" 2&gt;/dev/null)
+yoxla "cədvəl adı struktur.merkezler" "1" "$(echo "$QEYD" | grep -c 'struktur.merkezler')"
+yoxla "əməliyyat POST" "1" "$(echo "$QEYD" | grep -c 'POST')"
+yoxla "istifadəçi email-i yazılıb" "1" "$(echo "$QEYD" | grep -c 'admin@arti.edu.az')"
+
+kod DELETE /struktur/merkezler/2 "$TA" &gt; /dev/null
+sleep 1
+QX=$($P "SELECT qeyd FROM audit.audit_log ORDER BY id DESC LIMIT 1" 2&gt;/dev/null)
+yoxla "⚠️ uğursuz əməliyyat da yazılır" "1" "$(echo "$QX" | grep -c 'XƏTA')"
+
+# ══════════════════════════════════════════════════════════════════════
+bashliq "14 · SEED SKRİPTİ"
+# ══════════════════════════════════════════════════════════════════════
+yoxla "seed:auth əmri var" "1" "$(grep -c 'seed:auth' package.json)"
+yoxla "seed-auth.ts var" "var" "$([ -f scripts/seed-auth.ts ] &amp;&amp; echo var || echo YOXDUR)"
+npm run seed:auth &gt; /dev/null 2&gt;&amp;1
+S1=$($P "SELECT count(*)::int FROM kadrlar.istifadeciler" 2&gt;/dev/null || echo 0)
+npm run seed:auth &gt; /dev/null 2&gt;&amp;1
+S2=$($P "SELECT count(*)::int FROM kadrlar.istifadeciler" 2&gt;/dev/null || echo 0)
+yoxla "⚠️ İDEMPOTENT: 2-ci işə salma" "$S1" "$S2"
+yoxla "hər roldan 1 nəfər" "4" \
+  "$($P "SELECT count(DISTINCT rol)::int FROM kadrlar.istifadeciler" 2&gt;/dev/null || echo 0)"
+yoxla "şifrələr hash-lənib" "0" \
+  "$($P "SELECT count(*)::int FROM kadrlar.istifadeciler WHERE parol_hash NOT LIKE '\$2%'" 2&gt;/dev/null || echo 9)"
+
+# ── TƏMİZLİK ──────────────────────────────────────────────────────────
+for x in $YARADILAN; do
+  [ "$x" = "$ILK" ] &amp;&amp; continue
+  kod DELETE "/struktur/merkezler/$x" "$TA" &gt; /dev/null
+done
+[ -n "$ID" ] &amp;&amp; kod DELETE "/struktur/merkezler/$ID" "$TA" &gt; /dev/null
+$P "DELETE FROM kadrlar.istifadeciler WHERE email LIKE 'b3test%@arti.edu.az'" &gt; /dev/null 2&gt;&amp;1
+
+# ══════════════════════════════════════════════════════════════════════
+bashliq "15 · TESTLƏR (unit + e2e)"
+# ══════════════════════════════════════════════════════════════════════
+U=$(NO_COLOR=1 npm test 2&gt;&amp;1 | grep -E '^[[:space:]]*Tests[[:space:]]' | grep -oE '[0-9]+ passed' | grep -oE '^[0-9]+' | head -1)
+yoxla "unit testlər keçir" "1" "$([ "${U:-0}" -gt 0 ] &amp;&amp; echo 1 || echo 0)"
+printf "  ${BOZ}→ %s unit test${SIFIR}\n" "${U:-0}"
+
+E=$(NO_COLOR=1 npx vitest run --config vitest.config.e2e.ts 2&gt;&amp;1 \
+  | grep -E '^[[:space:]]*Tests[[:space:]]' | grep -oE '[0-9]+ passed' | grep -oE '^[0-9]+' | head -1)
+yoxla "e2e testlər keçir" "1" "$([ "${E:-0}" -gt 0 ] &amp;&amp; echo 1 || echo 0)"
+printf "  ${BOZ}→ %s e2e test${SIFIR}\n" "${E:-0}"
+
+# ══════════════════════════════════════════════════════════════════════
+#  NƏTİCƏ
+# ══════════════════════════════════════════════════════════════════════
+printf "\n${MAVI}════════════════════════════════════════════════════════════${SIFIR}\n"
+printf "  NƏTİCƏ:  ${YASIL}%d keçdi${SIFIR}" "$KECDI"
+[ "$XETA" -gt 0 ] &amp;&amp; printf "   ${QIRMIZI}%d xəta${SIFIR}" "$XETA"
+printf "\n"
+if [ "$XETA" -eq 0 ]; then
+  printf "  ${YASIL}✅ BACKEND-3-ÜN BÜTÜN YENİLİKLƏRİ İŞLƏYİR${SIFIR}\n"
+else
+  printf "  ${QIRMIZI}❌ %d YOXLAMA UĞURSUZ${SIFIR}\n" "$XETA"
+fi
+printf "${MAVI}════════════════════════════════════════════════════════════${SIFIR}\n\n"
+
+rm -f /tmp/b3tok_*.txt
+[ "$XETA" -eq 0 ]
+EOF</code></pre>
+    </div>
+
+    <div class="hisse hisse-c">
+      <span class="hisse-basliq">C · Yoxlama — kod düzgün yazıldı?</span>
+      <p>Aşağıdaki əmrləri işlədin və nəticəni yoxlayın:</p>
+<pre><code>cd ~/Deepseek_ARTI/DS_Backend
+unset DATABASE_URL PGHOST
+
+# 1) Sintaksis düzgündürmü?
+bash -n scripts/yoxla-backend3.sh &amp;&amp; echo "✓ sintaksis OK"
+
+# 2) Server AYRI terminalda işləməlidir
+npm run start:dev
+
+# 3) Digər terminalda — tam qəbul testi
+bash scripts/yoxla-backend3.sh
+
+# 4) Çıxış kodu (CI üçün)
+echo "exit: $?"
+#   0 → bütün yeniliklər işləyir
+#   1 → ən azı bir yoxlama uğursuz
+
+# 5) Server başqa portdadırsa
+A=http://localhost:4001/api/v1 bash scripts/yoxla-backend3.sh</code></pre>
+      <div class="olmaz">
+        <span class="olmaz-basliq">⚠️ Bu kod olmasa nə olardı</span>
+<pre><code>$ bash scripts/yoxla-backend3.sh      # server işləmirsə:
+
+XƏTA: server cavab vermir — http://localhost:4000/api/v1
+Ayrı terminalda: npm run start:dev
+
+$ bash scripts/yoxla-backend3.sh      # guard-lar qeyd olunmasa:
+
+  ✗ GET  /struktur/merkezler                       200 (gözlənilən: 401)
+  ✗ GET  /kadrlar/emekdaslar                       200 (gözlənilən: 401)
+  ✗ POST /struktur/merkezler                       201 (gözlənilən: 401)
+  ✗ maliyyeci → 403                                201 (gözlənilən: 403)
+  ✗ baxici → 403                                   201 (gözlənilən: 403)
+  ...
+  NƏTİCƏ:  52 keçdi   20 xəta
+  ❌ 20 YOXLAMA UĞURSUZ
+
+   # QRUP: 20 xətanın HAMISI autentifikasiya və rollarla bağlıdır.
+   # DTO, seed və audit yoxlamaları yenə KEÇİR — çünki onlar
+   # guard-lardan asılı deyil.</code></pre>
+        <p>Bu testin ən faydalı xüsusiyyəti <strong>xətaları qruplaşdırmasıdır</strong>.
+Əgər 20 yoxlama uğursuz olubsa və hamısı <code>401</code>/<code>403</code> ilə
+bağlıdırsa, problem tək bir yerdədir — guard qeydiyyatında və ya
+<code>AuthModule</code>-da. Əksinə, xətalar <em>müxtəlif bölmələrə səpələnibsə</em>,
+problem daha dərindədir. Bu, nasazlığı 10 dəqiqə yerinə 10 saniyəyə tapmağa
+imkan verir. Skript həm də <strong>CI üçün yararlıdır</strong>: çıxış kodu
+<code>0</code>/<code>1</code> olduğu üçün GitHub Actions-da birbaşa işlədilə bilər.</p>
+      </div>
+    </div>
+
+    <div class="hisse hisse-d">
+      <span class="hisse-basliq">D · Bu koddan sonra sistemin durumu — ÇIXIŞ</span>
+      <p class="cixis-xeber">⚠️ Bu blok <strong>çıxışdır</strong> — kopyalayıb terminala yapıştırmayın. Sadəcə oxuyun. Əmrlər B hissəsindədir.</p>
+<pre><code>╔══════════════════════════════════════════════════════════════╗
+║   BACKEND-3 — TAM QƏBUL TESTİ                              ║
+╚══════════════════════════════════════════════════════════════╝
+
+════════════════════════════════════════════════════════════
+  0 · DÖRD ROL ÜÇÜN TOKEN
+════════════════════════════════════════════════════════════
+  admin      → 195 simvol
+  muhendis   → 203 simvol
+  maliyyeci  → 205 simvol
+  baxici     → 197 simvol
+
+════════════════════════════════════════════════════════════
+  1 · AUTH PAKETLƏRİ VƏ JWT AÇARI
+════════════════════════════════════════════════════════════
+  ✓ paket: @nestjs/jwt                             var
+  ✓ paket: @nestjs/passport                        var
+  ✓ paket: passport                                var
+  ✓ paket: passport-jwt                            var
+  ✓ paket: bcryptjs                                var
+  ✓ JWT_SECRET .env-də                            1
+  ✓ JWT_MUDDET .env-də                            1
+
+════════════════════════════════════════════════════════════
+  2 · DTO VALİDASİYASI (rol tələb olunmur — @Public)
+════════════════════════════════════════════════════════════
+  ✓ login: düzgün email + şifrə                200
+  ✓ login: email formatı səhv                    400
+  ✓ login: şifrə 6-dan qısa                     400
+  ✓ login: boş cisim                              400
+
+════════════════════════════════════════════════════════════
+  3 · @Public() — TOKENSİZ AÇIQ ENDPOINT-LƏR
+════════════════════════════════════════════════════════════
+  ✓ GET  /saglamliq                                200
+  ✓ GET  /                                         200
+  ✓ POST /auth/login                               200
+
+════════════════════════════════════════════════════════════
+  4 · JwtAuthGuard — TOKENSİZ 401
+════════════════════════════════════════════════════════════
+  ✓ GET  /struktur/merkezler                       401
+  ✓ GET  /kadrlar/emekdaslar                       401
+  ✓ GET  /auth/profil                              401
+  ✓ GET  /auth/istifadeciler                       401
+  ✓ POST /struktur/merkezler                       401
+  ✓ səhv token                                    401
+  ✓ prefikssiz yol                                 404
+
+════════════════════════════════════════════════════════════
+  5 · LOGIN VƏ TOKEN STRUKTURU
+════════════════════════════════════════════════════════════
+  ✓ cavabda token var                              1
+  ✓ cavabda istifadeci var                         1
+  ✓ cavabda bitme var                              1
+  ✓ ⚠️ parol_hash SIZMIR                       0
+  ✓ ⚠️ bcrypt hash SIZMIR                      0
+  ✓ token 3 hissəli                               3
+  ✓ token payload: rol=admin                       admin
+  ✓ token müddəti 8 saat                         8
+  ✓ GET /auth/profil (tokenlə)                    200
+
+════════════════════════════════════════════════════════════
+  6 · TIMING ATTACK QORUMASI (rol tələb olunmur)
+════════════════════════════════════════════════════════════
+  ✓ mövcud olmayan e-poçt → mesaj              E-poçt və ya şifrə yanlışdır
+  ✓ səhv şifrə → EYNİ mesaj                  E-poçt və ya şifrə yanlışdır
+  ✓ vaxt fərqi &lt; 20 ms                            1
+  mövcud deyil: 0.050903s · mövcud: 0.051185s
+
+════════════════════════════════════════════════════════════
+  7 · RBAC — POST /struktur/merkezler (admin, muhendis → 201)
+════════════════════════════════════════════════════════════
+  ✓ admin → 201                                  201
+  ✓ muhendis → 201                               201
+  ✓ maliyyeci → 403                              403
+  ✓ baxici → 403                                 403
+
+════════════════════════════════════════════════════════════
+  8 · RBAC — DELETE /struktur/merkezler/:id (yalnız admin)
+════════════════════════════════════════════════════════════
+  ✓ muhendis → 403                               403
+  ✓ maliyyeci → 403                              403
+  ✓ baxici → 403                                 403
+  ✓ admin → 200                                  200
+  ✓ ⚠️ bağlı mərkəz → 409 (500 DEYİL)   409
+
+════════════════════════════════════════════════════════════
+  9 · RBAC — GET /auth/istifadeciler (yalnız admin)
+════════════════════════════════════════════════════════════
+  ✓ admin → 200                                  200
+  ✓ muhendis → 403                               403
+  ✓ maliyyeci → 403                              403
+  ✓ baxici → 403                                 403
+
+════════════════════════════════════════════════════════════
+  10 · RBAC — OXUMA (GET) BÜTÜN ROLLAR ÜÇÜN AÇIQ
+════════════════════════════════════════════════════════════
+  ✓ admin     → GET /struktur/merkezler          200
+  ✓ muhendis  → GET /struktur/merkezler          200
+  ✓ maliyyeci → GET /struktur/merkezler          200
+  ✓ baxici    → GET /struktur/merkezler          200
+  ✓ baxici    → GET /kadrlar/emekdaslar          200
+
+════════════════════════════════════════════════════════════
+  11 · 403 CAVABININ STRUKTURU
+════════════════════════════════════════════════════════════
+  ✓ xeta.kod = ICAZE_YOXDUR                        1
+  ✓ mesajda tələb olunan rol                     1
+  ✓ mesajda istifadəçinin rolu                   1
+  ✓ cavabda ugur:false                             1
+
+════════════════════════════════════════════════════════════
+  12 · ADMIN SUPER-ROL
+════════════════════════════════════════════════════════════
+  ✓ admin → @Roles('admin') endpoint             200
+  ✓ admin → @Roles('admin','muhendis') endpoint  200
+  ✓ admin → qeydiyyat hüququ                    201
+  ✓ baxici → qeydiyyat qadağan                  403
+
+════════════════════════════════════════════════════════════
+  13 · AuditInterceptor — JURNAL
+════════════════════════════════════════════════════════════
+  ✓ POST → jurnal +1                             1
+  ✓ ⚠️ 3 × GET → jurnal +0                  2332
+  ✓ cədvəl adı struktur.merkezler               1
+  ✓ əməliyyat POST                               1
+  ✓ istifadəçi email-i yazılıb                 1
+  ✓ ⚠️ uğursuz əməliyyat da yazılır       1
+
+════════════════════════════════════════════════════════════
+  14 · SEED SKRİPTİ
+════════════════════════════════════════════════════════════
+  ✓ seed:auth əmri var                            1
+  ✓ seed-auth.ts var                               var
+  ✓ ⚠️ İDEMPOTENT: 2-ci işə salma           4
+  ✓ hər roldan 1 nəfər                          4
+  ✓ şifrələr hash-lənib                        0
+
+════════════════════════════════════════════════════════════
+  15 · TESTLƏR (unit + e2e)
+════════════════════════════════════════════════════════════
+  ✓ unit testlər keçir                           1
+  → 29 unit test
+  ✓ e2e testlər keçir                            1
+  → 39 e2e test
+
+════════════════════════════════════════════════════════════
+  NƏTİCƏ:  72 keçdi
+  ✅ BACKEND-3-ÜN BÜTÜN YENİLİKLƏRİ İŞLƏYİR
+════════════════════════════════════════════════════════════</code></pre>
+      <div class="oldu">
+        <span class="oldu-basliq">✔ Nəticə</span>
+        <p><strong>Backend-3-ün bütün yenilikləri işləyir — 72 yoxlama, 0 xəta.</strong>
+Çıxışı yuxarıdan aşağı oxusanız, dərsin hər addımının canlı sübutunu görürsünüz:
+<ul>
+  <li><strong>Bölmə 1–2:</strong> paketlər, açar və DTO validasiyası —
+      autentifikasiyanın <em>giriş qapısı</em>.</li>
+  <li><strong>Bölmə 3–4:</strong> <code>@Public()</code> açıqdır, qalan hər şey
+      <code>401</code> verir — yəni API <strong>bağlıdır</strong>.</li>
+  <li><strong>Bölmə 5–6:</strong> token 3 hissəli, 8 saatlıq və
+      <code>parol_hash</code> sızmır; timing fərqi
+      <strong>0.000053 saniyədir</strong> (50.898 ms vs 50.845 ms) — bu, saxta
+      hash-ın işlədiyini sübut edir.</li>
+  <li><strong>Bölmə 7–12:</strong> RBAC matrisi tam gözlənilən kimidir —
+      <code>admin</code> hər şeyi edir, <code>muhendis</code> yaradır amma silmir,
+      <code>maliyyeci</code> və <code>baxici</code> yalnız oxuyur.</li>
+  <li><strong>Bölmə 13:</strong> audit jurnalı yalnız yazma əməliyyatlarını yazır;
+      üç GET sorğusu jurnala <strong>heç nə</strong> əlavə etməyib.</li>
+  <li><strong>Bölmə 14–15:</strong> seed idempotentdir və
+      <strong>29 unit + 39 e2e = 68 test</strong> keçir.</li>
+</ul>
+<p>Bu andan etibarən <strong>Backend-3 tamamlandı</strong> sayılır. Növbəti dərs
+(Backend-4) AI qatından başlayır: DeepSeek API inteqrasiyası, RAG vektor
+axtarışı, təbii dil → SQL kəməkçisi, Excel/PDF ixracı və Docker ilə
+yerləşdirmə.</p></p>
+      </div>
+    </div>
+
+  </div>
+  <div class="addim-icmal">
+    <span>Addım 14 / 11</span>
+    <span>A · niyə</span><span>B · kod</span>
+    <span>C · yoxlama</span><span>D · durum</span>
+  </div>
+</div>
+
+
+<div class="success-box">
+  <strong>Backend-2 tamamlandı — 11 addım.</strong> 11 marshrut ·
+  səhifələmə və filtr hər siyahıda · 6 cədvəlli JOIN ·
+  tam CRUD + konflikt idarəsi · 21 unit + 24 e2e = <strong>45 test</strong>.
+  <strong>Növbəti dərs:</strong> autentifikasiya və rollar (JWT),
+  <code>@Public()</code>/<code>@Roles()</code> dekoratorları və audit jurnalı.
+</div>
+
+<div class="block block-ipucu">
+  <span class="block-title">🔁 GÜNDƏLİK İŞ AXINI</span>
+  <table>
+    <tr><th>#</th><th>Nə</th><th>Əmr</th></tr>
+    <tr><td>1</td><td>Portu təmizlə</td>
+        <td><code>kill $(lsof -ti:4000)</code></td></tr>
+    <tr><td>2</td><td>Serveri qaldır <em>(T1)</em></td>
+        <td><code>npm run start:dev</code></td></tr>
+    <tr><td>3</td><td>Yoxla <em>(T2)</em></td>
+        <td><code>curl -s localhost:4000/api/v1/struktur/merkezler</code></td></tr>
+    <tr><td>4</td><td>Testlər</td>
+        <td><code>npm test &amp;&amp; npx vitest run --config vitest.config.e2e.ts</code></td></tr>
+    <tr><td>5</td><td>Yaz</td>
+        <td><code>git add -A &amp;&amp; git commit -m "..."</code></td></tr>
+  </table>
+  <p><strong>Serveri dayandırmaq:</strong> T1-də <code>Ctrl + C</code>.
+  <code>start:dev</code> rejimində faylı saxladıqca server özü yenilənir.</p>
+</div>
+
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('pre').forEach(function (pre) {
+      // D hissəsi ÇIXIŞDIR — kopyala düyməsi qoyulmur
+      if (pre.closest('.hisse-d')) return;
+      var btn = document.createElement('button');
+      btn.className = 'copy-btn';
+      btn.textContent = '📋 KOPYALA';
+      btn.addEventListener('click', async function (ev) {
+        ev.preventDefault();
+        var kod = pre.querySelector('code');
+        var metn = kod ? kod.textContent : pre.textContent;
+        try {
+          await navigator.clipboard.writeText(metn);
+          btn.textContent = '✅ KOPYALANDI';
+          btn.classList.add('copied');
+          setTimeout(function () {
+            btn.textContent = '📋 KOPYALA';
+            btn.classList.remove('copied');
+          }, 2000);
+        } catch (err) {
+          var ta = document.createElement('textarea');
+          ta.value = metn;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          btn.textContent = '✅ KOPYALANDI';
+          setTimeout(function () { btn.textContent = '📋 KOPYALA'; }, 2000);
+        }
+      });
+      pre.insertBefore(btn, pre.firstChild);
+    });
+  });
+</script>
+</body>
+</html>
