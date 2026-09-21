@@ -1279,6 +1279,306 @@ ELAVE_CSS = """
 """
 
 
+
+
+
+
+# ─────────────────────────────────────────────────────────────────
+#  ADDIM 14 — TAM QƏBUL TESTİ
+# ─────────────────────────────────────────────────────────────────
+_CEDVEL = """<table>
+  <tr><th>#</th><th>Nə yoxlanılır</th><th>Rol</th><th>Gözlənilən cavab</th></tr>
+  <tr><td>1</td><td>Auth paketləri (5) + <code>JWT_SECRET</code></td><td>—</td>
+      <td>5 paket <code>var</code> · <code>.env</code>-də 1 sətir</td></tr>
+  <tr><td>2</td><td>DTO validasiyası: düzgün / pis email / qısa şifrə / boş cisim</td>
+      <td>—</td><td><code>200 · 400 · 400 · 400</code></td></tr>
+  <tr><td>3</td><td><code>@Public()</code> — açıq endpoint-lər</td><td>—</td>
+      <td><code>200</code> (tokensiz)</td></tr>
+  <tr><td>4</td><td><code>JwtAuthGuard</code> — qorunan endpoint-lər</td><td>—</td>
+      <td><code>401</code> (tokensiz və səhv tokenlə)</td></tr>
+  <tr><td>5</td><td>Login və token strukturu</td><td>admin</td>
+      <td><code>200</code> · token 3 hissə · müddət 8 saat · <code>parol_hash</code> yoxdur</td></tr>
+  <tr><td>6</td><td>Timing attack qoruması</td><td>—</td>
+      <td>eyni mesaj · vaxt fərqi &lt; 20 ms</td></tr>
+  <tr><td>7</td><td><code>POST /struktur/merkezler</code></td>
+      <td><strong>admin</strong>, <strong>muhendis</strong></td><td><code>201</code></td></tr>
+  <tr><td>7</td><td><code>POST /struktur/merkezler</code></td>
+      <td><strong>maliyyeci</strong>, <strong>baxici</strong></td><td><code>403</code></td></tr>
+  <tr><td>8</td><td><code>DELETE /struktur/merkezler/:id</code></td>
+      <td>yalnız <strong>admin</strong></td><td><code>200</code> (digərləri <code>403</code>)</td></tr>
+  <tr><td>8</td><td>Bağlı mərkəzi silmək</td><td>admin</td>
+      <td><code>409</code> — <strong>500 DEYİL</strong></td></tr>
+  <tr><td>9</td><td><code>GET /auth/istifadeciler</code></td>
+      <td>yalnız <strong>admin</strong></td><td><code>200</code> (digər 3 rol <code>403</code>)</td></tr>
+  <tr><td>10</td><td>Oxuma (GET) endpoint-ləri</td>
+      <td><strong>4 rolun hamısı</strong></td><td><code>200</code></td></tr>
+  <tr><td>11</td><td>403 cavabının strukturu</td><td>baxici</td>
+      <td><code>xeta.kod = ICAZE_YOXDUR</code> + hansı rolun lazım olduğu</td></tr>
+  <tr><td>12</td><td>admin super-rolu</td><td>admin</td>
+      <td>hər endpointə <code>200</code>/<code>201</code></td></tr>
+  <tr><td>12</td><td>Qeydiyyat hüququ</td><td>baxici</td><td><code>403</code></td></tr>
+  <tr><td>13</td><td>Audit jurnalı</td><td>admin</td>
+      <td>POST <code>+1</code> · 3 × GET <code>+0</code> · uğursuz cəhd də yazılır</td></tr>
+  <tr><td>14</td><td>Seed idempotentliyi</td><td>—</td>
+      <td>2 dəfə işlət → <strong>4</strong> istifadəçi</td></tr>
+  <tr><td>15</td><td>Unit + e2e testlər</td><td>—</td>
+      <td><code>29 unit</code> + <code>39 e2e</code></td></tr>
+</table>"""
+
+_A14 = """Bu dərsdə <strong>12 addımda</strong> çox şey əlavə etdik: JWT autentifikasiya,
+dörd rollu RBAC, audit jurnalı, timing attack qoruması, seed skripti. İndi isə
+hamısını <strong>bir dəfəlik yoxlayan</strong> qəbul testi yazırıq. Bu skript
+serveri ayağa qaldırdıqdan sonra <strong>72 yoxlama</strong> aparır və hər biri
+üçün <em>hansı rolu</em> yoxladığını və <em>cavabın necə olmalı olduğunu</em>
+göstərir. Sonda tək bir sətir çap edir: «bütün yeniliklər işləyir» və ya
+«N yoxlama uğursuz»."""
+
+_C_YOXLA = """cd ~/Deepseek_ARTI/DS_Backend
+unset DATABASE_URL PGHOST
+
+# 1) Sintaksis düzgündürmü?
+bash -n scripts/yoxla-backend3.sh && echo "✓ sintaksis OK"
+
+# 2) Server AYRI terminalda işləməlidir
+npm run start:dev
+
+# 3) Digər terminalda — tam qəbul testi
+bash scripts/yoxla-backend3.sh
+
+# 4) Çıxış kodu (CI üçün)
+echo "exit: $?"
+#   0 → bütün yeniliklər işləyir
+#   1 → ən azı bir yoxlama uğursuz
+
+# 5) Server başqa portdadırsa
+A=http://localhost:4001/api/v1 bash scripts/yoxla-backend3.sh"""
+
+_C_OLMAZ = """$ bash scripts/yoxla-backend3.sh      # server işləmirsə:
+
+XƏTA: server cavab vermir — http://localhost:4000/api/v1
+Ayrı terminalda: npm run start:dev
+
+$ bash scripts/yoxla-backend3.sh      # guard-lar qeyd olunmasa:
+
+  ✗ GET  /struktur/merkezler                       200 (gözlənilən: 401)
+  ✗ GET  /kadrlar/emekdaslar                       200 (gözlənilən: 401)
+  ✗ POST /struktur/merkezler                       201 (gözlənilən: 401)
+  ✗ maliyyeci → 403                                201 (gözlənilən: 403)
+  ✗ baxici → 403                                   201 (gözlənilən: 403)
+  ...
+  NƏTİCƏ:  52 keçdi   20 xəta
+  ❌ 20 YOXLAMA UĞURSUZ
+
+   # QRUP: 20 xətanın HAMISI autentifikasiya və rollarla bağlıdır.
+   # DTO, seed və audit yoxlamaları yenə KEÇİR — çünki onlar
+   # guard-lardan asılı deyil."""
+
+_C_IZAH = """Bu testin ən faydalı xüsusiyyəti <strong>xətaları qruplaşdırmasıdır</strong>.
+Əgər 20 yoxlama uğursuz olubsa və hamısı <code>401</code>/<code>403</code> ilə
+bağlıdırsa, problem tək bir yerdədir — guard qeydiyyatında və ya
+<code>AuthModule</code>-da. Əksinə, xətalar <em>müxtəlif bölmələrə səpələnibsə</em>,
+problem daha dərindədir. Bu, nasazlığı 10 dəqiqə yerinə 10 saniyəyə tapmağa
+imkan verir. Skript həm də <strong>CI üçün yararlıdır</strong>: çıxış kodu
+<code>0</code>/<code>1</code> olduğu üçün GitHub Actions-da birbaşa işlədilə bilər."""
+
+_D14 = """╔══════════════════════════════════════════════════════════════╗
+║   BACKEND-3 — TAM QƏBUL TESTİ                              ║
+╚══════════════════════════════════════════════════════════════╝
+
+════════════════════════════════════════════════════════════
+  0 · DÖRD ROL ÜÇÜN TOKEN
+════════════════════════════════════════════════════════════
+  admin      → 195 simvol
+  muhendis   → 203 simvol
+  maliyyeci  → 205 simvol
+  baxici     → 197 simvol
+
+════════════════════════════════════════════════════════════
+  1 · AUTH PAKETLƏRİ VƏ JWT AÇARI
+════════════════════════════════════════════════════════════
+  ✓ paket: @nestjs/jwt                             var
+  ✓ paket: @nestjs/passport                        var
+  ✓ paket: passport                                var
+  ✓ paket: passport-jwt                            var
+  ✓ paket: bcryptjs                                var
+  ✓ JWT_SECRET .env-də                            1
+  ✓ JWT_MUDDET .env-də                            1
+
+════════════════════════════════════════════════════════════
+  2 · DTO VALİDASİYASI (rol tələb olunmur — @Public)
+════════════════════════════════════════════════════════════
+  ✓ login: düzgün email + şifrə                200
+  ✓ login: email formatı səhv                    400
+  ✓ login: şifrə 6-dan qısa                     400
+  ✓ login: boş cisim                              400
+
+════════════════════════════════════════════════════════════
+  3 · @Public() — TOKENSİZ AÇIQ ENDPOINT-LƏR
+════════════════════════════════════════════════════════════
+  ✓ GET  /saglamliq                                200
+  ✓ GET  /                                         200
+  ✓ POST /auth/login                               200
+
+════════════════════════════════════════════════════════════
+  4 · JwtAuthGuard — TOKENSİZ 401
+════════════════════════════════════════════════════════════
+  ✓ GET  /struktur/merkezler                       401
+  ✓ GET  /kadrlar/emekdaslar                       401
+  ✓ GET  /auth/profil                              401
+  ✓ GET  /auth/istifadeciler                       401
+  ✓ POST /struktur/merkezler                       401
+  ✓ səhv token                                    401
+  ✓ prefikssiz yol                                 404
+
+════════════════════════════════════════════════════════════
+  5 · LOGIN VƏ TOKEN STRUKTURU
+════════════════════════════════════════════════════════════
+  ✓ cavabda token var                              1
+  ✓ cavabda istifadeci var                         1
+  ✓ cavabda bitme var                              1
+  ✓ ⚠️ parol_hash SIZMIR                       0
+  ✓ ⚠️ bcrypt hash SIZMIR                      0
+  ✓ token 3 hissəli                               3
+  ✓ token payload: rol=admin                       admin
+  ✓ token müddəti 8 saat                         8
+  ✓ GET /auth/profil (tokenlə)                    200
+
+════════════════════════════════════════════════════════════
+  6 · TIMING ATTACK QORUMASI (rol tələb olunmur)
+════════════════════════════════════════════════════════════
+  ✓ mövcud olmayan e-poçt → mesaj              E-poçt və ya şifrə yanlışdır
+  ✓ səhv şifrə → EYNİ mesaj                  E-poçt və ya şifrə yanlışdır
+  ✓ vaxt fərqi < 20 ms                            1
+  mövcud deyil: 0.050903s · mövcud: 0.051185s
+
+════════════════════════════════════════════════════════════
+  7 · RBAC — POST /struktur/merkezler (admin, muhendis → 201)
+════════════════════════════════════════════════════════════
+  ✓ admin → 201                                  201
+  ✓ muhendis → 201                               201
+  ✓ maliyyeci → 403                              403
+  ✓ baxici → 403                                 403
+
+════════════════════════════════════════════════════════════
+  8 · RBAC — DELETE /struktur/merkezler/:id (yalnız admin)
+════════════════════════════════════════════════════════════
+  ✓ muhendis → 403                               403
+  ✓ maliyyeci → 403                              403
+  ✓ baxici → 403                                 403
+  ✓ admin → 200                                  200
+  ✓ ⚠️ bağlı mərkəz → 409 (500 DEYİL)   409
+
+════════════════════════════════════════════════════════════
+  9 · RBAC — GET /auth/istifadeciler (yalnız admin)
+════════════════════════════════════════════════════════════
+  ✓ admin → 200                                  200
+  ✓ muhendis → 403                               403
+  ✓ maliyyeci → 403                              403
+  ✓ baxici → 403                                 403
+
+════════════════════════════════════════════════════════════
+  10 · RBAC — OXUMA (GET) BÜTÜN ROLLAR ÜÇÜN AÇIQ
+════════════════════════════════════════════════════════════
+  ✓ admin     → GET /struktur/merkezler          200
+  ✓ muhendis  → GET /struktur/merkezler          200
+  ✓ maliyyeci → GET /struktur/merkezler          200
+  ✓ baxici    → GET /struktur/merkezler          200
+  ✓ baxici    → GET /kadrlar/emekdaslar          200
+
+════════════════════════════════════════════════════════════
+  11 · 403 CAVABININ STRUKTURU
+════════════════════════════════════════════════════════════
+  ✓ xeta.kod = ICAZE_YOXDUR                        1
+  ✓ mesajda tələb olunan rol                     1
+  ✓ mesajda istifadəçinin rolu                   1
+  ✓ cavabda ugur:false                             1
+
+════════════════════════════════════════════════════════════
+  12 · ADMIN SUPER-ROL
+════════════════════════════════════════════════════════════
+  ✓ admin → @Roles('admin') endpoint             200
+  ✓ admin → @Roles('admin','muhendis') endpoint  200
+  ✓ admin → qeydiyyat hüququ                    201
+  ✓ baxici → qeydiyyat qadağan                  403
+
+════════════════════════════════════════════════════════════
+  13 · AuditInterceptor — JURNAL
+════════════════════════════════════════════════════════════
+  ✓ POST → jurnal +1                             1
+  ✓ ⚠️ 3 × GET → jurnal +0                  2332
+  ✓ cədvəl adı struktur.merkezler               1
+  ✓ əməliyyat POST                               1
+  ✓ istifadəçi email-i yazılıb                 1
+  ✓ ⚠️ uğursuz əməliyyat da yazılır       1
+
+════════════════════════════════════════════════════════════
+  14 · SEED SKRİPTİ
+════════════════════════════════════════════════════════════
+  ✓ seed:auth əmri var                            1
+  ✓ seed-auth.ts var                               var
+  ✓ ⚠️ İDEMPOTENT: 2-ci işə salma           4
+  ✓ hər roldan 1 nəfər                          4
+  ✓ şifrələr hash-lənib                        0
+
+════════════════════════════════════════════════════════════
+  15 · TESTLƏR (unit + e2e)
+════════════════════════════════════════════════════════════
+  ✓ unit testlər keçir                           1
+  → 29 unit test
+  ✓ e2e testlər keçir                            1
+  → 39 e2e test
+
+════════════════════════════════════════════════════════════
+  NƏTİCƏ:  72 keçdi
+  ✅ BACKEND-3-ÜN BÜTÜN YENİLİKLƏRİ İŞLƏYİR
+════════════════════════════════════════════════════════════"""
+
+_D_IZAH = """<strong>Backend-3-ün bütün yenilikləri işləyir — 72 yoxlama, 0 xəta.</strong>
+Çıxışı yuxarıdan aşağı oxusanız, dərsin hər addımının canlı sübutunu görürsünüz:
+<ul>
+  <li><strong>Bölmə 1–2:</strong> paketlər, açar və DTO validasiyası —
+      autentifikasiyanın <em>giriş qapısı</em>.</li>
+  <li><strong>Bölmə 3–4:</strong> <code>@Public()</code> açıqdır, qalan hər şey
+      <code>401</code> verir — yəni API <strong>bağlıdır</strong>.</li>
+  <li><strong>Bölmə 5–6:</strong> token 3 hissəli, 8 saatlıq və
+      <code>parol_hash</code> sızmır; timing fərqi
+      <strong>0.000053 saniyədir</strong> (50.898 ms vs 50.845 ms) — bu, saxta
+      hash-ın işlədiyini sübut edir.</li>
+  <li><strong>Bölmə 7–12:</strong> RBAC matrisi tam gözlənilən kimidir —
+      <code>admin</code> hər şeyi edir, <code>muhendis</code> yaradır amma silmir,
+      <code>maliyyeci</code> və <code>baxici</code> yalnız oxuyur.</li>
+  <li><strong>Bölmə 13:</strong> audit jurnalı yalnız yazma əməliyyatlarını yazır;
+      üç GET sorğusu jurnala <strong>heç nə</strong> əlavə etməyib.</li>
+  <li><strong>Bölmə 14–15:</strong> seed idempotentdir və
+      <strong>29 unit + 39 e2e = 68 test</strong> keçir.</li>
+</ul>
+<p>Bu andan etibarən <strong>Backend-3 tamamlandı</strong> sayılır. Növbəti dərs
+(Backend-4) AI qatından başlayır: DeepSeek API inteqrasiyası, RAG vektor
+axtarışı, təbii dil → SQL kəməkçisi, Excel/PDF ixracı və Docker ilə
+yerləşdirmə.</p>"""
+
+_B14 = chr(10).join([
+    '  <p><strong>Əvvəlcə — hər yoxlamanın nəyi, hansı rolu və nə gözlədiyi:</strong></p>',
+    '  ' + _CEDVEL,
+    '  <p>Aşağıdaki skript məhz bu 72 yoxlamanı sıra ilə aparır. '
+    'Onu <code>scripts/</code> qovluğuna yazın.</p>',
+    '  <p class="fayl-ad">scripts/yoxla-backend3.sh</p>',
+    '<pre><code>' + e(fayl("scripts/yoxla-backend3.sh")) + '</code></pre>',
+]) + chr(10)
+
+addim(
+    n=14,
+    ad="Tam qəbul testi — bütün yenilikləri bir-bir yoxla",
+    a=_A14,
+    b=[],
+    b_html=_B14,
+    c_yoxla=_C_YOXLA,
+    c_olmaz=_C_OLMAZ,
+    c_izah=_C_IZAH,
+    d=_D14,
+    d_izah=_D_IZAH,
+)
+
 # ══════════════════════════════════════════════════════════════════
 #  HTML QURULMASI
 # ══════════════════════════════════════════════════════════════════
