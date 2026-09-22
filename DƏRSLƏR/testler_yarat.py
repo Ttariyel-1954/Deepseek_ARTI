@@ -49,26 +49,17 @@ PRELUDE = 'LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"'
 def sarla(skript: str) -> str:
     """Skripti interaktiv shell-ə YAPIŞDIRMAQ üçün təhlükəsiz hala salır.
 
-    ⚠️ İki problem həll olunur:
-      1) `exit 1` birbaşa terminala yapışdırıldıqda SESSİYANI BAĞLAYIR.
-         Ona görə bütün gövdə funksiyanın içinə alınır və `exit` → `return`.
-      2) `$LAYIHE` yalnız `cd`-nin içində istifadə olunurdu; xəta mesajında
-         boş çıxırdı. İndi əvvəlcə dəyişənə mənimsədilir.
+    ⚠️ `exit 1` birbaşa terminala yapışdırıldıqda SESSİYANI BAĞLAYIR.
+    Həll: bütün gövdə MÖTƏRIZƏ (subshell) içinə alınır — `exit` yalnız
+    həmin bloku dayandırır, istifadəçinin Terminal pəncərəsi açıq qalır.
+    Mötərizə həm də `trap ... EXIT`-in vaxtında işləməsini təmin edir və
+    çıxış kodunu qoruyur (avtomatik yoxlama üçün).
     """
     govde = skript.strip("\n")
-    govde = govde.replace("exit 1", "return 1").replace("exit 0", "return 0")
-    m = re.search(r"^trap\s+(\w+)\s+EXIT", govde, re.M)
-    son = ""
-    if m:
-        # Trap EXIT yalnız shell bağlananda işləyir; yapışdırılmış sessiyada
-        # bu GEC olar — ona görə təmizlik açıq şəkildə də çağırılır.
-        son = "\n%s\ntrap - EXIT 2>/dev/null || true" % m.group(1)
     return (PRELUDE + "\n\n"
-            "# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.\n"
-            "test_govdesi() {\n" + govde + son + "\n}\n"
-            "test_govdesi\nKOD=$?\nunset -f test_govdesi\n"
-            "# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)\n"
-            '[ "$KOD" -eq 0 ]\n')
+            "# ⚠️ Test mötərizə içindədir — `exit` yalnız bu bloku dayandırır,\n"
+            "#    Terminal sessiyanız açıq qalır. (bash və zsh ilə işləyir)\n"
+            "(\n" + govde + "\n)\n")
 
 
 def e(metn: str) -> str:
@@ -306,6 +297,11 @@ def qur(kes: dict) -> str:
   iştirakçı elektron pasportunu yoxlayır. Onlar yalnız Backend-4-ün
   <b>ADDIM 8</b>-i (yeni <code>src/tehsil/</code> modulu) tətbiq edildikdən
   sonra işləyir.</p>
+  <p style="margin-top:.6rem"><b>Altıncı qeyd:</b> aşağıdaki <b>gözlənilən
+  nəticələr TAM qurulmuş layihədən</b> götürülüb (dörd dərsin hamısı tətbiq
+  edilib). Layihəniz yarımçıqdırsa bəzi <em>rəqəmlər</em> fərqli olacaq —
+  məsələn <code>I.5</code>-də test sayı. Skript yenə düzgün işləyir; sadəcə
+  rəqəmi öz vəziyyətinizlə müqayisə edin.</p>
 </div>
 
 <div class="mund">
