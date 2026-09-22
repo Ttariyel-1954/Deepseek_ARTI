@@ -9,12 +9,12 @@
 #    • SqlKomlekciService — 10 reseptli AĞ SİYAHI (LLM SQL YAZMIR)
 #    • Resept SIRASI — xüsusi «orta maaş» ümumi «maaş»-dan əvvəl
 #    • DeepseekService — API açarı olmadan DEMO REJİM
-#    • 6 AI + 2 Excel endpoint, RBAC matrisi ilə (cəmi 23 marshrut)
+#    • 6 AI + 5 tehsil yolu + 2 Excel endpoint (cəmi 30 metod+yol)
 #    • SQL inyeksiya cəhdi — baza salamat qalır
 #    • Excel faylının həqiqətən .xlsx olduğu (PK baytları)
 #    • Excel sətirlərinin baza ilə üst-üstə düşməsi
 #    • Dockerfile, docker-compose və GitHub Actions CI
-#    • 42 unit + 39 e2e test
+#    • 42 unit + 61 e2e = 103 test
 #
 #  İSTİFADƏ:
 #    # 1) Server ayrı terminalda işləməlidir:
@@ -135,7 +135,7 @@ if [ -z "$ADMIN" ]; then
 fi
 
 # ── 1 · FAYLLAR VƏ PAKETLƏR ───────────────────────────────────────────
-bashliq "1 · ADDIM 1, 2, 7, 8 — fayllar və paketlər"
+bashliq "1 · ADDIM 1, 2, 7, 9 — fayllar və paketlər"
 
 yoxla "exceljs package.json-da"      "4.4.0" \
   "$(python3 -c "import json;print(json.load(open('package.json'))['dependencies'].get('exceljs','').lstrip('^'))" 2>/dev/null)"
@@ -381,7 +381,7 @@ yoxla "tokensiz  → 401"                 "401" "$(kod GET 'ixrac/merkezler.xlsx
 rm -f "$M" "$E"
 
 # ── 10 · DOCKER VƏ CI/CD ──────────────────────────────────────────────
-bashliq "10 · ADDIM 8 — Docker, docker-compose, GitHub Actions"
+bashliq "10 · ADDIM 9 — Docker, docker-compose, GitHub Actions"
 
 yoxla "Dockerfile → FROM node"                "var" \
   "$(grep -q 'FROM node' Dockerfile && echo var || echo yox)"
@@ -413,19 +413,33 @@ SW="$(curl -s "$KOK/docs-json" 2>/dev/null)"
 yollar() { printf '%s' "$SW" | grep -o "\"/api/v1$1[^\"]*\"" | sort -u | wc -l | tr -d ' '; }
 
 yoxla "Swagger cavab verir"          "var" "$([ -n "$SW" ] && echo var || echo yox)"
-yoxla "fərqli yol sayı = 20"         "20"  "$(yollar '')"
+yoxla "fərqli yol sayı = 25"         "25"  "$(yollar '')"
 yoxla "AI marshrutları = 6"          "6"   "$(yollar '/ai')"
 yoxla "ixrac marshrutları = 2"       "2"   "$(yollar '/ixrac')"
 yoxla "auth marshrutları = 4"        "4"   "$(yollar '/auth')"
 yoxla "kadrlar marshrutları = 3"     "3"   "$(yollar '/kadrlar')"
 yoxla "struktur marshrutları = 3"    "3"   "$(yollar '/struktur')"
+yoxla "tehsil marshrutları = 5"      "5"   "$(yollar '/tehsil')"
 
-# Backend-3-də 15 idi → +8 (6 AI + 2 ixrac) = 23 metod+yol cütü
+# Backend-3-də 15 idi → +8 (6 AI + 2 ixrac) + 7 tehsil = 30 metod+yol cütü
 CUT="$(printf '%s' "$SW" | grep -oE '"(get|post|patch|put|delete)":' | wc -l | tr -d ' ')"
-yoxla "metod+yol cütü = 23" "23" "$CUT"
+yoxla "metod+yol cütü = 30" "30" "$CUT"
 
-# ── 12 · TESTLƏR ──────────────────────────────────────────────────────
-bashliq "12 · ADDIM 10 — unit və e2e testlər"
+# ── 12 · ELEKTRON PASPORT ─────────────────────────────────────────────
+bashliq "12 · ADDIM 8 — İştirakçı elektron pasportu"
+
+PAS=$(getir 'tehsil/istirakciler/1/pasport' "$ADMIN")
+yoxla "Pasport qurulur və etibarlıdır" "SER-2024-001|true" \
+  "$(sahe "$PAS" pasport_no)|$(sahe "$PAS" etibarlidir)"
+yoxla "⚠️ Uyğunsuzluq aşkarlanır (iştirakçı 3)" "false" \
+  "$(getir 'tehsil/istirakciler/3/pasport' "$ADMIN" | grep -o '"etibarlidir":[a-z]*' | cut -d: -f2)"
+yoxla "İctimai yoxlama TOKENSİZ işləyir" "200" \
+  "$(kod GET 'tehsil/pasport/SER-2024-001/yoxla')"
+yoxla "Pasport bütövlük hash-i var" "var" \
+  "$([ -n "$(sahe "$PAS" hash)" ] && echo var || echo yox)"
+
+# ── 13 · TESTLƏR ──────────────────────────────────────────────────────
+bashliq "13 · ADDIM 11 — unit və e2e testlər"
 
 UNIT_XAM="$(npm test 2>&1 | tr -d '\r')"
 UNIT="$(printf '%s' "$UNIT_XAM" | grep -oE 'Tests +[0-9]+ passed' | head -1 | grep -oE '[0-9]+')"
@@ -433,9 +447,9 @@ yoxla "unit testlər keçir = 42" "42" "${UNIT:-0}"
 
 E2E_XAM="$(npx vitest run --config vitest.config.e2e.ts 2>&1 | tr -d '\r')"
 E2E="$(printf '%s' "$E2E_XAM" | grep -oE 'Tests +[0-9]+ passed' | head -1 | grep -oE '[0-9]+')"
-yoxla "e2e testlər keçir = 39" "39" "${E2E:-0}"
+yoxla "e2e testlər keçir = 61" "61" "${E2E:-0}"
 
-yoxla "cəmi test = 81" "81" "$(( ${UNIT:-0} + ${E2E:-0} ))"
+yoxla "cəmi test = 103" "103" "$(( ${UNIT:-0} + ${E2E:-0} ))"
 
 # ── NƏTİCƏ ────────────────────────────────────────────────────────────
 printf "\n${MAVI}════════════════════════════════════════════════════════════${SIFIR}\n"

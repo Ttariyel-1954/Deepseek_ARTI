@@ -372,9 +372,9 @@
   <p class="meta">
     <span>NestJS 12</span>
     <span>Prisma 7</span>
-    <span>11 addım</span>
-    <span>23 marshrut</span>
-    <span>81 test</span>
+    <span>12 addım</span>
+    <span>30 marshrut</span>
+    <span>103 test</span>
   </p>
 </header>
 
@@ -431,10 +431,11 @@
     <li><a href="#a5">5. DeepseekService — API müştərisi və demo rejim</a></li>
     <li><a href="#a6">6. AiService, DTO və controller</a></li>
     <li><a href="#a7">7. Excel ixracı</a></li>
-    <li><a href="#a8">8. Docker və CI/CD</a></li>
-    <li><a href="#a9">9. Build və tam canlı yoxlama</a></li>
-    <li><a href="#a10">10. Testlər — AI və ixrac</a></li>
-    <li><a href="#a11">11. Tam qəbul testi — bütün yenilikləri bir-bir yoxla</a></li>
+    <li><a href="#a8">8. İştirakçı elektron pasportu — real modul və 30 sınaq</a></li>
+    <li><a href="#a9">9. Docker və CI/CD</a></li>
+    <li><a href="#a10">10. Build və tam canlı yoxlama</a></li>
+    <li><a href="#a11">11. Testlər — AI və ixrac</a></li>
+    <li><a href="#a12">12. Tam qəbul testi — bütün yenilikləri bir-bir yoxla</a></li>
   </ol>
 </div>
 
@@ -446,10 +447,11 @@
   <a href="#a5"><b>ADDIM 5</b>DeepseekService — API müştərisi və demo rejim</a>
   <a href="#a6"><b>ADDIM 6</b>AiService, DTO və controller</a>
   <a href="#a7"><b>ADDIM 7</b>Excel ixracı</a>
-  <a href="#a8"><b>ADDIM 8</b>Docker və CI/CD</a>
-  <a href="#a9"><b>ADDIM 9</b>Build və tam canlı yoxlama</a>
-  <a href="#a10"><b>ADDIM 10</b>Testlər — AI və ixrac</a>
-  <a href="#a11"><b>ADDIM 11</b>Tam qəbul testi — bütün yenilikləri bir-bir yoxla</a>
+  <a href="#a8"><b>ADDIM 8</b>İştirakçı elektron pasportu — real modul və 30 sınaq</a>
+  <a href="#a9"><b>ADDIM 9</b>Docker və CI/CD</a>
+  <a href="#a10"><b>ADDIM 10</b>Build və tam canlı yoxlama</a>
+  <a href="#a11"><b>ADDIM 11</b>Testlər — AI və ixrac</a>
+  <a href="#a12"><b>ADDIM 12</b>Tam qəbul testi — bütün yenilikləri bir-bir yoxla</a>
 </div>
 
 <div class="addim">
@@ -578,7 +580,7 @@ $ git check-ignore -v .env
 
   </div>
   <div class="addim-icmal">
-    <span>Addım 1 / 11</span>
+    <span>Addım 1 / 12</span>
     <span>A · niyə</span><span>B · kod</span>
     <span>C · yoxlama</span><span>D · durum</span>
   </div>
@@ -764,7 +766,7 @@ $ npx tsc --noEmit -p tsconfig.build.json
 
   </div>
   <div class="addim-icmal">
-    <span>Addım 2 / 11</span>
+    <span>Addım 2 / 12</span>
     <span>A · niyə</span><span>B · kod</span>
     <span>C · yoxlama</span><span>D · durum</span>
   </div>
@@ -953,7 +955,7 @@ $ curl -s -X POST localhost:4000/api/v1/ai/rag \
 
   </div>
   <div class="addim-icmal">
-    <span>Addım 3 / 11</span>
+    <span>Addım 3 / 12</span>
     <span>A · niyə</span><span>B · kod</span>
     <span>C · yoxlama</span><span>D · durum</span>
   </div>
@@ -1204,7 +1206,7 @@ $ curl -s -X POST .../ai/reseptler -H "Authorization: Bearer $TOKEN"
 
   </div>
   <div class="addim-icmal">
-    <span>Addım 4 / 11</span>
+    <span>Addım 4 / 12</span>
     <span>A · niyə</span><span>B · kod</span>
     <span>C · yoxlama</span><span>D · durum</span>
   </div>
@@ -1406,7 +1408,7 @@ $ curl -s localhost:4000/api/v1/ai/statistika -H "Authorization: Bearer $TOKEN"
 
   </div>
   <div class="addim-icmal">
-    <span>Addım 5 / 11</span>
+    <span>Addım 5 / 12</span>
     <span>A · niyə</span><span>B · kod</span>
     <span>C · yoxlama</span><span>D · durum</span>
   </div>
@@ -1724,7 +1726,7 @@ $ curl -s -o /dev/null -w '%{http_code}\n' -X POST .../ai/vektorlasdir \
 
   </div>
   <div class="addim-icmal">
-    <span>Addım 6 / 11</span>
+    <span>Addım 6 / 12</span>
     <span>A · niyə</span><span>B · kod</span>
     <span>C · yoxlama</span><span>D · durum</span>
   </div>
@@ -2032,7 +2034,7 @@ $ ls -l /tmp/*.xlsx
 
   </div>
   <div class="addim-icmal">
-    <span>Addım 7 / 11</span>
+    <span>Addım 7 / 12</span>
     <span>A · niyə</span><span>B · kod</span>
     <span>C · yoxlama</span><span>D · durum</span>
   </div>
@@ -2040,7 +2042,1715 @@ $ ls -l /tmp/*.xlsx
 
 <div class="addim">
   <h2 class="addim-basliq" id="a8">
-    <span class="addim-no">8</span> Docker və CI/CD
+    <span class="addim-no">8</span> İştirakçı elektron pasportu — real modul və 30 sınaq
+  </h2>
+  <div class="addim-govde">
+
+    <div class="hisse hisse-a">
+      <span class="hisse-basliq">A · Bu addım nəyə görədir</span>
+      <p>Bu addım <strong>yeni bir modul</strong> qurur və suala cavab verir:
+<em>iştirakçı öz təlimini necə sübut edir?</em> İndiyə qədər iştirakçının
+rəsmi izi API-dən görünmürdü — onun kim olduğu
+<code>tehsil.telim_istirakcilari</code>-də, hansı qrupda oxuduğu
+<code>telim_qruplari</code>-nda, hansı proqramı keçdiyi
+<code>telim_proqramlari</code>-nda, imtahan nəticəsi isə
+<code>sertifikasiya</code>-da saxlanılırdı. <strong>Dörd cədvəl — bir
+insan.</strong> Bu addımda həmin dörd cədvəli <strong>bir sənədə</strong> —
+iştirakçının ELEKTRON PASPORTUNA — yığırıq.</p>
+    <p><strong>Pasport necə ALINIR?</strong> Üç addımda:
+    <strong>(1)</strong> iştirakçı qrupa yazılır —
+    <code>POST /tehsil/istirakciler</code>, statusu
+    <code>«davam edir»</code> olur və sertifikat nömrəsi <code>NULL</code>
+    qalır. <strong>(2)</strong> təlim bitir, imtahan olunur —
+    <code>POST /tehsil/istirakciler/:id/pasport</code> bal ilə çağırılır.
+    Bal <strong>60-dan</strong> aşağıdırsa nəticə <code>«qaldi»</code> yazılır
+    və <strong>pasport verilmir</strong>. Bal 60 və yuxarıdırsa sistem
+    <code>ARTI-İL-NNNN</code> formatında unikal nömrə yaradır və onu
+    <strong>hər iki cədvələ</strong> yazır. <strong>(3)</strong> pasport artıq
+    <code>GET /tehsil/istirakciler/:id/pasport</code> ilə oxunur.</p>
+    <p><strong>Pasport necə YADDA SAXLANILIR?</strong> ⚠️ Ən vacib qərar:
+    pasport <strong>fayl deyil</strong>. Onu PDF kimi saxlamırıq — çünki fayl
+    köhnəlir. Proqramın adı dəyişsə, fayldaki ad köhnə qalar və ortada
+    <em>iki fərqli həqiqət</em> yaranar. Əvəzində pasport <strong>hər sorğuda
+    yenidən qurulur</strong> və yeganə həqiqət mənbəyi baza qalır. Bazada isə
+    sadəcə <strong>normallaşdırılmış sətirlər</strong> saxlanılır: nömrə
+    <code>sertifikat_no</code> sütunundadır, nəticə <code>sertifikasiya</code>
+    sətrindədir, kimliyin özü <code>telim_istirakcilari</code>-dədir.
+    Yazma <strong>bir transaksiyada</strong> baş verir — yarımçıq vəziyyət
+    (nömrə bir cədvəldə var, o birində yox) qala bilməz.</p>
+    <p><strong>Bütövlük.</strong> Pasportda <code>butovluk.hash</code> sahəsi
+    var — FNV-1a ilə beş dəyişməz sahədən hesablanır. Kağıza çap olunmuş
+    pasportu sonra yoxlamaq üçün: bir hərf dəyişsə, hash tamam başqa olur.
+    <strong>İctimai yoxlama</strong> üçün ayrıca
+    <code>GET /tehsil/pasport/:no/yoxla</code> endpointi açırıq və onu
+    <code>@Public()</code> edirik — sertifikatı <em>işəgötürən</em> yoxlayır,
+    onun sistemə istifadəçi olması lazım deyil. Bu endpoint qəsdən
+    <strong>minimum məlumat</strong> qaytarır: ata adı, iş yeri kimi şəxsi
+    sahələr verilmir.</p>
+    <p>⚠️ Və modul ilk gündən <strong>uyğunsuzluğu aşkarlayır</strong>:
+    real bazada iştirakçı 3-ün (Gülnar Əsgərova) sənədində sertifikat nömrəsi
+    var, amma <code>sertifikasiya</code> cədvəli <code>«qaldi»</code>
+    göstərir. Bu, <em>kağız üzərində sertifikat, amma qazanılmamış imtahan</em>
+    deməkdir — pasport bunu <code>etibarlidir: false</code> kimi qaytarır.</p>
+    </div>
+
+    <div class="hisse hisse-b">
+      <span class="hisse-basliq">B · Kod</span>
+  <p><strong>Yeddi fayl — modulun tamı:</strong></p>
+  <p class="fayl-ad">src/tehsil/dto/istirakci.dto.ts</p>
+<pre><code>mkdir -p src/tehsil/dto
+cat &gt; src/tehsil/dto/istirakci.dto.ts &lt;&lt;'EOF'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import {
+  IsIn,
+  IsInt,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Max,
+  MaxLength,
+  Min,
+  MinLength,
+} from 'class-validator';
+import { SehifeSorghu } from '../../common/dto/sehife.dto.js';
+
+export const ISTIRAKCI_STATUSLARI = ['davam edir', 'bitirdi', 'dayandirdi'] as const;
+export const PASPORT_TIPLERI = ['müəllim', 'metodist', 'direktor', 'digər'] as const;
+
+/** KEÇİD BALI — bundan aşağı bal pasport verilmir */
+export const KECID_BALI = 60;
+
+/**
+ * İştirakçı siyahısı üçün filtr.
+ * `axtar` ad/soyad/ata adı üzrə axtarır — `SehifeSorghu`-dan miras qalır.
+ */
+export class IstirakciFiltrDto extends SehifeSorghu {
+  @ApiPropertyOptional({ enum: ISTIRAKCI_STATUSLARI, description: 'Təlim statusu' })
+  @IsOptional()
+  @IsIn(ISTIRAKCI_STATUSLARI as unknown as string[], {
+    message: `status yalnız bunlardan biri ola bilər: ${ISTIRAKCI_STATUSLARI.join(', ')}`,
+  })
+  status?: string;
+
+  @ApiPropertyOptional({ description: 'Qrup üzrə süzgəc', example: 1 })
+  @IsOptional()
+  @Type(() =&gt; Number)
+  @IsInt({ message: 'qrup_id tam ədəd olmalıdır' })
+  @Min(1, { message: 'qrup_id ən azı 1 olmalıdır' })
+  qrup_id?: number;
+
+  @ApiPropertyOptional({
+    enum: ['id', 'ad', 'soyad', 'status'],
+    default: 'id',
+    description: 'Hansı sütun üzrə sıralansın',
+  })
+  @IsOptional()
+  @IsIn(['id', 'ad', 'soyad', 'status'], {
+    message: "sirala yalnız bunlardan biri ola bilər: id, ad, soyad, status",
+  })
+  sirala?: 'id' | 'ad' | 'soyad' | 'status';
+}
+
+/** Qrupa yeni iştirakçı yazmaq — pasportun BAŞLANĞICI */
+export class YaratIstirakciDto {
+  @ApiProperty({ example: 1, description: 'Təlim qrupunun id-si' })
+  @Type(() =&gt; Number)
+  @IsInt({ message: 'qrup_id tam ədəd olmalıdır' })
+  @Min(1, { message: 'qrup_id ən azı 1 olmalıdır' })
+  qrup_id!: number;
+
+  @ApiProperty({ example: 'Aysel' })
+  @IsString()
+  @MinLength(2, { message: 'ad ən azı 2 simvol olmalıdır' })
+  @MaxLength(60, { message: 'ad ən çoxu 60 simvol ola bilər' })
+  ad!: string;
+
+  @ApiProperty({ example: 'Məmmədova' })
+  @IsString()
+  @MinLength(2, { message: 'soyad ən azı 2 simvol olmalıdır' })
+  @MaxLength(60, { message: 'soyad ən çoxu 60 simvol ola bilər' })
+  soyad!: string;
+
+  @ApiProperty({ example: 'Rauf' })
+  @IsString()
+  @MinLength(2, { message: 'ata_adi ən azı 2 simvol olmalıdır' })
+  @MaxLength(60, { message: 'ata_adi ən çoxu 60 simvol ola bilər' })
+  ata_adi!: string;
+
+  @ApiPropertyOptional({ example: 'Bakı ş. 12 nömrəli məktəb' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(120, { message: 'is_yeri ən çoxu 120 simvol ola bilər' })
+  is_yeri?: string;
+}
+
+/** İmtahan nəticəsi — pasportun VERİLMƏSİ */
+export class PasportVerDto {
+  @ApiProperty({ example: 72.5, minimum: 0, maximum: 100 })
+  @Type(() =&gt; Number)
+  @IsNumber({}, { message: 'bal ədəd olmalıdır' })
+  @Min(0, { message: 'bal mənfi ola bilməz' })
+  @Max(100, { message: 'bal 100-dən çox ola bilməz' })
+  bal!: number;
+
+  @ApiPropertyOptional({ example: '2026-06-15', description: 'İmtahan tarixi (YYYY-AA-GG)' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(10, { message: 'imtahan_tarixi ən çoxu 10 simvol ola bilər' })
+  imtahan_tarixi?: string;
+
+  @ApiPropertyOptional({ enum: PASPORT_TIPLERI, default: 'müəllim' })
+  @IsOptional()
+  @IsIn(PASPORT_TIPLERI as unknown as string[], {
+    message: `tip yalnız bunlardan biri ola bilər: ${PASPORT_TIPLERI.join(', ')}`,
+  })
+  tip?: string;
+}
+EOF</code></pre>
+  <p class="fayl-ad">src/tehsil/tehsil.service.ts</p>
+<pre><code>mkdir -p src/tehsil
+cat &gt; src/tehsil/tehsil.service.ts &lt;&lt;'EOF'
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Prisma } from '../generated/prisma/client.js';
+import { PrismaService } from '../prisma/prisma.service.js';
+import {
+  Sehifelenmis,
+  sehifeHesabla,
+  sehifelenmis,
+} from '../common/dto/sehife.dto.js';
+import {
+  IstirakciFiltrDto,
+  KECID_BALI,
+  PasportVerDto,
+  YaratIstirakciDto,
+} from './dto/istirakci.dto.js';
+
+export interface IstirakciSetri {
+  id: number;
+  ad: string;
+  soyad: string;
+  ata_adi: string;
+  tam_ad: string;
+  is_yeri: string | null;
+  status: string;
+  sertifikat_no: string | null;
+  qrup_id: number | null;
+  qrup: string | null;
+  proqram: string | null;
+  kateqoriya: string | null;
+  saat: number | null;
+}
+
+/** Xam SQL sətri — pasportun bütün mənbələrini bir sətirdə birləşdirir */
+interface XamPasportSetri extends IstirakciSetri {
+  baslama_tarixi: string | null;
+  bitme_tarixi: string | null;
+  telimci_id: number | null;
+  hedef_qrup: string | null;
+  proqram_id: number | null;
+  qrup_status: string | null;
+  sert_id: number | null;
+  sert_tip: string | null;
+  bal: number | null;
+  netice: string | null;
+  imtahan_tarixi: string | null;
+  sert_nomre: string | null;
+}
+
+/**
+ * ⚠️ ELEKTRON PASPORT
+ *
+ * Pasport ayrı bir fayl (PDF) DEYİL — o, dörd cədvəlin canlı
+ * birləşməsindən HƏR SORĞUDA yenidən qurulur:
+ *
+ *   telim_istirakcilari → kimdir, hansı statusda, hansı nömrə ilə
+ *   telim_qruplari      → hansı qrupda, nə vaxt, hansı təlimçi ilə
+ *   telim_proqramlari   → hansı proqram, kateqoriya, neçə saat
+ *   sertifikasiya       → imtahan nəticəsi, bal, rəsmi təsdiq
+ *
+ * Nə üçün fayl saxlamırıq? Çünki fayl köhnəlir: proqramın adı dəyişsə,
+ * fayldaki ad köhnə qalar və iki fərqli həqiqət yaranar. Burada isə
+ * YEGANƏ mənbə bazadır — pasport həmişə cari vəziyyəti göstərir.
+ */
+@Injectable()
+export class TehsilService {
+  constructor(private readonly prisma: PrismaService) {}
+
+  /** Pasportun bütün sahələrini bir SQL sorğusunda yığan ortaq hissə */
+  private static readonly PASPORT_SELECT = Prisma.sql`
+    SELECT i.id::int              AS id,
+           i.ad                   AS ad,
+           i.soyad                AS soyad,
+           i.ata_adi              AS ata_adi,
+           i.ad || ' ' || i.soyad AS tam_ad,
+           i.is_yeri              AS is_yeri,
+           i.status               AS status,
+           i.sertifikat_no        AS sertifikat_no,
+           i.qrup_id::int         AS qrup_id,
+           q.ad                   AS qrup,
+           q.status               AS qrup_status,
+           q.baslama_tarixi::text AS baslama_tarixi,
+           q.bitme_tarixi::text   AS bitme_tarixi,
+           q.telimci_id::int      AS telimci_id,
+           p.id::int              AS proqram_id,
+           p.ad                   AS proqram,
+           p.kateqoriya           AS kateqoriya,
+           p.saat::int            AS saat,
+           p.hedef_qrup           AS hedef_qrup,
+           s.id::int              AS sert_id,
+           s.tip                  AS sert_tip,
+           s.bal::float8          AS bal,
+           s.netice               AS netice,
+           s.imtahan_tarixi::text AS imtahan_tarixi,
+           s.sertifikat_no        AS sert_nomre
+    FROM tehsil.telim_istirakcilari i
+    LEFT JOIN tehsil.telim_qruplari     q ON q.id = i.qrup_id
+    LEFT JOIN tehsil.telim_proqramlari  p ON p.id = q.proqram_id
+    -- ⚠️ Sertifikasiya ilk növbədə NÖMRƏ ilə tapılır (etibarlı açar).
+    -- Nömrə yoxdursa (imtahan «qaldi» bitib, yaxud pasport hələ
+    -- verilməyib) AD üzrə ehtiyat axtarış edilir — yalnız belə halda
+    -- imtahan nəticəsini və uyğunsuzluğu DƏQİQ göstərə bilirik.
+    LEFT JOIN LATERAL (
+      SELECT s2.*
+        FROM tehsil.sertifikasiya s2
+       WHERE s2.sertifikat_no = i.sertifikat_no
+          OR s2.ad_soyad = i.ad || ' ' || i.soyad
+       ORDER BY (s2.sertifikat_no = i.sertifikat_no) DESC NULLS LAST,
+                s2.id ASC
+       LIMIT 1
+    ) s ON true`;
+
+  /**
+   * FNV-1a 32-bit — pasportun DƏYİŞMƏZ sahələrindən bütövlük barmaq izi.
+   * Kağıza çap olunmuş pasportu sonra yoxlamaq üçün: bir sahə dəyişsə,
+   * hash tamam başqa olur.
+   */
+  butovlukHash(saheler: (string | number | null)[]): string {
+    const metn = saheler
+      .map((s) =&gt; (s === null || s === undefined ? '' : String(s)))
+      .join('|');
+    let h = 0x811c9dc5;
+    for (let i = 0; i &lt; metn.length; i++) {
+      h ^= metn.charCodeAt(i);
+      h = Math.imul(h, 0x01000193) &gt;&gt;&gt; 0;
+    }
+    return h.toString(16).padStart(8, '0');
+  }
+
+  private async xamSetir(id: number): Promise&lt;XamPasportSetri | null&gt; {
+    const setirler = await this.prisma.$queryRaw&lt;XamPasportSetri[]&gt;`
+      ${TehsilService.PASPORT_SELECT}
+      WHERE i.id = ${id}::int`;
+    return setirler[0] ?? null;
+  }
+
+  /** İştirakçıların səhifələnmiş siyahısı */
+  async istirakciler(filtr: IstirakciFiltrDto): Promise&lt;Sehifelenmis&lt;IstirakciSetri&gt;&gt; {
+    const { sehife, limit, skip } = sehifeHesabla(filtr.sehife, filtr.limit);
+    const axtar = filtr.axtar ?? null;
+    const status = filtr.status ?? null;
+    const qrupId = filtr.qrup_id ?? null;
+
+    // Sütun adı istifadəçidən gəlir — DTO onu @IsIn ilə YOXLAYIR,
+    // ona görə burada SQL inyeksiyası mümkün deyil.
+    const sutun = Prisma.raw(`i.${filtr.sirala ?? 'id'}`);
+    const istiqamet = Prisma.raw(filtr.siralama === 'desc' ? 'DESC' : 'ASC');
+
+    const harada = Prisma.sql`
+      WHERE (${axtar}::text IS NULL
+              OR i.ad ILIKE ${axtar}::text
+              OR i.soyad ILIKE ${axtar}::text
+              OR i.ata_adi ILIKE ${axtar}::text)
+        AND (${status}::text IS NULL OR i.status = ${status}::text)
+        AND (${qrupId}::int  IS NULL OR i.qrup_id = ${qrupId}::int)`;
+
+    const [setirler, cem] = await Promise.all([
+      this.prisma.$queryRaw&lt;IstirakciSetri[]&gt;`
+        SELECT i.id::int AS id, i.ad, i.soyad, i.ata_adi,
+               i.ad || ' ' || i.soyad AS tam_ad,
+               i.is_yeri, i.status, i.sertifikat_no,
+               i.qrup_id::int AS qrup_id,
+               q.ad AS qrup, p.ad AS proqram, p.kateqoriya, p.saat::int AS saat
+        FROM tehsil.telim_istirakcilari i
+        LEFT JOIN tehsil.telim_qruplari    q ON q.id = i.qrup_id
+        LEFT JOIN tehsil.telim_proqramlari p ON p.id = q.proqram_id
+        ${harada}
+        ORDER BY ${sutun} ${istiqamet}
+        LIMIT ${limit}::int OFFSET ${skip}::int`,
+      this.prisma.$queryRaw&lt;{ cemi: number }[]&gt;`
+        SELECT count(*)::int AS cemi
+        FROM tehsil.telim_istirakcilari i
+        ${harada}`,
+    ]);
+
+    return sehifelenmis(setirler, cem[0]?.cemi ?? 0, sehife, limit);
+  }
+
+  /** Qrupa yeni iştirakçı yazır — pasportun BAŞLANĞICI */
+  async istirakciYarat(dto: YaratIstirakciDto): Promise&lt;IstirakciSetri&gt; {
+    const qrup = await this.prisma.$queryRaw&lt;{ id: number }[]&gt;`
+      SELECT id::int AS id FROM tehsil.telim_qruplari WHERE id = ${dto.qrup_id}::int`;
+    if (qrup.length === 0) {
+      throw new NotFoundException(`${dto.qrup_id} nömrəli təlim qrupu tapılmadı`);
+    }
+
+    const yeni = await this.prisma.$queryRaw&lt;{ id: number }[]&gt;`
+      INSERT INTO tehsil.telim_istirakcilari
+             (qrup_id, ad, soyad, ata_adi, is_yeri, status)
+      VALUES (${dto.qrup_id}::int, ${dto.ad}, ${dto.soyad}, ${dto.ata_adi},
+              ${dto.is_yeri ?? null}, 'davam edir')
+      RETURNING id::int AS id`;
+
+    const setir = await this.xamSetir(yeni[0]!.id);
+    return setir!;
+  }
+
+  /** İştirakçını və ona bağlı sertifikasiya qeydini silir */
+  async istirakciSil(id: number): Promise&lt;{
+    silindi: number; tam_ad: string; sertifikasiya_silindi: number;
+  }&gt; {
+    const movcud = await this.xamSetir(id);
+    if (!movcud) throw new NotFoundException(`${id} nömrəli iştirakçı tapılmadı`);
+
+    const tamAd = `${movcud.ad} ${movcud.soyad}`;
+    let sertSilindi = 0;
+
+    await this.prisma.$transaction(async (tx) =&gt; {
+      // Sertifikasiya qeydini ƏVVƏLCƏ silirik — əks halda "yetim" qeyd qalar
+      sertSilindi = movcud.sertifikat_no
+        ? await tx.$executeRaw`
+            DELETE FROM tehsil.sertifikasiya WHERE sertifikat_no = ${movcud.sertifikat_no}`
+        : await tx.$executeRaw`
+            DELETE FROM tehsil.sertifikasiya
+             WHERE ad_soyad = ${tamAd} AND sertifikat_no IS NULL`;
+
+      await tx.$executeRaw`
+        DELETE FROM tehsil.telim_istirakcilari WHERE id = ${id}::int`;
+    });
+
+    return { silindi: id, tam_ad: tamAd, sertifikasiya_silindi: sertSilindi };
+  }
+
+  /** Növbəti pasport nömrəsi: ARTI-&lt;il&gt;-&lt;4 rəqəm&gt; */
+  private async novbetiNomre(): Promise&lt;string&gt; {
+    const il = new Date().getFullYear();
+    const setirler = await this.prisma.$queryRaw&lt;{ novbeti: number }[]&gt;`
+      SELECT coalesce(max(split_part(sertifikat_no, '-', 3)::int), 0) + 1 AS novbeti
+      FROM tehsil.sertifikasiya
+      WHERE sertifikat_no LIKE ${'ARTI-' + il + '-%'}`;
+    const novbeti = setirler[0]?.novbeti ?? 1;
+    return `ARTI-${il}-${String(novbeti).padStart(4, '0')}`;
+  }
+
+  /** Xam sətri pasport formasına salır və bütövlüyü yoxlayır */
+  private pasportQur(s: XamPasportSetri): Pasport {
+    const telim = s.qrup_id === null
+      ? null
+      : {
+          qrup: s.qrup,
+          qrup_status: s.qrup_status,
+          baslama_tarixi: s.baslama_tarixi,
+          bitme_tarixi: s.bitme_tarixi,
+          proqram: s.proqram,
+          kateqoriya: s.kateqoriya,
+          saat: s.saat,
+          hedef_qrup: s.hedef_qrup,
+          telimci_id: s.telimci_id,
+        };
+
+    const sertifikasiya = s.sert_id === null
+      ? null
+      : {
+          tip: s.sert_tip,
+          bal: s.bal,
+          netice: s.netice,
+          imtahan_tarixi: s.imtahan_tarixi,
+          sertifikat_no: s.sert_nomre,
+        };
+
+    // ── BÜTÖVLÜK: pasport etibarlıdırmı? ────────────────────────────
+    let etibarlidir = false;
+    let uygunsuzluq: string | null = null;
+
+    if (!s.sertifikat_no) {
+      // Nömrə yoxdur: ya imtahan hələ olunmayıb, ya da «qaldi» bitib.
+      // İkisini ayırd etmək vacibdir — iştirakçıya dəqiq səbəb deyilməlidir.
+      uygunsuzluq = s.netice === 'qaldi'
+        ? 'İmtahan nəticəsi «qaldi» — pasport verilmir'
+        : 'Pasport hələ verilməyib';
+    } else if (s.sert_id === null) {
+      uygunsuzluq =
+        'İştirakçıda sertifikat nömrəsi var, amma «sertifikasiya» cədvəlində qeyd yoxdur';
+    } else if (s.netice !== 'keçdi') {
+      uygunsuzluq = `«sertifikasiya» qeydi «${s.netice}» göstərir — sertifikat nömrəsi verilməməli idi`;
+    } else {
+      etibarlidir = true;
+    }
+
+    return {
+      pasport_no: s.sertifikat_no,
+      etibarlidir,
+      uygunsuzluq,
+      sahib: {
+        id: s.id,
+        ad: s.ad,
+        soyad: s.soyad,
+        ata_adi: s.ata_adi,
+        tam_ad: s.tam_ad,
+        is_yeri: s.is_yeri,
+        status: s.status,
+      },
+      telim,
+      sertifikasiya,
+      butovluk: {
+        alqoritm: 'FNV-1a (32 bit)',
+        saheler: ['ad', 'soyad', 'ata_adi', 'proqram', 'sertifikat_no'],
+        hash: this.butovlukHash([
+          s.ad, s.soyad, s.ata_adi, s.proqram, s.sertifikat_no,
+        ]),
+      },
+    };
+  }
+
+  /** İştirakçının elektron pasportu */
+  async pasport(id: number): Promise&lt;Pasport&gt; {
+    const setir = await this.xamSetir(id);
+    if (!setir) throw new NotFoundException(`${id} nömrəli iştirakçı tapılmadı`);
+    return this.pasportQur(setir);
+  }
+
+  /**
+   * PASPORTUN VERİLMƏSİ — iştirakçı elektron pasportu belə ALIR.
+   * Bal keçid həddindən aşağıdırsa sertifikat verilmir (nömrə NULL qalır).
+   * Təkrar çağırış İDEMPOTENTdir: mövcud nömrə qaytarılır, dublikat yaranmır.
+   */
+  async pasportVer(id: number, dto: PasportVerDto): Promise&lt;Pasport &amp; { melumat: string }&gt; {
+    const movcud = await this.xamSetir(id);
+    if (!movcud) throw new NotFoundException(`${id} nömrəli iştirakçı tapılmadı`);
+
+    if (movcud.sertifikat_no) {
+      return {
+        ...this.pasportQur(movcud),
+        melumat: `Pasport artıq verilib: ${movcud.sertifikat_no}`,
+      };
+    }
+
+    const kecdi = dto.bal &gt;= KECID_BALI;
+    const tip = dto.tip ?? 'müəllim';
+    const tarix = dto.imtahan_tarixi ?? new Date().toISOString().slice(0, 10);
+    const tamAd = `${movcud.ad} ${movcud.soyad}`;
+    const pasportNo = kecdi ? await this.novbetiNomre() : null;
+
+    // İki cədvəl BİR transaksiyada — yarımçıq vəziyyət qalmasın
+    await this.prisma.$transaction(async (tx) =&gt; {
+      await tx.$executeRaw`
+        INSERT INTO tehsil.sertifikasiya
+               (emekdas_id, ad_soyad, tip, imtahan_tarixi, bal, netice, sertifikat_no)
+        VALUES (NULL, ${tamAd}, ${tip}, ${tarix}::date, ${dto.bal}::numeric,
+                ${kecdi ? 'keçdi' : 'qaldi'}, ${pasportNo})`;
+
+      await tx.$executeRaw`
+        UPDATE tehsil.telim_istirakcilari
+           SET status = 'bitirdi', sertifikat_no = ${pasportNo}
+         WHERE id = ${id}::int`;
+    });
+
+    const yeni = await this.xamSetir(id);
+    const pasport = this.pasportQur(yeni!);
+    return {
+      ...pasport,
+      melumat: kecdi
+        ? `Pasport verildi: ${pasportNo} (bal ${dto.bal} ≥ ${KECID_BALI})`
+        : `Pasport verilmədi: bal ${dto.bal} &lt; ${KECID_BALI}, nəticə «qaldi»`,
+    };
+  }
+
+  /**
+   * İCTİMAİ YOXLAMA — autentifikasiya tələb etmir.
+   * Sertifikatı olan hər hansı şəxs (işəgötürən, məktəb) nömrəni daxil edib
+   * pasportun həqiqi olduğunu yoxlaya bilir. Şəxsi məlumat minimum verilir.
+   */
+  async yoxla(pasportNo: string): Promise&lt;PasportYoxlama&gt; {
+    const setirler = await this.prisma.$queryRaw&lt;XamPasportSetri[]&gt;`
+      ${TehsilService.PASPORT_SELECT}
+      WHERE i.sertifikat_no = ${pasportNo}`;
+    const setir = setirler[0];
+    if (!setir) {
+      throw new NotFoundException(`«${pasportNo}» nömrəli pasport tapılmadı`);
+    }
+
+    const p = this.pasportQur(setir);
+    return {
+      pasport_no: p.pasport_no,
+      etibarlidir: p.etibarlidir,
+      uygunsuzluq: p.uygunsuzluq,
+      ad_soyad: `${p.sahib.ad} ${p.sahib.soyad}`,
+      proqram: p.telim?.proqram ?? null,
+      kateqoriya: p.telim?.kateqoriya ?? null,
+      saat: p.telim?.saat ?? null,
+      netice: p.sertifikasiya?.netice ?? null,
+      bal: p.sertifikasiya?.bal ?? null,
+      imtahan_tarixi: p.sertifikasiya?.imtahan_tarixi ?? null,
+      butovluk_hash: p.butovluk.hash,
+      yoxlanilma_vaxti: new Date().toISOString(),
+    };
+  }
+
+  /** Təlim statistikası + bütövlük hesabatı */
+  async statistika(): Promise&lt;TehsilStatistikasi&gt; {
+    const setirler = await this.prisma.$queryRaw&lt;TehsilStatistikasi[]&gt;`
+      SELECT (SELECT count(*)::int FROM tehsil.telim_istirakcilari)                AS istirakci_sayi,
+             (SELECT count(*)::int FROM tehsil.telim_istirakcilari
+               WHERE status = 'bitirdi')                                           AS bitiren,
+             (SELECT count(*)::int FROM tehsil.telim_istirakcilari
+               WHERE sertifikat_no IS NOT NULL)                                    AS sertifikatli,
+             (SELECT count(*)::int FROM tehsil.telim_qruplari)                     AS qrup_sayi,
+             (SELECT count(*)::int FROM tehsil.telim_proqramlari)                  AS proqram_sayi,
+             (SELECT count(*)::int FROM tehsil.sertifikasiya)                      AS sertifikasiya_sayi,
+             (SELECT count(*)::int FROM tehsil.sertifikasiya
+               WHERE netice = 'keçdi')                                             AS kecen,
+             (SELECT count(*)::int FROM tehsil.telim_istirakcilari i
+                LEFT JOIN LATERAL (
+                  SELECT s2.id, s2.netice
+                    FROM tehsil.sertifikasiya s2
+                   WHERE s2.sertifikat_no = i.sertifikat_no
+                      OR (i.sertifikat_no IS NOT NULL
+                          AND s2.ad_soyad = i.ad || ' ' || i.soyad)
+                   ORDER BY (s2.sertifikat_no = i.sertifikat_no) DESC NULLS LAST,
+                            s2.id ASC
+                   LIMIT 1
+                ) s ON true
+               WHERE i.sertifikat_no IS NOT NULL
+                 AND (s.id IS NULL OR s.netice &lt;&gt; 'keçdi'))                        AS uygunsuz_sayi,
+             ${KECID_BALI}::int                                                    AS kecid_bali`;
+    return setirler[0]!;
+  }
+}
+
+export interface Pasport {
+  pasport_no: string | null;
+  etibarlidir: boolean;
+  uygunsuzluq: string | null;
+  sahib: {
+    id: number;
+    ad: string;
+    soyad: string;
+    ata_adi: string;
+    tam_ad: string;
+    is_yeri: string | null;
+    status: string;
+  };
+  telim: {
+    qrup: string | null;
+    qrup_status: string | null;
+    baslama_tarixi: string | null;
+    bitme_tarixi: string | null;
+    proqram: string | null;
+    kateqoriya: string | null;
+    saat: number | null;
+    hedef_qrup: string | null;
+    telimci_id: number | null;
+  } | null;
+  sertifikasiya: {
+    tip: string | null;
+    bal: number | null;
+    netice: string | null;
+    imtahan_tarixi: string | null;
+    sertifikat_no: string | null;
+  } | null;
+  butovluk: { alqoritm: string; saheler: string[]; hash: string };
+}
+
+export interface PasportYoxlama {
+  pasport_no: string | null;
+  etibarlidir: boolean;
+  uygunsuzluq: string | null;
+  ad_soyad: string;
+  proqram: string | null;
+  kateqoriya: string | null;
+  saat: number | null;
+  netice: string | null;
+  bal: number | null;
+  imtahan_tarixi: string | null;
+  butovluk_hash: string;
+  yoxlanilma_vaxti: string;
+}
+
+export interface TehsilStatistikasi {
+  istirakci_sayi: number;
+  bitiren: number;
+  sertifikatli: number;
+  qrup_sayi: number;
+  proqram_sayi: number;
+  sertifikasiya_sayi: number;
+  kecen: number;
+  uygunsuz_sayi: number;
+  kecid_bali: number;
+}
+EOF</code></pre>
+  <p class="fayl-ad">src/tehsil/tehsil.controller.ts</p>
+<pre><code>mkdir -p src/tehsil
+cat &gt; src/tehsil/tehsil.controller.ts &lt;&lt;'EOF'
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Query,
+} from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Public } from '../auth/decorators/public.decorator.js';
+import { Roles } from '../auth/decorators/roles.decorator.js';
+import {
+  IstirakciFiltrDto,
+  PasportVerDto,
+  YaratIstirakciDto,
+} from './dto/istirakci.dto.js';
+import { TehsilService } from './tehsil.service.js';
+
+@ApiTags('tehsil')
+@Controller('tehsil')
+export class TehsilController {
+  constructor(private readonly tehsil: TehsilService) {}
+
+  @Get('statistika')
+  @ApiOperation({ summary: 'Təlim statistikası və pasport bütövlük hesabatı' })
+  statistika() {
+    return this.tehsil.statistika();
+  }
+
+  /**
+   * ⚠️ @Public() — bu endpoint AÇIQDIR.
+   * Sertifikatı olan hər hansı şəxs (işəgötürən, məktəb rəhbəri) nömrəni
+   * daxil edib pasportun həqiqi olduğunu yoxlaya bilir. Autentifikasiya
+   * tələb olunsaydı, yoxlama yalnız sistemin istifadəçilərinə açıq olardı
+   * və pasportun mənası qalmazdı.
+   */
+  @Public()
+  @Get('pasport/:no/yoxla')
+  @ApiOperation({ summary: 'İCTİMAİ: sertifikat nömrəsi ilə pasportu yoxla' })
+  @ApiResponse({ status: 200, description: 'Pasport haqqında yoxlama nəticəsi' })
+  @ApiResponse({ status: 404, description: 'Belə nömrəli pasport yoxdur' })
+  yoxla(@Param('no') no: string) {
+    return this.tehsil.yoxla(no);
+  }
+
+  @Get('istirakciler')
+  @ApiOperation({ summary: 'İştirakçıların səhifələnmiş siyahısı' })
+  istirakciler(@Query() filtr: IstirakciFiltrDto) {
+    return this.tehsil.istirakciler(filtr);
+  }
+
+  @Roles('admin', 'muhendis')
+  @Post('istirakciler')
+  @ApiOperation({ summary: 'Qrupa yeni iştirakçı yaz (admin, mühendis)' })
+  istirakciYarat(@Body() dto: YaratIstirakciDto) {
+    return this.tehsil.istirakciYarat(dto);
+  }
+
+  @Roles('admin')
+  @Delete('istirakciler/:id')
+  @ApiOperation({ summary: 'İştirakçını sil (yalnız admin)' })
+  istirakciSil(@Param('id', ParseIntPipe) id: number) {
+    return this.tehsil.istirakciSil(id);
+  }
+
+  @Get('istirakciler/:id/pasport')
+  @ApiOperation({ summary: 'İştirakçının elektron pasportu' })
+  pasport(@Param('id', ParseIntPipe) id: number) {
+    return this.tehsil.pasport(id);
+  }
+
+  @Roles('admin', 'muhendis')
+  @Post('istirakciler/:id/pasport')
+  @ApiOperation({
+    summary: 'Pasportu ver — imtahan balına görə (admin, mühendis)',
+    description:
+      'Bal keçid həddindən (60) aşağıdırsa sertifikat verilmir. ' +
+      'Təkrar çağırış idempotentdir — mövcud nömrə qaytarılır.',
+  })
+  pasportVer(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: PasportVerDto,
+  ) {
+    return this.tehsil.pasportVer(id, dto);
+  }
+}
+EOF</code></pre>
+  <p class="fayl-ad">src/tehsil/tehsil.module.ts</p>
+<pre><code>mkdir -p src/tehsil
+cat &gt; src/tehsil/tehsil.module.ts &lt;&lt;'EOF'
+import { Module } from '@nestjs/common';
+import { PrismaModule } from '../prisma/prisma.module.js';
+import { TehsilController } from './tehsil.controller.js';
+import { TehsilService } from './tehsil.service.js';
+
+/**
+ * TƏHSİL MODULU — iştirakçı və elektron pasport.
+ *
+ * Pasportun bütün məlumatı `tehsil` sxemindədir; bu modul onu yalnız
+ * OXUYUR və pasport verilərkən iki cədvələ yazır (sertifikasiya +
+ * telim_istirakcilari) — bir transaksiyada.
+ */
+@Module({
+  imports: [PrismaModule],
+  controllers: [TehsilController],
+  providers: [TehsilService],
+  exports: [TehsilService],
+})
+export class TehsilModule {}
+EOF</code></pre>
+  <p><strong>⚠️ Kök modul yenidən yazılır — indi TehsilModule də qoşulur:</strong></p>
+  <p class="fayl-ad">src/app.module.ts</p>
+<pre><code>mkdir -p src
+cat &gt; src/app.module.ts &lt;&lt;'EOF'
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { PrismaModule } from './prisma/prisma.module.js';
+import { SaglamliqModule } from './saglamliq/saglamliq.module.js';
+import { StrukturModule } from './struktur/struktur.module.js';
+import { KadrlarModule } from './kadrlar/kadrlar.module.js';
+import { AiModule } from './ai/ai.module.js';
+import { IxracModule } from './ixrac/ixrac.module.js';
+import { TehsilModule } from './tehsil/tehsil.module.js';
+import { AuthModule } from './auth/auth.module.js';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard.js';
+import { RolesGuard } from './auth/guards/roles.guard.js';
+import { AuditInterceptor } from './common/interceptors/audit.interceptor.js';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+
+    PrismaModule,
+    SaglamliqModule,
+    AuthModule,
+    StrukturModule,
+    KadrlarModule,
+    AiModule,
+    IxracModule,
+    TehsilModule,
+  ],
+  providers: [
+    // ⚠️ SIRA MÜTLƏQDİR:
+    // 1) JwtAuthGuard — əvvəlcə "sən kimsən?" sualına cavab verir
+    // 2) RolesGuard   — sonra "icazən varmı?" sualına
+    // Tərs olsa RolesGuard `user`-i tapa bilməz.
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
+    { provide: APP_GUARD, useClass: RolesGuard },
+
+    // Audit ən sonda — əməliyyat bitdikdən sonra yazır
+    { provide: APP_INTERCEPTOR, useClass: AuditInterceptor },
+  ],
+})
+export class AppModule {}
+EOF</code></pre>
+  <p class="fayl-ad">scripts/yoxla-tehsil30.sh</p>
+<pre><code>mkdir -p scripts
+cat &gt; scripts/yoxla-tehsil30.sh &lt;&lt;'EOF'
+#!/bin/bash
+# ══════════════════════════════════════════════════════════════════════
+#  İŞTİRAKÇI ELEKTRON PASPORTU — 30 YOXLAMA
+#
+#  Bu skript son iki dərsdə qurulan HƏR şeyi və yeni pasport modulunu
+#  canlı serverə qarşı yoxlayır:
+#
+#    BÖLMƏ 1 — Elektron açar (Backend-3: JWT, token, timing attack)
+#    BÖLMƏ 2 — Pasportun oxunması və bütövlüyü  (yeni modul)
+#    BÖLMƏ 3 — Pasportun VERİLMƏSİ — iştirakçı onu belə ALIR
+#    BÖLMƏ 4 — İctimai yoxlama — pasportu kənara necə göstəririk
+#    BÖLMƏ 5 — AI qatı və Excel ixracı (Backend-4)
+#    BÖLMƏ 6 — Audit jurnalı (Backend-3)
+#
+#  İSTİFADƏ:
+#    # 1) Server ayrı terminalda:
+#    PORT=4000 npm run start:prod
+#    # 2) Digər terminalda:
+#    bash scripts/yoxla-tehsil30.sh
+#
+#  ⚠️ Skript iştirakçı YARADIR və SONDА SİLİR — baza ilk vəziyyətdə qalır.
+# ══════════════════════════════════════════════════════════════════════
+
+unset DATABASE_URL PGHOST
+export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
+
+A="${A:-http://localhost:4000/api/v1}"
+BAZA="${BAZA:-arti_baza}"
+DB_ISTIFADECI="${DB_ISTIFADECI:-arti_user}"
+PAROL="${PAROL:-123456}"
+
+YASIL=$'\033[32m'; QIRMIZI=$'\033[31m'; SARI=$'\033[33m'
+MAVI=$'\033[36m';  BOZ=$'\033[90m';     SIFIR=$'\033[0m'
+
+KECDI=0; XETA=0; CEMI=0
+
+bashliq() {
+  printf "\n${MAVI}════════════════════════════════════════════════════════════════${SIFIR}\n"
+  printf "${MAVI}  %s${SIFIR}\n" "$1"
+  printf "${MAVI}════════════════════════════════════════════════════════════════${SIFIR}\n"
+}
+
+# yoxla "n" "nə yoxlanılır" "rol" "gözlənilən" "faktiki"
+yoxla() {
+  CEMI=$((CEMI + 1))
+  if [ "$4" = "$5" ]; then
+    printf " ${YASIL}%2s ✓${SIFIR} %-44s ${BOZ}%-12s${SIFIR} ${YASIL}%s${SIFIR}\n" \
+      "$1" "$2" "$3" "$5"
+    KECDI=$((KECDI + 1))
+  else
+    printf " ${QIRMIZI}%2s ✗${SIFIR} %-44s ${BOZ}%-12s${SIFIR} ${QIRMIZI}%s${SIFIR} ${BOZ}(gözlənilən: %s)${SIFIR}\n" \
+      "$1" "$2" "$3" "$5" "$4"
+    XETA=$((XETA + 1))
+  fi
+}
+
+# kod "metod" "yol" [token]
+kod() {
+  if [ -n "${3:-}" ]; then
+    curl -s -o /dev/null -w '%{http_code}' -X "$1" "$A/$2" \
+      -H "Authorization: Bearer $3" 2&gt;/dev/null
+  else
+    curl -s -o /dev/null -w '%{http_code}' -X "$1" "$A/$2" 2&gt;/dev/null
+  fi
+}
+
+# getir "yol" [token]
+getir() {
+  if [ -n "${2:-}" ]; then
+    curl -s "$A/$1" -H "Authorization: Bearer $2" 2&gt;/dev/null
+  else
+    curl -s "$A/$1" 2&gt;/dev/null
+  fi
+}
+
+# gonder "yol" "cisim" [token]
+gonder() {
+  if [ -n "${3:-}" ]; then
+    curl -s -X POST "$A/$1" -H 'Content-Type: application/json' \
+      -H "Authorization: Bearer $3" -d "$2" 2&gt;/dev/null
+  else
+    curl -s -X POST "$A/$1" -H 'Content-Type: application/json' -d "$2" 2&gt;/dev/null
+  fi
+}
+
+# kod_gonder "yol" "cisim" [token]
+kod_gonder() {
+  if [ -n "${3:-}" ]; then
+    curl -s -o /dev/null -w '%{http_code}' -X POST "$A/$1" \
+      -H 'Content-Type: application/json' \
+      -H "Authorization: Bearer $3" -d "$2" 2&gt;/dev/null
+  else
+    curl -s -o /dev/null -w '%{http_code}' -X POST "$A/$1" \
+      -H 'Content-Type: application/json' -d "$2" 2&gt;/dev/null
+  fi
+}
+
+# sahe "cisim" "açar"
+sahe() {
+  printf '%s' "$1" | grep -o "\"$2\":[^,}]*" | head -1 \
+    | sed "s/\"$2\"://" | sed 's/^"//; s/"$//'
+}
+
+psq() { psql -U "$DB_ISTIFADECI" -d "$BAZA" -tA -c "$1" 2&gt;/dev/null; }
+
+# ── TƏMİZLİK: nə yaratsaq, sonda silirik ─────────────────────────────
+TEMIZLIK_ID=""
+temizle() {
+  if [ -n "$TEMIZLIK_ID" ] &amp;&amp; [ -n "${ADMIN:-}" ]; then
+    curl -s -o /dev/null -X DELETE "$A/tehsil/istirakciler/$TEMIZLIK_ID" \
+      -H "Authorization: Bearer $ADMIN" 2&gt;/dev/null
+  fi
+}
+trap temizle EXIT
+
+# ── GİRİŞ ────────────────────────────────────────────────────────────
+gir() {
+  local c
+  c="$(gonder 'auth/login' "{\"email\":\"$1\",\"parol\":\"$PAROL\"}")"
+  printf '%s' "$c" | grep -o '"token":"[^"]*"' | head -1 | sed 's/"token":"//; s/"$//'
+}
+
+bashliq "ELEKTRON PASPORT — 30 YOXLAMA"
+ADMIN="$(gir 'admin@arti.edu.az')"
+MUHENDIS="$(gir 'muhendis@arti.edu.az')"
+MALIYYECI="$(gir 'maliyyeci@arti.edu.az')"
+BAXICI="$(gir 'baxici@arti.edu.az')"
+
+if [ -z "$ADMIN" ]; then
+  printf "\n${QIRMIZI}Server işləmir və ya seed edilməyib.${SIFIR}\n"
+  printf "${SARI}  Əvvəlcə: PORT=4000 npm run start:prod${SIFIR}\n"
+  exit 1
+fi
+
+# ══ BÖLMƏ 1 — ELEKTRON AÇAR ═════════════════════════════════════════
+bashliq "BÖLMƏ 1 · Elektron açar — dörd rol token alır (Backend-3)"
+
+DOLU=0
+for t in "$ADMIN" "$MUHENDIS" "$MALIYYECI" "$BAXICI"; do
+  [ -n "$t" ] &amp;&amp; DOLU=$((DOLU + 1))
+done
+yoxla 1 "Dörd rolun hamısı token alır" "—" "4/4" "$DOLU/4"
+
+HISSE=$(printf '%s' "$ADMIN" | awk -F. '{print NF}')
+yoxla 2 "Token 3 hissəlidir (başlıq.yük.imza)" "admin" "3" "$HISSE"
+
+# Token müddəti və içinə baxırıq
+YUK=$(printf '%s' "$ADMIN" | cut -d. -f2)
+QALIQ=$(( (${#YUK} + 3) / 4 * 4 ))
+YUK="$YUK$(printf '=%.0s' $(seq 1 $((QALIQ - ${#YUK}))))"
+ACARLAR=$(printf '%s' "$YUK" | tr '_-' '/+' | base64 -d 2&gt;/dev/null)
+MUDDET=$(printf '%s' "$ACARLAR" | python3 -c "
+import json,sys
+try:
+    d=json.load(sys.stdin); print(d['exp']-d['iat'])
+except Exception: print('xeta')" 2&gt;/dev/null)
+yoxla 3 "Token müddəti 8 saatdır (28800 san)" "admin" "28800" "$MUDDET"
+
+SIZMA=$(printf '%s' "$ADMIN" | grep -c 'parol_hash')
+yoxla 4 "Token içində parol_hash YOXDUR" "admin" "0" "$SIZMA"
+
+SEHV=$(gonder 'auth/login' '{"email":"admin@arti.edu.az","parol":"sehv-parol"}')
+SEHV2=$(gonder 'auth/login' '{"email":"yox@arti.edu.az","parol":"sehv-parol"}')
+SEHV_KOD=$(kod_gonder 'auth/login' '{"email":"admin@arti.edu.az","parol":"sehv-parol"}')
+E1=$(sahe "$SEHV" message); E2=$(sahe "$SEHV2" message)
+yoxla 5 "Səhv parol → 401, mesaj eynidir" "—" "401|eyni" "$SEHV_KOD|$([ "$E1" = "$E2" ] &amp;&amp; echo eyni || echo ferqli)"
+
+# ══ BÖLMƏ 2 — PASPORTUN OXUNMASI ═════════════════════════════════════
+bashliq "BÖLMƏ 2 · Pasportun oxunması və bütövlüyü (yeni modul)"
+
+S=$(getir 'tehsil/istirakciler' "$ADMIN")
+yoxla 6 "İştirakçı siyahısı: cemi = 10" "admin" "10" "$(sahe "$S" cemi)"
+
+DORD=0
+for t in "$ADMIN" "$MUHENDIS" "$MALIYYECI" "$BAXICI"; do
+  [ "$(kod GET 'tehsil/istirakciler' "$t")" = "200" ] &amp;&amp; DORD=$((DORD + 1))
+done
+yoxla 7 "Oxuma dörd rolun hamısına açıqdır" "4 rol" "4/4" "$DORD/4"
+
+yoxla 8 "Tokensiz oxuma → 401" "—" "401" "$(kod GET 'tehsil/istirakciler')"
+
+P1=$(getir 'tehsil/istirakciler/1/pasport' "$ADMIN")
+yoxla 9 "Pasport nömrəsi və etibarlılıq" "admin" "SER-2024-001|true" \
+  "$(sahe "$P1" pasport_no)|$(sahe "$P1" etibarlidir)"
+
+SAHIB=$(printf '%s' "$P1" | python3 -c "
+import json,sys
+d=json.load(sys.stdin)['sahib']
+print('dolu' if all([d['ad'],d['soyad'],d['ata_adi'],d['is_yeri']]) else 'bos')" 2&gt;/dev/null)
+yoxla 10 "Sahib bölməsi: ad, soyad, ata adı, iş yeri" "admin" "dolu" "$SAHIB"
+
+TELIM=$(printf '%s' "$P1" | python3 -c "
+import json,sys
+d=json.load(sys.stdin)['telim']
+print('dolu' if d and d['proqram'] and d['saat'] and d['qrup'] else 'bos')" 2&gt;/dev/null)
+yoxla 11 "Təlim bölməsi: proqram, saat, qrup" "admin" "dolu" "$TELIM"
+
+SERT=$(printf '%s' "$P1" | python3 -c "
+import json,sys
+d=json.load(sys.stdin)['sertifikasiya']
+print(f\"{d['bal']}|{d['netice']}\" if d else 'yox')" 2&gt;/dev/null)
+yoxla 12 "Sertifikasiya: bal 72.5, nəticə keçdi" "admin" "72.5|keçdi" "$SERT"
+
+H1=$(sahe "$P1" hash)
+P1B=$(getir 'tehsil/istirakciler/1/pasport' "$ADMIN")
+H2=$(sahe "$P1B" hash)
+yoxla 13 "Bütövlük hash-i deterministikdir" "admin" "eyni" \
+  "$([ -n "$H1" ] &amp;&amp; [ "$H1" = "$H2" ] &amp;&amp; echo eyni || echo ferqli)"
+
+yoxla 14 "Olmayan iştirakçı → 404 (500 DEYİL)" "admin" "404" \
+  "$(kod GET 'tehsil/istirakciler/999999/pasport' "$ADMIN")"
+
+# ══ BÖLMƏ 3 — PASPORTUN VERİLMƏSİ ════════════════════════════════════
+bashliq "BÖLMƏ 3 · Pasportun verilməsi — iştirakçı onu belə ALIR"
+
+P3=$(getir 'tehsil/istirakciler/3/pasport' "$ADMIN")
+UYG=$(printf '%s' "$P3" | python3 -c "
+import json,sys
+d=json.load(sys.stdin)
+print(('false|' + ('qaldi' if 'qaldi' in (d['uygunsuzluq'] or '') else '?'))
+      if d['etibarlidir'] is False else 'true|xeta')" 2&gt;/dev/null)
+yoxla 15 "⚠️ Uyğunsuzluq aşkarlanır (iştirakçı 3: qaldi)" "admin" "false|qaldi" "$UYG"
+
+ST=$(getir 'tehsil/statistika' "$ADMIN")
+yoxla 16 "Statistika: 6 uyğunsuz, keçid balı 60" "admin" "6|60" \
+  "$(sahe "$ST" uygunsuz_sayi)|$(sahe "$ST" kecid_bali)"
+
+CISIM='{"qrup_id":1,"ad":"Yoxlama","soyad":"Istirakci","ata_adi":"Test","is_yeri":"Test məktəbi"}'
+yoxla 17 "İştirakçı yazmaq: baxici → 403" "baxici" "403" \
+  "$(kod_gonder 'tehsil/istirakciler' "$CISIM" "$BAXICI")"
+
+YENI=$(gonder 'tehsil/istirakciler' "$CISIM" "$ADMIN")
+TEMIZLIK_ID=$(sahe "$YENI" id)
+yoxla 18 "İştirakçı yazmaq: admin 201, pasportsuz" "admin" "davam edir|true" \
+  "$(sahe "$YENI" status)|$([ -z "$(printf '%s' "$YENI" | grep -o '"sertifikat_no":[^,}]*"')" ] || printf '%s' "$YENI" | grep -q '"sertifikat_no":null' &amp;&amp; echo true || echo false)"
+
+if [ -z "$TEMIZLIK_ID" ]; then
+  printf "  ${QIRMIZI}İştirakçı yaradıla bilmədi — davam etmək mümkün deyil.${SIFIR}\n"
+  exit 1
+fi
+
+BAL='{"bal":72,"imtahan_tarixi":"2026-09-20","tip":"müəllim"}'
+PV=$(gonder "tehsil/istirakciler/$TEMIZLIK_ID/pasport" "$BAL" "$ADMIN")
+NETICE=$(printf '%s' "$PV" | python3 -c "
+import json,sys
+d=json.load(sys.stdin)['sertifikasiya']
+print(d['netice'] if d else 'yox')" 2&gt;/dev/null)
+yoxla 19 "Bal 72 → nəticə keçdi" "admin" "keçdi" "$NETICE"
+
+PASPORT_NO=$(sahe "$PV" pasport_no)
+
+# Nömrə nümunəsi: ARTI-2026-0001
+if printf '%s' "$PASPORT_NO" | grep -qE '^ARTI-[0-9]{4}-[0-9]{4}$'; then
+  FORMAT="düzgün"
+else
+  FORMAT="səhv"
+fi
+yoxla 20 "Pasport nömrəsi ARTI-İL-NNNN formatındadır" "admin" "düzgün" "$FORMAT"
+
+# Nömrə HƏR İKİ cədvələ yazılıb?
+BIR=$(psq "SELECT count(*) FROM tehsil.telim_istirakcilari WHERE id = $TEMIZLIK_ID AND sertifikat_no = '$PASPORT_NO'")
+IKI=$(psq "SELECT count(*) FROM tehsil.sertifikasiya WHERE sertifikat_no = '$PASPORT_NO'")
+yoxla 21 "Nömrə hər iki cədvəldə saxlanılır" "admin" "1|1" "${BIR:-0}|${IKI:-0}"
+
+PV2=$(gonder "tehsil/istirakciler/$TEMIZLIK_ID/pasport" '{"bal":99}' "$ADMIN")
+PASPORT_NO2=$(sahe "$PV2" pasport_no)
+DUPLIKAT=$(psq "SELECT count(*) FROM tehsil.sertifikasiya WHERE sertifikat_no = '$PASPORT_NO'")
+yoxla 22 "Təkrar cəhd idempotentdir (dublikat yox)" "admin" "$PASPORT_NO|1" \
+  "$PASPORT_NO2|${DUPLIKAT:-0}"
+
+# ══ BÖLMƏ 4 — İCTİMAİ YOXLAMA ═══════════════════════════════════════
+bashliq "BÖLMƏ 4 · İctimai yoxlama — pasportu kənara necə göstəririk"
+
+yoxla 23 "Yoxlama TOKENSİZ işləyir (ictimai)" "—" "200" \
+  "$(kod GET "tehsil/pasport/$PASPORT_NO/yoxla")"
+
+YOX=$(getir "tehsil/pasport/$PASPORT_NO/yoxla")
+yoxla 24 "Yoxlama: etibarlıdır + sahibin adı" "—" "true|Yoxlama Istirakci" \
+  "$(sahe "$YOX" etibarlidir)|$(sahe "$YOX" ad_soyad)"
+
+yoxla 25 "Olmayan nömrə → 404" "—" "404" \
+  "$(kod GET 'tehsil/pasport/XXX-0000-000/yoxla')"
+
+YB=$(sahe "$YOX" butovluk_hash)
+PB=$(printf '%s' "$PV" | python3 -c "
+import json,sys;print(json.load(sys.stdin)['butovluk']['hash'])" 2&gt;/dev/null)
+yoxla 26 "İctimai hash daxili hash ilə eynidir" "—" "eyni" \
+  "$([ -n "$YB" ] &amp;&amp; [ "$YB" = "$PB" ] &amp;&amp; echo eyni || echo ferqli)"
+
+# ══ BÖLMƏ 5 — AI QATI VƏ EXCEL ═══════════════════════════════════════
+bashliq "BÖLMƏ 5 · AI qatı və Excel ixracı (Backend-4)"
+
+AIS=$(getir 'ai/statistika' "$ADMIN")
+yoxla 27 "AI: demo rejim, 64 ölçü, 10 resept" "admin" "demo|64|10" \
+  "$(sahe "$AIS" rejim)|$(sahe "$AIS" olcu)|$(sahe "$AIS" resept_sayi)"
+
+SUAL=$(gonder 'ai/sual' '{"sual":"Neçə əməkdaş var?"}' "$ADMIN")
+yoxla 28 "AI: «Neçə əməkdaş var?» düzgün reseptə düşür" "admin" "true|Ümumi əməkdaş sayı" \
+  "$(sahe "$SUAL" uygun_resept)|$(sahe "$SUAL" izah)"
+
+curl -s -o /tmp/pasport_merkezler.xlsx "$A/ixrac/merkezler.xlsx" \
+  -H "Authorization: Bearer $ADMIN" 2&gt;/dev/null
+PK=$(xxd -p -l 2 /tmp/pasport_merkezler.xlsx 2&gt;/dev/null | tr 'A-Z' 'a-z')
+OLCU=$(wc -c &lt; /tmp/pasport_merkezler.xlsx 2&gt;/dev/null | tr -d ' ')
+yoxla 29 "Excel: PK baytları və real ölçü" "admin" "504b|var" \
+  "$PK|$([ "${OLCU:-0}" -gt 5000 ] &amp;&amp; echo var || echo yox)"
+rm -f /tmp/pasport_merkezler.xlsx
+
+# ══ BÖLMƏ 6 — AUDİT ══════════════════════════════════════════════════
+bashliq "BÖLMƏ 6 · Audit jurnalı (Backend-3)"
+
+EVVEL=$(psq "SELECT count(*) FROM audit.audit_log WHERE cedvel_adi LIKE '%pasport%' OR cedvel_adi LIKE '%tehsil%'")
+curl -s -o /dev/null "$A/tehsil/istirakciler" -H "Authorization: Bearer $ADMIN"
+curl -s -o /dev/null "$A/tehsil/istirakciler" -H "Authorization: Bearer $ADMIN"
+curl -s -o /dev/null "$A/tehsil/statistika" -H "Authorization: Bearer $ADMIN"
+SONRA=$(psq "SELECT count(*) FROM audit.audit_log WHERE cedvel_adi LIKE '%pasport%' OR cedvel_adi LIKE '%tehsil%'")
+yoxla 30 "Audit: 3 × GET jurnala heç nə yazmır" "admin" "0" \
+  "$(( ${SONRA:-0} - ${EVVEL:-0} ))"
+
+# ── NƏTİCƏ ───────────────────────────────────────────────────────────
+printf "\n${MAVI}════════════════════════════════════════════════════════════════${SIFIR}\n"
+printf "  CƏMİ YOXLAMA: %d\n" "$CEMI"
+if [ "$XETA" -eq 0 ]; then
+  printf "  ${YASIL}✓ 30/30 KEÇDİ — elektron pasport tam işləyir${SIFIR}\n"
+else
+  printf "  ${QIRMIZI}✗ %d UĞURSUZ${SIFIR} — ${YASIL}%d keçdi${SIFIR}\n" "$XETA" "$KECDI"
+fi
+printf "${MAVI}════════════════════════════════════════════════════════════════${SIFIR}\n"
+
+[ "$XETA" -eq 0 ] &amp;&amp; [ "$CEMI" -eq 30 ] &amp;&amp; exit 0 || exit 1
+EOF</code></pre>
+  <p class="fayl-ad">test/tehsil.e2e-spec.ts</p>
+<pre><code>mkdir -p test
+cat &gt; test/tehsil.e2e-spec.ts &lt;&lt;'EOF'
+import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+import request from 'supertest';
+import { App } from 'supertest/types';
+import { AppModule } from '../src/app.module.js';
+import { AllExceptionsFilter } from '../src/common/filters/all-exceptions.filter.js';
+import { PrismaService } from '../src/prisma/prisma.service.js';
+
+/**
+ * İŞTİRAKÇI ELEKTRON PASPORTU (e2e).
+ *
+ * Pasportun bütün həyat dövrünü yoxlayır:
+ *   qrupa yazılma → imtahan → pasportun verilməsi → ictimai yoxlama → silinmə
+ *
+ * ⚠️ Test iştirakçı YARADIR və afterAll-da SİLİR — baza təmiz qalır.
+ */
+describe('Elektron pasport (e2e)', () =&gt; {
+  let app: INestApplication&lt;App&gt;;
+  let prisma: PrismaService;
+
+  const tokenlar: Record&lt;string, string&gt; = {};
+  let YARADILAN_ID = 0;
+  let PASPORT_NO = '';
+  /** Yaradılan BÜTÜN iştirakçılar — test uğursuz olsa da silinsin */
+  const YARADILANLAR: number[] = [];
+
+  beforeAll(async () =&gt; {
+    const modul: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
+
+    app = modul.createNestApplication();
+    app.setGlobalPrefix('api/v1');
+    app.useGlobalPipes(
+      new ValidationPipe({
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        transform: true,
+      }),
+    );
+    app.useGlobalFilters(new AllExceptionsFilter());
+    await app.init();
+
+    prisma = app.get(PrismaService);
+
+    for (const rol of ['admin', 'muhendis', 'maliyyeci', 'baxici']) {
+      const c = await request(app.getHttpServer())
+        .post('/api/v1/auth/login')
+        .send({ email: `${rol}@arti.edu.az`, parol: '123456' })
+        .expect(200);
+      tokenlar[rol] = c.body.token;
+    }
+  });
+
+  afterAll(async () =&gt; {
+    // ⚠️ Təmizlik: test ORTADA UĞURSUZ OLSA DA bütün yaradılanlar silinir.
+    // Əvvəl təmizliyi testin İÇİNƏ yazmışdım — test xəta verəndə həmin
+    // sətir heç vaxt işləmədi və bazada "Kesilen Namized" qaldı.
+    for (const id of YARADILANLAR) {
+      await request(app.getHttpServer())
+        .delete(`/api/v1/tehsil/istirakciler/${id}`)
+        .set('Authorization', `Bearer ${tokenlar.admin}`);
+    }
+    await app.close();
+  });
+
+  // ── 1) OXUMA ──────────────────────────────────────────────────────
+  it('GET /tehsil/istirakciler → səhifələnmiş siyahı', async () =&gt; {
+    const c = await request(app.getHttpServer())
+      .get('/api/v1/tehsil/istirakciler')
+      .set('Authorization', `Bearer ${tokenlar.admin}`)
+      .expect(200);
+
+    expect(c.body.cemi).toBeGreaterThanOrEqual(10);
+    expect(Array.isArray(c.body.setirler)).toBe(true);
+    expect(c.body.sehife).toBe(1);
+    expect(c.body.setirler[0]).toHaveProperty('qrup');
+    expect(c.body.setirler[0]).toHaveProperty('proqram');
+  });
+
+  it('oxuma dörd rolun hamısına açıqdır', async () =&gt; {
+    for (const rol of ['admin', 'muhendis', 'maliyyeci', 'baxici']) {
+      await request(app.getHttpServer())
+        .get('/api/v1/tehsil/istirakciler')
+        .set('Authorization', `Bearer ${tokenlar[rol]}`)
+        .expect(200);
+    }
+  });
+
+  it('tokensiz oxuma → 401', async () =&gt; {
+    await request(app.getHttpServer())
+      .get('/api/v1/tehsil/istirakciler')
+      .expect(401);
+  });
+
+  it('⚠️ pasport: sahib + təlim + sertifikasiya bir cavabda', async () =&gt; {
+    const c = await request(app.getHttpServer())
+      .get('/api/v1/tehsil/istirakciler/1/pasport')
+      .set('Authorization', `Bearer ${tokenlar.admin}`)
+      .expect(200);
+
+    expect(c.body.pasport_no).toBe('SER-2024-001');
+    expect(c.body.etibarlidir).toBe(true);
+    expect(c.body.sahib).toMatchObject({
+      ad: 'Səbinə',
+      soyad: 'Rəhimova',
+      ata_adi: 'Nizami',
+    });
+    expect(c.body.telim.proqram).toBe('Müəllim sertifikasiyasına hazırlıq');
+    expect(c.body.telim.saat).toBe(40);
+    expect(c.body.sertifikasiya).toMatchObject({ bal: 72.5, netice: 'keçdi' });
+  });
+
+  it('⚠️ bütövlük hash-i deterministikdir', async () =&gt; {
+    const a = await request(app.getHttpServer())
+      .get('/api/v1/tehsil/istirakciler/1/pasport')
+      .set('Authorization', `Bearer ${tokenlar.admin}`)
+      .expect(200);
+    const b = await request(app.getHttpServer())
+      .get('/api/v1/tehsil/istirakciler/1/pasport')
+      .set('Authorization', `Bearer ${tokenlar.admin}`)
+      .expect(200);
+
+    expect(a.body.butovluk.hash).toMatch(/^[0-9a-f]{8}$/);
+    expect(a.body.butovluk.hash).toBe(b.body.butovluk.hash);
+    expect(a.body.butovluk.saheler).toContain('sertifikat_no');
+  });
+
+  it('⚠️ UYĞUNSUZLUQ: sertifikat nömrəsi var, nəticə isə «qaldi»', async () =&gt; {
+    const c = await request(app.getHttpServer())
+      .get('/api/v1/tehsil/istirakciler/3/pasport')
+      .set('Authorization', `Bearer ${tokenlar.admin}`)
+      .expect(200);
+
+    expect(c.body.pasport_no).toBe('SER-2024-003');
+    expect(c.body.etibarlidir).toBe(false);
+    expect(c.body.uygunsuzluq).toContain('qaldi');
+  });
+
+  it('olmayan iştirakçı → 404 (500 DEYİL)', async () =&gt; {
+    await request(app.getHttpServer())
+      .get('/api/v1/tehsil/istirakciler/999999/pasport')
+      .set('Authorization', `Bearer ${tokenlar.admin}`)
+      .expect(404);
+  });
+
+  it('pasportu olmayan üçün statistika uyğunsuzluğu göstərir', async () =&gt; {
+    const c = await request(app.getHttpServer())
+      .get('/api/v1/tehsil/statistika')
+      .set('Authorization', `Bearer ${tokenlar.admin}`)
+      .expect(200);
+
+    expect(c.body.kecid_bali).toBe(60);
+    expect(c.body.uygunsuz_sayi).toBeGreaterThan(0);
+    expect(c.body.istirakci_sayi).toBeGreaterThanOrEqual(10);
+  });
+
+  // ── 2) PASPORTUN VERİLMƏSİ ────────────────────────────────────────
+  it('iştirakçı yazmaq: baxici → 403, maliyyeci → 403', async () =&gt; {
+    const govde = { qrup_id: 1, ad: 'Test', soyad: 'Istirakci', ata_adi: 'Test' };
+    for (const rol of ['baxici', 'maliyyeci']) {
+      await request(app.getHttpServer())
+        .post('/api/v1/tehsil/istirakciler')
+        .set('Authorization', `Bearer ${tokenlar[rol]}`)
+        .send(govde)
+        .expect(403);
+    }
+  });
+
+  it('iştirakçı yazmaq: admin → 201, hələ pasportsuz', async () =&gt; {
+    const c = await request(app.getHttpServer())
+      .post('/api/v1/tehsil/istirakciler')
+      .set('Authorization', `Bearer ${tokenlar.admin}`)
+      .send({
+        qrup_id: 1,
+        ad: 'Test',
+        soyad: 'Istirakci',
+        ata_adi: 'Test',
+        is_yeri: 'Test məktəbi',
+      })
+      .expect(201);
+
+    YARADILAN_ID = c.body.id;
+    YARADILANLAR.push(YARADILAN_ID);
+    expect(YARADILAN_ID).toBeGreaterThan(0);
+    expect(c.body.status).toBe('davam edir');
+    expect(c.body.sertifikat_no).toBeNull();
+  });
+
+  it('⚠️ bal 72 → pasport VERİLİR və nömrə iki cədvəldə saxlanılır', async () =&gt; {
+    expect(YARADILAN_ID).toBeGreaterThan(0);
+
+    const c = await request(app.getHttpServer())
+      .post(`/api/v1/tehsil/istirakciler/${YARADILAN_ID}/pasport`)
+      .set('Authorization', `Bearer ${tokenlar.muhendis}`)
+      .send({ bal: 72, imtahan_tarixi: '2026-09-20', tip: 'müəllim' })
+      .expect(201);
+
+    PASPORT_NO = c.body.pasport_no;
+    expect(PASPORT_NO).toMatch(/^ARTI-\d{4}-\d{4}$/);
+    expect(c.body.etibarlidir).toBe(true);
+    expect(c.body.sertifikasiya.netice).toBe('keçdi');
+
+    // Həqiqətən BAZAYA yazılıbmı? — yoxsa yalnız cavabda görünür?
+    const istirakci = await prisma.$queryRaw&lt;{ sertifikat_no: string }[]&gt;`
+      SELECT sertifikat_no FROM tehsil.telim_istirakcilari
+       WHERE id = ${YARADILAN_ID}::int`;
+    const sert = await prisma.$queryRaw&lt;{ netice: string }[]&gt;`
+      SELECT netice FROM tehsil.sertifikasiya
+       WHERE sertifikat_no = ${PASPORT_NO}`;
+
+    expect(istirakci[0]?.sertifikat_no).toBe(PASPORT_NO);
+    expect(sert[0]?.netice).toBe('keçdi');
+  });
+
+  it('təkrar cəhd idempotentdir — dublikat yaranmır', async () =&gt; {
+    const c = await request(app.getHttpServer())
+      .post(`/api/v1/tehsil/istirakciler/${YARADILAN_ID}/pasport`)
+      .set('Authorization', `Bearer ${tokenlar.admin}`)
+      .send({ bal: 95 })
+      .expect(201);
+
+    expect(c.body.pasport_no).toBe(PASPORT_NO);
+
+    const say = await prisma.$queryRaw&lt;{ sayi: number }[]&gt;`
+      SELECT count(*)::int AS sayi FROM tehsil.sertifikasiya
+       WHERE sertifikat_no = ${PASPORT_NO}`;
+    expect(say[0]?.sayi).toBe(1);
+  });
+
+  it('⚠️ bal 40 → pasport VERİLMİR, nəticə «qaldi»', async () =&gt; {
+    // Bu iştirakçı yalnız bu test üçündür — ayrıca yaradılır
+    const y = await request(app.getHttpServer())
+      .post('/api/v1/tehsil/istirakciler')
+      .set('Authorization', `Bearer ${tokenlar.admin}`)
+      .send({ qrup_id: 1, ad: 'Kesilen', soyad: 'Namized', ata_adi: 'Test' })
+      .expect(201);
+    const id = y.body.id as number;
+    YARADILANLAR.push(id);
+
+    const c = await request(app.getHttpServer())
+      .post(`/api/v1/tehsil/istirakciler/${id}/pasport`)
+      .set('Authorization', `Bearer ${tokenlar.admin}`)
+      .send({ bal: 40 })
+      .expect(201);
+
+    expect(c.body.pasport_no).toBeNull();
+    expect(c.body.sertifikasiya.netice).toBe('qaldi');
+    expect(c.body.melumat).toContain('Pasport verilmədi');
+    // Təmizliyi afterAll edir — burada YOX (test xəta versə də silinsin)
+    expect(id).toBeGreaterThan(0);
+  });
+
+  it('bal validasiyası: 150 → 400, mənfi → 400', async () =&gt; {
+    for (const bal of [150, -5]) {
+      await request(app.getHttpServer())
+        .post(`/api/v1/tehsil/istirakciler/${YARADILAN_ID}/pasport`)
+        .set('Authorization', `Bearer ${tokenlar.admin}`)
+        .send({ bal })
+        .expect(400);
+    }
+  });
+
+  it('mövcud olmayan qrup → 404', async () =&gt; {
+    await request(app.getHttpServer())
+      .post('/api/v1/tehsil/istirakciler')
+      .set('Authorization', `Bearer ${tokenlar.admin}`)
+      .send({ qrup_id: 999999, ad: 'Yox', soyad: 'Qrup', ata_adi: 'Test' })
+      .expect(404);
+  });
+
+  // ── 3) İCTİMAİ YOXLAMA ────────────────────────────────────────────
+  it('⚠️ İCTİMAİ yoxlama tokensiz işləyir', async () =&gt; {
+    const c = await request(app.getHttpServer())
+      .get(`/api/v1/tehsil/pasport/${PASPORT_NO}/yoxla`)
+      .expect(200);
+
+    expect(c.body.pasport_no).toBe(PASPORT_NO);
+    expect(c.body.etibarlidir).toBe(true);
+    expect(c.body.ad_soyad).toBe('Test Istirakci');
+    expect(c.body.butovluk_hash).toMatch(/^[0-9a-f]{8}$/);
+    expect(c.body.yoxlanilma_vaxti).toBeTruthy();
+  });
+
+  it('ictimai yoxlama minimum məlumat verir (şəxsi sahələr yoxdur)', async () =&gt; {
+    const c = await request(app.getHttpServer())
+      .get(`/api/v1/tehsil/pasport/${PASPORT_NO}/yoxla`)
+      .expect(200);
+
+    expect(c.body.sahib).toBeUndefined();
+    expect(c.body.is_yeri).toBeUndefined();
+    expect(JSON.stringify(c.body)).not.toContain('ata_adi');
+  });
+
+  it('olmayan sertifikat nömrəsi → 404', async () =&gt; {
+    await request(app.getHttpServer())
+      .get('/api/v1/tehsil/pasport/XXX-0000-000/yoxla')
+      .expect(404);
+  });
+
+  // ── 4) AUDİT ──────────────────────────────────────────────────────
+  it('⚠️ pasport verilməsi audit jurnalına yazılır', async () =&gt; {
+    const evvel = await prisma.$queryRaw&lt;{ sayi: number }[]&gt;`
+      SELECT count(*)::int AS sayi FROM audit.audit_log
+       WHERE emeliyyat = 'POST' AND cedvel_adi = 'tehsil.istirakciler'`;
+
+    await request(app.getHttpServer())
+      .post(`/api/v1/tehsil/istirakciler/${YARADILAN_ID}/pasport`)
+      .set('Authorization', `Bearer ${tokenlar.admin}`)
+      .send({ bal: 88 })
+      .expect(201);
+
+    const sonra = await prisma.$queryRaw&lt;{ sayi: number }[]&gt;`
+      SELECT count(*)::int AS sayi FROM audit.audit_log
+       WHERE emeliyyat = 'POST' AND cedvel_adi = 'tehsil.istirakciler'`;
+
+    // İdempotent olduğu üçün çağırış yenə işlənir və jurnala düşür
+    expect(sonra[0]!.sayi).toBeGreaterThan(evvel[0]!.sayi);
+  });
+
+  it('GET sorğuları audit jurnalına yazılmır', async () =&gt; {
+    const evvel = await prisma.$queryRaw&lt;{ sayi: number }[]&gt;`
+      SELECT count(*)::int AS sayi FROM audit.audit_log`;
+
+    await request(app.getHttpServer())
+      .get('/api/v1/tehsil/istirakciler')
+      .set('Authorization', `Bearer ${tokenlar.admin}`)
+      .expect(200);
+    await request(app.getHttpServer())
+      .get('/api/v1/tehsil/statistika')
+      .set('Authorization', `Bearer ${tokenlar.admin}`)
+      .expect(200);
+
+    const sonra = await prisma.$queryRaw&lt;{ sayi: number }[]&gt;`
+      SELECT count(*)::int AS sayi FROM audit.audit_log`;
+
+    expect(sonra[0]!.sayi).toBe(evvel[0]!.sayi);
+  });
+
+  // ── 5) SİLİNMƏ ────────────────────────────────────────────────────
+  it('silinmə: baxici → 403', async () =&gt; {
+    await request(app.getHttpServer())
+      .delete(`/api/v1/tehsil/istirakciler/${YARADILAN_ID}`)
+      .set('Authorization', `Bearer ${tokenlar.baxici}`)
+      .expect(403);
+  });
+
+  it('⚠️ admin silir — pasport və sertifikasiya birlikdə getməlidir', async () =&gt; {
+    const c = await request(app.getHttpServer())
+      .delete(`/api/v1/tehsil/istirakciler/${YARADILAN_ID}`)
+      .set('Authorization', `Bearer ${tokenlar.admin}`)
+      .expect(200);
+
+    expect(c.body.sertifikasiya_silindi).toBe(1);
+
+    // Nömrə artıq tapılmamalıdır — nə API-də, nə bazada
+    await request(app.getHttpServer())
+      .get(`/api/v1/tehsil/pasport/${PASPORT_NO}/yoxla`)
+      .expect(404);
+
+    const qaliq = await prisma.$queryRaw&lt;{ sayi: number }[]&gt;`
+      SELECT count(*)::int AS sayi FROM tehsil.sertifikasiya
+       WHERE sertifikat_no = ${PASPORT_NO}`;
+    expect(qaliq[0]?.sayi).toBe(0);
+
+    YARADILAN_ID = 0; // afterAll təkrar silməsin
+  });
+});
+EOF</code></pre>
+    </div>
+
+    <div class="hisse hisse-c">
+      <span class="hisse-basliq">C · Yoxlama — kod düzgün yazıldı?</span>
+      <p>Aşağıdaki əmrləri işlədin və nəticəni yoxlayın:</p>
+<pre><code>cd ~/Deepseek_ARTI/DS_Backend
+unset DATABASE_URL PGHOST
+
+# 1) Fayllar yerindədirmi?
+ls -1 src/tehsil/ src/tehsil/dto/
+
+# 2) TehsilModule kök modula qoşulubmu?
+grep -n 'TehsilModule' src/app.module.ts
+
+# 3) Build və tip yoxlaması
+npm run build &amp;&amp; echo "✓ build keçdi"
+npx tsc --noEmit -p tsconfig.build.json &amp;&amp; echo "✓ tip yoxlaması keçdi"
+
+# 4) Server AYRI terminalda
+PORT=4000 npm run start:prod
+
+# 5) Digər terminalda — 30 yoxlama
+bash scripts/yoxla-tehsil30.sh
+
+# 6) Pasportu gözlə gör — iştirakçı 1
+TOKEN=$(curl -s -X POST localhost:4000/api/v1/auth/login   -H 'Content-Type: application/json'   -d '{"email":"admin@arti.edu.az","parol":"123456"}'   | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+curl -s localhost:4000/api/v1/tehsil/istirakciler/1/pasport   -H "Authorization: Bearer $TOKEN" | python3 -m json.tool
+
+# 7) ⚠️ İCTİMAİ yoxlama — TOKENSİZ, brauzerdə də açılır
+curl -s localhost:4000/api/v1/tehsil/pasport/SER-2024-001/yoxla | python3 -m json.tool
+
+# 8) e2e testlər
+npx vitest run --config vitest.config.e2e.ts test/tehsil.e2e-spec.ts</code></pre>
+      <div class="olmaz">
+        <span class="olmaz-basliq">⚠️ Bu kod olmasa nə olardı</span>
+<pre><code>$ npm run build                     # ixrac modulu app.module-a
+                                     # əvvəl əlavə edilsəydi:
+
+src/app.module.ts:9:29 - error TS2307: Cannot find module
+'./ixrac/ixrac.module.js' or its corresponding type declarations.
+
+   # ⚠️ SƏBƏB: modulun FAYLI hələ yaradılmayıb, amma kök modul onu
+   # import edir. TypeScript faylı tapa bilmir və HƏÇ NƏ işləmir —
+   # server də qalxmır. Ona görə app.module.ts HƏR addımda yenidən
+   # yazılır və yalnız mövcud modulları qeydiyyatdan keçirir.
+
+$ curl -s localhost:4000/api/v1/tehsil/istirakciler/3/pasport     -H "Authorization: Bearer $TOKEN"
+
+   # Ehtiyat (ad üzrə) axtarış olmasaydı sertifikasiya qeydi tapılmazdı:
+
+{"pasport_no":"SER-2024-003","etibarlidir":false,
+ "uygunsuzluq":"İştirakçıda sertifikat nömrəsi var,
+                amma «sertifikasiya» cədvəlində qeyd yoxdur",
+ "sertifikasiya":null}
+
+   # Amma qeyd VAR — sadəcə nömrəsizdir. Yalnız NÖMRƏ ilə birləşsəydik,
+   # 54 balla «qaldi» olan bu iştirakçını «qeydi yoxdur» kimi göstərərdik
+   # və səbəb YANLIŞ olardı. Ad üzrə ehtiyat axtarış bunu düzəldir:
+
+ "uygunsuzluq":"«sertifikasiya» qeydi «qaldi» göstərir —
+                sertifikat nömrəsi verilməməli idi"
+
+   # ⚠️ Fərq vacibdir: birinci mesaj «məlumat yoxdur», ikinci isə
+   # «məlumat var və ziddiyyət var» deyir. Uyğunsuzluğu TAPMAQ üçün
+   # ikinci mesaj lazımdır.</code></pre>
+        <p>Pasportun ən dəyərli xüsusiyyəti <strong>uyğunsuzluğu
+tutmasıdır</strong>. Real bazada 10 iştirakçıdan <strong>6-sının</strong>
+sertifikat nömrəsi var, amma <code>sertifikasiya</code> cədvəlində onu
+təsdiqləyən <code>«keçdi»</code> nəticəsi yoxdur. Bu o deməkdir ki, sistem
+<em>kağız üzərində sertifikat verib, amma imtahan nəticəsini qeydə
+almaqda</em>. Bu cür səhvlər illərlə görünməz qalır — heç kim dörd cədvəli
+əl ilə tutuşdurmur. <code>GET /tehsil/statistika</code> isə bunu
+<code>uygunsuz_sayi</code> kimi bir rəqəmlə göstərir.</p>
+    <p>İkinci mühüm qərar <strong>yazmanın atomikliyidir</strong>: pasport
+verilərkən <code>sertifikasiya</code> sətri və
+<code>telim_istirakcilari.sertifikat_no</code> <em>bir transaksiyada</em>
+yazılır. Transaksiya olmasaydı, ikinci sorğu xəta versəydi nömrə bir
+cədvəldə qalar, digərində olmazdı — və həmin iştirakçı üçün pasport
+<em>heç vaxt</em> düzəlməzdi. Üçüncü qərar isə <strong>TƏKRAR
+ÇAĞIRIŞIN İDEMPOTENTLİYİDİR</strong>: pasport verildikdən sonra eyni
+endpoint yenidən çağırılsa yeni nömrə <em>yaradılmır</em>, mövcud nömrə
+qaytarılır. Əks halda bir iştirakçının iki sertifikatı olardı və hansının
+həqiqi olduğu bilinməzdi. Skript həm də <strong>CI üçün
+yararlıdır</strong>: çıxış kodu <code>0</code>/<code>1</code> olduğu üçün
+GitHub Actions-da birbaşa işlədilə bilər. Ən əsası: skript yaratdığı
+iştirakçını <strong>sonda silir</strong> — baza ilk vəziyyətində qalır.</p>
+      </div>
+    </div>
+
+    <div class="hisse hisse-d">
+      <span class="hisse-basliq">D · Bu koddan sonra sistemin durumu — ÇIXIŞ</span>
+      <p class="cixis-xeber">⚠️ Bu blok <strong>çıxışdır</strong> — kopyalayıb terminala yapıştırmayın. Sadəcə oxuyun. Əmrlər B hissəsindədir.</p>
+<pre><code>
+════════════════════════════════════════════════════════════════
+  ELEKTRON PASPORT — 30 YOXLAMA
+════════════════════════════════════════════════════════════════
+
+════════════════════════════════════════════════════════════════
+  BÖLMƏ 1 · Elektron açar — dörd rol token alır (Backend-3)
+════════════════════════════════════════════════════════════════
+  1 ✓ Dörd rolun hamısı token alır             —          4/4
+  2 ✓ Token 3 hissəlidir (başlıq.yük.imza)     admin        3
+  3 ✓ Token müddəti 8 saatdır (28800 san)       admin        28800
+  4 ✓ Token içində parol_hash YOXDUR             admin        0
+  5 ✓ Səhv parol → 401, mesaj eynidir           —          401|eyni
+
+════════════════════════════════════════════════════════════════
+  BÖLMƏ 2 · Pasportun oxunması və bütövlüyü (yeni modul)
+════════════════════════════════════════════════════════════════
+  6 ✓ İştirakçı siyahısı: cemi = 10          admin        10
+  7 ✓ Oxuma dörd rolun hamısına açıqdır      4 rol        4/4
+  8 ✓ Tokensiz oxuma → 401                       —          401
+  9 ✓ Pasport nömrəsi və etibarlılıq          admin        SER-2024-001|true
+ 10 ✓ Sahib bölməsi: ad, soyad, ata adı, iş yeri admin        dolu
+ 11 ✓ Təlim bölməsi: proqram, saat, qrup        admin        dolu
+ 12 ✓ Sertifikasiya: bal 72.5, nəticə keçdi     admin        72.5|keçdi
+ 13 ✓ Bütövlük hash-i deterministikdir          admin        eyni
+ 14 ✓ Olmayan iştirakçı → 404 (500 DEYİL)    admin        404
+
+════════════════════════════════════════════════════════════════
+  BÖLMƏ 3 · Pasportun verilməsi — iştirakçı onu belə ALIR
+════════════════════════════════════════════════════════════════
+ 15 ✓ ⚠️ Uyğunsuzluq aşkarlanır (iştirakçı 3: qaldi) admin        false|qaldi
+ 16 ✓ Statistika: 6 uyğunsuz, keçid balı 60     admin        6|60
+ 17 ✓ İştirakçı yazmaq: baxici → 403         baxici       403
+ 18 ✓ İştirakçı yazmaq: admin 201, pasportsuz  admin        davam edir|true
+ 19 ✓ Bal 72 → nəticə keçdi                   admin        keçdi
+ 20 ✓ Pasport nömrəsi ARTI-İL-NNNN formatındadır admin        düzgün
+ 21 ✓ Nömrə hər iki cədvəldə saxlanılır    admin        1|1
+ 22 ✓ Təkrar cəhd idempotentdir (dublikat yox)   admin        ARTI-2026-0001|1
+
+════════════════════════════════════════════════════════════════
+  BÖLMƏ 4 · İctimai yoxlama — pasportu kənara necə göstəririk
+════════════════════════════════════════════════════════════════
+ 23 ✓ Yoxlama TOKENSİZ işləyir (ictimai)        —          200
+ 24 ✓ Yoxlama: etibarlıdır + sahibin adı        —          true|Yoxlama Istirakci
+ 25 ✓ Olmayan nömrə → 404                      —          404
+ 26 ✓ İctimai hash daxili hash ilə eynidir       —          eyni
+
+════════════════════════════════════════════════════════════════
+  BÖLMƏ 5 · AI qatı və Excel ixracı (Backend-4)
+════════════════════════════════════════════════════════════════
+ 27 ✓ AI: demo rejim, 64 ölçü, 10 resept        admin        demo|64|10
+ 28 ✓ AI: «Neçə əməkdaş var?» düzgün reseptə düşür admin        true|Ümumi əməkdaş sayı
+ 29 ✓ Excel: PK baytları və real ölçü         admin        504b|var
+
+════════════════════════════════════════════════════════════════
+  BÖLMƏ 6 · Audit jurnalı (Backend-3)
+════════════════════════════════════════════════════════════════
+ 30 ✓ Audit: 3 × GET jurnala heç nə yazmır     admin        0
+
+════════════════════════════════════════════════════════════════
+  CƏMİ YOXLAMA: 30
+  ✓ 30/30 KEÇDİ — elektron pasport tam işləyir
+════════════════════════════════════════════════════════════════</code></pre>
+      <div class="oldu">
+        <span class="oldu-basliq">✔ Nəticə</span>
+        <p><strong>Elektron pasport tam işləyir — 30 yoxlama, 0 xəta.</strong>
+Çıxışı yuxarıdan aşağı oxusanız, pasportun bütün həyat dövrünü görürsünüz:
+<ul>
+  <li><strong>Bölmə 1–2:</strong> elektron açar (JWT) işləyir — token 3
+      hissəli, 8 saatlıq və içində <code>parol_hash</code> yoxdur. Pasport
+      dörd cədvəldən düzgün yığılır: sahib, təlim və sertifikasiya bir
+      cavabda gəlir.</li>
+  <li><strong>Bölmə 3:</strong> ⚠️ <strong>uyğunsuzluq aşkarlanır</strong> —
+      iştirakçı 3 üçün <code>etibarlidir: false</code> və səbəb
+      «qaldi». Statistika 6 uyğunsuz sətir göstərir.</li>
+  <li><strong>Bölmə 3 — pasport necə ALINIR:</strong> iştirakçı yazılır
+      (<code>status: davam edir</code>, nömrə <code>NULL</code>), sonra bal
+      ilə pasport verilir — <code>ARTI-2026-0001</code> yaranır və
+      <strong>hər iki cədvəldə</strong> saxlanılır. Təkrar cəhd yeni nömrə
+      <em>yaratmır</em>.</li>
+  <li><strong>Bölmə 4:</strong> ictimai yoxlama <strong>tokensiz</strong>
+      işləyir — sertifikatı işəgötürən də yoxlaya bilir.</li>
+  <li><strong>Bölmə 5–6:</strong> əvvəlki dərslərin qatları yerindədir
+      (AI demo rejim, 10 resept, Excel) və 3 × GET audit jurnalına heç nə
+      yazmır.</li>
+</ul>
+<p>Sonda skript yaratdığı iştirakçını <strong>silir</strong> — baza ilk
+vəziyyətinə qayıdır (10 iştirakçı, 10 sertifikasiya). Bu, testin təkrar
+işlədilə bilməsi üçün vacibdir: hər icra eyni nəticəni verir.</p></p>
+      </div>
+    </div>
+
+  </div>
+  <div class="addim-icmal">
+    <span>Addım 8 / 12</span>
+    <span>A · niyə</span><span>B · kod</span>
+    <span>C · yoxlama</span><span>D · durum</span>
+  </div>
+</div>
+
+<div class="addim">
+  <h2 class="addim-basliq" id="a9">
+    <span class="addim-no">9</span> Docker və CI/CD
   </h2>
   <div class="addim-govde">
 
@@ -2232,8 +3942,8 @@ $ npx vitest run --config vitest.config.e2e.ts
     <code>docker compose up</code> əmri bazanı və API-ı birgə qaldırır;
     <code>Dockerfile</code> iki mərhələli olduğu üçün istehsalat obrazına
     <code>node_modules</code>-un hamısı deyil, yalnız lazımlı hissəsi düşür.
-    CI isə hər <code>push</code>-da <strong>81 testi</strong>
-    (42 unit + 39 e2e) avtomatik işlədir. <code>.dockerignore</code> faylı
+    CI isə hər <code>push</code>-da <strong>103 testi</strong>
+    (42 unit + 61 e2e) avtomatik işlədir. <code>.dockerignore</code> faylı
     <code>.env</code>-i obrazdan kənarda saxlayır — bu vacibdir, çünki
     <code>.env</code>-dəki JWT açarı obrazın içinə düşsə, onu istənilən şəxs
     çıxara bilər.</p>
@@ -2242,15 +3952,15 @@ $ npx vitest run --config vitest.config.e2e.ts
 
   </div>
   <div class="addim-icmal">
-    <span>Addım 8 / 11</span>
+    <span>Addım 9 / 12</span>
     <span>A · niyə</span><span>B · kod</span>
     <span>C · yoxlama</span><span>D · durum</span>
   </div>
 </div>
 
 <div class="addim">
-  <h2 class="addim-basliq" id="a9">
-    <span class="addim-no">9</span> Build və tam canlı yoxlama
+  <h2 class="addim-basliq" id="a10">
+    <span class="addim-no">10</span> Build və tam canlı yoxlama
   </h2>
   <div class="addim-govde">
 
@@ -2388,7 +4098,7 @@ done
   GET    /api/v1/ixrac/emekdaslar.xlsx               IXRAC
   GET    /api/v1/ixrac/merkezler.xlsx                IXRAC
   ... (struktur, kadrlar, sağlamlıq)
-  CƏMİ: 23 marshrut
+  CƏMİ: 25 fərqli yol · 30 metod+yol
 
 ════════ EXCEL FAYLLARI ════════
   merkezler    → 7121 bayt · Microsoft Excel 2007+
@@ -2401,7 +4111,7 @@ done
         <span class="oldu-basliq">✔ Nəticə</span>
         <p><strong>Backend-4 tam işlək vəziyyətdədir.</strong> Əlavə olunan
     <strong>8 marshrut</strong> (6 AI + 2 ixrac) digər 15 ilə birlikdə işləyir —
-    cəmi <strong>23 marshrut</strong>. Excel faylları həqiqi Excel formatındadır
+    cəmi <strong>30 metod+yol cütü</strong> (25 fərqli yol). Excel faylları həqiqi Excel formatındadır
     və brauzer onları yükləyir. Vektorlaşdırma isə rol ilə qorunur:
     <code>admin</code> <code>200</code>, <code>baxici</code>
     <code>403</code>. Bu andan etibarən institutun məlumatları həm
@@ -2412,15 +4122,15 @@ done
 
   </div>
   <div class="addim-icmal">
-    <span>Addım 9 / 11</span>
+    <span>Addım 10 / 12</span>
     <span>A · niyə</span><span>B · kod</span>
     <span>C · yoxlama</span><span>D · durum</span>
   </div>
 </div>
 
 <div class="addim">
-  <h2 class="addim-basliq" id="a10">
-    <span class="addim-no">10</span> Testlər — AI və ixrac
+  <h2 class="addim-basliq" id="a11">
+    <span class="addim-no">11</span> Testlər — AI və ixrac
   </h2>
   <div class="addim-govde">
 
@@ -2604,13 +4314,13 @@ $ npx vitest run --config vitest.config.e2e.ts
       Tests  39 passed (39)
 
 ──────────────────────────────────────────────
-YEKUN: 42 unit + 39 e2e = 81 test</code></pre>
+YEKUN: 42 unit + 61 e2e = 103 test</code></pre>
       <div class="oldu">
         <span class="oldu-basliq">✔ Nəticə</span>
         <p><strong>Backend-4 tamamlandı.</strong> Bütün backend kursunun yekunu:
     <ul>
-      <li><strong>42 unit + 39 e2e = 81 test</strong> — Dərs 1-də 7 test idi.</li>
-      <li><strong>23 marshrut</strong> — sağlamlıq, struktur, kadrlar, auth,
+      <li><strong>42 unit + 61 e2e = 103 test</strong> — Dərs 1-də 7 test idi.</li>
+      <li><strong>30 marshrut</strong> — sağlamlıq, struktur, kadrlar, auth,
           AI və ixrac.</li>
       <li><strong>AI qatı</strong> — RAG axtarışı, 10 reseptli təbii dil
           sorğusu, demo rejim.</li>
@@ -2625,15 +4335,15 @@ YEKUN: 42 unit + 39 e2e = 81 test</code></pre>
 
   </div>
   <div class="addim-icmal">
-    <span>Addım 10 / 11</span>
+    <span>Addım 11 / 12</span>
     <span>A · niyə</span><span>B · kod</span>
     <span>C · yoxlama</span><span>D · durum</span>
   </div>
 </div>
 
 <div class="addim">
-  <h2 class="addim-basliq" id="a11">
-    <span class="addim-no">11</span> Tam qəbul testi — bütün yenilikləri bir-bir yoxla
+  <h2 class="addim-basliq" id="a12">
+    <span class="addim-no">12</span> Tam qəbul testi — bütün yenilikləri bir-bir yoxla
   </h2>
   <div class="addim-govde">
 
@@ -2692,9 +4402,9 @@ olmalı olduğunu</em> göstərir.</p>
   <tr><td>18</td><td>Docker və GitHub Actions</td><td>—</td>
       <td>2 × <code>FROM node</code> · <code>npm ci</code> · <code>vitest.config.e2e.ts</code></td></tr>
   <tr><td>19</td><td>Marshrutlar</td><td>—</td>
-      <td><strong>20 yol</strong> · <strong>23 metod+yol</strong></td></tr>
+      <td><strong>25 yol</strong> · <strong>30 metod+yol</strong></td></tr>
   <tr><td>20</td><td>Testlər</td><td>—</td>
-      <td><strong>42 unit + 39 e2e = 81</strong></td></tr>
+      <td><strong>42 unit + 61 e2e = 103</strong></td></tr>
 </table>
   <p>Aşağıdaki skript məhz bu yoxlamaları sıra ilə aparır. Onu <code>scripts/</code> qovluğuna yazın.</p>
   <p class="fayl-ad">scripts/yoxla-backend4.sh</p>
@@ -2711,12 +4421,12 @@ cat &gt; scripts/yoxla-backend4.sh &lt;&lt;'EOF'
 #    • SqlKomlekciService — 10 reseptli AĞ SİYAHI (LLM SQL YAZMIR)
 #    • Resept SIRASI — xüsusi «orta maaş» ümumi «maaş»-dan əvvəl
 #    • DeepseekService — API açarı olmadan DEMO REJİM
-#    • 6 AI + 2 Excel endpoint, RBAC matrisi ilə (cəmi 23 marshrut)
+#    • 6 AI + 5 tehsil yolu + 2 Excel endpoint (cəmi 30 metod+yol)
 #    • SQL inyeksiya cəhdi — baza salamat qalır
 #    • Excel faylının həqiqətən .xlsx olduğu (PK baytları)
 #    • Excel sətirlərinin baza ilə üst-üstə düşməsi
 #    • Dockerfile, docker-compose və GitHub Actions CI
-#    • 42 unit + 39 e2e test
+#    • 42 unit + 61 e2e = 103 test
 #
 #  İSTİFADƏ:
 #    # 1) Server ayrı terminalda işləməlidir:
@@ -2837,7 +4547,7 @@ if [ -z "$ADMIN" ]; then
 fi
 
 # ── 1 · FAYLLAR VƏ PAKETLƏR ───────────────────────────────────────────
-bashliq "1 · ADDIM 1, 2, 7, 8 — fayllar və paketlər"
+bashliq "1 · ADDIM 1, 2, 7, 9 — fayllar və paketlər"
 
 yoxla "exceljs package.json-da"      "4.4.0" \
   "$(python3 -c "import json;print(json.load(open('package.json'))['dependencies'].get('exceljs','').lstrip('^'))" 2&gt;/dev/null)"
@@ -3083,7 +4793,7 @@ yoxla "tokensiz  → 401"                 "401" "$(kod GET 'ixrac/merkezler.xlsx
 rm -f "$M" "$E"
 
 # ── 10 · DOCKER VƏ CI/CD ──────────────────────────────────────────────
-bashliq "10 · ADDIM 8 — Docker, docker-compose, GitHub Actions"
+bashliq "10 · ADDIM 9 — Docker, docker-compose, GitHub Actions"
 
 yoxla "Dockerfile → FROM node"                "var" \
   "$(grep -q 'FROM node' Dockerfile &amp;&amp; echo var || echo yox)"
@@ -3115,19 +4825,33 @@ SW="$(curl -s "$KOK/docs-json" 2&gt;/dev/null)"
 yollar() { printf '%s' "$SW" | grep -o "\"/api/v1$1[^\"]*\"" | sort -u | wc -l | tr -d ' '; }
 
 yoxla "Swagger cavab verir"          "var" "$([ -n "$SW" ] &amp;&amp; echo var || echo yox)"
-yoxla "fərqli yol sayı = 20"         "20"  "$(yollar '')"
+yoxla "fərqli yol sayı = 25"         "25"  "$(yollar '')"
 yoxla "AI marshrutları = 6"          "6"   "$(yollar '/ai')"
 yoxla "ixrac marshrutları = 2"       "2"   "$(yollar '/ixrac')"
 yoxla "auth marshrutları = 4"        "4"   "$(yollar '/auth')"
 yoxla "kadrlar marshrutları = 3"     "3"   "$(yollar '/kadrlar')"
 yoxla "struktur marshrutları = 3"    "3"   "$(yollar '/struktur')"
+yoxla "tehsil marshrutları = 5"      "5"   "$(yollar '/tehsil')"
 
-# Backend-3-də 15 idi → +8 (6 AI + 2 ixrac) = 23 metod+yol cütü
+# Backend-3-də 15 idi → +8 (6 AI + 2 ixrac) + 7 tehsil = 30 metod+yol cütü
 CUT="$(printf '%s' "$SW" | grep -oE '"(get|post|patch|put|delete)":' | wc -l | tr -d ' ')"
-yoxla "metod+yol cütü = 23" "23" "$CUT"
+yoxla "metod+yol cütü = 30" "30" "$CUT"
 
-# ── 12 · TESTLƏR ──────────────────────────────────────────────────────
-bashliq "12 · ADDIM 10 — unit və e2e testlər"
+# ── 12 · ELEKTRON PASPORT ─────────────────────────────────────────────
+bashliq "12 · ADDIM 8 — İştirakçı elektron pasportu"
+
+PAS=$(getir 'tehsil/istirakciler/1/pasport' "$ADMIN")
+yoxla "Pasport qurulur və etibarlıdır" "SER-2024-001|true" \
+  "$(sahe "$PAS" pasport_no)|$(sahe "$PAS" etibarlidir)"
+yoxla "⚠️ Uyğunsuzluq aşkarlanır (iştirakçı 3)" "false" \
+  "$(getir 'tehsil/istirakciler/3/pasport' "$ADMIN" | grep -o '"etibarlidir":[a-z]*' | cut -d: -f2)"
+yoxla "İctimai yoxlama TOKENSİZ işləyir" "200" \
+  "$(kod GET 'tehsil/pasport/SER-2024-001/yoxla')"
+yoxla "Pasport bütövlük hash-i var" "var" \
+  "$([ -n "$(sahe "$PAS" hash)" ] &amp;&amp; echo var || echo yox)"
+
+# ── 13 · TESTLƏR ──────────────────────────────────────────────────────
+bashliq "13 · ADDIM 11 — unit və e2e testlər"
 
 UNIT_XAM="$(npm test 2&gt;&amp;1 | tr -d '\r')"
 UNIT="$(printf '%s' "$UNIT_XAM" | grep -oE 'Tests +[0-9]+ passed' | head -1 | grep -oE '[0-9]+')"
@@ -3135,9 +4859,9 @@ yoxla "unit testlər keçir = 42" "42" "${UNIT:-0}"
 
 E2E_XAM="$(npx vitest run --config vitest.config.e2e.ts 2&gt;&amp;1 | tr -d '\r')"
 E2E="$(printf '%s' "$E2E_XAM" | grep -oE 'Tests +[0-9]+ passed' | head -1 | grep -oE '[0-9]+')"
-yoxla "e2e testlər keçir = 39" "39" "${E2E:-0}"
+yoxla "e2e testlər keçir = 61" "61" "${E2E:-0}"
 
-yoxla "cəmi test = 81" "81" "$(( ${UNIT:-0} + ${E2E:-0} ))"
+yoxla "cəmi test = 103" "103" "$(( ${UNIT:-0} + ${E2E:-0} ))"
 
 # ── NƏTİCƏ ────────────────────────────────────────────────────────────
 printf "\n${MAVI}════════════════════════════════════════════════════════════${SIFIR}\n"
@@ -3237,7 +4961,7 @@ olduğu üçün GitHub Actions-da birbaşa işlədilə bilər.</p>
   ✓ baxici token alındı                              var
 
 ════════════════════════════════════════════════════════════
-  1 · ADDIM 1, 2, 7, 8 — fayllar və paketlər
+  1 · ADDIM 1, 2, 7, 9 — fayllar və paketlər
 ════════════════════════════════════════════════════════════
   ✓ exceljs package.json-da                            4.4.0
   ✓ src/ai/embedding.service.ts                        var
@@ -3369,7 +5093,7 @@ olduğu üçün GitHub Actions-da birbaşa işlədilə bilər.</p>
   ✓ tokensiz  → 401                                  401
 
 ════════════════════════════════════════════════════════════
-  10 · ADDIM 8 — Docker, docker-compose, GitHub Actions
+  10 · ADDIM 9 — Docker, docker-compose, GitHub Actions
 ════════════════════════════════════════════════════════════
   ✓ Dockerfile → FROM node                           var
   ✓ Dockerfile çoxmərhələlidir (2+ FROM)           var
@@ -3387,23 +5111,32 @@ olduğu üçün GitHub Actions-da birbaşa işlədilə bilər.</p>
   11 · Bütün marshrutlar — Backend-4 sonrası
 ════════════════════════════════════════════════════════════
   ✓ Swagger cavab verir                                var
-  ✓ fərqli yol sayı = 20                             20
+  ✓ fərqli yol sayı = 25                             25
   ✓ AI marshrutları = 6                               6
   ✓ ixrac marshrutları = 2                            2
   ✓ auth marshrutları = 4                             4
   ✓ kadrlar marshrutları = 3                          3
   ✓ struktur marshrutları = 3                         3
-  ✓ metod+yol cütü = 23                              23
+  ✓ tehsil marshrutları = 5                           5
+  ✓ metod+yol cütü = 30                              30
 
 ════════════════════════════════════════════════════════════
-  12 · ADDIM 10 — unit və e2e testlər
+  12 · ADDIM 8 — İştirakçı elektron pasportu
+════════════════════════════════════════════════════════════
+  ✓ Pasport qurulur və etibarlıdır                  SER-2024-001|true
+  ✓ ⚠️ Uyğunsuzluq aşkarlanır (iştirakçı 3)  false
+  ✓ İctimai yoxlama TOKENSİZ işləyir               200
+  ✓ Pasport bütövlük hash-i var                     var
+
+════════════════════════════════════════════════════════════
+  13 · ADDIM 11 — unit və e2e testlər
 ════════════════════════════════════════════════════════════
   ✓ unit testlər keçir = 42                          42
-  ✓ e2e testlər keçir = 39                           39
-  ✓ cəmi test = 81                                    81
+  ✓ e2e testlər keçir = 61                           61
+  ✓ cəmi test = 103                                   103
 
 ════════════════════════════════════════════════════════════
-  ✓ BÜTÜN YENİLİKLƏR İŞLƏYİR — 122 yoxlama keçdi
+  ✓ BÜTÜN YENİLİKLƏR İŞLƏYİR — 127 yoxlama keçdi
 ════════════════════════════════════════════════════════════</code></pre>
       <div class="oldu">
         <span class="oldu-basliq">✔ Nəticə</span>
@@ -3428,8 +5161,11 @@ olduğu üçün GitHub Actions-da birbaşa işlədilə bilər.</p>
   <li><strong>Bölmə 9:</strong> Excel faylları <code>PK</code> baytları ilə
       başlayır (həqiqi ZIP konteyneri) və sətir sayı <strong>bazadakı ilə
       üst-üstə düşür</strong> — 10 mərkəz + başlıq = 11 sətir.</li>
-  <li><strong>Bölmə 11–12:</strong> 20 fərqli yol, 23 metod+yol cütü və
-      <strong>42 unit + 39 e2e = 81 test</strong> keçir.</li>
+  <li><strong>Bölmə 11–12:</strong> 25 fərqli yol, 30 metod+yol cütü
+      və <strong>42 unit + 61 e2e = 103 test</strong> keçir.</li>
+  <li><strong>Bölmə 12:</strong> elektron pasport yerindədir —
+      etibarlı pasport, uyğunsuzluq aşkarlanması və tokensiz
+      ictimai yoxlama işləyir.</li>
 </ul>
 <p>Bu andan etibarən <strong>backend tamamlandı</strong> sayılır. Növbəti
 mərhələ frontend-dir: eyni API-ni brauzerdə göstərən interfeys.</p></p>
@@ -3438,7 +5174,7 @@ mərhələ frontend-dir: eyni API-ni brauzerdə göstərən interfeys.</p></p>
 
   </div>
   <div class="addim-icmal">
-    <span>Addım 11 / 11</span>
+    <span>Addım 12 / 12</span>
     <span>A · niyə</span><span>B · kod</span>
     <span>C · yoxlama</span><span>D · durum</span>
   </div>
@@ -3446,7 +5182,7 @@ mərhələ frontend-dir: eyni API-ni brauzerdə göstərən interfeys.</p></p>
 
 
 <div class="success-box">
-  <strong>Backend-2 tamamlandı — 11 addım.</strong> 11 marshrut ·
+  <strong>Backend-2 tamamlandı — 12 addım.</strong> 11 marshrut ·
   səhifələmə və filtr hər siyahıda · 6 cədvəlli JOIN ·
   tam CRUD + konflikt idarəsi · 21 unit + 24 e2e = <strong>45 test</strong>.
   <strong>Növbəti dərs:</strong> autentifikasiya və rollar (JWT),

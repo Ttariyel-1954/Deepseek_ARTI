@@ -17,6 +17,7 @@ from __future__ import annotations
 import html
 import os
 import pathlib
+import re
 
 KOK = pathlib.Path(__file__).resolve().parent.parent
 BACKEND = pathlib.Path(os.environ.get("BACKEND", str(KOK / "DS_Backend")))
@@ -39,20 +40,21 @@ def fayl(yol: str) -> str:
     return f"{basliq}cat > {yol} <<'EOF'\n{govde}\nEOF"
 
 
-def app_module_araliq() -> str:
-    """ADDIM 6 üçün ARALIQ `app.module.ts` — `IxracModule` hələ YOXDUR.
+def app_module_araliq(cixar: tuple = ("IxracModule",)) -> str:
+    """ARALIQ `app.module.ts` — sadalanan modullar HƏLƏ YOXDUR.
 
-    ⚠️ `src/ixrac/ixrac.module.ts` yalnız ADDIM 7-də yaradılır. Əgər bu addım
-    onu import etsə, `nest build` belə sınır:
+    ⚠️ HƏR modul ÖZ addımında yaradılır. Əvvəlki addımın faylı sonrakı
+    addımın modulunu import etsə, `nest build` belə sınır:
         error TS2307: Cannot find module './ixrac/ixrac.module.js'
-    Ona görə modul qeydiyyatı bu addımda AI ilə bitir, ixrac isə növbəti
-    addımda — fayl YARADILDIQDAN SONRA — əlavə olunur.
+    Ona görə hər addımda yalnız HƏMİN addıma qədər mövcud olan modullar
+    qeydiyyatda olur — yeni modul fayl YARADILDIQDAN SONRA əlavə edilir.
     """
     s = fayl("src/app.module.ts")
-    s = s.replace("import { IxracModule } from './ixrac/ixrac.module.js';\n", "")
-    s = s.replace("    IxracModule,\n", "")
-    if "IxracModule" in s:
-        raise SystemExit("XƏTA: app_module_araliq — IxracModule silinmədi")
+    for ad in cixar:
+        s = re.sub(r"^import \{ %s \} from '[^']*';\n" % ad, "", s, flags=re.M)
+        s = re.sub(r"^    %s,\n" % ad, "", s, flags=re.M)
+        if ad in s:
+            raise SystemExit("XƏTA: app_module_araliq — %s silinmədi" % ad)
     return s
 
 
@@ -459,7 +461,8 @@ addim(
         ("src/ai/ai.service.ts", fayl("src/ai/ai.service.ts")),
         ("src/ai/ai.controller.ts", fayl("src/ai/ai.controller.ts")),
         ("src/ai/ai.module.ts", fayl("src/ai/ai.module.ts")),
-        ("src/app.module.ts", app_module_araliq()),
+        ("src/app.module.ts",
+         app_module_araliq(("IxracModule", "TehsilModule"))),
     ],
     c_yoxla="""cd ~/Deepseek_ARTI/DS_Backend
 
@@ -538,7 +541,7 @@ addim(
         ("src/ixrac/excel.service.ts", fayl("src/ixrac/excel.service.ts")),
         ("src/ixrac/ixrac.controller.ts", fayl("src/ixrac/ixrac.controller.ts")),
         ("src/ixrac/ixrac.module.ts", fayl("src/ixrac/ixrac.module.ts")),
-        ("src/app.module.ts", fayl("src/app.module.ts")),
+        ("src/app.module.ts", app_module_araliq(("TehsilModule",))),
     ],
     c_yoxla="""cd ~/Deepseek_ARTI/DS_Backend
 
@@ -611,8 +614,264 @@ $ ls -l /tmp/*.xlsx
 )
 
 # ─────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────────
+#  ADDIM 8 — İŞTİRAKÇI ELEKTRON PASPORTU
+# ─────────────────────────────────────────────────────────────────
+_A8 = """Bu addım <strong>yeni bir modul</strong> qurur və suala cavab verir:
+<em>iştirakçı öz təlimini necə sübut edir?</em> İndiyə qədər iştirakçının
+rəsmi izi API-dən görünmürdü — onun kim olduğu
+<code>tehsil.telim_istirakcilari</code>-də, hansı qrupda oxuduğu
+<code>telim_qruplari</code>-nda, hansı proqramı keçdiyi
+<code>telim_proqramlari</code>-nda, imtahan nəticəsi isə
+<code>sertifikasiya</code>-da saxlanılırdı. <strong>Dörd cədvəl — bir
+insan.</strong> Bu addımda həmin dörd cədvəli <strong>bir sənədə</strong> —
+iştirakçının ELEKTRON PASPORTUNA — yığırıq.</p>
+    <p><strong>Pasport necə ALINIR?</strong> Üç addımda:
+    <strong>(1)</strong> iştirakçı qrupa yazılır —
+    <code>POST /tehsil/istirakciler</code>, statusu
+    <code>«davam edir»</code> olur və sertifikat nömrəsi <code>NULL</code>
+    qalır. <strong>(2)</strong> təlim bitir, imtahan olunur —
+    <code>POST /tehsil/istirakciler/:id/pasport</code> bal ilə çağırılır.
+    Bal <strong>60-dan</strong> aşağıdırsa nəticə <code>«qaldi»</code> yazılır
+    və <strong>pasport verilmir</strong>. Bal 60 və yuxarıdırsa sistem
+    <code>ARTI-İL-NNNN</code> formatında unikal nömrə yaradır və onu
+    <strong>hər iki cədvələ</strong> yazır. <strong>(3)</strong> pasport artıq
+    <code>GET /tehsil/istirakciler/:id/pasport</code> ilə oxunur.</p>
+    <p><strong>Pasport necə YADDA SAXLANILIR?</strong> ⚠️ Ən vacib qərar:
+    pasport <strong>fayl deyil</strong>. Onu PDF kimi saxlamırıq — çünki fayl
+    köhnəlir. Proqramın adı dəyişsə, fayldaki ad köhnə qalar və ortada
+    <em>iki fərqli həqiqət</em> yaranar. Əvəzində pasport <strong>hər sorğuda
+    yenidən qurulur</strong> və yeganə həqiqət mənbəyi baza qalır. Bazada isə
+    sadəcə <strong>normallaşdırılmış sətirlər</strong> saxlanılır: nömrə
+    <code>sertifikat_no</code> sütunundadır, nəticə <code>sertifikasiya</code>
+    sətrindədir, kimliyin özü <code>telim_istirakcilari</code>-dədir.
+    Yazma <strong>bir transaksiyada</strong> baş verir — yarımçıq vəziyyət
+    (nömrə bir cədvəldə var, o birində yox) qala bilməz.</p>
+    <p><strong>Bütövlük.</strong> Pasportda <code>butovluk.hash</code> sahəsi
+    var — FNV-1a ilə beş dəyişməz sahədən hesablanır. Kağıza çap olunmuş
+    pasportu sonra yoxlamaq üçün: bir hərf dəyişsə, hash tamam başqa olur.
+    <strong>İctimai yoxlama</strong> üçün ayrıca
+    <code>GET /tehsil/pasport/:no/yoxla</code> endpointi açırıq və onu
+    <code>@Public()</code> edirik — sertifikatı <em>işəgötürən</em> yoxlayır,
+    onun sistemə istifadəçi olması lazım deyil. Bu endpoint qəsdən
+    <strong>minimum məlumat</strong> qaytarır: ata adı, iş yeri kimi şəxsi
+    sahələr verilmir.</p>
+    <p>⚠️ Və modul ilk gündən <strong>uyğunsuzluğu aşkarlayır</strong>:
+    real bazada iştirakçı 3-ün (Gülnar Əsgərova) sənədində sertifikat nömrəsi
+    var, amma <code>sertifikasiya</code> cədvəli <code>«qaldi»</code>
+    göstərir. Bu, <em>kağız üzərində sertifikat, amma qazanılmamış imtahan</em>
+    deməkdir — pasport bunu <code>etibarlidir: false</code> kimi qaytarır."""
+
+_C8_YOXLA = """cd ~/Deepseek_ARTI/DS_Backend
+unset DATABASE_URL PGHOST
+
+# 1) Fayllar yerindədirmi?
+ls -1 src/tehsil/ src/tehsil/dto/
+
+# 2) TehsilModule kök modula qoşulubmu?
+grep -n 'TehsilModule' src/app.module.ts
+
+# 3) Build və tip yoxlaması
+npm run build && echo "✓ build keçdi"
+npx tsc --noEmit -p tsconfig.build.json && echo "✓ tip yoxlaması keçdi"
+
+# 4) Server AYRI terminalda
+PORT=4000 npm run start:prod
+
+# 5) Digər terminalda — 30 yoxlama
+bash scripts/yoxla-tehsil30.sh
+
+# 6) Pasportu gözlə gör — iştirakçı 1
+TOKEN=$(curl -s -X POST localhost:4000/api/v1/auth/login \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+curl -s localhost:4000/api/v1/tehsil/istirakciler/1/pasport \
+  -H "Authorization: Bearer $TOKEN" | python3 -m json.tool
+
+# 7) ⚠️ İCTİMAİ yoxlama — TOKENSİZ, brauzerdə də açılır
+curl -s localhost:4000/api/v1/tehsil/pasport/SER-2024-001/yoxla | python3 -m json.tool
+
+# 8) e2e testlər
+npx vitest run --config vitest.config.e2e.ts test/tehsil.e2e-spec.ts"""
+
+_C8_OLMAZ = """$ npm run build                     # ixrac modulu app.module-a
+                                     # əvvəl əlavə edilsəydi:
+
+src/app.module.ts:9:29 - error TS2307: Cannot find module
+'./ixrac/ixrac.module.js' or its corresponding type declarations.
+
+   # ⚠️ SƏBƏB: modulun FAYLI hələ yaradılmayıb, amma kök modul onu
+   # import edir. TypeScript faylı tapa bilmir və HƏÇ NƏ işləmir —
+   # server də qalxmır. Ona görə app.module.ts HƏR addımda yenidən
+   # yazılır və yalnız mövcud modulları qeydiyyatdan keçirir.
+
+$ curl -s localhost:4000/api/v1/tehsil/istirakciler/3/pasport \
+    -H "Authorization: Bearer $TOKEN"
+
+   # Ehtiyat (ad üzrə) axtarış olmasaydı sertifikasiya qeydi tapılmazdı:
+
+{"pasport_no":"SER-2024-003","etibarlidir":false,
+ "uygunsuzluq":"İştirakçıda sertifikat nömrəsi var,
+                amma «sertifikasiya» cədvəlində qeyd yoxdur",
+ "sertifikasiya":null}
+
+   # Amma qeyd VAR — sadəcə nömrəsizdir. Yalnız NÖMRƏ ilə birləşsəydik,
+   # 54 balla «qaldi» olan bu iştirakçını «qeydi yoxdur» kimi göstərərdik
+   # və səbəb YANLIŞ olardı. Ad üzrə ehtiyat axtarış bunu düzəldir:
+
+ "uygunsuzluq":"«sertifikasiya» qeydi «qaldi» göstərir —
+                sertifikat nömrəsi verilməməli idi"
+
+   # ⚠️ Fərq vacibdir: birinci mesaj «məlumat yoxdur», ikinci isə
+   # «məlumat var və ziddiyyət var» deyir. Uyğunsuzluğu TAPMAQ üçün
+   # ikinci mesaj lazımdır."""
+
+_C8_IZAH = """Pasportun ən dəyərli xüsusiyyəti <strong>uyğunsuzluğu
+tutmasıdır</strong>. Real bazada 10 iştirakçıdan <strong>6-sının</strong>
+sertifikat nömrəsi var, amma <code>sertifikasiya</code> cədvəlində onu
+təsdiqləyən <code>«keçdi»</code> nəticəsi yoxdur. Bu o deməkdir ki, sistem
+<em>kağız üzərində sertifikat verib, amma imtahan nəticəsini qeydə
+almaqda</em>. Bu cür səhvlər illərlə görünməz qalır — heç kim dörd cədvəli
+əl ilə tutuşdurmur. <code>GET /tehsil/statistika</code> isə bunu
+<code>uygunsuz_sayi</code> kimi bir rəqəmlə göstərir.</p>
+    <p>İkinci mühüm qərar <strong>yazmanın atomikliyidir</strong>: pasport
+verilərkən <code>sertifikasiya</code> sətri və
+<code>telim_istirakcilari.sertifikat_no</code> <em>bir transaksiyada</em>
+yazılır. Transaksiya olmasaydı, ikinci sorğu xəta versəydi nömrə bir
+cədvəldə qalar, digərində olmazdı — və həmin iştirakçı üçün pasport
+<em>heç vaxt</em> düzəlməzdi. Üçüncü qərar isə <strong>TƏKRAR
+ÇAĞIRIŞIN İDEMPOTENTLİYİDİR</strong>: pasport verildikdən sonra eyni
+endpoint yenidən çağırılsa yeni nömrə <em>yaradılmır</em>, mövcud nömrə
+qaytarılır. Əks halda bir iştirakçının iki sertifikatı olardı və hansının
+həqiqi olduğu bilinməzdi. Skript həm də <strong>CI üçün
+yararlıdır</strong>: çıxış kodu <code>0</code>/<code>1</code> olduğu üçün
+GitHub Actions-da birbaşa işlədilə bilər. Ən əsası: skript yaratdığı
+iştirakçını <strong>sonda silir</strong> — baza ilk vəziyyətində qalır."""
+
+_D8 = """
+════════════════════════════════════════════════════════════════
+  ELEKTRON PASPORT — 30 YOXLAMA
+════════════════════════════════════════════════════════════════
+
+════════════════════════════════════════════════════════════════
+  BÖLMƏ 1 · Elektron açar — dörd rol token alır (Backend-3)
+════════════════════════════════════════════════════════════════
+  1 ✓ Dörd rolun hamısı token alır             —          4/4
+  2 ✓ Token 3 hissəlidir (başlıq.yük.imza)     admin        3
+  3 ✓ Token müddəti 8 saatdır (28800 san)       admin        28800
+  4 ✓ Token içində parol_hash YOXDUR             admin        0
+  5 ✓ Səhv parol → 401, mesaj eynidir           —          401|eyni
+
+════════════════════════════════════════════════════════════════
+  BÖLMƏ 2 · Pasportun oxunması və bütövlüyü (yeni modul)
+════════════════════════════════════════════════════════════════
+  6 ✓ İştirakçı siyahısı: cemi = 10          admin        10
+  7 ✓ Oxuma dörd rolun hamısına açıqdır      4 rol        4/4
+  8 ✓ Tokensiz oxuma → 401                       —          401
+  9 ✓ Pasport nömrəsi və etibarlılıq          admin        SER-2024-001|true
+ 10 ✓ Sahib bölməsi: ad, soyad, ata adı, iş yeri admin        dolu
+ 11 ✓ Təlim bölməsi: proqram, saat, qrup        admin        dolu
+ 12 ✓ Sertifikasiya: bal 72.5, nəticə keçdi     admin        72.5|keçdi
+ 13 ✓ Bütövlük hash-i deterministikdir          admin        eyni
+ 14 ✓ Olmayan iştirakçı → 404 (500 DEYİL)    admin        404
+
+════════════════════════════════════════════════════════════════
+  BÖLMƏ 3 · Pasportun verilməsi — iştirakçı onu belə ALIR
+════════════════════════════════════════════════════════════════
+ 15 ✓ ⚠️ Uyğunsuzluq aşkarlanır (iştirakçı 3: qaldi) admin        false|qaldi
+ 16 ✓ Statistika: 6 uyğunsuz, keçid balı 60     admin        6|60
+ 17 ✓ İştirakçı yazmaq: baxici → 403         baxici       403
+ 18 ✓ İştirakçı yazmaq: admin 201, pasportsuz  admin        davam edir|true
+ 19 ✓ Bal 72 → nəticə keçdi                   admin        keçdi
+ 20 ✓ Pasport nömrəsi ARTI-İL-NNNN formatındadır admin        düzgün
+ 21 ✓ Nömrə hər iki cədvəldə saxlanılır    admin        1|1
+ 22 ✓ Təkrar cəhd idempotentdir (dublikat yox)   admin        ARTI-2026-0001|1
+
+════════════════════════════════════════════════════════════════
+  BÖLMƏ 4 · İctimai yoxlama — pasportu kənara necə göstəririk
+════════════════════════════════════════════════════════════════
+ 23 ✓ Yoxlama TOKENSİZ işləyir (ictimai)        —          200
+ 24 ✓ Yoxlama: etibarlıdır + sahibin adı        —          true|Yoxlama Istirakci
+ 25 ✓ Olmayan nömrə → 404                      —          404
+ 26 ✓ İctimai hash daxili hash ilə eynidir       —          eyni
+
+════════════════════════════════════════════════════════════════
+  BÖLMƏ 5 · AI qatı və Excel ixracı (Backend-4)
+════════════════════════════════════════════════════════════════
+ 27 ✓ AI: demo rejim, 64 ölçü, 10 resept        admin        demo|64|10
+ 28 ✓ AI: «Neçə əməkdaş var?» düzgün reseptə düşür admin        true|Ümumi əməkdaş sayı
+ 29 ✓ Excel: PK baytları və real ölçü         admin        504b|var
+
+════════════════════════════════════════════════════════════════
+  BÖLMƏ 6 · Audit jurnalı (Backend-3)
+════════════════════════════════════════════════════════════════
+ 30 ✓ Audit: 3 × GET jurnala heç nə yazmır     admin        0
+
+════════════════════════════════════════════════════════════════
+  CƏMİ YOXLAMA: 30
+  ✓ 30/30 KEÇDİ — elektron pasport tam işləyir
+════════════════════════════════════════════════════════════════"""
+
+_D8_IZAH = """<strong>Elektron pasport tam işləyir — 30 yoxlama, 0 xəta.</strong>
+Çıxışı yuxarıdan aşağı oxusanız, pasportun bütün həyat dövrünü görürsünüz:
+<ul>
+  <li><strong>Bölmə 1–2:</strong> elektron açar (JWT) işləyir — token 3
+      hissəli, 8 saatlıq və içində <code>parol_hash</code> yoxdur. Pasport
+      dörd cədvəldən düzgün yığılır: sahib, təlim və sertifikasiya bir
+      cavabda gəlir.</li>
+  <li><strong>Bölmə 3:</strong> ⚠️ <strong>uyğunsuzluq aşkarlanır</strong> —
+      iştirakçı 3 üçün <code>etibarlidir: false</code> və səbəb
+      «qaldi». Statistika 6 uyğunsuz sətir göstərir.</li>
+  <li><strong>Bölmə 3 — pasport necə ALINIR:</strong> iştirakçı yazılır
+      (<code>status: davam edir</code>, nömrə <code>NULL</code>), sonra bal
+      ilə pasport verilir — <code>ARTI-2026-0001</code> yaranır və
+      <strong>hər iki cədvəldə</strong> saxlanılır. Təkrar cəhd yeni nömrə
+      <em>yaratmır</em>.</li>
+  <li><strong>Bölmə 4:</strong> ictimai yoxlama <strong>tokensiz</strong>
+      işləyir — sertifikatı işəgötürən də yoxlaya bilir.</li>
+  <li><strong>Bölmə 5–6:</strong> əvvəlki dərslərin qatları yerindədir
+      (AI demo rejim, 10 resept, Excel) və 3 × GET audit jurnalına heç nə
+      yazmır.</li>
+</ul>
+<p>Sonda skript yaratdığı iştirakçını <strong>silir</strong> — baza ilk
+vəziyyətinə qayıdır (10 iştirakçı, 10 sertifikasiya). Bu, testin təkrar
+işlədilə bilməsi üçün vacibdir: hər icra eyni nəticəni verir.</p>"""
+
+_B8 = chr(10).join([
+    '  <p><strong>Yeddi fayl — modulun tamı:</strong></p>',
+    '  <p class="fayl-ad">src/tehsil/dto/istirakci.dto.ts</p>',
+    '<pre><code>' + e(fayl("src/tehsil/dto/istirakci.dto.ts")) + '</code></pre>',
+    '  <p class="fayl-ad">src/tehsil/tehsil.service.ts</p>',
+    '<pre><code>' + e(fayl("src/tehsil/tehsil.service.ts")) + '</code></pre>',
+    '  <p class="fayl-ad">src/tehsil/tehsil.controller.ts</p>',
+    '<pre><code>' + e(fayl("src/tehsil/tehsil.controller.ts")) + '</code></pre>',
+    '  <p class="fayl-ad">src/tehsil/tehsil.module.ts</p>',
+    '<pre><code>' + e(fayl("src/tehsil/tehsil.module.ts")) + '</code></pre>',
+    '  <p><strong>⚠️ Kök modul yenidən yazılır — indi TehsilModule də qoşulur:</strong></p>',
+    '  <p class="fayl-ad">src/app.module.ts</p>',
+    '<pre><code>' + e(fayl("src/app.module.ts")) + '</code></pre>',
+    '  <p class="fayl-ad">scripts/yoxla-tehsil30.sh</p>',
+    '<pre><code>' + e(fayl("scripts/yoxla-tehsil30.sh")) + '</code></pre>',
+    '  <p class="fayl-ad">test/tehsil.e2e-spec.ts</p>',
+    '<pre><code>' + e(fayl("test/tehsil.e2e-spec.ts")) + '</code></pre>',
+]) + chr(10)
+
 addim(
     n=8,
+    ad="İştirakçı elektron pasportu — real modul və 30 sınaq",
+    a=_A8,
+    b=[],
+    b_html=_B8,
+    c_yoxla=_C8_YOXLA,
+    c_olmaz=_C8_OLMAZ,
+    c_izah=_C8_IZAH,
+    d=_D8,
+    d_izah=_D8_IZAH,
+)
+
+addim(
+    n=9,
     ad="Docker və CI/CD",
     a="""Layihə işləyir, amma başqa kompüterdə də işləməlidir. Docker
     <strong>iki mərhələli</strong> yığım işlədir: birinci mərhələdə TypeScript
@@ -683,8 +942,8 @@ $ npx vitest run --config vitest.config.e2e.ts
     <code>docker compose up</code> əmri bazanı və API-ı birgə qaldırır;
     <code>Dockerfile</code> iki mərhələli olduğu üçün istehsalat obrazına
     <code>node_modules</code>-un hamısı deyil, yalnız lazımlı hissəsi düşür.
-    CI isə hər <code>push</code>-da <strong>81 testi</strong>
-    (42 unit + 39 e2e) avtomatik işlədir. <code>.dockerignore</code> faylı
+    CI isə hər <code>push</code>-da <strong>103 testi</strong>
+    (42 unit + 61 e2e) avtomatik işlədir. <code>.dockerignore</code> faylı
     <code>.env</code>-i obrazdan kənarda saxlayır — bu vacibdir, çünki
     <code>.env</code>-dəki JWT açarı obrazın içinə düşsə, onu istənilən şəxs
     çıxara bilər.""",
@@ -692,7 +951,7 @@ $ npx vitest run --config vitest.config.e2e.ts
 
 # ─────────────────────────────────────────────────────────────────
 addim(
-    n=9,
+    n=10,
     ad="Build və tam canlı yoxlama",
     a="""İndi bütün yeni qatları canlı yoxlayırıq: AI statistikası, reseptlər,
     vektorlaşdırma, RAG axtarışı, təbii dil sualı, AI cavabı və Excel ixracı.
@@ -810,7 +1069,7 @@ done
   GET    /api/v1/ixrac/emekdaslar.xlsx               IXRAC
   GET    /api/v1/ixrac/merkezler.xlsx                IXRAC
   ... (struktur, kadrlar, sağlamlıq)
-  CƏMİ: 23 marshrut
+  CƏMİ: 25 fərqli yol · 30 metod+yol
 
 ════════ EXCEL FAYLLARI ════════
   merkezler    → 7121 bayt · Microsoft Excel 2007+
@@ -821,7 +1080,7 @@ done
   baxici     vektorlasdir → 403""",
     d_izah="""<strong>Backend-4 tam işlək vəziyyətdədir.</strong> Əlavə olunan
     <strong>8 marshrut</strong> (6 AI + 2 ixrac) digər 15 ilə birlikdə işləyir —
-    cəmi <strong>23 marshrut</strong>. Excel faylları həqiqi Excel formatındadır
+    cəmi <strong>30 metod+yol cütü</strong> (25 fərqli yol). Excel faylları həqiqi Excel formatındadır
     və brauzer onları yükləyir. Vektorlaşdırma isə rol ilə qorunur:
     <code>admin</code> <code>200</code>, <code>baxici</code>
     <code>403</code>. Bu andan etibarən institutun məlumatları həm
@@ -831,7 +1090,7 @@ done
 
 # ─────────────────────────────────────────────────────────────────
 addim(
-    n=10,
+    n=11,
     ad="Testlər — AI və ixrac",
     a="""AI qatının testləri xüsusi diqqət tələb edir: <strong>vektor
     riyaziyyatı</strong> səhv olsa heç bir xəta çıxmır, sadəcə axtarış
@@ -896,11 +1155,11 @@ $ npx vitest run --config vitest.config.e2e.ts
       Tests  39 passed (39)
 
 ──────────────────────────────────────────────
-YEKUN: 42 unit + 39 e2e = 81 test""",
+YEKUN: 42 unit + 61 e2e = 103 test""",
     d_izah="""<strong>Backend-4 tamamlandı.</strong> Bütün backend kursunun yekunu:
     <ul>
-      <li><strong>42 unit + 39 e2e = 81 test</strong> — Dərs 1-də 7 test idi.</li>
-      <li><strong>23 marshrut</strong> — sağlamlıq, struktur, kadrlar, auth,
+      <li><strong>42 unit + 61 e2e = 103 test</strong> — Dərs 1-də 7 test idi.</li>
+      <li><strong>30 marshrut</strong> — sağlamlıq, struktur, kadrlar, auth,
           AI və ixrac.</li>
       <li><strong>AI qatı</strong> — RAG axtarışı, 10 reseptli təbii dil
           sorğusu, demo rejim.</li>
@@ -1052,9 +1311,9 @@ _CEDVEL = """<table>
   <tr><td>18</td><td>Docker və GitHub Actions</td><td>—</td>
       <td>2 × <code>FROM node</code> · <code>npm ci</code> · <code>vitest.config.e2e.ts</code></td></tr>
   <tr><td>19</td><td>Marshrutlar</td><td>—</td>
-      <td><strong>20 yol</strong> · <strong>23 metod+yol</strong></td></tr>
+      <td><strong>25 yol</strong> · <strong>30 metod+yol</strong></td></tr>
   <tr><td>20</td><td>Testlər</td><td>—</td>
-      <td><strong>42 unit + 39 e2e = 81</strong></td></tr>
+      <td><strong>42 unit + 61 e2e = 103</strong></td></tr>
 </table>"""
 
 _A11 = """Bu dərsdə <strong>10 addımda</strong> backend-in üstünə tamamilə yeni bir
@@ -1148,7 +1407,7 @@ _D11 = """
   ✓ baxici token alındı                              var
 
 ════════════════════════════════════════════════════════════
-  1 · ADDIM 1, 2, 7, 8 — fayllar və paketlər
+  1 · ADDIM 1, 2, 7, 9 — fayllar və paketlər
 ════════════════════════════════════════════════════════════
   ✓ exceljs package.json-da                            4.4.0
   ✓ src/ai/embedding.service.ts                        var
@@ -1280,7 +1539,7 @@ _D11 = """
   ✓ tokensiz  → 401                                  401
 
 ════════════════════════════════════════════════════════════
-  10 · ADDIM 8 — Docker, docker-compose, GitHub Actions
+  10 · ADDIM 9 — Docker, docker-compose, GitHub Actions
 ════════════════════════════════════════════════════════════
   ✓ Dockerfile → FROM node                           var
   ✓ Dockerfile çoxmərhələlidir (2+ FROM)           var
@@ -1298,23 +1557,32 @@ _D11 = """
   11 · Bütün marshrutlar — Backend-4 sonrası
 ════════════════════════════════════════════════════════════
   ✓ Swagger cavab verir                                var
-  ✓ fərqli yol sayı = 20                             20
+  ✓ fərqli yol sayı = 25                             25
   ✓ AI marshrutları = 6                               6
   ✓ ixrac marshrutları = 2                            2
   ✓ auth marshrutları = 4                             4
   ✓ kadrlar marshrutları = 3                          3
   ✓ struktur marshrutları = 3                         3
-  ✓ metod+yol cütü = 23                              23
+  ✓ tehsil marshrutları = 5                           5
+  ✓ metod+yol cütü = 30                              30
 
 ════════════════════════════════════════════════════════════
-  12 · ADDIM 10 — unit və e2e testlər
+  12 · ADDIM 8 — İştirakçı elektron pasportu
+════════════════════════════════════════════════════════════
+  ✓ Pasport qurulur və etibarlıdır                  SER-2024-001|true
+  ✓ ⚠️ Uyğunsuzluq aşkarlanır (iştirakçı 3)  false
+  ✓ İctimai yoxlama TOKENSİZ işləyir               200
+  ✓ Pasport bütövlük hash-i var                     var
+
+════════════════════════════════════════════════════════════
+  13 · ADDIM 11 — unit və e2e testlər
 ════════════════════════════════════════════════════════════
   ✓ unit testlər keçir = 42                          42
-  ✓ e2e testlər keçir = 39                           39
-  ✓ cəmi test = 81                                    81
+  ✓ e2e testlər keçir = 61                           61
+  ✓ cəmi test = 103                                   103
 
 ════════════════════════════════════════════════════════════
-  ✓ BÜTÜN YENİLİKLƏR İŞLƏYİR — 122 yoxlama keçdi
+  ✓ BÜTÜN YENİLİKLƏR İŞLƏYİR — 127 yoxlama keçdi
 ════════════════════════════════════════════════════════════"""
 
 _D_IZAH = """<strong>Backend-4-ün bütün yenilikləri işləyir — 122 yoxlama, 0 xəta.</strong>
@@ -1338,8 +1606,11 @@ _D_IZAH = """<strong>Backend-4-ün bütün yenilikləri işləyir — 122 yoxlam
   <li><strong>Bölmə 9:</strong> Excel faylları <code>PK</code> baytları ilə
       başlayır (həqiqi ZIP konteyneri) və sətir sayı <strong>bazadakı ilə
       üst-üstə düşür</strong> — 10 mərkəz + başlıq = 11 sətir.</li>
-  <li><strong>Bölmə 11–12:</strong> 20 fərqli yol, 23 metod+yol cütü və
-      <strong>42 unit + 39 e2e = 81 test</strong> keçir.</li>
+  <li><strong>Bölmə 11–12:</strong> 25 fərqli yol, 30 metod+yol cütü
+      və <strong>42 unit + 61 e2e = 103 test</strong> keçir.</li>
+  <li><strong>Bölmə 12:</strong> elektron pasport yerindədir —
+      etibarlı pasport, uyğunsuzluq aşkarlanması və tokensiz
+      ictimai yoxlama işləyir.</li>
 </ul>
 <p>Bu andan etibarən <strong>backend tamamlandı</strong> sayılır. Növbəti
 mərhələ frontend-dir: eyni API-ni brauzerdə göstərən interfeys.</p>"""
@@ -1354,7 +1625,7 @@ _B11 = chr(10).join([
 ]) + chr(10)
 
 addim(
-    n=11,
+    n=12,
     ad="Tam qəbul testi — bütün yenilikləri bir-bir yoxla",
     a=_A11,
     b=[],
@@ -1468,8 +1739,8 @@ def main() -> None:
     <span>NestJS 12</span>
     <span>Prisma 7</span>
     <span>{n} addım</span>
-    <span>23 marshrut</span>
-    <span>81 test</span>
+    <span>30 marshrut</span>
+    <span>103 test</span>
   </p>
 </header>
 
