@@ -110,6 +110,15 @@
   özü alır — ona görə testlər bir-birindən asılı deyil. <b>Üçüncü qeyd:</b>
   <code>vaxt</code>, <code>gecikme_ms</code> kimi sahələr sizdə fərqli ola bilər;
   tutuşdurarkən əsas məzmuna baxın.</p>
+  <p style="margin-top:.6rem"><b>Dördüncü qeyd:</b> hər skriptin gövdəsi bir
+  funksiyanın içindədir və <code>exit</code> yerinə <code>return</code> işlədilir —
+  ona görə skripti birbaşa Terminal pəncərəsinə yapışdırsanız da
+  <b>sessiyanız bağlanmır</b>. Skriptlər həm <code>bash</code>, həm
+  <code>zsh</code> ilə işləyir.</p>
+  <p style="margin-top:.6rem"><b>Beşinci qeyd:</b> <b>IV.21–IV.29</b> testləri
+  iştirakçı elektron pasportunu yoxlayır. Onlar yalnız Backend-4-ün
+  <b>ADDIM 8</b>-i (yeni <code>src/tehsil/</code> modulu) tətbiq edildikdən
+  sonra işləyir.</p>
 </div>
 
 <div class="mund">
@@ -127,7 +136,11 @@
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 
 echo "── Node və npm ──"
@@ -145,7 +158,13 @@ for p in @nestjs/core @nestjs/common @nestjs/config @prisma/client; do
 done
 
 echo "── npm skriptləri ──"
-python3 -c "import json;[print('  '+k+' → '+v) for k,v in json.load(open('package.json'))['scripts'].items()]"</code></pre>
+python3 -c "import json;[print('  '+k+' → '+v) for k,v in json.load(open('package.json'))['scripts'].items()]"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -186,7 +205,11 @@ python3 -c "import json;[print('  '+k+' → '+v) for k,v in json.load(open('pack
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 
 echo "── Sxemanın əsas blokları ──"
@@ -211,7 +234,13 @@ echo "── Generasiya olunmuş klient ──"
   || echo "  ✗ klient generasiya olunmayıb — «npx prisma generate» lazımdır"
 
 echo "── Sxemanın etibarlılığı ──"
-npx prisma validate 2&gt;&amp;1 | tail -2</code></pre>
+npx prisma validate 2&gt;&amp;1 | tail -2
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -242,7 +271,11 @@ The schema at prisma/schema.prisma is valid 🚀</code></pre>
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
 A="${A:-http://localhost:4000/api/v1}"
@@ -252,7 +285,7 @@ echo "GET /saglamliq → $kod"
 if [ "$kod" != "200" ]; then
   echo "⚠️ Server işləmir. Ayrı terminalda işlədin:"
   echo "   cd $LAYIHE &amp;&amp; PORT=4000 npm run start:prod"
-  exit 1
+  return 1
 fi
 
 echo "── Serverin cavabı ──"
@@ -263,7 +296,13 @@ psql -U arti_user -d arti_baza -tA -c "
   SELECT count(*) FROM pg_class c
   JOIN pg_namespace n ON n.oid = c.relnamespace
   WHERE c.relkind = 'r'
-    AND n.nspname NOT IN ('pg_catalog','information_schema')" | sed 's/^/  /'</code></pre>
+    AND n.nspname NOT IN ('pg_catalog','information_schema')" | sed 's/^/  /'
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -276,10 +315,10 @@ psql -U arti_user -d arti_baza -tA -c "
     "baza": {
         "qosulub": true,
         "cedvel_sayi": 48,
-        "gecikme_ms": 1
+        "gecikme_ms": 2
     },
     "versiya": "0.1.0",
-    "vaxt": "2026-09-22T13:19:50.504Z"
+    "vaxt": "2026-09-22T13:31:45.846Z"
 }
 ── Bazadakı real cədvəl sayı ──
   48</code></pre>
@@ -291,12 +330,16 @@ psql -U arti_user -d arti_baza -tA -c "
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 echo "── 1) Olmayan endpoint → 404 ──"
 curl -s "$A/bele-bir-yol-yoxdur" | python3 -m json.tool
@@ -312,7 +355,13 @@ print('  xeta.mesaj→', d['xeta']['mesaj'])
 "
 
 echo "── 3) Status kodlarının oxunaqlı xəritəsi ──"
-grep -E "^  [0-9]{3}:" src/common/filters/all-exceptions.filter.ts | sed 's/^/  /'</code></pre>
+grep -E "^  [0-9]{3}:" src/common/filters/all-exceptions.filter.ts | sed 's/^/  /'
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -326,7 +375,7 @@ grep -E "^  [0-9]{3}:" src/common/filters/all-exceptions.filter.ts | sed 's/^/  
         "mesaj": "Cannot GET /api/v1/bele-bir-yol-yoxdur"
     },
     "yol": "/bele-bir-yol-yoxdur",
-    "vaxt": "2026-09-22T13:19:50.560Z"
+    "vaxt": "2026-09-22T13:31:45.897Z"
 }
 ── 2) Cavabın 4 sahəsi ──
   ugur   → var
@@ -351,7 +400,11 @@ grep -E "^  [0-9]{3}:" src/common/filters/all-exceptions.filter.ts | sed 's/^/  
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 export npm_config_cache=/tmp/npmcache
 
@@ -363,7 +416,13 @@ echo "── 2) Tip yoxlaması (build-in gizlətdiyi xətaları tutur) ──"
 npx tsc --noEmit -p tsconfig.build.json &amp;&amp; echo "  ✓ tip yoxlaması keçdi"
 
 echo "── 3) Unit testlər ──"
-npm test 2&gt;&amp;1 | grep -E 'Test Files|Tests ' | sed 's/^/  /'</code></pre>
+npm test 2&gt;&amp;1 | grep -E 'Test Files|Tests ' | sed 's/^/  /'
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -389,7 +448,11 @@ npm test 2&gt;&amp;1 | grep -E 'Test Files|Tests ' | sed 's/^/  /'</code></pre>
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 export npm_config_cache=/tmp/npmcache
 
@@ -398,7 +461,13 @@ import { sehifeHesabla } from './src/common/dto/sehife.dto.ts';
 const cedvel = [[3,15],[1,5000],[-7,20],[1,0],[2.7,33.9]] as const;
 for (const [s, l] of cedvel)
   console.log('sehife=', s, ' limit=', l, ' →', JSON.stringify(sehifeHesabla(s, l)));
-"</code></pre>
+"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -417,7 +486,11 @@ sehife= 2.7  limit= 33.9  → {"sehife":2,"limit":33,"skip":33}</code></pre>
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 export npm_config_cache=/tmp/npmcache
 
@@ -428,7 +501,13 @@ for (const [s, c, sh, l] of cedvel) {
   const n = sehifelenmis(s as never[], c, sh, l);
   console.log('cemi=' + c + ' limit=' + l + ' → sehife_sayi =', n.sehife_sayi);
 }
-"</code></pre>
+"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -446,12 +525,16 @@ cemi=100 limit=20 → sehife_sayi = 5</code></pre>
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 TOKEN=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -465,7 +548,13 @@ echo "── limit=500 (həddi aşır) ──"
 curl -s "$A/struktur/merkezler?limit=500" -H "$H" | python3 -m json.tool
 
 echo "── limit=abc (rəqəm deyil) ──"
-curl -s -o /dev/null -w "  HTTP %{http_code}\n" "$A/struktur/merkezler?limit=abc" -H "$H"</code></pre>
+curl -s -o /dev/null -w "  HTTP %{http_code}\n" "$A/struktur/merkezler?limit=abc" -H "$H"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -484,7 +573,7 @@ curl -s -o /dev/null -w "  HTTP %{http_code}\n" "$A/struktur/merkezler?limit=abc
         ]
     },
     "yol": "/api/v1/struktur/merkezler?limit=500",
-    "vaxt": "2026-09-22T13:19:54.763Z"
+    "vaxt": "2026-09-22T13:31:49.972Z"
 }
 ── limit=abc (rəqəm deyil) ──
   HTTP 400</code></pre>
@@ -496,12 +585,16 @@ curl -s -o /dev/null -w "  HTTP %{http_code}\n" "$A/struktur/merkezler?limit=abc
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 TOKEN=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -521,7 +614,13 @@ d = json.load(sys.stdin)
 print('  kod   :', d['xeta']['kod'])
 print('  mesaj :', d['xeta']['mesaj'])
 for x in d['xeta'].get('detallar', []): print('  detal :', x)
-"</code></pre>
+"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -543,12 +642,16 @@ for x in d['xeta'].get('detallar', []): print('  detal :', x)
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 TOKEN=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -568,7 +671,13 @@ for x in d['xeta'].get('detallar', []): print('  detal :', x)
 "
 
 echo "── main.ts-də ValidationPipe ayarları ──"
-grep -n 'ValidationPipe\|whitelist\|forbidNonWhitelisted\|transform' src/main.ts | sed 's/^/  /'</code></pre>
+grep -n 'ValidationPipe\|whitelist\|forbidNonWhitelisted\|transform' src/main.ts | sed 's/^/  /'
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -594,12 +703,16 @@ grep -n 'ValidationPipe\|whitelist\|forbidNonWhitelisted\|transform' src/main.ts
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 TOKEN=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -617,7 +730,13 @@ print('  setirler    :', len(d['setirler']), 'sətir')
 print()
 print('  birinci sətrin sütunları:')
 for k in d['setirler'][0]: print('     -', k)
-"</code></pre>
+"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -647,13 +766,17 @@ for k in d['setirler'][0]: print('     -', k)
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 TOKEN=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -673,7 +796,13 @@ psql -U arti_user -d arti_baza -tA -c "
   FROM struktur.merkezler m
   LEFT JOIN struktur.shobeler s ON s.merkez_id = m.id
   LEFT JOIN kadrlar.emekdaslar e ON e.merkez_id = m.id
-  GROUP BY m.ad ORDER BY m.ad" | sed 's/^/  /'</code></pre>
+  GROUP BY m.ad ORDER BY m.ad" | sed 's/^/  /'
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -709,12 +838,16 @@ psql -U arti_user -d arti_baza -tA -c "
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 TOKEN=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -742,14 +875,20 @@ curl -s -X DELETE "$A/struktur/merkezler/$ID" -H "$H" | python3 -c "
 import json,sys; d=json.load(sys.stdin); print('  silindi:', d['ad'])"
 
 echo "── 5) Silindikdən sonra oxumaq → 404 ──"
-curl -s -o /dev/null -w "  HTTP %{http_code}\n" "$A/struktur/merkezler/$ID" -H "$H"</code></pre>
+curl -s -o /dev/null -w "  HTTP %{http_code}\n" "$A/struktur/merkezler/$ID" -H "$H"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
     <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
       <span>exit 0</span></div>
 <pre><code>── 1) POST /struktur/merkezler ──
-  id: 452 | ad: Test Mərkəzi | tip: merkez
+  id: 458 | ad: Test Mərkəzi | tip: merkez
 ── 2) GET ilə oxu ──
   oxundu: Test Mərkəzi | aktiv: True
 ── 3) Eyni adla təkrar yaratmaq → 409 ──
@@ -766,13 +905,17 @@ curl -s -o /dev/null -w "  HTTP %{http_code}\n" "$A/struktur/merkezler/$ID" -H "
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 TOKEN=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -796,7 +939,13 @@ curl -s -X DELETE "$A/struktur/merkezler/$ID" -H "$H" | python3 -m json.tool
 
 echo "── Mərkəz hələ də yerindədir? ──"
 psql -U arti_user -d arti_baza -tA -c "
-  SELECT '  ✓ ' || ad || ' — silinmədi' FROM struktur.merkezler WHERE id = $ID"</code></pre>
+  SELECT '  ✓ ' || ad || ' — silinmədi' FROM struktur.merkezler WHERE id = $ID"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -814,7 +963,7 @@ psql -U arti_user -d arti_baza -tA -c "
         "mesaj": "\u00abElmi-pedaqoji t\u0259dqiqatlar m\u0259rk\u0259zi\u00bb silinmir \u2014 ona ba\u011fl\u0131 7 \u015f\u00f6b\u0259, 2 \u0259m\u0259kda\u015f var"
     },
     "yol": "/api/v1/struktur/merkezler/2",
-    "vaxt": "2026-09-22T13:19:55.501Z"
+    "vaxt": "2026-09-22T13:31:50.695Z"
 }
 ── Mərkəz hələ də yerindədir? ──
   ✓ Elmi-pedaqoji tədqiqatlar mərkəzi — silinmədi</code></pre>
@@ -826,13 +975,17 @@ psql -U arti_user -d arti_baza -tA -c "
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 export npm_config_cache=/tmp/npmcache
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 TOKEN=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -863,7 +1016,13 @@ for k, v in d.items():
 "
 
 echo "── İcmal endpointi ──"
-curl -s "$A/kadrlar/emekdaslar/icmal" -H "$H" | python3 -m json.tool | head -14</code></pre>
+curl -s "$A/kadrlar/emekdaslar/icmal" -H "$H" | python3 -m json.tool | head -14
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -915,7 +1074,11 @@ curl -s "$A/kadrlar/emekdaslar/icmal" -H "$H" | python3 -m json.tool | head -14<
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 
 echo "── Auth paketləri ──"
@@ -938,7 +1101,13 @@ else
 fi
 
 echo "── .env git-ə düşürmü? ──"
-grep -q '^\.env$' .gitignore &amp;&amp; echo "  ✓ .env .gitignore-dadır" || echo "  ✗ .env git-ə düşə bilər!"</code></pre>
+grep -q '^\.env$' .gitignore &amp;&amp; echo "  ✓ .env .gitignore-dadır" || echo "  ✗ .env git-ə düşə bilər!"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -967,12 +1136,16 @@ sed: 1: "s/%-20s/@nestjs/passport/
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 yoxla() {
   printf '  %-46s → %s\n' "$1" \
@@ -993,7 +1166,13 @@ import json,sys
 d = json.load(sys.stdin)
 print('  mesaj :', d['xeta']['mesaj'])
 for x in d['xeta'].get('detallar', []): print('  detal :', x)
-"</code></pre>
+"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -1015,12 +1194,16 @@ for x in d['xeta'].get('detallar', []): print('  detal :', x)
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' | python3 -c "
@@ -1033,7 +1216,13 @@ print('  istifadəçi     :', d['istifadeci']['ad_soyad'], '/', d['istifadeci'][
 print('  bitme          :', d['bitme'])
 print()
 print('  token başlanğıcı:', d['token'][:32] + '…')
-"</code></pre>
+"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -1054,12 +1243,16 @@ print('  token başlanğıcı:', d['token'][:32] + '…')
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 TOKEN=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"muhendis@arti.edu.az","parol":"123456"}' \
@@ -1078,7 +1271,13 @@ print('── YÜK (payload) ──')
 for k, v in ac(y).items(): print('  %-6s %s' % (k, v))
 print('── İMZA ──')
 print('  ', i[:40] + '…')
-"</code></pre>
+"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -1091,10 +1290,10 @@ print('  ', i[:40] + '…')
   sub    3
   email  muhendis@arti.edu.az
   rol    muhendis
-  iat    1790083196
-  exp    1790111996
+  iat    1790083911
+  exp    1790112711
 ── İMZA ──
-   oH93TePWxDFGJud8HVFa6_rZ8OBR_-eO5WYfgL8T…</code></pre>
+   7oHh9ooMIhkfT5uTtgBxGW8V2fB4OPXtkTNld7vu…</code></pre>
   </div>
 </article><article class="test" id="t-III-5">
   <h3><span class="no">III.5</span> Token müddəti — exp minus iat</h3>
@@ -1103,12 +1302,16 @@ print('  ', i[:40] + '…')
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 TOKEN=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -1124,14 +1327,20 @@ print('  iat (verilib)  :', datetime.datetime.fromtimestamp(y['iat']))
 print('  exp (bitir)    :', datetime.datetime.fromtimestamp(y['exp']))
 print('  müddət         :', muddet, 'saniyə =', muddet/3600, 'saat')
 print('  .env-dəki sətir:', open('.env').read().strip().splitlines()[-0] and [l for l in open('.env') if l.startswith('JWT_MUDDET')][0].strip())
-"</code></pre>
+"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
     <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
       <span>exit 0</span></div>
-<pre><code>  iat (verilib)  : 2026-09-22 17:19:56
-  exp (bitir)    : 2026-09-23 01:19:56
+<pre><code>  iat (verilib)  : 2026-09-22 17:31:51
+  exp (bitir)    : 2026-09-23 01:31:51
   müddət         : 28800 saniyə = 8.0 saat
   .env-dəki sətir: JWT_MUDDET="8h"</code></pre>
   </div>
@@ -1142,13 +1351,17 @@ print('  .env-dəki sətir:', open('.env').read().strip().splitlines()[-0] and [
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 CAVAB=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}')
@@ -1166,7 +1379,13 @@ echo "── 3) Bazada şifrə NECƏ saxlanılır ──"
 psql -U arti_user -d arti_baza -tA -c "
   SELECT '  ' || email || ' → ' || left(parol_hash, 7) || '… (' || length(parol_hash) || ' simvol)'
   FROM kadrlar.istifadeciler ORDER BY id" 
-echo "  (bcrypt hash-i geri açıla bilmir — yalnız müqayisə olunur)"</code></pre>
+echo "  (bcrypt hash-i geri açıla bilmir — yalnız müqayisə olunur)"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -1192,12 +1411,16 @@ echo "  (bcrypt hash-i geri açıla bilmir — yalnız müqayisə olunur)"</code
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 echo "── Mövcud e-poçt + səhv şifrə ──"
 curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
@@ -1218,7 +1441,13 @@ for e in admin@arti.edu.az yoxdur@arti.edu.az; do
 done
 
 echo "── Saxta hash harada istifadə olunur? ──"
-grep -n 'fake\|saxta\|DUMMY\|compare' src/auth/auth.service.ts | head -5 | sed 's/^/  /'</code></pre>
+grep -n 'fake\|saxta\|DUMMY\|compare' src/auth/auth.service.ts | head -5 | sed 's/^/  /'
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -1230,7 +1459,7 @@ grep -n 'fake\|saxta\|DUMMY\|compare' src/auth/auth.service.ts | head -5 | sed '
   mesaj : E-poçt və ya şifrə yanlışdır
 ── Cavab vaxtları (fərq kiçik olmalıdır) ──
   admin@arti.edu.az      0.05 san
-  yoxdur@arti.edu.az     0.06 san
+  yoxdur@arti.edu.az     0.05 san
 ── Saxta hash harada istifadə olunur? ──
   15: * İstifadəçi tapılmayanda da bcrypt işlətmək üçün saxta hash.
   76:    const duzdur = await bcrypt.compare(dto.parol, hash);</code></pre>
@@ -1242,12 +1471,16 @@ grep -n 'fake\|saxta\|DUMMY\|compare' src/auth/auth.service.ts | head -5 | sed '
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 echo "── Tokensiz çağırışlar ──"
 for yol in "" "/saglamliq"; do
@@ -1258,7 +1491,13 @@ printf '  POST %-13s → %s (pis cisim, 401 DEYİL, 400 olmalı)\n' "/auth/login
       -H 'Content-Type: application/json' -d '{}')"
 
 echo "── Kodda @Public() işarələnənlər ──"
-grep -rn -A2 '@Public()' src/ --include=*.controller.ts | grep -E '@Public|@(Get|Post)' | sed 's/^/  /'</code></pre>
+grep -rn -A2 '@Public()' src/ --include=*.controller.ts | grep -E '@Public|@(Get|Post)' | sed 's/^/  /'
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -1286,12 +1525,16 @@ grep -rn -A2 '@Public()' src/ --include=*.controller.ts | grep -E '@Public|@(Get
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 echo "── Tokensiz GET sorğuları (hamısı 401 olmalıdır) ──"
 for yol in /struktur/merkezler /struktur/merkezler/1 /struktur/merkezler/statistika \
@@ -1301,7 +1544,13 @@ for yol in /struktur/merkezler /struktur/merkezler/1 /struktur/merkezler/statist
 done
 
 echo "── Birinin cavabı ──"
-curl -s "$A/struktur/merkezler" | python3 -m json.tool</code></pre>
+curl -s "$A/struktur/merkezler" | python3 -m json.tool
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -1324,7 +1573,7 @@ curl -s "$A/struktur/merkezler" | python3 -m json.tool</code></pre>
         "mesaj": "Unauthorized"
     },
     "yol": "/api/v1/struktur/merkezler",
-    "vaxt": "2026-09-22T13:19:56.678Z"
+    "vaxt": "2026-09-22T13:31:51.825Z"
 }</code></pre>
   </div>
 </article><article class="test" id="t-III-10">
@@ -1334,12 +1583,16 @@ curl -s "$A/struktur/merkezler" | python3 -m json.tool</code></pre>
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 TOKEN=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"baxici@arti.edu.az","parol":"123456"}' \
@@ -1368,7 +1621,13 @@ curl -s "$A/auth/profil" -H "Authorization: Bearer $SAXTA" | python3 -c "
 import json,sys; d=json.load(sys.stdin); print('  kod  :', d['xeta']['kod']); print('  mesaj:', d['xeta']['mesaj'])"
 
 echo "── 4) Tamamilə uydurma token ──"
-printf '  uydurma.token.imza      → %s\n' "$(curl -s -o /dev/null -w '%{http_code}' "$A/auth/profil" -H 'Authorization: Bearer uydurma.token.imza')"</code></pre>
+printf '  uydurma.token.imza      → %s\n' "$(curl -s -o /dev/null -w '%{http_code}' "$A/auth/profil" -H 'Authorization: Bearer uydurma.token.imza')"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -1392,13 +1651,17 @@ printf '  uydurma.token.imza      → %s\n' "$(curl -s -o /dev/null -w '%{http_c
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 # ⚠️ Skript nə olursa olsun istifadəçini AKTİV saxlayır
 geri_qaytar() {
@@ -1427,7 +1690,15 @@ geri_qaytar
 printf '  /auth/profil → %s\n' "$(curl -s -o /dev/null -w '%{http_code}' "$A/auth/profil" -H "$H")"
 
 echo "── Strategiyanın yoxlaması ──"
-grep -n 'aktiv\|findUnique\|queryRaw\|Unauthorized' src/auth/strategies/jwt.strategy.ts | head -6 | sed 's/^/  /'</code></pre>
+grep -n 'aktiv\|findUnique\|queryRaw\|Unauthorized' src/auth/strategies/jwt.strategy.ts | head -6 | sed 's/^/  /'
+geri_qaytar
+trap - EXIT 2&gt;/dev/null || true
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -1455,12 +1726,16 @@ grep -n 'aktiv\|findUnique\|queryRaw\|Unauthorized' src/auth/strategies/jwt.stra
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 TOKEN=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -1483,7 +1758,13 @@ done
 rm -f /tmp/_m.json
 
 echo "── Controller-də dekorator ──"
-grep -n -B2 "'merkezler')" src/struktur/struktur.controller.ts | head -8 | sed 's/^/  /'</code></pre>
+grep -n -B2 "'merkezler')" src/struktur/struktur.controller.ts | head -8 | sed 's/^/  /'
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -1503,13 +1784,17 @@ grep -n -B2 "'merkezler')" src/struktur/struktur.controller.ts | head -8 | sed '
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 ADMIN=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -1532,14 +1817,20 @@ done
 
 echo "── admin → 200 ──"
 curl -s -X DELETE "$A/struktur/merkezler/$ID" -H "Authorization: Bearer $ADMIN" \
-  | python3 -c "import json,sys;print('  silindi:', json.load(sys.stdin)['ad'])"</code></pre>
+  | python3 -c "import json,sys;print('  silindi:', json.load(sys.stdin)['ad'])"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
     <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
       <span>exit 0</span></div>
-<pre><code>  Yoxlama mərkəzi yaradıldı: id=456
-── @Roles('admin') — DELETE /struktur/merkezler/456 ──
+<pre><code>  Yoxlama mərkəzi yaradıldı: id=462
+── @Roles('admin') — DELETE /struktur/merkezler/462 ──
   muhendis   → 403
   maliyyeci  → 403
   baxici     → 403
@@ -1553,12 +1844,16 @@ curl -s -X DELETE "$A/struktur/merkezler/$ID" -H "Authorization: Bearer $ADMIN" 
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 echo "── GET /auth/istifadeciler ──"
 for rol in admin muhendis maliyyeci baxici; do
@@ -1580,7 +1875,13 @@ curl -s "$A/auth/istifadeciler" -H "Authorization: Bearer $T" | python3 -c "
 import json,sys
 for u in json.load(sys.stdin):
     print('  %-24s %-10s %s' % (u['email'], u['rol'], u['ad_soyad']))
-"</code></pre>
+"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -1604,12 +1905,16 @@ for u in json.load(sys.stdin):
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -1626,7 +1931,13 @@ for yol in /struktur/merkezler /struktur/merkezler/statistika \
 done
 
 echo "── Guard-daki super-rol qaydası ──"
-grep -n "admin' === \|super\|=== 'admin'" src/auth/guards/roles.guard.ts | sed 's/^/  /'</code></pre>
+grep -n "admin' === \|super\|=== 'admin'" src/auth/guards/roles.guard.ts | sed 's/^/  /'
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -1655,12 +1966,16 @@ grep -n "admin' === \|super\|=== 'admin'" src/auth/guards/roles.guard.ts | sed '
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"maliyyeci@arti.edu.az","parol":"123456"}' \
@@ -1677,7 +1992,13 @@ d = json.load(sys.stdin)
 print('  ugur :', d['ugur'])
 print('  kod  :', d['xeta']['kod'])
 print('  mesaj:', d['xeta']['mesaj'])
-"</code></pre>
+"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -1691,7 +2012,7 @@ print('  mesaj:', d['xeta']['mesaj'])
         "mesaj": "Bu \u0259m\u0259liyyat \u00fc\u00e7\u00fcn icaz\u0259niz yoxdur. T\u0259l\u0259b olunan rol: admin v\u0259 ya muhendis. Sizin rol: maliyyeci"
     },
     "yol": "/api/v1/struktur/merkezler",
-    "vaxt": "2026-09-22T13:19:58.373Z"
+    "vaxt": "2026-09-22T13:31:53.461Z"
 }
 ── maliyyeci → GET /auth/istifadeciler ──
   ugur : False
@@ -1705,13 +2026,17 @@ print('  mesaj:', d['xeta']['mesaj'])
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 temizle() {
   psql -U arti_user -d arti_baza -q -c \
@@ -1746,7 +2071,15 @@ printf '  HTTP %s\n' "$(curl -s -o /dev/null -w '%{http_code}' -X POST "$A/auth/
 
 echo "── Yeni istifadəçi giriş edə bilir? ──"
 printf '  login → %s\n' "$(curl -s -o /dev/null -w '%{http_code}' -X POST "$A/auth/login" \
-  -H 'Content-Type: application/json' -d '{"email":"yoxlama@arti.edu.az","parol":"yoxlama2026"}')"</code></pre>
+  -H 'Content-Type: application/json' -d '{"email":"yoxlama@arti.edu.az","parol":"yoxlama2026"}')"
+temizle
+trap - EXIT 2&gt;/dev/null || true
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -1755,7 +2088,7 @@ printf '  login → %s\n' "$(curl -s -o /dev/null -w '%{http_code}' -X POST "$A/
 <pre><code>── baxici cəhd edir ──
   HTTP 403
 ── admin cəhd edir ──
-  yaradıldı: yoxlama@arti.edu.az | rol: baxici | id: 280
+  yaradıldı: yoxlama@arti.edu.az | rol: baxici | id: 290
   parol_hash cavabda varmı? xeyr ✓
 ── Eyni e-poçtla təkrar → 409 ──
   HTTP 500
@@ -1769,13 +2102,17 @@ printf '  login → %s\n' "$(curl -s -o /dev/null -w '%{http_code}' -X POST "$A/
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -1801,22 +2138,28 @@ echo "  əvvəl: $E   sonra: $S   fərq: $((S - E))   (gözlənilən: 2)"
 echo "── Son 3 jurnal sətri ──"
 psql -U arti_user -d arti_baza -c "
   SELECT cedvel_adi, emeliyyat, setir_id, istifadeci, qeyd
-  FROM audit.audit_log ORDER BY id DESC LIMIT 3" | sed 's/^/  /'</code></pre>
+  FROM audit.audit_log ORDER BY id DESC LIMIT 3" | sed 's/^/  /'
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
     <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
       <span>exit 0</span></div>
 <pre><code>── 3 × GET ──
-  əvvəl: 4118   sonra: 4118   fərq: 0   (gözlənilən: 0)
+  əvvəl: 4254   sonra: 4254   fərq: 0   (gözlənilən: 0)
 ── 1 × POST + 1 × DELETE ──
-  əvvəl: 4118   sonra: 4120   fərq: 2   (gözlənilən: 2)
+  əvvəl: 4254   sonra: 4256   fərq: 2   (gözlənilən: 2)
 ── Son 3 jurnal sətri ──
        cedvel_adi     | emeliyyat | setir_id |    istifadeci     |     qeyd      
   --------------------+-----------+----------+-------------------+---------------
-   struktur.merkezler | DELETE    | 457      | admin@arti.edu.az | Uğurlu | 12ms
-   struktur.merkezler | POST      |          | admin@arti.edu.az | Uğurlu | 1ms
-   auth.login         | POST      |          | anonim            | Uğurlu | 54ms
+   struktur.merkezler | DELETE    | 463      | admin@arti.edu.az | Uğurlu | 13ms
+   struktur.merkezler | POST      |          | admin@arti.edu.az | Uğurlu | 0ms
+   auth.login         | POST      |          | anonim            | Uğurlu | 58ms
   (3 rows)</code></pre>
   </div>
 </article><article class="test" id="t-III-19">
@@ -1826,13 +2169,17 @@ psql -U arti_user -d arti_baza -c "
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 BAXICI=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"baxici@arti.edu.az","parol":"123456"}' \
@@ -1853,7 +2200,13 @@ psql -U arti_user -d arti_baza -c "
 echo "── XƏTA qeydi olan cəhdlərin sayı ──"
 psql -U arti_user -d arti_baza -tA -c "
   SELECT '  ' || count(*) || ' uğursuz cəhd jurnala yazılıb'
-  FROM audit.audit_log WHERE qeyd LIKE 'XƏTA%'"</code></pre>
+  FROM audit.audit_log WHERE qeyd LIKE 'XƏTA%'"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -1867,7 +2220,7 @@ psql -U arti_user -d arti_baza -tA -c "
   (0 rows)
   
 ── XƏTA qeydi olan cəhdlərin sayı ──
-  575 uğursuz cəhd jurnala yazılıb</code></pre>
+  594 uğursuz cəhd jurnala yazılıb</code></pre>
   </div>
 </article><article class="test" id="t-III-20">
   <h3><span class="no">III.20</span> Seed skriptinin idempotentliyi</h3>
@@ -1876,7 +2229,11 @@ psql -U arti_user -d arti_baza -tA -c "
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
 export npm_config_cache=/tmp/npmcache
@@ -1900,7 +2257,13 @@ psql -U arti_user -d arti_baza -c "
   SELECT rol, count(*) AS sayi FROM kadrlar.istifadeciler GROUP BY rol ORDER BY rol" | sed 's/^/  /'
 
 echo "── Seed skriptində idempotentlik ──"
-grep -nE 'upsert|ON CONFLICT|update:|create:' scripts/seed-auth.ts | head -6 | sed 's/^/  /'</code></pre>
+grep -nE 'upsert|ON CONFLICT|update:|create:' scripts/seed-auth.ts | head -6 | sed 's/^/  /'
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -1940,7 +2303,11 @@ grep -nE 'upsert|ON CONFLICT|update:|create:' scripts/seed-auth.ts | head -6 | s
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 
 echo "── Paketlər ──"
@@ -1964,7 +2331,13 @@ for a in DEEPSEEK_API_KEY DEEPSEEK_MODEL DEEPSEEK_URL; do
 done
 
 echo "── Demo rejim koda necə bağlanıb? ──"
-grep -n 'demoRejim\|API_KEY' src/ai/deepseek.service.ts | head -5 | sed 's/^/  /'</code></pre>
+grep -n 'demoRejim\|API_KEY' src/ai/deepseek.service.ts | head -5 | sed 's/^/  /'
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -1990,7 +2363,11 @@ grep -n 'demoRejim\|API_KEY' src/ai/deepseek.service.ts | head -5 | sed 's/^/  /
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 export npm_config_cache=/tmp/npmcache
 
@@ -2009,7 +2386,13 @@ console.log();
 console.log('vektorun ilk 8 elementi:');
 console.log('  ', a.slice(0, 8).map((x: number) =&gt; x.toFixed(4)).join('  '));
 console.log('sıfırdan fərqli element sayı:', a.filter((x: number) =&gt; x !== 0).length);
-"</code></pre>
+"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -2031,7 +2414,11 @@ sıfırdan fərqli element sayı: 3</code></pre>
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 export npm_config_cache=/tmp/npmcache
 
@@ -2050,7 +2437,13 @@ const xam = a.map((x: number) =&gt; x * 10);
 const xamUzunluq = Math.sqrt(xam.reduce((c: number, x: number) =&gt; c + x * x, 0));
 console.log('  uzunluq        :', xamUzunluq.toFixed(4));
 console.log('  kosinus        :', (xam.reduce((c: number, x: number, i: number) =&gt; c + x * xam[i]!, 0)).toFixed(4), '← 1-dən BÖYÜK!');
-"</code></pre>
+"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -2070,7 +2463,11 @@ console.log('  kosinus        :', (xam.reduce((c: number, x: number, i: number) 
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 export npm_config_cache=/tmp/npmcache
 
@@ -2086,7 +2483,13 @@ console.log('qismən oxşar           :', c('elmi şura iclası', 'elmi jurnal n
 console.log('tamamilə fərqli         :', c('elmi şura iclası', 'idman yarışı nəticələri'));
 console.log();
 console.log('ballar 0..1 aralığındadır — müqayisə mənalıdır.');
-"</code></pre>
+"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -2106,12 +2509,16 @@ ballar 0..1 aralığındadır — müqayisə mənalıdır.</code></pre>
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -2132,7 +2539,13 @@ print()
 print('  azalan sıra   :', ballar == sorted(ballar, reverse=True))
 print('  hamısı &gt; 0    :', all(b &gt; 0 for b in ballar))
 print('  hamısı ≤ 1    :', all(b &lt;= 1 for b in ballar))
-"</code></pre>
+"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -2156,12 +2569,16 @@ print('  hamısı ≤ 1    :', all(b &lt;= 1 for b in ballar))
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -2187,7 +2604,13 @@ import json,sys; print('  tapıldı:', json.load(sys.stdin)['tapildi'])"
 echo "── 3) Hədd yoxlaması ──"
 yoxla "limit=10 (icazəli)"  '{"sual":"elm və təhsil","limit":10}'
 yoxla "limit=11 (həddi aşır)" '{"sual":"elm və təhsil","limit":11}'
-yoxla "limit=0 (mənfi hədd)" '{"sual":"elm və təhsil","limit":0}'</code></pre>
+yoxla "limit=0 (mənfi hədd)" '{"sual":"elm və təhsil","limit":0}'
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -2209,13 +2632,17 @@ yoxla "limit=0 (mənfi hədd)" '{"sual":"elm və təhsil","limit":0}'</code></pr
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -2237,24 +2664,30 @@ psql -U arti_user -d arti_baza -tA -c \
 echo "── Hansı cədvəllər vektorlaşdırılıb? ──"
 psql -U arti_user -d arti_baza -c \
   "SELECT cedvel_adi, count(*) AS sayi, min(jsonb_array_length(vektor)) AS olcu
-   FROM ai.embeddingler GROUP BY cedvel_adi" | sed 's/^/  /'</code></pre>
+   FROM ai.embeddingler GROUP BY cedvel_adi" | sed 's/^/  /'
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
     <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
       <span>exit 0</span></div>
 <pre><code>── Əvvəl ──
-  ai.embeddingler: 358 sətir
+  ai.embeddingler: 388 sətir
 ── POST /ai/vektorlasdir ──
   baxılan sənəd: 10 | yazılan: 10
 ── Sonra ──
-  ai.embeddingler: 368 sətir
+  ai.embeddingler: 398 sətir
 ── Hansı cədvəllər vektorlaşdırılıb? ──
                 cedvel_adi               | sayi | olcu 
   ---------------------------------------+------+------
    sened.emrler                          |    1 |   64
    elm.meqaleler                         |    1 |   64
-   sened.senedler                        |  360 |   64
+   sened.senedler                        |  390 |   64
    tehsil.telim_proqramlari              |    1 |   64
    elm.neshrler                          |    2 |   64
    elm.doktorantura_proqramlari          |    1 |   64
@@ -2269,12 +2702,16 @@ psql -U arti_user -d arti_baza -c \
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -2289,7 +2726,13 @@ for rol in admin muhendis maliyyeci baxici; do
     -d "{\"email\":\"$rol@arti.edu.az\",\"parol\":\"123456\"}" \
     | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
   printf '  %-10s → %s\n' "$rol" "$(curl -s -o /dev/null -w '%{http_code}' "$A/ai/statistika" -H "Authorization: Bearer $RT")"
-done</code></pre>
+done
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -2298,7 +2741,7 @@ done</code></pre>
 <pre><code>── GET /ai/statistika ──
 {
     "rejim": "demo",
-    "embedding_sayi": 368,
+    "embedding_sayi": 398,
     "resept_sayi": 10,
     "olcu": 64,
     "vektor_bazasi": "JSONB (t\u0259tbiq t\u0259r\u0259find\u0259 kosinus)"
@@ -2316,12 +2759,16 @@ done</code></pre>
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -2341,7 +2788,13 @@ u = adlar.index('Ən çox maaş alan 5 nəfər')
 print('  «orta maaş» sırası :', o + 1)
 print('  «ümumi maaş» sırası:', u + 1)
 print('  ⚠️ xüsusi ümumidən ƏVVƏLdir:', o &lt; u)
-"</code></pre>
+"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -2371,12 +2824,16 @@ print('  ⚠️ xüsusi ümumidən ƏVVƏLdir:', o &lt; u)
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -2394,7 +2851,13 @@ print('  izah        :', d['izah'])
 print('  sətir sayı  :', d['setir_sayi'])
 if d['setirler']: print('  ilk sətir   :', json.dumps(d['setirler'][0], ensure_ascii=False)[:70])
 "
-done</code></pre>
+done
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -2423,12 +2886,16 @@ done</code></pre>
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -2446,7 +2913,13 @@ print('  nəticə:', json.dumps(d['setirler'][:2], ensure_ascii=False))
 "
 done
 
-echo "── ✅ «Orta maaş» XÜSUSİ reseptə düşməlidir, ümumi «maaş»-a YOX ──"</code></pre>
+echo "── ✅ «Orta maaş» XÜSUSİ reseptə düşməlidir, ümumi «maaş»-a YOX ──"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -2467,12 +2940,16 @@ echo "── ✅ «Orta maaş» XÜSUSİ reseptə düşməlidir, ümumi «maaş�
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -2491,7 +2968,13 @@ print('  uygun_resept:', d['uygun_resept'])
 print('  sətir sayı  :', d['setir_sayi'])
 print('  izah (dəstəklənən suallar):')
 for x in d['izah'].split('; '): print('     -', x)
-"</code></pre>
+"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -2521,13 +3004,17 @@ for x in d['izah'].split('; '): print('     -', x)
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -2558,7 +3045,13 @@ psql -U arti_user -d arti_baza -tA -c "
       || ' | kadrlar.emekdaslar: ' || (SELECT count(*) FROM kadrlar.emekdaslar)"
 psql -U arti_user -d arti_baza -tA -c "
   SELECT '  cədvəllər mövcuddur: ' || (to_regclass('struktur.merkezler') IS NOT NULL
-      AND to_regclass('kadrlar.emekdaslar') IS NOT NULL)"</code></pre>
+      AND to_regclass('kadrlar.emekdaslar') IS NOT NULL)"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -2582,12 +3075,16 @@ psql -U arti_user -d arti_baza -tA -c "
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -2609,7 +3106,13 @@ yoxla "sual sahəsi yoxdur"   '{}'
 yoxla "501 simvol"           "{\"sual\":\"$UZUN\"}"
 
 echo "── DTO-da qaydalar ──"
-grep -n 'MinLength\|MaxLength\|IsString' src/ai/dto/sual.dto.ts | sed 's/^/  /'</code></pre>
+grep -n 'MinLength\|MaxLength\|IsString' src/ai/dto/sual.dto.ts | sed 's/^/  /'
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -2633,12 +3136,16 @@ grep -n 'MinLength\|MaxLength\|IsString' src/ai/dto/sual.dto.ts | sed 's/^/  /'<
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 echo "── POST /ai/vektorlasdir ──"
 for rol in admin muhendis maliyyeci baxici; do
@@ -2655,7 +3162,13 @@ T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"baxici@arti.edu.az","parol":"123456"}' \
   | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
 curl -s -X POST "$A/ai/vektorlasdir" -H "Authorization: Bearer $T" | python3 -c "
-import json,sys; d=json.load(sys.stdin); print('  kod  :', d['xeta']['kod']); print('  mesaj:', d['xeta']['mesaj'])"</code></pre>
+import json,sys; d=json.load(sys.stdin); print('  kod  :', d['xeta']['kod']); print('  mesaj:', d['xeta']['mesaj'])"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -2678,12 +3191,16 @@ import json,sys; d=json.load(sys.stdin); print('  kod  :', d['xeta']['kod']); pr
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -2702,7 +3219,13 @@ print('  istifadə olunan sənəd:', d.get('istifade_olunan_senedler'))
 print()
 print('  cavab:')
 for l in str(d['cavab']).splitlines()[:6]: print('   ', l)
-"</code></pre>
+"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -2724,12 +3247,16 @@ for l in str(d['cavab']).splitlines()[:6]: print('   ', l)
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -2745,7 +3272,13 @@ for rol in admin muhendis maliyyeci baxici; do
     -d "{\"email\":\"$rol@arti.edu.az\",\"parol\":\"123456\"}" \
     | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
   printf '  %-10s → %s\n' "$rol" "$(curl -s -o /dev/null -w '%{http_code}' "$A/ixrac/merkezler.xlsx" -H "Authorization: Bearer $RT")"
-done</code></pre>
+done
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -2769,12 +3302,16 @@ done</code></pre>
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -2795,7 +3332,13 @@ unzip -l /tmp/yoxla.xlsx | head -8 | sed 's/^/  /'
 echo "── Səhv import olsaydı nə olardı? ──"
 grep -n "^import ExcelJS" src/ixrac/excel.service.ts | sed 's/^/  düzgün: /'
 echo "  səhv  : import * as ExcelJS  →  ExcelJS.Workbook is not a constructor"
-rm -f /tmp/yoxla.xlsx</code></pre>
+rm -f /tmp/yoxla.xlsx
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -2810,11 +3353,11 @@ rm -f /tmp/yoxla.xlsx</code></pre>
   Archive:  /tmp/yoxla.xlsx
     Length      Date    Time    Name
   ---------  ---------- -----   ----
-       1264  09-22-2026 13:20   [Content_Types].xml
-          0  09-22-2026 13:20   _rels/
-        587  09-22-2026 13:20   _rels/.rels
-          0  09-22-2026 13:20   xl/
-          0  09-22-2026 13:20   xl/_rels/
+       1264  09-22-2026 13:31   [Content_Types].xml
+          0  09-22-2026 13:31   _rels/
+        587  09-22-2026 13:31   _rels/.rels
+          0  09-22-2026 13:31   xl/
+          0  09-22-2026 13:31   xl/_rels/
 ── Səhv import olsaydı nə olardı? ──
   düzgün: 2:import ExcelJS from 'exceljs';
   səhv  : import * as ExcelJS  →  ExcelJS.Workbook is not a constructor</code></pre>
@@ -2826,13 +3369,17 @@ rm -f /tmp/yoxla.xlsx</code></pre>
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -2849,7 +3396,13 @@ for cift in "merkezler:struktur.merkezler" "emekdaslar:kadrlar.emekdaslar"; do
   echo "  gözlənilən  : $((DB + 1))  →  $([ "$XL" = "$((DB + 1))" ] &amp;&amp; echo '✓ uyğundur' || echo '✗ UYĞUN DEYİL')"
   echo "  başlıq sətri: $(unzip -p /tmp/yoxla.xlsx xl/sharedStrings.xml 2&gt;/dev/null | grep -o '&lt;t&gt;[^&lt;]*&lt;/t&gt;' | head -1 | sed 's/&lt;[^&gt;]*&gt;//g')"
 done
-rm -f /tmp/yoxla.xlsx</code></pre>
+rm -f /tmp/yoxla.xlsx
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -2873,12 +3426,16 @@ rm -f /tmp/yoxla.xlsx</code></pre>
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -2899,7 +3456,13 @@ echo "  layihədə: $(find . -name '*.xlsx' -not -path './node_modules/*' 2&gt;/
 echo "  → fayl yalnız yaddaşda qurulur (Buffer), diskə yazılmır"
 
 echo "── Content-Disposition necə qurulur? ──"
-grep -n 'Content-Disposition\|attachment\|toISOString' src/ixrac/ixrac.controller.ts | sed 's/^/  /'</code></pre>
+grep -n 'Content-Disposition\|attachment\|toISOString' src/ixrac/ixrac.controller.ts | sed 's/^/  /'
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -2923,7 +3486,11 @@ grep -n 'Content-Disposition\|attachment\|toISOString' src/ixrac/ixrac.controlle
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
 
@@ -2948,7 +3515,13 @@ echo "── Nə üçün ad üzrə deyil, NÖMRƏ üzrə? ──"
 psql -U arti_user -d arti_baza -tA -c "
   SELECT '  eyni adlı sertifikasiya qeydi: ' || count(*)
   FROM (SELECT ad_soyad FROM tehsil.sertifikasiya GROUP BY ad_soyad HAVING count(*) &gt; 1) x"
-echo "  → ad təkrarlana bilər, sertifikat nömrəsi UNİKALdır"</code></pre>
+echo "  → ad təkrarlana bilər, sertifikat nömrəsi UNİKALdır"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -2984,12 +3557,16 @@ echo "  → ad təkrarlana bilər, sertifikat nömrəsi UNİKALdır"</code></pre
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -3017,7 +3594,13 @@ for rol in admin muhendis maliyyeci baxici; do
     -d "{\"email\":\"$rol@arti.edu.az\",\"parol\":\"123456\"}" \
     | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
   printf '  %-10s → %s\n' "$rol" "$(curl -s -o /dev/null -w '%{http_code}' "$A/tehsil/istirakciler/1/pasport" -H "Authorization: Bearer $RT")"
-done</code></pre>
+done
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -3047,12 +3630,16 @@ done</code></pre>
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -3077,7 +3664,13 @@ curl -s "$A/tehsil/istirakciler/1/pasport" -H "Authorization: Bearer $T" | pytho
 import json,sys; d=json.load(sys.stdin)['butovluk']
 print('  alqoritm:', d['alqoritm'])
 print('  sahələr :', ', '.join(d['saheler']))
-"</code></pre>
+"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -3101,12 +3694,16 @@ print('  sahələr :', ', '.join(d['saheler']))
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -3127,7 +3724,13 @@ print('  sertifikasiya:', ('nəticə=' + str(s['netice']) + ' bal=' + str(s['bal
 echo "── Etibarlı pasportla müqayisə (iştirakçı 1) ──"
 curl -s "$A/tehsil/istirakciler/1/pasport" -H "Authorization: Bearer $T" | python3 -c "
 import json,sys; d=json.load(sys.stdin)
-print('  ad:', d['sahib']['tam_ad'], '| etibarlidir:', d['etibarlidir'], '| uygunsuzluq:', d['uygunsuzluq'])"</code></pre>
+print('  ad:', d['sahib']['tam_ad'], '| etibarlidir:', d['etibarlidir'], '| uygunsuzluq:', d['uygunsuzluq'])"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -3149,12 +3752,16 @@ print('  ad:', d['sahib']['tam_ad'], '| etibarlidir:', d['etibarlidir'], '| uygu
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -3171,7 +3778,13 @@ d = json.load(sys.stdin)
 if not d['etibarlidir']:
     print('  ✗ %-20s %-14s %s' % (d['sahib']['tam_ad'], d['pasport_no'], d['uygunsuzluq'][:52]))
 "
-done</code></pre>
+done
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -3204,13 +3817,17 @@ done</code></pre>
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -3253,14 +3870,22 @@ psql -U arti_user -d arti_baza -c "
   FROM tehsil.telim_istirakcilari WHERE id = $ID
   UNION ALL
   SELECT 'sertifikasiya', sertifikat_no, netice
-  FROM tehsil.sertifikasiya WHERE sertifikat_no = '$NO'" | sed 's/^/  /'</code></pre>
+  FROM tehsil.sertifikasiya WHERE sertifikat_no = '$NO'" | sed 's/^/  /'
+temizle
+trap - EXIT 2&gt;/dev/null || true
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
     <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
       <span>exit 0</span></div>
 <pre><code>── 1) Qrupa yazılır ──
-  id           : 57
+  id           : 60
   status       : davam edir ← hələ bitirməyib
   pasport_no   : None ← hələ YOXDUR
   etibarlidir  : False
@@ -3285,13 +3910,17 @@ psql -U arti_user -d arti_baza -c "
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -3320,7 +3949,15 @@ print('  melumat    :', d['melumat'])
     DELETE FROM tehsil.sertifikasiya WHERE ad_soyad = 'Kesilen Namized';
     UPDATE tehsil.telim_istirakcilari SET sertifikat_no = NULL
      WHERE id = $ID"
-done</code></pre>
+done
+temizle
+trap - EXIT 2&gt;/dev/null || true
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -3349,13 +3986,17 @@ done</code></pre>
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
   -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
@@ -3392,7 +4033,15 @@ echo "── Yoxlama ──"
 echo "  üç müraciətdə eyni nömrə : $([ "$NO1" = "$NO2" ] &amp;&amp; [ "$NO2" = "$NO3" ] &amp;&amp; echo '✓ BƏLİ' || echo '✗ XEYR')"
 psql -U arti_user -d arti_baza -tA -c "
   SELECT '  bazada bu nömrədən neçə sətir: ' || count(*)
-  FROM tehsil.sertifikasiya WHERE sertifikat_no = '$NO1'"</code></pre>
+  FROM tehsil.sertifikasiya WHERE sertifikat_no = '$NO1'"
+temizle
+trap - EXIT 2&gt;/dev/null || true
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -3416,12 +4065,16 @@ psql -U arti_user -d arti_baza -tA -c "
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 A="${A:-http://localhost:4000/api/v1}"
 
 kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
-[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; return 1; }
 
 echo "── TOKENSİZ çağırış ──"
 printf '  HTTP %s\n' "$(curl -s -o /dev/null -w '%{http_code}' "$A/tehsil/pasport/SER-2024-001/yoxla")"
@@ -3442,7 +4095,13 @@ print('  hash        :', d['butovluk_hash'])
 "
 
 echo "── Olmayan nömrə → 404 ──"
-printf '  HTTP %s\n' "$(curl -s -o /dev/null -w '%{http_code}' "$A/tehsil/pasport/XXX-0000-000/yoxla")"</code></pre>
+printf '  HTTP %s\n' "$(curl -s -o /dev/null -w '%{http_code}' "$A/tehsil/pasport/XXX-0000-000/yoxla")"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">
@@ -3463,7 +4122,7 @@ printf '  HTTP %s\n' "$(curl -s -o /dev/null -w '%{http_code}' "$A/tehsil/paspor
     "bal": 72.5,
     "imtahan_tarixi": "2026-03-30",
     "butovluk_hash": "e9f3da7a",
-    "yoxlanilma_vaxti": "2026-09-22T13:20:06.480Z"
+    "yoxlanilma_vaxti": "2026-09-22T13:32:01.284Z"
 }
 ── Məlumat həddi yoxlaması ──
   sahib      cavabda: yoxdur ✓
@@ -3483,7 +4142,11 @@ printf '  HTTP %s\n' "$(curl -s -o /dev/null -w '%{http_code}' "$A/tehsil/paspor
   <div class="blok skript">
     <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
       <button class="kopyala">KOPYALA</button></div>
-<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.
+test_govdesi() {
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 
 echo "── Fayllar ──"
@@ -3502,7 +4165,13 @@ grep -nE 'image:|options:|run:' .github/workflows/ci.yml | sed 's/^/  /'
 
 echo "── CI niyə postgres-i GÖZLƏYİR? ──"
 grep -n -B2 'pg_isready' .github/workflows/ci.yml | sed 's/^/  /'
-echo "  → health check olmasa testlər ECONNREFUSED alır"</code></pre>
+echo "  → health check olmasa testlər ECONNREFUSED alır"
+}
+test_govdesi
+KOD=$?
+unset -f test_govdesi
+# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)
+[ "$KOD" -eq 0 ]</code></pre>
   </div>
 
   <div class="blok netice">

@@ -43,6 +43,34 @@ def yukle(ad: str):
 DERSLER = yukle("d1") + yukle("d2") + yukle("d3")
 
 
+PRELUDE = 'LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"'
+
+
+def sarla(skript: str) -> str:
+    """Skripti interaktiv shell-ə YAPIŞDIRMAQ üçün təhlükəsiz hala salır.
+
+    ⚠️ İki problem həll olunur:
+      1) `exit 1` birbaşa terminala yapışdırıldıqda SESSİYANI BAĞLAYIR.
+         Ona görə bütün gövdə funksiyanın içinə alınır və `exit` → `return`.
+      2) `$LAYIHE` yalnız `cd`-nin içində istifadə olunurdu; xəta mesajında
+         boş çıxırdı. İndi əvvəlcə dəyişənə mənimsədilir.
+    """
+    govde = skript.strip("\n")
+    govde = govde.replace("exit 1", "return 1").replace("exit 0", "return 0")
+    m = re.search(r"^trap\s+(\w+)\s+EXIT", govde, re.M)
+    son = ""
+    if m:
+        # Trap EXIT yalnız shell bağlananda işləyir; yapışdırılmış sessiyada
+        # bu GEC olar — ona görə təmizlik açıq şəkildə də çağırılır.
+        son = "\n%s\ntrap - EXIT 2>/dev/null || true" % m.group(1)
+    return (PRELUDE + "\n\n"
+            "# ⚠️ Test funksiyanın içindədir — `exit` terminalı bağlamasın.\n"
+            "test_govdesi() {\n" + govde + son + "\n}\n"
+            "test_govdesi\nKOD=$?\nunset -f test_govdesi\n"
+            "# Son əmr çıxış kodunu qoruyur (yapışdırılmış sessiyada zərərsizdir)\n"
+            '[ "$KOD" -eq 0 ]\n')
+
+
 def e(metn: str) -> str:
     return html.escape(str(metn), quote=False)
 
@@ -73,7 +101,7 @@ def icra_et() -> dict:
     for ders in DERSLER:
         for t in ders["testler"]:
             yol = ISCI / f"{t['no']}.sh"
-            yol.write_text(t["skript"].strip("\n") + "\n", encoding="utf-8")
+            yol.write_text(sarla(t["skript"]), encoding="utf-8")
             r = subprocess.run(["bash", str(yol)], env=ortam, cwd=LAYIHE,
                                capture_output=True, text=True, timeout=900,
                                encoding="utf-8", errors="replace")
@@ -212,7 +240,7 @@ def test_html(t: dict, kes: dict) -> str:
 <pre><code>%s</code></pre>
   </div>
 </article>""" % (" xeta-var" if xeta else "", kecid(t["no"]), e(t["no"]), e(t["ad"]),
-                  t["giris"], e(t["skript"].strip()), n.get("kod", "?"), e(cixis))
+                  t["giris"], e(sarla(t["skript"]).strip()), n.get("kod", "?"), e(cixis))
 
 
 def qur(kes: dict) -> str:
@@ -269,6 +297,15 @@ def qur(kes: dict) -> str:
   özü alır — ona görə testlər bir-birindən asılı deyil. <b>Üçüncü qeyd:</b>
   <code>vaxt</code>, <code>gecikme_ms</code> kimi sahələr sizdə fərqli ola bilər;
   tutuşdurarkən əsas məzmuna baxın.</p>
+  <p style="margin-top:.6rem"><b>Dördüncü qeyd:</b> hər skriptin gövdəsi bir
+  funksiyanın içindədir və <code>exit</code> yerinə <code>return</code> işlədilir —
+  ona görə skripti birbaşa Terminal pəncərəsinə yapışdırsanız da
+  <b>sessiyanız bağlanmır</b>. Skriptlər həm <code>bash</code>, həm
+  <code>zsh</code> ilə işləyir.</p>
+  <p style="margin-top:.6rem"><b>Beşinci qeyd:</b> <b>IV.21–IV.29</b> testləri
+  iştirakçı elektron pasportunu yoxlayır. Onlar yalnız Backend-4-ün
+  <b>ADDIM 8</b>-i (yeni <code>src/tehsil/</code> modulu) tətbiq edildikdən
+  sonra işləyir.</p>
 </div>
 
 <div class="mund">
