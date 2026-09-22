@@ -144,8 +144,12 @@ ls -l src/ai/embedding.service.ts
 grep -n 'OLCU' src/ai/embedding.service.ts | head -3
 
 # 3) Vektor deterministikdir?
+#    ⚠️ DİQQƏT: burada '.ts' yazılır — layihə fayllarında isə '.js' MƏCBURİDİR.
+#    Səbəb: `tsx -e` əmri eval modulunda işləyir və onun öz qovluğu yoxdur;
+#    tsx '.js' → '.ts' çevrilməsini edə bilmir və "Cannot find module" verir.
+#    Layihə fayllarında isə NodeNext ESM '.js' tələb edir.
 npx tsx -e "
-import { EmbeddingService } from './src/ai/embedding.service.js';
+import { EmbeddingService } from './src/ai/embedding.service.ts';
 const s = new EmbeddingService({} as any);
 const a = s.vektor('Elmi Şura protokolu');
 const b = s.vektor('Elmi Şura protokolu');

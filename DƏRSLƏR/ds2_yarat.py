@@ -210,7 +210,7 @@ src/kadrlar/dto/emekdas-filtr.dto.ts:4:30 - error TS2307:
    (çıxış yoxdur — tip yoxlaması KEÇDİ)
 
 $ npx tsx -e "
-import { sehifeHesabla, sehifelenmis } from './src/common/dto/sehife.dto.js';
+import { sehifeHesabla, sehifelenmis } from './src/common/dto/sehife.dto.ts';
 console.log(JSON.stringify(sehifeHesabla(3, 15)));
 console.log(JSON.stringify(sehifeHesabla(1, 5000)));
 console.log(JSON.stringify(sehifeHesabla(-7, 20)));
@@ -272,20 +272,22 @@ npx tsc --noEmit -p tsconfig.build.json && echo "✓ tip yoxlaması keçdi\"""",
     d="""$ npx tsx -e "
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
-import { MerkezFiltrDto } from './src/struktur/dto/merkez-filtr.dto.js';
+import { MerkezFiltrDto } from './src/struktur/dto/merkez-filtr.dto.ts';
 
-for (const [ad, xam] of [
-  ['düzgün',        { limit: '5', sehife: '2' }],
-  ['limit=500',     { limit: '500' }],
-  ['sehife=0',      { sehife: '0' }],
-  ['tip=sehv',      { tip: 'sehv' }],
-  ['siralama=sehv', { siralama: 'sehv' }],
-  ['aktiv=belke',   { aktiv: 'belke' }],
-] as const) {
-  const x = await validate(plainToInstance(MerkezFiltrDto, xam));
-  const m = x.flatMap((i) => Object.values(i.constraints ?? {}));
-  console.log(ad.padEnd(16), '→', m.length ? m.join(' | ') : '✓ keçdi');
-}"
+void (async () => {
+  for (const [ad, xam] of [
+    ['düzgün',        { limit: '5', sehife: '2' }],
+    ['limit=500',     { limit: '500' }],
+    ['sehife=0',      { sehife: '0' }],
+    ['tip=sehv',      { tip: 'sehv' }],
+    ['siralama=sehv', { siralama: 'sehv' }],
+    ['aktiv=belke',   { aktiv: 'belke' }],
+  ] as const) {
+    const x = await validate(plainToInstance(MerkezFiltrDto, xam));
+    const m = x.flatMap((i) => Object.values(i.constraints ?? {}));
+    console.log(ad.padEnd(16), '→', m.length ? m.join(' | ') : '✓ keçdi');
+  }
+})();"
 
 düzgün           → ✓ keçdi
 limit=500        → limit 100-dən çox ola bilməz
@@ -352,24 +354,26 @@ Found 1 error(s).""",
     d="""$ npx tsx -e "
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
-import { CreateMerkezDto } from './src/struktur/dto/create-merkez.dto.js';
-import { UpdateMerkezDto } from './src/struktur/dto/update-merkez.dto.js';
+import { CreateMerkezDto } from './src/struktur/dto/create-merkez.dto.ts';
+import { UpdateMerkezDto } from './src/struktur/dto/update-merkez.dto.ts';
 
-for (const [ad, xam] of [
-  ['düzgün ad',      { ad: 'Yeni Mərkəz' }],
-  ['ad 2 simvol',    { ad: 'ab' }],
-  ['email səhv',     { ad: 'Yeni Mərkəz', email: 'pis' }],
-  ['telefon səhv',   { ad: 'Yeni Mərkəz', telefon: '123' }],
-  ['tarix səhv',     { ad: 'Yeni Mərkəz', yaradilma_tarixi: '15.02.2024' }],
-  ['tip səhv',       { ad: 'Yeni Mərkəz', tip: 'sehv' }],
-] as const) {
-  const x = await validate(plainToInstance(CreateMerkezDto, xam));
-  const m = x.flatMap((i) => Object.values(i.constraints ?? {}));
-  console.log(ad.padEnd(16), '→', m.length ? m.join(' | ') : '✓ keçdi');
-}
+void (async () => {
+  for (const [ad, xam] of [
+    ['düzgün ad',      { ad: 'Yeni Mərkəz' }],
+    ['ad 2 simvol',    { ad: 'ab' }],
+    ['email səhv',     { ad: 'Yeni Mərkəz', email: 'pis' }],
+    ['telefon səhv',   { ad: 'Yeni Mərkəz', telefon: '123' }],
+    ['tarix səhv',     { ad: 'Yeni Mərkəz', yaradilma_tarixi: '15.02.2024' }],
+    ['tip səhv',       { ad: 'Yeni Mərkəz', tip: 'sehv' }],
+  ] as const) {
+    const x = await validate(plainToInstance(CreateMerkezDto, xam));
+    const m = x.flatMap((i) => Object.values(i.constraints ?? {}));
+    console.log(ad.padEnd(16), '→', m.length ? m.join(' | ') : '✓ keçdi');
+  }
 
-const u = plainToInstance(UpdateMerkezDto, { telefon: '+994 12 111 22 33' });
-console.log('yeniləmə — yalnız telefon →', (await validate(u)).length ? 'XƏTA' : '✓ keçdi');"
+  const u = plainToInstance(UpdateMerkezDto, { telefon: '+994 12 111 22 33' });
+  console.log('yeniləmə — yalnız telefon →', (await validate(u)).length ? 'XƏTA' : '✓ keçdi');
+})();"
 
 düzgün ad        → ✓ keçdi
 ad 2 simvol      → Ad ən azı 3 simvol olmalıdır
@@ -591,23 +595,25 @@ npx tsc --noEmit -p tsconfig.build.json && echo "✓ tip yoxlaması keçdi\"""",
     d="""$ npx tsx -e "
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
-import { EmekdasFiltrDto } from './src/kadrlar/dto/emekdas-filtr.dto.js';
+import { EmekdasFiltrDto } from './src/kadrlar/dto/emekdas-filtr.dto.ts';
 
-for (const [ad, xam] of [
-  ['düzgün',          { merkez_id: '2', limit: '5' }],
-  ['merkez_id=abc',   { merkez_id: 'abc' }],
-  ['merkez_id=0',     { merkez_id: '0' }],
-  ['aktiv=belke',     { aktiv: 'belke' }],
-  ['MİRAS: limit=500',{ limit: '500' }],
-  ['MİRAS: sehife=0', { sehife: '0' }],
-] as const) {
-  const x = await validate(plainToInstance(EmekdasFiltrDto, xam));
-  const m = x.flatMap((i) => Object.values(i.constraints ?? {}));
-  console.log(ad.padEnd(20), '→', m.length ? m.join(' | ') : '✓ keçdi');
-}"
+void (async () => {
+  for (const [ad, xam] of [
+    ['düzgün',          { merkez_id: '2', limit: '5' }],
+    ['merkez_id=abc',   { merkez_id: 'abc' }],
+    ['merkez_id=0',     { merkez_id: '0' }],
+    ['aktiv=belke',     { aktiv: 'belke' }],
+    ['MİRAS: limit=500',{ limit: '500' }],
+    ['MİRAS: sehife=0', { sehife: '0' }],
+  ] as const) {
+    const x = await validate(plainToInstance(EmekdasFiltrDto, xam));
+    const m = x.flatMap((i) => Object.values(i.constraints ?? {}));
+    console.log(ad.padEnd(20), '→', m.length ? m.join(' | ') : '✓ keçdi');
+  }
+})();"
 
 düzgün               → ✓ keçdi
-merkez_id=abc        → merkez_id tam ədəd olmalıdır
+merkez_id=abc        → merkez_id ən azı 1 olmalıdır | merkez_id tam ədəd olmalıdır
 merkez_id=0          → merkez_id ən azı 1 olmalıdır
 aktiv=belke          → aktiv yalnız 'true' və ya 'false' ola bilər
 MİRAS: limit=500     → limit 100-dən çox ola bilməz
@@ -665,16 +671,19 @@ npx tsc --noEmit -p tsconfig.build.json && echo "✓ tip yoxlaması keçdi\"""",
     <code>number</code> qaytarır. Filtr şərtinin bir dəfə qurulması da vacibdir:
     <code>serh</code> metodu olmasa eyni 8 sətirlik <code>WHERE</code> həm siyahıda,
     həm saymada təkrarlanar və zamanla biri dəyişib digəri yaddan çıxar.""",
-    d="""$ npx tsx -e "
-import { PrismaService } from './src/prisma/prisma.service.js';
-import { KadrlarService } from './src/kadrlar/kadrlar.service.js';
-const s = new KadrlarService(new PrismaService());
-const c = await s.emekdaslar({ sehife: 1, limit: 2, siralama: 'asc' });
-for (const x of c.setirler)
-  console.log(x.id, '|', x.ad, x.soyad, '|', x.merkez, '|', x.vezife,
-              '| maas:', x.maas, typeof x.maas);
-console.log('cemi:', c.cemi, 'sehife_sayi:', c.sehife_sayi);
-await s['prisma'].\$disconnect?.();" 2>/dev/null
+    d="""$ set -a; . ./.env; set +a    # tsx .env-i özü oxumur — DATABASE_URL lazımdır
+$ npx tsx -e "
+import { PrismaService } from './src/prisma/prisma.service.ts';
+import { KadrlarService } from './src/kadrlar/kadrlar.service.ts';
+void (async () => {
+  const s = new KadrlarService(new PrismaService());
+  const c = await s.emekdaslar({ sehife: 1, limit: 2, siralama: 'asc' });
+  for (const x of c.setirler)
+    console.log(x.id, '|', x.ad, x.soyad, '|', x.merkez, '|', x.vezife,
+                '| maas:', x.maas, typeof x.maas);
+  console.log('cemi:', c.cemi, 'sehife_sayi:', c.sehife_sayi);
+  await s['prisma'].\$disconnect?.();
+})();" 2>/dev/null
 
 13 | Elçin Babayev | Təhsil texnologiyaları mərkəzi | Aparıcı mütəxəssis | maas: 1300 number
 4 | İlham Cavadov | Metodik dəstək mərkəzi | Direktor müavini | maas: 2800 number

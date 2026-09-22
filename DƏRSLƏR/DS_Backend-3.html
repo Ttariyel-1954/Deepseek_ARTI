@@ -734,21 +734,23 @@ npx tsc --noEmit -p tsconfig.build.json &amp;&amp; echo "✓ tip yoxlaması keç
 <pre><code>$ npx tsx -e "
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
-import { LoginDto } from './src/auth/dto/login.dto.js';
-import { QeydiyyatDto } from './src/auth/dto/qeydiyyat.dto.js';
+import { LoginDto } from './src/auth/dto/login.dto.ts';
+import { QeydiyyatDto } from './src/auth/dto/qeydiyyat.dto.ts';
 
-for (const [ad, Klass, xam] of [
-  ['düzgün login',        LoginDto,     { email: 'a@b.az', parol: '123456' }],
-  ['email səhv',          LoginDto,     { email: 'pis', parol: '123456' }],
-  ['şifrə qısa',          LoginDto,     { email: 'a@b.az', parol: '123' }],
-  ['qeydiyyat düzgün',    QeydiyyatDto, { email: 'a@b.az', parol: '12345678', ad_soyad: 'Test Testov' }],
-  ['qeydiyyat şifrə qısa',QeydiyyatDto, { email: 'a@b.az', parol: '1234567', ad_soyad: 'Test Testov' }],
-  ['rol səhv',            QeydiyyatDto, { email: 'a@b.az', parol: '12345678', ad_soyad: 'Test', rol: 'superadmin' }],
-] as const) {
-  const x = await validate(plainToInstance(Klass as any, xam));
-  const m = x.flatMap((i) =&gt; Object.values(i.constraints ?? {}));
-  console.log(ad.padEnd(22), '→', m.length ? m.join(' | ') : '✓ keçdi');
-}"
+void (async () => {
+  for (const [ad, Klass, xam] of [
+    ['düzgün login',        LoginDto,     { email: 'a@b.az', parol: '123456' }],
+    ['email səhv',          LoginDto,     { email: 'pis', parol: '123456' }],
+    ['şifrə qısa',          LoginDto,     { email: 'a@b.az', parol: '123' }],
+    ['qeydiyyat düzgün',    QeydiyyatDto, { email: 'a@b.az', parol: '12345678', ad_soyad: 'Test Testov' }],
+    ['qeydiyyat şifrə qısa',QeydiyyatDto, { email: 'a@b.az', parol: '1234567', ad_soyad: 'Test Testov' }],
+    ['rol səhv',            QeydiyyatDto, { email: 'a@b.az', parol: '12345678', ad_soyad: 'Test', rol: 'superadmin' }],
+  ] as const) {
+    const x = await validate(plainToInstance(Klass as any, xam));
+    const m = x.flatMap((i) =&gt; Object.values(i.constraints ?? {}));
+    console.log(ad.padEnd(22), '→', m.length ? m.join(' | ') : '✓ keçdi');
+  }
+})();"
 
 düzgün login           → ✓ keçdi
 email səhv             → E-poçt ünvanı yanlışdır
