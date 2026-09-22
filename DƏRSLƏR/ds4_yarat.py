@@ -617,6 +617,74 @@ $ ls -l /tmp/*.xlsx
 # ─────────────────────────────────────────────────────────────────
 #  ADDIM 8 — İŞTİRAKÇI ELEKTRON PASPORTU
 # ─────────────────────────────────────────────────────────────────
+_CEDVEL8 = """<table>
+  <tr><th>#</th><th>Nə yoxlanılır</th><th>Rol</th><th>Gözlənilən cavab</th></tr>
+  <tr><td colspan="4"><strong>BÖLMƏ 1 — Elektron açar (Backend-3)</strong></td></tr>
+  <tr><td>1</td><td>Dörd rolun hamısı token alır</td><td>4 rol</td>
+      <td><code>4/4</code></td></tr>
+  <tr><td>2</td><td>Token 3 hissəlidir (başlıq.yük.imza)</td><td>admin</td>
+      <td><code>3</code></td></tr>
+  <tr><td>3</td><td>Token müddəti 8 saatdır</td><td>admin</td>
+      <td><code>28800</code> san</td></tr>
+  <tr><td>4</td><td>Token içində <code>parol_hash</code> yoxdur</td><td>admin</td>
+      <td><code>0</code></td></tr>
+  <tr><td>5</td><td>Səhv parol → 401, mesaj eynidir</td><td>—</td>
+      <td><code>401|eyni</code></td></tr>
+  <tr><td colspan="4"><strong>BÖLMƏ 2 — Pasportun oxunması və bütövlüyü</strong></td></tr>
+  <tr><td>6</td><td>İştirakçı siyahısı</td><td>admin</td>
+      <td><code>cemi = 10</code></td></tr>
+  <tr><td>7</td><td>Oxuma dörd rolun hamısına açıqdır</td><td>4 rol</td>
+      <td><code>4/4</code> → 200</td></tr>
+  <tr><td>8</td><td>Tokensiz oxuma</td><td>—</td><td><code>401</code></td></tr>
+  <tr><td>9</td><td>Pasport nömrəsi və etibarlılığı</td><td>admin</td>
+      <td><code>SER-2024-001|true</code></td></tr>
+  <tr><td>10</td><td>Sahib bölməsi: ad, soyad, ata adı, iş yeri</td><td>admin</td>
+      <td><code>dolu</code></td></tr>
+  <tr><td>11</td><td>Təlim bölməsi: proqram, saat, qrup</td><td>admin</td>
+      <td><code>dolu</code></td></tr>
+  <tr><td>12</td><td>Sertifikasiya: bal və nəticə</td><td>admin</td>
+      <td><code>72.5|keçdi</code></td></tr>
+  <tr><td>13</td><td>Bütövlük hash-i deterministikdir</td><td>admin</td>
+      <td><code>eyni</code></td></tr>
+  <tr><td>14</td><td>Olmayan iştirakçı</td><td>admin</td>
+      <td><code>404</code> — <strong>500 DEYİL</strong></td></tr>
+  <tr><td colspan="4"><strong>BÖLMƏ 3 — Pasportun verilməsi (necə ALINIR)</strong></td></tr>
+  <tr><td>15</td><td>⚠️ Uyğunsuzluq aşkarlanır (iştirakçı 3)</td><td>admin</td>
+      <td><code>false|qaldi</code></td></tr>
+  <tr><td>16</td><td>Statistika: uyğunsuz say + keçid balı</td><td>admin</td>
+      <td><code>6|60</code></td></tr>
+  <tr><td>17</td><td>İştirakçı yazmaq</td><td><strong>baxici</strong></td>
+      <td><code>403</code></td></tr>
+  <tr><td>18</td><td>İştirakçı yazmaq — pasportsuz başlayır</td><td>admin</td>
+      <td><code>201</code> · <code>davam edir</code> · nömrə <code>null</code></td></tr>
+  <tr><td>19</td><td>Bal 72 → pasport verilir</td><td>admin</td>
+      <td><code>keçdi</code></td></tr>
+  <tr><td>20</td><td>Nömrə formatı</td><td>admin</td>
+      <td><code>ARTI-İL-NNNN</code></td></tr>
+  <tr><td>21</td><td>Nömrə <strong>hər iki</strong> cədvəldə saxlanılır</td><td>admin</td>
+      <td><code>1|1</code></td></tr>
+  <tr><td>22</td><td>Təkrar cəhd idempotentdir (dublikat yox)</td><td>admin</td>
+      <td><code>ARTI-2026-0001|1</code></td></tr>
+  <tr><td colspan="4"><strong>BÖLMƏ 4 — İctimai yoxlama</strong></td></tr>
+  <tr><td>23</td><td>Yoxlama <strong>tokensiz</strong> işləyir</td><td>—</td>
+      <td><code>200</code></td></tr>
+  <tr><td>24</td><td>Yoxlama: etibarlıdır + sahibin adı</td><td>—</td>
+      <td><code>true|Yoxlama Istirakci</code></td></tr>
+  <tr><td>25</td><td>Olmayan sertifikat nömrəsi</td><td>—</td>
+      <td><code>404</code></td></tr>
+  <tr><td>26</td><td>İctimai hash daxili hash ilə eynidir</td><td>—</td>
+      <td><code>eyni</code></td></tr>
+  <tr><td colspan="4"><strong>BÖLMƏ 5–6 — Əvvəlki dərslər və audit</strong></td></tr>
+  <tr><td>27</td><td>AI: demo rejim, 64 ölçü, 10 resept</td><td>admin</td>
+      <td><code>demo|64|10</code></td></tr>
+  <tr><td>28</td><td>AI: «Neçə əməkdaş var?» düzgün reseptə düşür</td><td>admin</td>
+      <td><code>true|Ümumi əməkdaş sayı</code></td></tr>
+  <tr><td>29</td><td>Excel: PK baytları və real ölçü</td><td>admin</td>
+      <td><code>504b|var</code></td></tr>
+  <tr><td>30</td><td>Audit: 3 × GET jurnala heç nə yazmır</td><td>admin</td>
+      <td><code>0</code></td></tr>
+</table>"""
+
 _A8 = """Bu addım <strong>yeni bir modul</strong> qurur və suala cavab verir:
 <em>iştirakçı öz təlimini necə sübut edir?</em> İndiyə qədər iştirakçının
 rəsmi izi API-dən görünmürdü — onun kim olduğu
@@ -839,6 +907,9 @@ vəziyyətinə qayıdır (10 iştirakçı, 10 sertifikasiya). Bu, testin təkrar
 işlədilə bilməsi üçün vacibdir: hər icra eyni nəticəni verir.</p>"""
 
 _B8 = chr(10).join([
+    '  <p><strong>Əvvəlcə — hər yoxlamanın nəyi, hansı rolu və nə '
+    'gözlədiyi:</strong></p>',
+    '  ' + _CEDVEL8,
     '  <p><strong>Yeddi fayl — modulun tamı:</strong></p>',
     '  <p class="fayl-ad">src/tehsil/dto/istirakci.dto.ts</p>',
     '<pre><code>' + e(fayl("src/tehsil/dto/istirakci.dto.ts")) + '</code></pre>',
