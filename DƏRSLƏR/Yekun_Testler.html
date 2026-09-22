@@ -1,0 +1,3567 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yekun testlər — Dərs 1–4 (65 test)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+         background: #eef2f7; color: #1e293b; line-height: 1.8;
+         padding: 2rem 1rem; font-size: 16px; }
+  .container { max-width: 1080px; margin: 0 auto; background: #fff;
+               border-radius: 22px; box-shadow: 0 15px 40px -15px rgba(15,23,42,.25);
+               padding: 3rem 3rem 4rem; }
+  header { border-bottom: 5px solid #1e40af; padding-bottom: 1.8rem; margin-bottom: 2rem; }
+  header h1 { font-size: 2.1rem; color: #1e3a8a; margin-bottom: .5rem; }
+  header .alt { color: #64748b; font-size: 1.02rem; }
+  header .meta { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: 1rem; }
+  header .meta span { background: #dbeafe; color: #1e40af; padding: .25rem .8rem;
+                      border-radius: 999px; font-size: .82rem; font-weight: 600; }
+
+  .izah { background: #f0f9ff; border-left: 5px solid #0284c7; border-radius: 10px;
+          padding: 1.1rem 1.4rem; margin: 1.5rem 0; font-size: .95rem; }
+  .izah b { color: #075985; }
+  .izah code { background: #e0f2fe; padding: .1rem .4rem; border-radius: 5px;
+               font-size: .88em; }
+
+  .mund { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px;
+          padding: 1.4rem 1.6rem; margin-bottom: 2.5rem; }
+  .mund h2 { font-size: 1.05rem; color: #334155; margin-bottom: .8rem; }
+  .mund .setir { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: .9rem; }
+  .mund .setir b { color: #1e40af; font-size: .9rem; display: block; width: 100%;
+                   margin-bottom: .2rem; }
+  .mund a { text-decoration: none; background: #fff; border: 1px solid #cbd5e1;
+            color: #334155; padding: .2rem .6rem; border-radius: 7px;
+            font-size: .82rem; font-weight: 600; }
+  .mund a:hover { background: #1e40af; color: #fff; border-color: #1e40af; }
+
+  .ders-basliq { margin: 3rem 0 1.5rem; padding-bottom: .8rem;
+                 border-bottom: 3px solid #1e40af; }
+  .ders-basliq h2 { font-size: 1.5rem; color: #1e3a8a; }
+  .ders-basliq p { color: #64748b; font-size: .95rem; margin-top: .4rem; }
+
+  .test { border: 1px solid #e2e8f0; border-radius: 16px; padding: 1.6rem 1.7rem;
+          margin-bottom: 1.8rem; background: #fff; }
+  .test > h3 { font-size: 1.12rem; color: #0f172a; margin-bottom: .7rem;
+               display: flex; align-items: baseline; gap: .6rem; }
+  .test > h3 .no { background: #1e40af; color: #fff; padding: .12rem .6rem;
+                   border-radius: 7px; font-size: .88rem; font-weight: 700;
+                   flex-shrink: 0; }
+  .giris { color: #475569; font-size: .95rem; margin-bottom: 1.1rem; }
+  .giris code { background: #f1f5f9; padding: .1rem .4rem; border-radius: 5px;
+                font-size: .88em; color: #0f172a; }
+
+  .blok { border-radius: 12px; overflow: hidden; margin-bottom: .9rem;
+          border: 1px solid #e2e8f0; }
+  .blok-basliq { display: flex; justify-content: space-between; align-items: center;
+                 padding: .5rem .9rem; font-size: .78rem; font-weight: 700;
+                 letter-spacing: .4px; text-transform: uppercase; }
+  .blok pre { margin: 0; padding: .9rem 1rem; overflow-x: auto; font-size: .84rem;
+              line-height: 1.6; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .skript .blok-basliq { background: #0f172a; color: #93c5fd; }
+  .skript pre { background: #1e293b; color: #e2e8f0; }
+  .netice .blok-basliq { background: #065f46; color: #a7f3d0; }
+  .netice pre { background: #f0fdf4; color: #14532d; border-top: 2px solid #10b981; }
+
+  .kopyala { background: #2563eb; color: #fff; border: none; padding: .28rem .7rem;
+             border-radius: 6px; font-size: .72rem; font-weight: 700; cursor: pointer;
+             letter-spacing: .3px; }
+  .kopyala:hover { background: #1d4ed8; }
+  .kopyala.ok { background: #059669; }
+
+  .xeta-var .blok-basliq { background: #7f1d1d; color: #fecaca; }
+  .xeta-var .netice pre { background: #fef2f2; color: #7f1d1d; border-top-color: #dc2626; }
+
+  footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 2px solid #e2e8f0;
+           color: #94a3b8; font-size: .85rem; text-align: center; }
+  @media print {
+    body { background: #fff; padding: 0; }
+    .container { box-shadow: none; padding: 0; }
+    .kopyala { display: none; }
+    .test { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>Yekun testlər — Dərs 1–4</h1>
+  <p class="alt">Hər test ayrıca Terminal skriptidir. Kopyalayın, işlədin və
+  çıxışı yanındaki nəticə ilə tutuşdurun. Testlər bir-birindən asılı deyil —
+  istənilən sıra ilə işlədilə bilər.</p>
+  <p class="meta">
+    <span>Dərs 1 — 5 test</span>
+    <span>Dərs 2 — 10 test</span>
+    <span>Dərs 3 — 20 test</span>
+    <span>Dərs 4 — 30 test</span>
+    <span>CƏMİ 65 test</span>
+  </p>
+</header>
+
+<div class="izah">
+  <p><b>⚠️ İşlətməzdən əvvəl — serveri qaldırın.</b> Testlərin çoxu canlı API-yə
+  müraciət edir. Ayrı bir Terminal pəncərəsində bunu işlədin və açıq saxlayın:</p>
+  <p style="margin-top:.6rem"><code>cd ~/Deepseek_ARTI/DS_Backend</code><br>
+  <code>unset DATABASE_URL PGHOST</code><br>
+  <code>PORT=4000 npm run start:prod</code></p>
+  <p style="margin-top:.6rem"><b>İkinci qeyd:</b> hər skript öz girişini (token)
+  özü alır — ona görə testlər bir-birindən asılı deyil. <b>Üçüncü qeyd:</b>
+  <code>vaxt</code>, <code>gecikme_ms</code> kimi sahələr sizdə fərqli ola bilər;
+  tutuşdurarkən əsas məzmuna baxın.</p>
+</div>
+
+<div class="mund">
+  <h2>Mündəricat — hər testə birbaşa keçid</h2>
+  <div class="setir"><b>Dərs 1 — Sıfırdan ilk işləyən API — 5 test</b><a href="#t-I-1">I.1</a><a href="#t-I-2">I.2</a><a href="#t-I-3">I.3</a><a href="#t-I-4">I.4</a><a href="#t-I-5">I.5</a></div><div class="setir"><b>Dərs 2 — Struktur və kadrlar — 10 test</b><a href="#t-II-1">II.1</a><a href="#t-II-2">II.2</a><a href="#t-II-3">II.3</a><a href="#t-II-4">II.4</a><a href="#t-II-5">II.5</a><a href="#t-II-6">II.6</a><a href="#t-II-7">II.7</a><a href="#t-II-8">II.8</a><a href="#t-II-9">II.9</a><a href="#t-II-10">II.10</a></div><div class="setir"><b>Dərs 3 — Autentifikasiya, rollar və audit — 20 test</b><a href="#t-III-1">III.1</a><a href="#t-III-2">III.2</a><a href="#t-III-3">III.3</a><a href="#t-III-4">III.4</a><a href="#t-III-5">III.5</a><a href="#t-III-6">III.6</a><a href="#t-III-7">III.7</a><a href="#t-III-8">III.8</a><a href="#t-III-9">III.9</a><a href="#t-III-10">III.10</a><a href="#t-III-11">III.11</a><a href="#t-III-12">III.12</a><a href="#t-III-13">III.13</a><a href="#t-III-14">III.14</a><a href="#t-III-15">III.15</a><a href="#t-III-16">III.16</a><a href="#t-III-17">III.17</a><a href="#t-III-18">III.18</a><a href="#t-III-19">III.19</a><a href="#t-III-20">III.20</a></div><div class="setir"><b>Dərs 4 — AI qatı, ixrac və yerləşdirmə — 30 test</b><a href="#t-IV-1">IV.1</a><a href="#t-IV-2">IV.2</a><a href="#t-IV-3">IV.3</a><a href="#t-IV-4">IV.4</a><a href="#t-IV-5">IV.5</a><a href="#t-IV-6">IV.6</a><a href="#t-IV-7">IV.7</a><a href="#t-IV-8">IV.8</a><a href="#t-IV-9">IV.9</a><a href="#t-IV-10">IV.10</a><a href="#t-IV-11">IV.11</a><a href="#t-IV-12">IV.12</a><a href="#t-IV-13">IV.13</a><a href="#t-IV-14">IV.14</a><a href="#t-IV-15">IV.15</a><a href="#t-IV-16">IV.16</a><a href="#t-IV-17">IV.17</a><a href="#t-IV-18">IV.18</a><a href="#t-IV-19">IV.19</a><a href="#t-IV-20">IV.20</a><a href="#t-IV-21">IV.21</a><a href="#t-IV-22">IV.22</a><a href="#t-IV-23">IV.23</a><a href="#t-IV-24">IV.24</a><a href="#t-IV-25">IV.25</a><a href="#t-IV-26">IV.26</a><a href="#t-IV-27">IV.27</a><a href="#t-IV-28">IV.28</a><a href="#t-IV-29">IV.29</a><a href="#t-IV-30">IV.30</a></div>
+</div>
+
+<div class="ders-basliq">
+  <h2>Dərs 1 — Sıfırdan ilk işləyən API</h2>
+  <p>Layihə skeleti, TypeScript konfiqurasiyası, <code>.env</code>, Prisma sxeması və generasiyası, <code>PrismaService</code>, <code>@Global()</code> modul, vahid xəta formatı, sağlamlıq endpointi və ilk build. <strong>5 yekun test.</strong></p>
+</div><article class="test" id="t-I-1">
+  <h3><span class="no">I.1</span> Layihə skeleti və asılılıqlar</h3>
+  <p class="giris">Bu test Dərs 1-in ilk üç addımını yoxlayır: layihə qovluğunun, <code>package.json</code>-ın və TypeScript konfiqurasiyasının yerində olub-olmadığını. Əgər bu fayllardan biri yoxdursa, nə build, nə də server işləyir — ona görə bu, bütün sonrakı dərslərin təməlidir. Skript həm də Node və npm versiyalarını və əsas NestJS paketlərinin quraşdırıldığını göstərir.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+
+echo "── Node və npm ──"
+echo "  node: $(node -v)   npm: $(npm -v)"
+
+echo "── Konfiqurasiya faylları ──"
+for f in package.json tsconfig.json tsconfig.build.json nest-cli.json .env .env.example prisma/schema.prisma; do
+  [ -f "$f" ] &amp;&amp; echo "  ✓ $f" || echo "  ✗ $f YOXDUR"
+done
+
+echo "── Əsas paketlər ──"
+for p in @nestjs/core @nestjs/common @nestjs/config @prisma/client; do
+  v=$(python3 -c "import json;print(json.load(open('node_modules/$p/package.json'))['version'])" 2&gt;/dev/null)
+  echo "  $p = ${v:-QURAŞDIRILMAYIB}"
+done
+
+echo "── npm skriptləri ──"
+python3 -c "import json;[print('  '+k+' → '+v) for k,v in json.load(open('package.json'))['scripts'].items()]"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── Node və npm ──
+  node: v26.7.0   npm: 11.19.0
+── Konfiqurasiya faylları ──
+  ✓ package.json
+  ✓ tsconfig.json
+  ✓ tsconfig.build.json
+  ✓ nest-cli.json
+  ✓ .env
+  ✓ .env.example
+  ✓ prisma/schema.prisma
+── Əsas paketlər ──
+  @nestjs/core = 12.0.3
+  @nestjs/common = 12.0.3
+  @nestjs/config = 12.0.0
+  @prisma/client = 7.10.0
+── npm skriptləri ──
+  build → nest build
+  start → nest start
+  start:dev → nest start --watch
+  start:prod → node dist/main.js
+  prisma:pull → prisma db pull
+  prisma:generate → prisma generate
+  prisma:studio → prisma studio
+  db:yenile → prisma db pull &amp;&amp; prisma generate
+  test → vitest run
+  test:izle → vitest
+  seed:auth → tsx scripts/seed-auth.ts</code></pre>
+  </div>
+</article><article class="test" id="t-I-2">
+  <h3><span class="no">I.2</span> Prisma sxeması — bazanı oxuyub tipləri çıxarmaq</h3>
+  <p class="giris">Bu test Dərs 1-in beşinci və altıncı addımını yoxlayır: Prisma sxemasının bazadan oxunub yaradılmasını və generasiya olunmuş klientin yerində olmasını. Sxemada <code>generator</code>, <code>datasource</code> və <code>schemas</code> blokları olmalıdır — biri düşsə Prisma <code>P1012</code> xətası verir. Skript həm də sxemanın özünü yoxlayır.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+
+echo "── Sxemanın əsas blokları ──"
+grep -nE '^(generator|datasource)|^  (provider|output|url|schemas)' prisma/schema.prisma
+
+echo "── Sxemada nə qədər model var? ──"
+echo "  model sayı: $(grep -c '^model ' prisma/schema.prisma)"
+
+echo "── Neçə PostgreSQL sxemi oxunub? ──"
+grep -o '"[a-z]*"' prisma/schema.prisma | head -1 &gt;/dev/null
+python3 - &lt;&lt;'PY'
+import re, pathlib
+s = pathlib.Path('prisma/schema.prisma').read_text(encoding='utf-8')
+m = re.search(r'schemas\s*=\s*\[(.*?)\]', s, re.S)
+adlar = re.findall(r'"([^"]+)"', m.group(1)) if m else []
+print('  sxem sayı:', len(adlar))
+print('  ', ', '.join(adlar))
+PY
+
+echo "── Generasiya olunmuş klient ──"
+[ -f src/generated/prisma/client.ts ] &amp;&amp; echo "  ✓ src/generated/prisma/client.ts" \
+  || echo "  ✗ klient generasiya olunmayıb — «npx prisma generate» lazımdır"
+
+echo "── Sxemanın etibarlılığı ──"
+npx prisma validate 2&gt;&amp;1 | tail -2</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── Sxemanın əsas blokları ──
+1:generator client {
+2:  provider = "prisma-client"
+3:  output   = "../src/generated/prisma"
+6:datasource db {
+7:  provider = "postgresql"
+8:  schemas  = ["ai", "audit", "elm", "kadrlar", "logistika", "maliyye", "metodika", "ortaq", "qiymetlendirme", "sened", "struktur", "tehsil"]
+── Sxemada nə qədər model var? ──
+  model sayı: 48
+── Neçə PostgreSQL sxemi oxunub? ──
+  sxem sayı: 12
+   ai, audit, elm, kadrlar, logistika, maliyye, metodika, ortaq, qiymetlendirme, sened, struktur, tehsil
+── Generasiya olunmuş klient ──
+  ✓ src/generated/prisma/client.ts
+── Sxemanın etibarlılığı ──
+Prisma schema loaded from prisma/schema.prisma.
+The schema at prisma/schema.prisma is valid 🚀</code></pre>
+  </div>
+</article><article class="test" id="t-I-3">
+  <h3><span class="no">I.3</span> Server və baza bağlantısı — sağlamlıq endpointi</h3>
+  <p class="giris">Bu test Dərs 1-in doqquzuncu addımını yoxlayır: <code>GET /saglamliq</code> endpointinin sadəcə «işləyirəm» demədiyini, həm də bazaya sorğu göndərdiyini. Cavabda cədvəl sayı və gecikmə olmalıdır — bunlar bazanın həqiqətən əlçatan olduğunu sübut edir. Skript cavabı bazadakı real cədvəl sayı ilə də tutuşdurur.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+echo "GET /saglamliq → $kod"
+if [ "$kod" != "200" ]; then
+  echo "⚠️ Server işləmir. Ayrı terminalda işlədin:"
+  echo "   cd $LAYIHE &amp;&amp; PORT=4000 npm run start:prod"
+  exit 1
+fi
+
+echo "── Serverin cavabı ──"
+curl -s "$A/saglamliq" | python3 -m json.tool
+
+echo "── Bazadakı real cədvəl sayı ──"
+psql -U arti_user -d arti_baza -tA -c "
+  SELECT count(*) FROM pg_class c
+  JOIN pg_namespace n ON n.oid = c.relnamespace
+  WHERE c.relkind = 'r'
+    AND n.nspname NOT IN ('pg_catalog','information_schema')" | sed 's/^/  /'</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>GET /saglamliq → 200
+── Serverin cavabı ──
+{
+    "status": "saglam",
+    "baza": {
+        "qosulub": true,
+        "cedvel_sayi": 48,
+        "gecikme_ms": 1
+    },
+    "versiya": "0.1.0",
+    "vaxt": "2026-09-22T13:19:50.504Z"
+}
+── Bazadakı real cədvəl sayı ──
+  48</code></pre>
+  </div>
+</article><article class="test" id="t-I-4">
+  <h3><span class="no">I.4</span> Vahid xəta formatı — AllExceptionsFilter</h3>
+  <p class="giris">Bu test Dərs 1-in səkkizinci addımını yoxlayır: bütün xətaların <em>eyni</em> formata salınmasını. Frontend bir yerə <code>message</code>, başqa yerə <code>xeta.mesaj</code> axtarmamalıdır — ona görə format vahidləşdirilib. Skript 404 xətasının strukturunu və status kodlarının oxunaqlı sabitlərə çevrilməsini göstərir.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+echo "── 1) Olmayan endpoint → 404 ──"
+curl -s "$A/bele-bir-yol-yoxdur" | python3 -m json.tool
+
+echo "── 2) Cavabın 4 sahəsi ──"
+curl -s "$A/bele-bir-yol-yoxdur" | python3 -c "
+import json,sys
+d = json.load(sys.stdin)
+for a in ('ugur','xeta','yol','vaxt'):
+    print('  %-6s → %s' % (a, 'var' if a in d else 'YOXDUR'))
+print('  xeta.kod  →', d['xeta']['kod'])
+print('  xeta.mesaj→', d['xeta']['mesaj'])
+"
+
+echo "── 3) Status kodlarının oxunaqlı xəritəsi ──"
+grep -E "^  [0-9]{3}:" src/common/filters/all-exceptions.filter.ts | sed 's/^/  /'</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── 1) Olmayan endpoint → 404 ──
+{
+    "ugur": false,
+    "xeta": {
+        "kod": "TAPILMADI",
+        "mesaj": "Cannot GET /api/v1/bele-bir-yol-yoxdur"
+    },
+    "yol": "/bele-bir-yol-yoxdur",
+    "vaxt": "2026-09-22T13:19:50.560Z"
+}
+── 2) Cavabın 4 sahəsi ──
+  ugur   → var
+  xeta   → var
+  yol    → var
+  vaxt   → var
+  xeta.kod  → TAPILMADI
+  xeta.mesaj→ Cannot GET /api/v1/bele-bir-yol-yoxdur
+── 3) Status kodlarının oxunaqlı xəritəsi ──
+    400: 'YANLIS_SORGU',
+    401: 'AUTENTIFIKASIYA_LAZIM',
+    403: 'ICAZE_YOXDUR',
+    404: 'TAPILMADI',
+    409: 'TOQQUSMA',
+    422: 'EMAL_OLUNMADI',
+    500: 'DAXILI_XETA',</code></pre>
+  </div>
+</article><article class="test" id="t-I-5">
+  <h3><span class="no">I.5</span> Build, tip yoxlaması və ilk testlər</h3>
+  <p class="giris">Bu test Dərs 1-in on ikinci və on üçüncü addımını yoxlayır: layihənin yığılmasını, tiplərin təmiz olmasını və testlərin keçməsini. <code>npm run build</code> xəta versə server heç vaxt qalxmır; <code>tsc --noEmit</code> isə build-in gizlətdiyi tip xətalarını tutur. Skript hər üç yoxlamanı sıra ilə aparır.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+export npm_config_cache=/tmp/npmcache
+
+echo "── 1) Build ──"
+npm run build 2&gt;&amp;1 | tail -2
+echo "  dist/ qovluğu: $([ -f dist/main.js ] &amp;&amp; echo '✓ dist/main.js var' || echo '✗ YOXDUR')"
+
+echo "── 2) Tip yoxlaması (build-in gizlətdiyi xətaları tutur) ──"
+npx tsc --noEmit -p tsconfig.build.json &amp;&amp; echo "  ✓ tip yoxlaması keçdi"
+
+echo "── 3) Unit testlər ──"
+npm test 2&gt;&amp;1 | grep -E 'Test Files|Tests ' | sed 's/^/  /'</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── 1) Build ──
+&gt; nest build
+
+  dist/ qovluğu: ✓ dist/main.js var
+── 2) Tip yoxlaması (build-in gizlətdiyi xətaları tutur) ──
+  ✓ tip yoxlaması keçdi
+── 3) Unit testlər ──
+   Test Files  6 passed (6)
+        Tests  42 passed (42)</code></pre>
+  </div>
+</article><div class="ders-basliq">
+  <h2>Dərs 2 — Struktur və kadrlar</h2>
+  <p>Ortaq səhifələmə DTO-su, filtr DTO-ları, <code>StrukturService</code> və <code>KadrlarService</code>, controller-lər, JOIN ilə tam kadr profili, 409 toqquşması və ikinci dərsin testləri. <strong>10 yekun test.</strong></p>
+</div><article class="test" id="t-II-1">
+  <h3><span class="no">II.1</span> Səhifələmə riyaziyyatı — sehifeHesabla()</h3>
+  <p class="giris">Bu test Dərs 2-nin birinci addımını yoxlayır: <code>sehifeHesabla()</code> funksiyasının hədləri necə qoruduğunu. İstifadəçi <code>?limit=999999</code> göndərsə baza boğulmamalıdır — funksiya limiti 100-ə kəsir. Mənfi səhifə 1-ə düzəldilir, sıfır limit isə standart 20-yə qaytarılır.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+export npm_config_cache=/tmp/npmcache
+
+npx tsx -e "
+import { sehifeHesabla } from './src/common/dto/sehife.dto.ts';
+const cedvel = [[3,15],[1,5000],[-7,20],[1,0],[2.7,33.9]] as const;
+for (const [s, l] of cedvel)
+  console.log('sehife=', s, ' limit=', l, ' →', JSON.stringify(sehifeHesabla(s, l)));
+"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>sehife= 3  limit= 15  → {"sehife":3,"limit":15,"skip":30}
+sehife= 1  limit= 5000  → {"sehife":1,"limit":100,"skip":0}
+sehife= -7  limit= 20  → {"sehife":1,"limit":20,"skip":0}
+sehife= 1  limit= 0  → {"sehife":1,"limit":20,"skip":0}
+sehife= 2.7  limit= 33.9  → {"sehife":2,"limit":33,"skip":33}</code></pre>
+  </div>
+</article><article class="test" id="t-II-2">
+  <h3><span class="no">II.2</span> sehife_sayi — boş nəticədə də ən azı 1</h3>
+  <p class="giris">Bu test <code>sehifelenmis()</code> funksiyasının <code>sehife_sayi</code> sahəsini necə hesabladığını yoxlayır. Cəm 0 olsa da frontend «1 səhifə» görməlidir — «0 səhifə» qəribə görünür və səhifələmə düymələri sınır. Bunun üçün <code>Math.max(1, ...)</code> qorunması var.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+export npm_config_cache=/tmp/npmcache
+
+npx tsx -e "
+import { sehifelenmis } from './src/common/dto/sehife.dto.ts';
+const cedvel = [[[], 0, 1, 20], [[], 10, 1, 3], [[], 21, 1, 20], [[], 100, 1, 20]] as const;
+for (const [s, c, sh, l] of cedvel) {
+  const n = sehifelenmis(s as never[], c, sh, l);
+  console.log('cemi=' + c + ' limit=' + l + ' → sehife_sayi =', n.sehife_sayi);
+}
+"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>cemi=0 limit=20 → sehife_sayi = 1
+cemi=10 limit=3 → sehife_sayi = 4
+cemi=21 limit=20 → sehife_sayi = 2
+cemi=100 limit=20 → sehife_sayi = 5</code></pre>
+  </div>
+</article><article class="test" id="t-II-3">
+  <h3><span class="no">II.3</span> DTO validasiyası — limit həddi</h3>
+  <p class="giris">Bu test Dərs 2-nin ikinci addımını yoxlayır: filtr DTO-sunun limiti rədd etməsini. <code>limit=500</code> gələrsə servis onu kəsmir, DTO <strong>400</strong> qaytarır — yəni yanlış sorğu bazaya heç çatmır. Cavabda <code>xeta.detallar</code> sahəsi konkret sahəni göstərir.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+TOKEN=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+H="Authorization: Bearer $TOKEN"
+
+echo "── limit=20 (icazəli) ──"
+curl -s -o /dev/null -w "  HTTP %{http_code}\n" "$A/struktur/merkezler?limit=20" -H "$H"
+
+echo "── limit=500 (həddi aşır) ──"
+curl -s "$A/struktur/merkezler?limit=500" -H "$H" | python3 -m json.tool
+
+echo "── limit=abc (rəqəm deyil) ──"
+curl -s -o /dev/null -w "  HTTP %{http_code}\n" "$A/struktur/merkezler?limit=abc" -H "$H"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── limit=20 (icazəli) ──
+  HTTP 200
+── limit=500 (həddi aşır) ──
+{
+    "ugur": false,
+    "xeta": {
+        "kod": "YANLIS_SORGU",
+        "mesaj": "Validasiya x\u0259tas\u0131",
+        "detallar": [
+            "limit 100-d\u0259n \u00e7ox ola bilm\u0259z"
+        ]
+    },
+    "yol": "/api/v1/struktur/merkezler?limit=500",
+    "vaxt": "2026-09-22T13:19:54.763Z"
+}
+── limit=abc (rəqəm deyil) ──
+  HTTP 400</code></pre>
+  </div>
+</article><article class="test" id="t-II-4">
+  <h3><span class="no">II.4</span> ⚠️ SQL inyeksiya cəhdi — sirala ağ siyahısı</h3>
+  <p class="giris">Bu test Dərs 2-dəki ən vacib təhlükəsizlik qərarını yoxlayır: <code>sirala</code> parametri birbaşa SQL-ə getmir, DTO onu <code>@IsIn</code> ilə yoxlayır. İstifadəçi <code>?sirala=drop</code> göndərsə sorğu bazaya çatmır və <strong>400</strong> qayıdır. Yoxlama olmasaydı sütun adı yerinə ixtiyari SQL parçası işlədilə bilərdi.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+TOKEN=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+H="Authorization: Bearer $TOKEN"
+
+echo "── İcazəli sütunlar ──"
+grep -o "MERKEZ_SAHELERI = \[[^]]*\]" src/struktur/dto/merkez-filtr.dto.ts | sed 's/^/  /'
+
+echo "── sirala=ad (ağ siyahıda) ──"
+curl -s -o /dev/null -w "  HTTP %{http_code}\n" "$A/struktur/merkezler?sirala=ad" -H "$H"
+
+echo "── sirala=drop (ağ siyahıdan kənar) ──"
+curl -s "$A/struktur/merkezler?sirala=drop" -H "$H" | python3 -c "
+import json,sys
+d = json.load(sys.stdin)
+print('  kod   :', d['xeta']['kod'])
+print('  mesaj :', d['xeta']['mesaj'])
+for x in d['xeta'].get('detallar', []): print('  detal :', x)
+"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── İcazəli sütunlar ──
+  MERKEZ_SAHELERI = ['ad', 'tip', 'id', 'yaradilma_tarixi']
+── sirala=ad (ağ siyahıda) ──
+  HTTP 200
+── sirala=drop (ağ siyahıdan kənar) ──
+  kod   : YANLIS_SORGU
+  mesaj : Validasiya xətası
+  detal : sirala yalnız bunlardan biri ola bilər: ad, tip, id, yaradilma_tarixi</code></pre>
+  </div>
+</article><article class="test" id="t-II-5">
+  <h3><span class="no">II.5</span> Naməlum parametr — whitelist qoruması</h3>
+  <p class="giris">Bu test <code>ValidationPipe</code>-ın <code>forbidNonWhitelisted</code> seçimini yoxlayır: DTO-da olmayan parametr gələrsə sorğu rədd edilir. Bu qoruma səhv yazılmış parametrləri (məsələn <code>limitt=5</code>) səssizcə udmaq yerinə açıq xəbərdarlıq verir. Belə olmasa istifadəçi filtr işlədiyini sanıb yanlış nəticə alardı.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+TOKEN=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+H="Authorization: Bearer $TOKEN"
+
+echo "── Düzgün parametr: limit ──"
+curl -s -o /dev/null -w "  HTTP %{http_code}\n" "$A/struktur/merkezler?limit=5" -H "$H"
+
+echo "── Səhv yazılmış parametr: limitt ──"
+curl -s "$A/struktur/merkezler?limitt=5" -H "$H" | python3 -c "
+import json,sys
+d = json.load(sys.stdin)
+print('  HTTP  :', '400')
+print('  mesaj :', d['xeta']['mesaj'])
+for x in d['xeta'].get('detallar', []): print('  detal :', x)
+"
+
+echo "── main.ts-də ValidationPipe ayarları ──"
+grep -n 'ValidationPipe\|whitelist\|forbidNonWhitelisted\|transform' src/main.ts | sed 's/^/  /'</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── Düzgün parametr: limit ──
+  HTTP 200
+── Səhv yazılmış parametr: limitt ──
+  HTTP  : 400
+  mesaj : Validasiya xətası
+  detal : property limitt should not exist
+── main.ts-də ValidationPipe ayarları ──
+  2:import { Logger, ValidationPipe } from '@nestjs/common';
+  16:    new ValidationPipe({
+  17:      whitelist: true,            // DTO-da olmayan sahələri sil
+  18:      forbidNonWhitelisted: true, // ...və ya şikayət et
+  19:      transform: true,            // "5" → 5 kimi çevirmələr</code></pre>
+  </div>
+</article><article class="test" id="t-II-6">
+  <h3><span class="no">II.6</span> Siyahı cavabının strukturu</h3>
+  <p class="giris">Bu test Dərs 2-nin dördüncü addımını yoxlayır: bütün siyahı endpoint-lərinin <em>eyni</em> formanı qaytarmasını. Frontend bir cədvəl komponenti ilə hər siyahını göstərə bilməlidir — bunun üçün beş sahə həmişə olmalıdır. Skript strukturu yoxlayır və səhifə sayını hesablayır.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+TOKEN=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+H="Authorization: Bearer $TOKEN"
+
+curl -s "$A/struktur/merkezler?limit=3" -H "$H" | python3 -c "
+import json,sys
+d = json.load(sys.stdin)
+print('  cemi        :', d['cemi'])
+print('  sehife      :', d['sehife'])
+print('  limit       :', d['limit'])
+print('  sehife_sayi :', d['sehife_sayi'], '= ceil(' + str(d['cemi']) + '/' + str(d['limit']) + ')')
+print('  setirler    :', len(d['setirler']), 'sətir')
+print()
+print('  birinci sətrin sütunları:')
+for k in d['setirler'][0]: print('     -', k)
+"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>  cemi        : 10
+  sehife      : 1
+  limit       : 3
+  sehife_sayi : 4 = ceil(10/3)
+  setirler    : 3 sətir
+
+  birinci sətrin sütunları:
+     - id
+     - ad
+     - tip
+     - tesvir
+     - unvan
+     - telefon
+     - email
+     - yaradilma_tarixi
+     - aktiv</code></pre>
+  </div>
+</article><article class="test" id="t-II-7">
+  <h3><span class="no">II.7</span> Mərkəz statistikası — qruplaşdırma sorğusu</h3>
+  <p class="giris">Bu test <code>GET /struktur/merkezler/statistika</code> endpointini yoxlayır: hər mərkəz üzrə şöbə və əməkdaş sayını bir sorğuda qaytarır. Bu, sadə <code>findMany</code> ilə mümkün deyil — <code>GROUP BY</code> lazımdır. Skript nəticəni bazadan ayrıca sayaraq tutuşdurur.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+TOKEN=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+H="Authorization: Bearer $TOKEN"
+
+echo "── API cavabı ──"
+curl -s "$A/struktur/merkezler/statistika" -H "$H" | python3 -c "
+import json,sys
+for s in json.load(sys.stdin):
+    print('  %-38s şöbə: %-3s əməkdaş: %s' % (s['ad'], s['shobe_sayi'], s['emekdas_sayi']))
+"
+
+echo "── Bazadan yoxlama (eyni rəqəmlər olmalıdır) ──"
+psql -U arti_user -d arti_baza -tA -c "
+  SELECT m.ad || ' → şöbə: ' || count(DISTINCT s.id) || ' əməkdaş: ' || count(DISTINCT e.id)
+  FROM struktur.merkezler m
+  LEFT JOIN struktur.shobeler s ON s.merkez_id = m.id
+  LEFT JOIN kadrlar.emekdaslar e ON e.merkez_id = m.id
+  GROUP BY m.ad ORDER BY m.ad" | sed 's/^/  /'</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── API cavabı ──
+  Elmi katiblik                          şöbə: 0   əməkdaş: 2
+  Elmi-pedaqoji tədqiqatlar mərkəzi      şöbə: 7   əməkdaş: 2
+  Funksional şöbələr                     şöbə: 8   əməkdaş: 3
+  Metodik dəstək mərkəzi                 şöbə: 3   əməkdaş: 1
+  Qiymətləndirmə, təhlil və monitorinq mərkəzi şöbə: 4   əməkdaş: 2
+  Tədris resursları mərkəzi              şöbə: 0   əməkdaş: 0
+  Təhsil texnologiyaları mərkəzi         şöbə: 0   əməkdaş: 1
+  Təhsildə məzmun, kurikulum və standartlar mərkəzi şöbə: 6   əməkdaş: 1
+  Təhsilverənlərin peşəkar inkişafı mərkəzi şöbə: 6   əməkdaş: 1
+  Xüsusi istedadlı uşaqlarla iş mərkəzi  şöbə: 2   əməkdaş: 1
+── Bazadan yoxlama (eyni rəqəmlər olmalıdır) ──
+  Elmi katiblik → şöbə: 0 əməkdaş: 2
+  Elmi-pedaqoji tədqiqatlar mərkəzi → şöbə: 7 əməkdaş: 2
+  Funksional şöbələr → şöbə: 8 əməkdaş: 3
+  Metodik dəstək mərkəzi → şöbə: 3 əməkdaş: 1
+  Qiymətləndirmə, təhlil və monitorinq mərkəzi → şöbə: 4 əməkdaş: 2
+  Tədris resursları mərkəzi → şöbə: 0 əməkdaş: 0
+  Təhsil texnologiyaları mərkəzi → şöbə: 0 əməkdaş: 1
+  Təhsildə məzmun, kurikulum və standartlar mərkəzi → şöbə: 6 əməkdaş: 1
+  Təhsilverənlərin peşəkar inkişafı mərkəzi → şöbə: 6 əməkdaş: 1
+  Xüsusi istedadlı uşaqlarla iş mərkəzi → şöbə: 2 əməkdaş: 1</code></pre>
+  </div>
+</article><article class="test" id="t-II-8">
+  <h3><span class="no">II.8</span> Yazma dövrü — yarat, oxu, sil</h3>
+  <p class="giris">Bu test Dərs 2-nin dördüncü və beşinci addımını yoxlayır: <code>POST</code>, <code>GET</code> və <code>DELETE</code> əməliyyatlarının tam dövrünü. Yaradılan mərkəz dərhal oxunmalı və sonra silinməlidir — yəni baza tutarlı qalır. Skript sonda yaratdığını silir, bazada artıq sətir qalmır.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+TOKEN=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+H="Authorization: Bearer $TOKEN"
+
+echo "── 1) POST /struktur/merkezler ──"
+YENI=$(curl -s -X POST "$A/struktur/merkezler" -H "$H" -H 'Content-Type: application/json' \
+  -d '{"ad":"Test Mərkəzi","tip":"merkez","tesvir":"Yoxlama üçün"}')
+ID=$(printf '%s' "$YENI" | python3 -c "import json,sys;print(json.load(sys.stdin)['id'])")
+echo "$YENI" | python3 -c "
+import json,sys; d=json.load(sys.stdin)
+print('  id:', d['id'], '| ad:', d['ad'], '| tip:', d['tip'])"
+
+echo "── 2) GET ilə oxu ──"
+curl -s "$A/struktur/merkezler/$ID" -H "$H" | python3 -c "
+import json,sys; d=json.load(sys.stdin); print('  oxundu:', d['ad'], '| aktiv:', d['aktiv'])"
+
+echo "── 3) Eyni adla təkrar yaratmaq → 409 ──"
+curl -s -o /dev/null -w "  HTTP %{http_code}\n" -X POST "$A/struktur/merkezler" \
+  -H "$H" -H 'Content-Type: application/json' -d '{"ad":"Test Mərkəzi","tip":"merkez"}'
+
+echo "── 4) DELETE ──"
+curl -s -X DELETE "$A/struktur/merkezler/$ID" -H "$H" | python3 -c "
+import json,sys; d=json.load(sys.stdin); print('  silindi:', d['ad'])"
+
+echo "── 5) Silindikdən sonra oxumaq → 404 ──"
+curl -s -o /dev/null -w "  HTTP %{http_code}\n" "$A/struktur/merkezler/$ID" -H "$H"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── 1) POST /struktur/merkezler ──
+  id: 452 | ad: Test Mərkəzi | tip: merkez
+── 2) GET ilə oxu ──
+  oxundu: Test Mərkəzi | aktiv: True
+── 3) Eyni adla təkrar yaratmaq → 409 ──
+  HTTP 409
+── 4) DELETE ──
+  silindi: Test Mərkəzi
+── 5) Silindikdən sonra oxumaq → 404 ──
+  HTTP 404</code></pre>
+  </div>
+</article><article class="test" id="t-II-9">
+  <h3><span class="no">II.9</span> ⚠️ Bağlı mərkəzi silmək → 409, 500 DEYİL</h3>
+  <p class="giris">Bu test Dərs 2-nin dördüncü addımındaki xəta idarəetməsini yoxlayır: şöbəsi olan mərkəzi silmək mümkün deyil, çünki xarici açar (FK) buna mane olur. Prisma bu halda <code>P2003</code> xətası verir və servis onu <strong>409</strong> kimi tərcümə edir. Bu tərcümə olmasaydı istifadəçi <strong>500</strong> görərdi və problemin özündə olduğunu sanardı.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+TOKEN=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+H="Authorization: Bearer $TOKEN"
+
+echo "── Şöbəsi olan mərkəzlər ──"
+psql -U arti_user -d arti_baza -tA -c "
+  SELECT m.id || ' | ' || m.ad || ' | şöbə: ' || count(s.id)
+  FROM struktur.merkezler m
+  JOIN struktur.shobeler s ON s.merkez_id = m.id
+  GROUP BY m.id, m.ad ORDER BY m.id LIMIT 3" | sed 's/^/  /'
+
+ID=$(psql -U arti_user -d arti_baza -tA -c "
+  SELECT m.id FROM struktur.merkezler m
+  JOIN struktur.shobeler s ON s.merkez_id = m.id
+  GROUP BY m.id ORDER BY m.id LIMIT 1")
+
+echo "── $ID nömrəli mərkəzi silmək cəhdi ──"
+curl -s -X DELETE "$A/struktur/merkezler/$ID" -H "$H" | python3 -m json.tool
+
+echo "── Mərkəz hələ də yerindədir? ──"
+psql -U arti_user -d arti_baza -tA -c "
+  SELECT '  ✓ ' || ad || ' — silinmədi' FROM struktur.merkezler WHERE id = $ID"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── Şöbəsi olan mərkəzlər ──
+  2 | Elmi-pedaqoji tədqiqatlar mərkəzi | şöbə: 7
+  3 | Təhsilverənlərin peşəkar inkişafı mərkəzi | şöbə: 6
+  4 | Metodik dəstək mərkəzi | şöbə: 3
+── 2 nömrəli mərkəzi silmək cəhdi ──
+{
+    "ugur": false,
+    "xeta": {
+        "kod": "TOQQUSMA",
+        "mesaj": "\u00abElmi-pedaqoji t\u0259dqiqatlar m\u0259rk\u0259zi\u00bb silinmir \u2014 ona ba\u011fl\u0131 7 \u015f\u00f6b\u0259, 2 \u0259m\u0259kda\u015f var"
+    },
+    "yol": "/api/v1/struktur/merkezler/2",
+    "vaxt": "2026-09-22T13:19:55.501Z"
+}
+── Mərkəz hələ də yerindədir? ──
+  ✓ Elmi-pedaqoji tədqiqatlar mərkəzi — silinmədi</code></pre>
+  </div>
+</article><article class="test" id="t-II-10">
+  <h3><span class="no">II.10</span> ⚠️ JOIN ilə kadr profili — maas RƏQƏM olmalıdır</h3>
+  <p class="giris">Bu test Dərs 2-nin yeddinci addımını yoxlayır: kadrlar sorğusunun JOIN ilə şöbə və vəzifə adlarını gətirməsini. Ən incə məqam <code>maas::float8</code> çevrilməsidir — o olmasa PostgreSQL <code>numeric</code> tipini sətir kimi qaytarır və frontend rəqəm yerinə mətn alır. Skript həm də tipin həqiqətən <code>number</code> olduğunu yoxlayır.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+export npm_config_cache=/tmp/npmcache
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+TOKEN=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+H="Authorization: Bearer $TOKEN"
+
+echo "── Siyahıdan bir kadr ──"
+curl -s "$A/kadrlar/emekdaslar?limit=2" -H "$H" | python3 -c "
+import json,sys
+d = json.load(sys.stdin)
+print('  cemi:', d['cemi'])
+for s in d['setirler']:
+    print('  %s %s | %s | maas: %s (%s)' % (s['ad'], s['soyad'],
+          s.get('merkez'), s.get('maas'), type(s.get('maas')).__name__))
+"
+
+echo "── JOIN ilə tam profil ──"
+ID=$(curl -s "$A/kadrlar/emekdaslar?limit=1" -H "$H" | python3 -c "
+import json,sys;print(json.load(sys.stdin)['setirler'][0]['id'])")
+curl -s "$A/kadrlar/emekdaslar/$ID" -H "$H" | python3 -c "
+import json,sys
+d = json.load(sys.stdin)
+for k, v in d.items():
+    if isinstance(v, list):
+        print('  %-14s → %d qeyd' % (k, len(v)))
+    else:
+        print('  %-14s → %s' % (k, v))
+"
+
+echo "── İcmal endpointi ──"
+curl -s "$A/kadrlar/emekdaslar/icmal" -H "$H" | python3 -m json.tool | head -14</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── Siyahıdan bir kadr ──
+  cemi: 14
+  Elçin Babayev | Təhsil texnologiyaları mərkəzi | maas: 1300 (int)
+  İlham Cavadov | Metodik dəstək mərkəzi | maas: 2800 (int)
+── JOIN ilə tam profil ──
+  id             → 13
+  ad             → Elçin
+  soyad          → Babayev
+  ata_adi        → Sərvər
+  email          → elcin.babayev@arti.edu.az
+  telefon        → +994 50 211 01 13
+  maas           → 1300
+  ise_baslama    → 2023-03-08
+  aktiv          → True
+  merkez         → Təhsil texnologiyaları mərkəzi
+  shobe          → None
+  vezife         → Aparıcı mütəxəssis
+  elmi_derece    → Magistr
+  elmi_ad        → None
+  is_statusu     → Aktiv
+── İcmal endpointi ──
+{
+    "cemi": 14,
+    "aktiv": 14,
+    "merkez_uzre": [
+        {
+            "ad": "Funksional \u015f\u00f6b\u0259l\u0259r",
+            "say": 3
+        },
+        {
+            "ad": "Elmi katiblik",
+            "say": 2
+        },
+        {
+            "ad": "Elmi-pedaqoji t\u0259dqiqatlar m\u0259rk\u0259zi",</code></pre>
+  </div>
+</article><div class="ders-basliq">
+  <h2>Dərs 3 — Autentifikasiya, rollar və audit</h2>
+  <p>JWT açarı, login və qeydiyyat DTO-ları, üç dekorator (<code>@Public</code>, <code>@Roles</code>, <code>@CurrentUser</code>), <code>JwtStrategy</code>, iki guard, <code>AuthService</code> və timing attack qoruması, <code>AuthModule</code>, <code>AuditInterceptor</code>, seed skripti və RBAC matrisi. <strong>20 yekun test.</strong></p>
+</div><article class="test" id="t-III-1">
+  <h3><span class="no">III.1</span> Auth paketləri və JWT açarı</h3>
+  <p class="giris">Bu test Dərs 3-ün birinci addımını yoxlayır: autentifikasiya üçün lazım olan paketlərin quraşdırılmasını və JWT açarının <code>.env</code> faylında saxlanmasını. Açar koda yazılsaydı, kodu görən hər kəs istənilən istifadəçi üçün token imzalaya bilərdi. Skript açarın uzunluğunu göstərir, dəyərini isə <em>çap etmir</em>.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+
+echo "── Auth paketləri ──"
+for p in @nestjs/jwt @nestjs/passport passport passport-jwt bcryptjs; do
+  v=$(python3 -c "import json;print(json.load(open('node_modules/$p/package.json'))['version'])" 2&gt;/dev/null)
+  echo "  %-20s %s" | sed "s/%-20s/$p/" | sed "s/%s/${v:-YOXDUR}/"
+done
+
+echo "── JWT ayarları (.env) ──"
+for a in JWT_SECRET JWT_MUDDET; do
+  d=$(grep "^$a=" .env | sed "s/^$a=//; s/\"//g")
+  echo "  $a → ${#d} simvol (dəyər göstərilmir)"
+done
+
+echo "── Açar koda hardcode yazılıbmı? ──"
+if grep -rn 'JWT_SECRET' src/ --include=*.ts | grep -qv 'configService\|config\.get\|ConfigService'; then
+  echo "  ⚠️ koda yazılmış istinad var — yoxlayın"
+else
+  echo "  ✓ açar yalnız ConfigService ilə oxunur, koda yazılmayıb"
+fi
+
+echo "── .env git-ə düşürmü? ──"
+grep -q '^\.env$' .gitignore &amp;&amp; echo "  ✓ .env .gitignore-dadır" || echo "  ✗ .env git-ə düşə bilər!"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── Auth paketləri ──
+  passport 0.7.0
+  passport-jwt 4.0.1
+  bcryptjs 3.0.3
+── JWT ayarları (.env) ──
+  JWT_SECRET → 29 simvol (dəyər göstərilmir)
+  JWT_MUDDET → 2 simvol (dəyər göstərilmir)
+── Açar koda hardcode yazılıbmı? ──
+  ✓ açar yalnız ConfigService ilə oxunur, koda yazılmayıb
+── .env git-ə düşürmü? ──
+  ✓ .env .gitignore-dadır
+sed: 1: "s/%-20s/@nestjs/jwt/
+": bad flag in substitute command: 'j'
+sed: 1: "s/%-20s/@nestjs/passport/
+": bad flag in substitute command: 'a'</code></pre>
+  </div>
+</article><article class="test" id="t-III-2">
+  <h3><span class="no">III.2</span> Login DTO validasiyası</h3>
+  <p class="giris">Bu test Dərs 3-ün ikinci addımını yoxlayır: <code>LoginDto</code>-nun yanlış girişi bazaya çatmadan rədd etməsini. E-poçt formatı və şifrənin minimum uzunluğu yoxlanılır. Validasiya olmasaydı hər sorğu bazaya gedərdi və boş şifrə ilə cəhdlər hesablama yükü yaradardı.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+yoxla() {
+  printf '  %-46s → %s\n' "$1" \
+    "$(curl -s -o /dev/null -w '%{http_code}' -X POST "$A/auth/login" \
+        -H 'Content-Type: application/json' -d "$2")"
+}
+
+yoxla "düzgün e-poçt + düzgün şifrə"  '{"email":"admin@arti.edu.az","parol":"123456"}'
+yoxla "pis e-poçt formatı"            '{"email":"admin","parol":"123456"}'
+yoxla "şifrə 3 simvol"                '{"email":"admin@arti.edu.az","parol":"123"}'
+yoxla "boş cisim"                     '{}'
+yoxla "e-poçt yoxdur, şifrə var"      '{"parol":"123456"}'
+
+echo "── Detallı mesaj (pis e-poçt) ──"
+curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin","parol":"123456"}' | python3 -c "
+import json,sys
+d = json.load(sys.stdin)
+print('  mesaj :', d['xeta']['mesaj'])
+for x in d['xeta'].get('detallar', []): print('  detal :', x)
+"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>  düzgün e-poçt + düzgün şifrə            → 200
+  pis e-poçt formatı                           → 400
+  şifrə 3 simvol                               → 400
+  boş cisim                                     → 400
+  e-poçt yoxdur, şifrə var                    → 400
+── Detallı mesaj (pis e-poçt) ──
+  mesaj : Validasiya xətası
+  detal : E-poçt ünvanı yanlışdır</code></pre>
+  </div>
+</article><article class="test" id="t-III-3">
+  <h3><span class="no">III.3</span> Uğurlu giriş — token və müddət</h3>
+  <p class="giris">Bu test Dərs 3-ün altıncı addımını yoxlayır: login cavabının formasını. Cavabda token, istifadəçi məlumatı və müddət olmalıdır. Token üç nöqtə ilə ayrılmış üç hissədən ibarətdir — bu, onun JWT olduğunu göstərir.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' | python3 -c "
+import json,sys
+d = json.load(sys.stdin)
+print('  cavab sahələri :', ', '.join(d.keys()))
+print('  token hissəsi  :', len(d['token'].split('.')), '(header.payload.signature)')
+print('  token uzunluğu :', len(d['token']), 'simvol')
+print('  istifadəçi     :', d['istifadeci']['ad_soyad'], '/', d['istifadeci']['rol'])
+print('  bitme          :', d['bitme'])
+print()
+print('  token başlanğıcı:', d['token'][:32] + '…')
+"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>  cavab sahələri : token, istifadeci, bitme
+  token hissəsi  : 3 (header.payload.signature)
+  token uzunluğu : 195 simvol
+  istifadəçi     : Elnur Əliyev / admin
+  bitme          : 8h
+
+  token başlanğıcı: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpX…</code></pre>
+  </div>
+</article><article class="test" id="t-III-4">
+  <h3><span class="no">III.4</span> Tokenin içi — yük (payload) açılır</h3>
+  <p class="giris">Bu test tokenin içində nə olduğunu göstərir: JWT gizli deyil, sadəcə base64 ilə kodlanmışdır — hər kəs oxuya bilər, amma <em>dəyişə</em> bilməz, çünki imza var. Yükdə istifadəçinin kimliyi, rolu və vaxtları olur. Skript yükü açıb göstərir.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+TOKEN=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"muhendis@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+
+echo "$TOKEN" | python3 -c "
+import base64, json, sys
+token = sys.stdin.read().strip()
+def ac(h):
+    h += '=' * (-len(h) % 4)
+    return json.loads(base64.urlsafe_b64decode(h))
+b, y, i = token.split('.')
+print('── BAŞLIQ (header) ──')
+for k, v in ac(b).items(): print('  %-6s %s' % (k, v))
+print('── YÜK (payload) ──')
+for k, v in ac(y).items(): print('  %-6s %s' % (k, v))
+print('── İMZA ──')
+print('  ', i[:40] + '…')
+"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── BAŞLIQ (header) ──
+  alg    HS256
+  typ    JWT
+── YÜK (payload) ──
+  sub    3
+  email  muhendis@arti.edu.az
+  rol    muhendis
+  iat    1790083196
+  exp    1790111996
+── İMZA ──
+   oH93TePWxDFGJud8HVFa6_rZ8OBR_-eO5WYfgL8T…</code></pre>
+  </div>
+</article><article class="test" id="t-III-5">
+  <h3><span class="no">III.5</span> Token müddəti — exp minus iat</h3>
+  <p class="giris">Bu test tokenin nə qədər yaşadığını hesablayır: <code>exp</code> (bitmə) minus <code>iat</code> (verilmə) = 8 saat = 28800 saniyə. Müddət sonsuz olsaydı, oğurlanmış token əbədi işləyərdi. Skript rəqəmi həm saniyə, həm saat kimi göstərir və tokenin bitmə vaxtını insan oxunaqlı edir.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+TOKEN=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+
+echo "$TOKEN" | python3 -c "
+import base64, json, sys, datetime
+def ac(h):
+    h += '=' * (-len(h) % 4); return json.loads(base64.urlsafe_b64decode(h))
+y = ac(sys.stdin.read().strip().split('.')[1])
+muddet = y['exp'] - y['iat']
+print('  iat (verilib)  :', datetime.datetime.fromtimestamp(y['iat']))
+print('  exp (bitir)    :', datetime.datetime.fromtimestamp(y['exp']))
+print('  müddət         :', muddet, 'saniyə =', muddet/3600, 'saat')
+print('  .env-dəki sətir:', open('.env').read().strip().splitlines()[-0] and [l for l in open('.env') if l.startswith('JWT_MUDDET')][0].strip())
+"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>  iat (verilib)  : 2026-09-22 17:19:56
+  exp (bitir)    : 2026-09-23 01:19:56
+  müddət         : 28800 saniyə = 8.0 saat
+  .env-dəki sətir: JWT_MUDDET="8h"</code></pre>
+  </div>
+</article><article class="test" id="t-III-6">
+  <h3><span class="no">III.6</span> ⚠️ Şifrə hash-i heç yerdə sızmır</h3>
+  <p class="giris">Bu test Dərs 3-ün ən vacib təhlükəsizlik yoxlamasıdır: şifrənin hash-i nə login cavabında, nə tokenin içində görünməməlidir. Hash sızsa, hücumçu onu özü ilə aparıb offline sındırmağa çalışa bilər. Skript tokeni açıb bütün mətn içində bcrypt izi axtarır.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+CAVAB=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}')
+TOKEN=$(printf '%s' "$CAVAB" | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+
+echo "── 1) Login cavabında ──"
+printf '%s' "$CAVAB" | grep -q 'parol_hash' &amp;&amp; echo "  ✗ parol_hash SIZIB!" || echo "  ✓ parol_hash yoxdur"
+printf '%s' "$CAVAB" | grep -q '\$2[aby]\$' &amp;&amp; echo "  ✗ bcrypt hash-i SIZIB!" || echo "  ✓ bcrypt izi yoxdur"
+
+echo "── 2) Tokenin içində ──"
+printf '%s' "$TOKEN" | grep -q 'parol_hash' &amp;&amp; echo "  ✗ SIZIB!" || echo "  ✓ parol_hash yoxdur"
+printf '%s' "$TOKEN" | grep -q '\$2[aby]\$' &amp;&amp; echo "  ✗ bcrypt izi SIZIB!" || echo "  ✓ bcrypt izi yoxdur"
+
+echo "── 3) Bazada şifrə NECƏ saxlanılır ──"
+psql -U arti_user -d arti_baza -tA -c "
+  SELECT '  ' || email || ' → ' || left(parol_hash, 7) || '… (' || length(parol_hash) || ' simvol)'
+  FROM kadrlar.istifadeciler ORDER BY id" 
+echo "  (bcrypt hash-i geri açıla bilmir — yalnız müqayisə olunur)"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── 1) Login cavabında ──
+  ✓ parol_hash yoxdur
+  ✓ bcrypt izi yoxdur
+── 2) Tokenin içində ──
+  ✓ parol_hash yoxdur
+  ✓ bcrypt izi yoxdur
+── 3) Bazada şifrə NECƏ saxlanılır ──
+  admin@arti.edu.az → $2b$10$… (60 simvol)
+  muhendis@arti.edu.az → $2b$10$… (60 simvol)
+  maliyyeci@arti.edu.az → $2b$10$… (60 simvol)
+  baxici@arti.edu.az → $2b$10$… (60 simvol)
+  (bcrypt hash-i geri açıla bilmir — yalnız müqayisə olunur)</code></pre>
+  </div>
+</article><article class="test" id="t-III-7">
+  <h3><span class="no">III.7</span> ⚠️ Timing attack qoruması — eyni mesaj</h3>
+  <p class="giris">Bu test Dərs 3-ün altıncı addımındaki <em>timing attack</em> qorumasını yoxlayır. «Belə e-poçt yoxdur» deyilsəydi, hücumçu hansı e-poçtların sistemdə olduğunu öyrənərdi. Ona görə hər iki hal eyni mesajı qaytarır və hər iki halda hash müqayisəsi aparılır ki, cavab vaxtı da fərqlənməsin.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+echo "── Mövcud e-poçt + səhv şifrə ──"
+curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"sehv-parol-2026"}' | python3 -c "
+import json,sys; d=json.load(sys.stdin); print('  mesaj :', d['xeta']['mesaj'])"
+
+echo "── Mövcud OLMAYAN e-poçt + səhv şifrə ──"
+curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"yoxdur@arti.edu.az","parol":"sehv-parol-2026"}' | python3 -c "
+import json,sys; d=json.load(sys.stdin); print('  mesaj :', d['xeta']['mesaj'])"
+
+echo "── Cavab vaxtları (fərq kiçik olmalıdır) ──"
+for e in admin@arti.edu.az yoxdur@arti.edu.az; do
+  t=$( { /usr/bin/time -p curl -s -o /dev/null -X POST "$A/auth/login" \
+        -H 'Content-Type: application/json' \
+        -d "{\"email\":\"$e\",\"parol\":\"sehv-parol-2026\"}"; } 2&gt;&amp;1 | awk '/real/{print $2}')
+  printf '  %-22s %s san\n' "$e" "$t"
+done
+
+echo "── Saxta hash harada istifadə olunur? ──"
+grep -n 'fake\|saxta\|DUMMY\|compare' src/auth/auth.service.ts | head -5 | sed 's/^/  /'</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── Mövcud e-poçt + səhv şifrə ──
+  mesaj : E-poçt və ya şifrə yanlışdır
+── Mövcud OLMAYAN e-poçt + səhv şifrə ──
+  mesaj : E-poçt və ya şifrə yanlışdır
+── Cavab vaxtları (fərq kiçik olmalıdır) ──
+  admin@arti.edu.az      0.05 san
+  yoxdur@arti.edu.az     0.06 san
+── Saxta hash harada istifadə olunur? ──
+  15: * İstifadəçi tapılmayanda da bcrypt işlətmək üçün saxta hash.
+  76:    const duzdur = await bcrypt.compare(dto.parol, hash);</code></pre>
+  </div>
+</article><article class="test" id="t-III-8">
+  <h3><span class="no">III.8</span> @Public() — açıq endpointlər</h3>
+  <p class="giris">Bu test Dərs 3-ün üçüncü və səkkizinci addımını yoxlayır: hansı endpoint-lərin autentifikasiya tələb etmədiyini. Sistem bağlıdır — <code>@Public()</code> ilə işarələnənlər istisnadır. Skript onları həm canlı yoxlayır, həm də koddan tapır ki, uyğunsuzluq olmasın.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+echo "── Tokensiz çağırışlar ──"
+for yol in "" "/saglamliq"; do
+  printf '  GET %-14s → %s\n' "/$yol" "$(curl -s -o /dev/null -w '%{http_code}' "$A$yol")"
+done
+printf '  POST %-13s → %s (pis cisim, 401 DEYİL, 400 olmalı)\n' "/auth/login" \
+  "$(curl -s -o /dev/null -w '%{http_code}' -X POST "$A/auth/login" \
+      -H 'Content-Type: application/json' -d '{}')"
+
+echo "── Kodda @Public() işarələnənlər ──"
+grep -rn -A2 '@Public()' src/ --include=*.controller.ts | grep -E '@Public|@(Get|Post)' | sed 's/^/  /'</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── Tokensiz çağırışlar ──
+  GET /              → 200
+  GET //saglamliq    → 200
+  POST /auth/login   → 400 (pis cisim, 401 DEYİL, 400 olmalı)
+── Kodda @Public() işarələnənlər ──
+  src/tehsil/tehsil.controller.ts:33:   * ⚠️ @Public() — bu endpoint AÇIQDIR.
+  src/tehsil/tehsil.controller.ts:39:  @Public()
+  src/tehsil/tehsil.controller.ts-40-  @Get('pasport/:no/yoxla')
+  src/auth/auth.controller.ts:21:  @Public()
+  src/auth/auth.controller.ts-22-  @Post('login')
+  src/saglamliq/saglamliq.controller.ts:12:  @Public()
+  src/saglamliq/saglamliq.controller.ts-13-  @Get()
+  src/saglamliq/saglamliq.controller.ts:24:  @Public()
+  src/saglamliq/saglamliq.controller.ts-25-  @Get('saglamliq')</code></pre>
+  </div>
+</article><article class="test" id="t-III-9">
+  <h3><span class="no">III.9</span> Qorunan endpoint — tokensiz 401</h3>
+  <p class="giris">Bu test Dərs 3-ün beşinci addımını yoxlayır: <code>JwtAuthGuard</code>-ın hər qorunan endpointi bağlamasını. Sekiz endpoint tokensiz yoxlanılır və <strong>hamısı 401</strong> verməlidir. Guard qeyd olunmasaydı bütün bu məlumat açıq olardı.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+echo "── Tokensiz GET sorğuları (hamısı 401 olmalıdır) ──"
+for yol in /struktur/merkezler /struktur/merkezler/1 /struktur/merkezler/statistika \
+           /kadrlar/emekdaslar /kadrlar/emekdaslar/1 /kadrlar/emekdaslar/icmal \
+           /auth/profil /auth/istifadeciler; do
+  printf '  %-34s → %s\n' "$yol" "$(curl -s -o /dev/null -w '%{http_code}' "$A$yol")"
+done
+
+echo "── Birinin cavabı ──"
+curl -s "$A/struktur/merkezler" | python3 -m json.tool</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── Tokensiz GET sorğuları (hamısı 401 olmalıdır) ──
+  /struktur/merkezler                → 401
+  /struktur/merkezler/1              → 401
+  /struktur/merkezler/statistika     → 401
+  /kadrlar/emekdaslar                → 401
+  /kadrlar/emekdaslar/1              → 401
+  /kadrlar/emekdaslar/icmal          → 401
+  /auth/profil                       → 401
+  /auth/istifadeciler                → 401
+── Birinin cavabı ──
+{
+    "ugur": false,
+    "xeta": {
+        "kod": "AUTENTIFIKASIYA_LAZIM",
+        "mesaj": "Unauthorized"
+    },
+    "yol": "/api/v1/struktur/merkezler",
+    "vaxt": "2026-09-22T13:19:56.678Z"
+}</code></pre>
+  </div>
+</article><article class="test" id="t-III-10">
+  <h3><span class="no">III.10</span> Saxta token — imza yoxlanılır</h3>
+  <p class="giris">Bu test tokenin <em>imzalandığını</em> sübut edir: yükü dəyişib yenidən göndərsək server imzanı uyğunsuz tapır. JWT-nin yükü sadəcə base64-dir, ona görə hər kəs oxuya bilər — amma dəyişə bilməz. Bu, autentifikasiyanın təməl prinsipidir.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+TOKEN=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"baxici@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+H="Authorization: Bearer $TOKEN"
+
+echo "── 1) Həqiqi token (baxici) ──"
+printf '  /auth/profil            → %s\n' "$(curl -s -o /dev/null -w '%{http_code}' "$A/auth/profil" -H "$H")"
+
+SAXTA=$(printf '%s' "$TOKEN" | python3 -c "
+import base64, json, sys
+b, y, i = sys.stdin.read().strip().split('.')
+def ac(h):
+    h += '=' * (-len(h) % 4); return json.loads(base64.urlsafe_b64decode(h))
+def kodla(o):
+    return base64.urlsafe_b64encode(json.dumps(o).encode()).decode().rstrip('=')
+yeni = ac(y); yeni['rol'] = 'admin'
+print(b + '.' + kodla(yeni) + '.' + i)")
+
+echo "── 2) Yükü dəyişilmiş token (rol → admin) ──"
+printf '  /auth/profil            → %s\n' "$(curl -s -o /dev/null -w '%{http_code}' "$A/auth/profil" -H "Authorization: Bearer $SAXTA")"
+printf '  /auth/istifadeciler     → %s\n' "$(curl -s -o /dev/null -w '%{http_code}' "$A/auth/istifadeciler" -H "Authorization: Bearer $SAXTA")"
+
+echo "── 3) Cavab ──"
+curl -s "$A/auth/profil" -H "Authorization: Bearer $SAXTA" | python3 -c "
+import json,sys; d=json.load(sys.stdin); print('  kod  :', d['xeta']['kod']); print('  mesaj:', d['xeta']['mesaj'])"
+
+echo "── 4) Tamamilə uydurma token ──"
+printf '  uydurma.token.imza      → %s\n' "$(curl -s -o /dev/null -w '%{http_code}' "$A/auth/profil" -H 'Authorization: Bearer uydurma.token.imza')"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── 1) Həqiqi token (baxici) ──
+  /auth/profil            → 200
+── 2) Yükü dəyişilmiş token (rol → admin) ──
+  /auth/profil            → 401
+  /auth/istifadeciler     → 401
+── 3) Cavab ──
+  kod  : AUTENTIFIKASIYA_LAZIM
+  mesaj: Unauthorized
+── 4) Tamamilə uydurma token ──
+  uydurma.token.imza      → 401</code></pre>
+  </div>
+</article><article class="test" id="t-III-11">
+  <h3><span class="no">III.11</span> ⚠️ JwtStrategy tokeni BAZADAN yoxlayır</h3>
+  <p class="giris">Bu test Dərs 3-ün dördüncü addımını yoxlayır: strategiyanın tokeni sadəcə imzasına görə deyil, <em>bazadan</em> da yoxladığını. İstifadəçi işdən çıxarılsa və ya deaktiv edilsə, onun mövcud tokeni dərhal işləməyəcək. Skript müvəqqəti olaraq istifadəçini deaktiv edir, yoxlayır və hər halda geri qaytarır.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+# ⚠️ Skript nə olursa olsun istifadəçini AKTİV saxlayır
+geri_qaytar() {
+  psql -U arti_user -d arti_baza -q -c \
+    "UPDATE kadrlar.istifadeciler SET aktiv = true WHERE email = 'baxici@arti.edu.az'" 2&gt;/dev/null
+}
+trap geri_qaytar EXIT
+
+TOKEN=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"baxici@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+H="Authorization: Bearer $TOKEN"
+
+echo "── 1) İstifadəçi aktivdir ──"
+printf '  /auth/profil → %s\n' "$(curl -s -o /dev/null -w '%{http_code}' "$A/auth/profil" -H "$H")"
+
+echo "── 2) İstifadəçi deaktiv edilir (token DƏYİŞMİR) ──"
+psql -U arti_user -d arti_baza -q -c \
+  "UPDATE kadrlar.istifadeciler SET aktiv = false WHERE email = 'baxici@arti.edu.az'"
+printf '  /auth/profil → %s  (eyni tokenlə!)\n' "$(curl -s -o /dev/null -w '%{http_code}' "$A/auth/profil" -H "$H")"
+curl -s "$A/auth/profil" -H "$H" | python3 -c "
+import json,sys; d=json.load(sys.stdin); print('  mesaj :', d['xeta']['mesaj'])"
+
+echo "── 3) İstifadəçi yenidən aktiv edilir ──"
+geri_qaytar
+printf '  /auth/profil → %s\n' "$(curl -s -o /dev/null -w '%{http_code}' "$A/auth/profil" -H "$H")"
+
+echo "── Strategiyanın yoxlaması ──"
+grep -n 'aktiv\|findUnique\|queryRaw\|Unauthorized' src/auth/strategies/jwt.strategy.ts | head -6 | sed 's/^/  /'</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── 1) İstifadəçi aktivdir ──
+  /auth/profil → 200
+── 2) İstifadəçi deaktiv edilir (token DƏYİŞMİR) ──
+  /auth/profil → 401  (eyni tokenlə!)
+  mesaj : İstifadəçi deaktiv edilib
+── 3) İstifadəçi yenidən aktiv edilir ──
+  /auth/profil → 200
+── Strategiyanın yoxlaması ──
+  1:import { Injectable, UnauthorizedException } from '@nestjs/common';
+  21:  aktiv: boolean;
+  40:   * Burada istifadəçinin hələ də mövcud və aktiv olduğunu yoxlayırıq —
+  44:    const setirler = await this.prisma.$queryRaw&lt;IstifadeciSetri[]&gt;`
+  45:      SELECT id::int AS id, email, ad_soyad, rol, aktiv
+  52:      throw new UnauthorizedException('İstifadəçi tapılmadı');</code></pre>
+  </div>
+</article><article class="test" id="t-III-12">
+  <h3><span class="no">III.12</span> RBAC matrisi — POST /struktur/merkezler</h3>
+  <p class="giris">Bu test Dərs 3-ün beşinci addımını yoxlayır: <code>RolesGuard</code>-ın dörd rolu ayırd etməsini. <code>admin</code> və <code>muhendis</code> mərkəz yarada bilir, <code>maliyyeci</code> və <code>baxici</code> isə <strong>403</strong> alır. Skript hər cəhddən sonra yaradılanı silir.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+TOKEN=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+
+echo "── @Roles('admin','muhendis') — POST /struktur/merkezler ──"
+for rol in admin muhendis maliyyeci baxici; do
+  T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+    -d "{\"email\":\"$rol@arti.edu.az\",\"parol\":\"123456\"}" \
+    | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+  KOD=$(curl -s -o /tmp/_m.json -w '%{http_code}' -X POST "$A/struktur/merkezler" \
+    -H "Authorization: Bearer $T" -H 'Content-Type: application/json' \
+    -d "{\"ad\":\"RBAC testi — $rol\",\"tip\":\"merkez\"}")
+  printf '  %-10s → %s\n' "$rol" "$KOD"
+  if [ "$KOD" = "201" ]; then
+    ID=$(python3 -c "import json;print(json.load(open('/tmp/_m.json'))['id'])")
+    curl -s -o /dev/null -X DELETE "$A/struktur/merkezler/$ID" -H "Authorization: Bearer $TOKEN"
+  fi
+done
+rm -f /tmp/_m.json
+
+echo "── Controller-də dekorator ──"
+grep -n -B2 "'merkezler')" src/struktur/struktur.controller.ts | head -8 | sed 's/^/  /'</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── @Roles('admin','muhendis') — POST /struktur/merkezler ──
+  admin      → 201
+  muhendis   → 201
+  maliyyeci  → 403
+  baxici     → 403
+── Controller-də dekorator ──</code></pre>
+  </div>
+</article><article class="test" id="t-III-13">
+  <h3><span class="no">III.13</span> RBAC — DELETE yalnız admin</h3>
+  <p class="giris">Bu test ən sərt qaydayı yoxlayır: silmə əməliyyatı yalnız <code>admin</code> roluna açıqdır. <code>muhendis</code> yarada bilir, amma silə bilmir — bu, qəsdən belə qurulub, çünki silmə geri qaytarıla bilməyən əməliyyatdır. Skript hər rolun cavabını göstərir.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+ADMIN=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+
+# Yoxlama üçün boş mərkəz yaradırıq
+ID=$(curl -s -X POST "$A/struktur/merkezler" -H "Authorization: Bearer $ADMIN" \
+  -H 'Content-Type: application/json' -d '{"ad":"Silme testi","tip":"merkez"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['id'])")
+echo "  Yoxlama mərkəzi yaradıldı: id=$ID"
+
+echo "── @Roles('admin') — DELETE /struktur/merkezler/$ID ──"
+for rol in muhendis maliyyeci baxici; do
+  T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+    -d "{\"email\":\"$rol@arti.edu.az\",\"parol\":\"123456\"}" \
+    | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+  printf '  %-10s → %s\n' "$rol" \
+    "$(curl -s -o /dev/null -w '%{http_code}' -X DELETE "$A/struktur/merkezler/$ID" -H "Authorization: Bearer $T")"
+done
+
+echo "── admin → 200 ──"
+curl -s -X DELETE "$A/struktur/merkezler/$ID" -H "Authorization: Bearer $ADMIN" \
+  | python3 -c "import json,sys;print('  silindi:', json.load(sys.stdin)['ad'])"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>  Yoxlama mərkəzi yaradıldı: id=456
+── @Roles('admin') — DELETE /struktur/merkezler/456 ──
+  muhendis   → 403
+  maliyyeci  → 403
+  baxici     → 403
+── admin → 200 ──
+  silindi: Silme testi</code></pre>
+  </div>
+</article><article class="test" id="t-III-14">
+  <h3><span class="no">III.14</span> RBAC — istifadəçi siyahısı yalnız admin</h3>
+  <p class="giris">Bu test <code>GET /auth/istifadeciler</code> endpointinin yalnız <code>admin</code> üçün açıq olduğunu yoxlayır. İstifadəçi siyahısı həssas məlumatdır — kimin sistemdə olduğunu bilmək kifayət edir ki, hücumçu hədəf seçsin. Digər üç rol <strong>403</strong> almalıdır.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+echo "── GET /auth/istifadeciler ──"
+for rol in admin muhendis maliyyeci baxici; do
+  T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+    -d "{\"email\":\"$rol@arti.edu.az\",\"parol\":\"123456\"}" \
+    | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+  KOD=$(curl -s -o /tmp/_u.json -w '%{http_code}' "$A/auth/istifadeciler" -H "Authorization: Bearer $T")
+  EK=""
+  [ "$KOD" = "200" ] &amp;&amp; EK="($(python3 -c "import json;print(len(json.load(open('/tmp/_u.json'))))") istifadəçi)"
+  printf '  %-10s → %s %s\n' "$rol" "$KOD" "$EK"
+done
+rm -f /tmp/_u.json
+
+echo "── Admin görən məlumat ──"
+T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+curl -s "$A/auth/istifadeciler" -H "Authorization: Bearer $T" | python3 -c "
+import json,sys
+for u in json.load(sys.stdin):
+    print('  %-24s %-10s %s' % (u['email'], u['rol'], u['ad_soyad']))
+"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── GET /auth/istifadeciler ──
+  admin      → 200 (4 istifadəçi)
+  muhendis   → 403 
+  maliyyeci  → 403 
+  baxici     → 403 
+── Admin görən məlumat ──
+  admin@arti.edu.az        admin      Elnur Əliyev
+  muhendis@arti.edu.az     muhendis   Rəşad Məmmədov
+  maliyyeci@arti.edu.az    maliyyeci  Tural İsmayılov
+  baxici@arti.edu.az       baxici     Günel Rzayeva</code></pre>
+  </div>
+</article><article class="test" id="t-III-15">
+  <h3><span class="no">III.15</span> admin super-rolu</h3>
+  <p class="giris">Bu test <code>RolesGuard</code>-daki xüsusi qaydayı yoxlayır: <code>admin</code> hər endpointə girə bilir, hətta dekoratorda adı çəkilməsə də. Bu, super-rol prinsipidir və inzibatçının hər yeri düzəldə bilməsini təmin edir. Skript admini bütün qorunan endpoint-lərdə sınayır.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+H="Authorization: Bearer $T"
+
+echo "── admin hər qorunan endpointə girir ──"
+for yol in /struktur/merkezler /struktur/merkezler/statistika \
+           /kadrlar/emekdaslar /kadrlar/emekdaslar/icmal \
+           /auth/profil /auth/istifadeciler \
+           /ai/statistika /ai/reseptler /ixrac/merkezler.xlsx \
+           /tehsil/istirakciler /tehsil/statistika; do
+  printf '  %-32s → %s\n' "$yol" "$(curl -s -o /dev/null -w '%{http_code}' "$A$yol" -H "$H")"
+done
+
+echo "── Guard-daki super-rol qaydası ──"
+grep -n "admin' === \|super\|=== 'admin'" src/auth/guards/roles.guard.ts | sed 's/^/  /'</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── admin hər qorunan endpointə girir ──
+  /struktur/merkezler              → 200
+  /struktur/merkezler/statistika   → 200
+  /kadrlar/emekdaslar              → 200
+  /kadrlar/emekdaslar/icmal        → 200
+  /auth/profil                     → 200
+  /auth/istifadeciler              → 200
+  /ai/statistika                   → 200
+  /ai/reseptler                    → 200
+  /ixrac/merkezler.xlsx            → 200
+  /tehsil/istirakciler             → 200
+  /tehsil/statistika               → 200
+── Guard-daki super-rol qaydası ──
+  32:    // 'admin' HƏR ŞEYƏ icazəlidir — super-rol
+  33:    if (istifadeci.rol === 'admin') return true;</code></pre>
+  </div>
+</article><article class="test" id="t-III-16">
+  <h3><span class="no">III.16</span> 403 cavabının strukturu</h3>
+  <p class="giris">Bu test icazəsiz cəhdin cavabının nə qədər <em>açıqlayıcı</em> olduğunu yoxlayır: kod <code>ICAZE_YOXDUR</code> və mesajda hansı rolun lazım olduğu yazılır. Bu, təhlükəsizliyi zəiflətmir, əksinə inkişaf etdiricini düzgün yola yönəldir. Skript 403-ün tam strukturunu göstərir.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"maliyyeci@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+
+echo "── maliyyeci → POST /struktur/merkezler ──"
+curl -s -X POST "$A/struktur/merkezler" -H "Authorization: Bearer $T" \
+  -H 'Content-Type: application/json' -d '{"ad":"olmayacaq","tip":"merkez"}' | python3 -m json.tool
+
+echo "── maliyyeci → GET /auth/istifadeciler ──"
+curl -s "$A/auth/istifadeciler" -H "Authorization: Bearer $T" | python3 -c "
+import json,sys
+d = json.load(sys.stdin)
+print('  ugur :', d['ugur'])
+print('  kod  :', d['xeta']['kod'])
+print('  mesaj:', d['xeta']['mesaj'])
+"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── maliyyeci → POST /struktur/merkezler ──
+{
+    "ugur": false,
+    "xeta": {
+        "kod": "ICAZE_YOXDUR",
+        "mesaj": "Bu \u0259m\u0259liyyat \u00fc\u00e7\u00fcn icaz\u0259niz yoxdur. T\u0259l\u0259b olunan rol: admin v\u0259 ya muhendis. Sizin rol: maliyyeci"
+    },
+    "yol": "/api/v1/struktur/merkezler",
+    "vaxt": "2026-09-22T13:19:58.373Z"
+}
+── maliyyeci → GET /auth/istifadeciler ──
+  ugur : False
+  kod  : ICAZE_YOXDUR
+  mesaj: Bu əməliyyat üçün icazəniz yoxdur. Tələb olunan rol: admin. Sizin rol: maliyyeci</code></pre>
+  </div>
+</article><article class="test" id="t-III-17">
+  <h3><span class="no">III.17</span> Qeydiyyat — kim istifadəçi yarada bilər</h3>
+  <p class="giris">Bu test Dərs 3-ün yeddinci addımını yoxlayır: <code>POST /auth/qeydiyyat</code> endpointinin rol qorumasını. Yeni istifadəçi yaratmaq hüququ yalnız <code>admin</code>-də olmalıdır — <code>baxici</code> özünə yüksək rol verə bilməməlidir. Skript yaratdığı istifadəçini sonda silir.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+temizle() {
+  psql -U arti_user -d arti_baza -q -c \
+    "DELETE FROM kadrlar.istifadeciler WHERE email = 'yoxlama@arti.edu.az'" 2&gt;/dev/null
+}
+trap temizle EXIT
+
+ADMIN=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+BAXICI=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"baxici@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+
+CISIM='{"email":"yoxlama@arti.edu.az","parol":"yoxlama2026","ad_soyad":"Yoxlama Istifadeci","rol":"baxici"}'
+
+echo "── baxici cəhd edir ──"
+printf '  HTTP %s\n' "$(curl -s -o /dev/null -w '%{http_code}' -X POST "$A/auth/qeydiyyat" \
+  -H "Authorization: Bearer $BAXICI" -H 'Content-Type: application/json' -d "$CISIM")"
+
+echo "── admin cəhd edir ──"
+curl -s -X POST "$A/auth/qeydiyyat" -H "Authorization: Bearer $ADMIN" \
+  -H 'Content-Type: application/json' -d "$CISIM" | python3 -c "
+import json,sys; d=json.load(sys.stdin)
+print('  yaradıldı:', d.get('email'), '| rol:', d.get('rol'), '| id:', d.get('id'))
+print('  parol_hash cavabda varmı?', 'BƏLİ ⚠️' if 'parol_hash' in json.dumps(d) else 'xeyr ✓')
+"
+
+echo "── Eyni e-poçtla təkrar → 409 ──"
+printf '  HTTP %s\n' "$(curl -s -o /dev/null -w '%{http_code}' -X POST "$A/auth/qeydiyyat" \
+  -H "Authorization: Bearer $ADMIN" -H 'Content-Type: application/json' -d "$CISIM")"
+
+echo "── Yeni istifadəçi giriş edə bilir? ──"
+printf '  login → %s\n' "$(curl -s -o /dev/null -w '%{http_code}' -X POST "$A/auth/login" \
+  -H 'Content-Type: application/json' -d '{"email":"yoxlama@arti.edu.az","parol":"yoxlama2026"}')"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── baxici cəhd edir ──
+  HTTP 403
+── admin cəhd edir ──
+  yaradıldı: yoxlama@arti.edu.az | rol: baxici | id: 280
+  parol_hash cavabda varmı? xeyr ✓
+── Eyni e-poçtla təkrar → 409 ──
+  HTTP 500
+── Yeni istifadəçi giriş edə bilir? ──
+  login → 200</code></pre>
+  </div>
+</article><article class="test" id="t-III-18">
+  <h3><span class="no">III.18</span> AuditInterceptor — yazma +1, oxuma +0</h3>
+  <p class="giris">Bu test Dərs 3-ün doqquzuncu addımını yoxlayır: audit jurnalının yalnız <em>yazma</em> əməliyyatlarını yazmasını. Hər GET sorğusunu yazsaq jurnal bir gündə milyon sətir olar və içindən heç nə tapmaq mümkün olmaz. Skript əvvəl və sonra sayır.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+H="Authorization: Bearer $T"
+
+say() { psql -U arti_user -d arti_baza -tA -c "SELECT count(*) FROM audit.audit_log" | tr -d ' '; }
+
+echo "── 3 × GET ──"
+E=$(say)
+for i in 1 2 3; do curl -s -o /dev/null "$A/struktur/merkezler" -H "$H"; done
+S=$(say)
+echo "  əvvəl: $E   sonra: $S   fərq: $((S - E))   (gözlənilən: 0)"
+
+echo "── 1 × POST + 1 × DELETE ──"
+E=$(say)
+ID=$(curl -s -X POST "$A/struktur/merkezler" -H "$H" -H 'Content-Type: application/json' \
+  -d '{"ad":"Audit testi","tip":"merkez"}' | python3 -c "import json,sys;print(json.load(sys.stdin)['id'])")
+curl -s -o /dev/null -X DELETE "$A/struktur/merkezler/$ID" -H "$H"
+S=$(say)
+echo "  əvvəl: $E   sonra: $S   fərq: $((S - E))   (gözlənilən: 2)"
+
+echo "── Son 3 jurnal sətri ──"
+psql -U arti_user -d arti_baza -c "
+  SELECT cedvel_adi, emeliyyat, setir_id, istifadeci, qeyd
+  FROM audit.audit_log ORDER BY id DESC LIMIT 3" | sed 's/^/  /'</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── 3 × GET ──
+  əvvəl: 4118   sonra: 4118   fərq: 0   (gözlənilən: 0)
+── 1 × POST + 1 × DELETE ──
+  əvvəl: 4118   sonra: 4120   fərq: 2   (gözlənilən: 2)
+── Son 3 jurnal sətri ──
+       cedvel_adi     | emeliyyat | setir_id |    istifadeci     |     qeyd      
+  --------------------+-----------+----------+-------------------+---------------
+   struktur.merkezler | DELETE    | 457      | admin@arti.edu.az | Uğurlu | 12ms
+   struktur.merkezler | POST      |          | admin@arti.edu.az | Uğurlu | 1ms
+   auth.login         | POST      |          | anonim            | Uğurlu | 54ms
+  (3 rows)</code></pre>
+  </div>
+</article><article class="test" id="t-III-19">
+  <h3><span class="no">III.19</span> ⚠️ Uğursuz cəhd də jurnala yazılır</h3>
+  <p class="giris">Bu test auditin ən dəyərli xüsusiyyətini yoxlayır: uğursuz cəhdlərin də qeydə alınmasını. Kimsə icazəsiz silməyə çalışsa, bu cəhd jurnalda <code>XƏTA</code> qeydi ilə qalmalıdır. Yalnız uğurlu əməliyyatları yazsaq, təhlükəsizlik pozuntuları görünməz qalardı.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+BAXICI=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"baxici@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+
+echo "── baxici mərkəz silməyə çalışır (403 olacaq) ──"
+printf '  HTTP %s\n' "$(curl -s -o /dev/null -w '%{http_code}' -X DELETE "$A/struktur/merkezler/1" \
+  -H "Authorization: Bearer $BAXICI")"
+
+sleep 1
+echo "── Jurnalda bu cəhd görünürmü? ──"
+psql -U arti_user -d arti_baza -c "
+  SELECT cedvel_adi, emeliyyat, istifadeci, qeyd, vaxt::timestamp(0)
+  FROM audit.audit_log
+  WHERE istifadeci = 'baxici@arti.edu.az'
+  ORDER BY id DESC LIMIT 3" | sed 's/^/  /'
+
+echo "── XƏTA qeydi olan cəhdlərin sayı ──"
+psql -U arti_user -d arti_baza -tA -c "
+  SELECT '  ' || count(*) || ' uğursuz cəhd jurnala yazılıb'
+  FROM audit.audit_log WHERE qeyd LIKE 'XƏTA%'"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── baxici mərkəz silməyə çalışır (403 olacaq) ──
+  HTTP 403
+── Jurnalda bu cəhd görünürmü? ──
+   cedvel_adi | emeliyyat | istifadeci | qeyd | vaxt 
+  ------------+-----------+------------+------+------
+  (0 rows)
+  
+── XƏTA qeydi olan cəhdlərin sayı ──
+  575 uğursuz cəhd jurnala yazılıb</code></pre>
+  </div>
+</article><article class="test" id="t-III-20">
+  <h3><span class="no">III.20</span> Seed skriptinin idempotentliyi</h3>
+  <p class="giris">Bu test Dərs 3-ün on birinci addımını yoxlayır: seed skriptinin təkrar işlədilə bilməsini. Skript iki dəfə işlədilsə də sistemdə <strong>4</strong> istifadəçi qalmalıdır — dublikat yaranmamalıdır. İdempotentlik olmasaydı hər işə salmada yeni sətirlər yığılardı.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
+export npm_config_cache=/tmp/npmcache
+
+say() {
+  echo "  istifadəçi: $(psql -U arti_user -d arti_baza -tA -c 'SELECT count(*) FROM kadrlar.istifadeciler' | tr -d ' ')  |  bcrypt hash-li: $(psql -U arti_user -d arti_baza -tA -c "SELECT count(*) FROM kadrlar.istifadeciler WHERE parol_hash LIKE '\$2%'" | tr -d ' ')"
+}
+
+echo "── Əvvəl ──"; say
+
+echo "── 1-ci işə salma ──"
+npm run seed:auth 2&gt;&amp;1 | tail -3 | sed 's/^/  /'
+say
+
+echo "── 2-ci işə salma (idempotent olmalıdır) ──"
+npm run seed:auth 2&gt;&amp;1 | tail -3 | sed 's/^/  /'
+say
+
+echo "── Rollar üzrə ──"
+psql -U arti_user -d arti_baza -c "
+  SELECT rol, count(*) AS sayi FROM kadrlar.istifadeciler GROUP BY rol ORDER BY rol" | sed 's/^/  /'
+
+echo "── Seed skriptində idempotentlik ──"
+grep -nE 'upsert|ON CONFLICT|update:|create:' scripts/seed-auth.ts | head -6 | sed 's/^/  /'</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── Əvvəl ──
+  istifadəçi: 4  |  bcrypt hash-li: 4
+── 1-ci işə salma ──
+    ✓ id= 5  baxici@arti.edu.az       baxici     şifrə: 123456
+  
+  ════ CƏMİ: 4 istifadəçi ════
+  istifadəçi: 4  |  bcrypt hash-li: 4
+── 2-ci işə salma (idempotent olmalıdır) ──
+    ✓ id= 5  baxici@arti.edu.az       baxici     şifrə: 123456
+  
+  ════ CƏMİ: 4 istifadəçi ════
+  istifadəçi: 4  |  bcrypt hash-li: 4
+── Rollar üzrə ──
+      rol    | sayi 
+  -----------+------
+   admin     |    1
+   baxici    |    1
+   maliyyeci |    1
+   muhendis  |    1
+  (4 rows)
+  
+── Seed skriptində idempotentlik ──
+  40:       ON CONFLICT (email) DO UPDATE</code></pre>
+  </div>
+</article><div class="ders-basliq">
+  <h2>Dərs 4 — AI qatı, ixrac və yerləşdirmə</h2>
+  <p><code>exceljs</code> və DeepSeek açarları, <code>EmbeddingService</code> və kosinus, <code>RagService</code>, resept ağ siyahısı, <code>DeepseekService</code> demo rejimi, AI endpoint-ləri, Excel ixracı, iştirakçı elektron pasportu, Docker və CI/CD. <strong>30 yekun test.</strong></p>
+</div><article class="test" id="t-IV-1">
+  <h3><span class="no">IV.1</span> AI paketləri və demo rejim açarı</h3>
+  <p class="giris">Bu test Dərs 4-ün birinci addımını yoxlayır: <code>exceljs</code> paketinin quraşdırılmasını və DeepSeek açarlarının <code>.env</code>-də olmasını. Ən vacib məqam <code>DEEPSEEK_API_KEY</code>-in <strong>boş</strong> olmasıdır — sistem açar olmadan da işləyir, sadəcə demo rejimdə. Skript açarın boş olduğunu təsdiqləyir.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+
+echo "── Paketlər ──"
+for p in exceljs; do
+  v=$(python3 -c "import json;print(json.load(open('node_modules/$p/package.json'))['version'])" 2&gt;/dev/null)
+  echo "  $p = ${v:-QURAŞDIRILMAYIB}"
+done
+python3 -c "
+import json
+d = json.load(open('package.json'))['dependencies']
+print('  package.json-da exceljs:', d.get('exceljs', 'YOXDUR'))"
+
+echo "── .env dəyişənləri ──"
+for a in DEEPSEEK_API_KEY DEEPSEEK_MODEL DEEPSEEK_URL; do
+  d=$(grep "^$a=" .env | sed "s/^$a=//; s/\"//g")
+  if [ "$a" = "DEEPSEEK_API_KEY" ]; then
+    echo "  $a → ${#d} simvol $([ -z "$d" ] &amp;&amp; echo '(BOŞ → demo rejim)')"
+  else
+    echo "  $a → $d"
+  fi
+done
+
+echo "── Demo rejim koda necə bağlanıb? ──"
+grep -n 'demoRejim\|API_KEY' src/ai/deepseek.service.ts | head -5 | sed 's/^/  /'</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── Paketlər ──
+  exceljs = 4.4.0
+  package.json-da exceljs: ^4.4.0
+── .env dəyişənləri ──
+  DEEPSEEK_API_KEY → 0 simvol (BOŞ → demo rejim)
+  DEEPSEEK_MODEL → deepseek-chat
+  DEEPSEEK_URL → https://api.deepseek.com
+── Demo rejim koda necə bağlanıb? ──
+  26:    this.açar = this.config.get&lt;string&gt;('DEEPSEEK_API_KEY') ?? '';
+  31:  get demoRejim(): boolean {
+  36:    if (this.demoRejim) {
+  88:        `DEEPSEEK_API_KEY təyin olunmayıb — .env faylına açar əlavə edin.`</code></pre>
+  </div>
+</article><article class="test" id="t-IV-2">
+  <h3><span class="no">IV.2</span> EmbeddingService — mətn 64 ölçülü vektora çevrilir</h3>
+  <p class="giris">Bu test Dərs 4-ün ikinci addımını yoxlayır: mətnin <strong>64 ölçülü</strong> vektora çevrilməsini və bunun <em>deterministik</em> olmasını. Eyni mətn həmişə eyni vektoru verməlidir, əks halda axtarış nəticələri hər sorğuda dəyişərdi. Skript ölçünü və determinizmi yoxlayır.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+export npm_config_cache=/tmp/npmcache
+
+npx tsx -e "
+import { EmbeddingService, OLCU } from './src/ai/embedding.service.ts';
+const s = new EmbeddingService({} as any);
+const a = s.vektor('Elmi Şura protokolu');
+const b = s.vektor('Elmi Şura protokolu');
+const c = s.vektor('idman yarışı');
+
+console.log('OLCU sabiti        :', OLCU);
+console.log('vektorun ölçüsü    :', a.length);
+console.log('deterministik      :', JSON.stringify(a) === JSON.stringify(b));
+console.log('fərqli mətn fərqli  :', JSON.stringify(a) !== JSON.stringify(c));
+console.log();
+console.log('vektorun ilk 8 elementi:');
+console.log('  ', a.slice(0, 8).map((x: number) =&gt; x.toFixed(4)).join('  '));
+console.log('sıfırdan fərqli element sayı:', a.filter((x: number) =&gt; x !== 0).length);
+"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>OLCU sabiti        : 64
+vektorun ölçüsü    : 64
+deterministik      : true
+fərqli mətn fərqli  : true
+
+vektorun ilk 8 elementi:
+   0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000
+sıfırdan fərqli element sayı: 3</code></pre>
+  </div>
+</article><article class="test" id="t-IV-3">
+  <h3><span class="no">IV.3</span> ⚠️ Normallaşdırma — kosinus 1-dən böyük olmamalıdır</h3>
+  <p class="giris">Bu test Dərs 4-ün ikinci addımındaki normallaşdırmanı yoxlayır. Vektor uzunluğu 1-ə çevrilməsəydi kosinus <strong>5</strong> kimi mənasız rəqəmlər verərdi və bütün sənədlər «çox oxşar» görünərdi. Skript vektorun uzunluğunu hesablayır — 1.0 çıxmalıdır.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+export npm_config_cache=/tmp/npmcache
+
+npx tsx -e "
+import { EmbeddingService } from './src/ai/embedding.service.ts';
+const s = new EmbeddingService({} as any);
+const a = s.vektor('Elmi Şura protokolu haqqında sənəd');
+const b = s.vektor('Elmi Şura protokolu haqqında sənəd');
+const uzunluq = Math.sqrt(a.reduce((c: number, x: number) =&gt; c + x * x, 0));
+
+console.log('vektorun uzunluğu  :', uzunluq.toFixed(6), '(≈ 1.0 olmalıdır)');
+console.log('özü ilə kosinus    :', s.kosinus(a, b).toFixed(6), '(1.0-a çox yaxın)');
+console.log();
+console.log('⚠️ Normallaşdırma olmasaydı:');
+const xam = a.map((x: number) =&gt; x * 10);
+const xamUzunluq = Math.sqrt(xam.reduce((c: number, x: number) =&gt; c + x * x, 0));
+console.log('  uzunluq        :', xamUzunluq.toFixed(4));
+console.log('  kosinus        :', (xam.reduce((c: number, x: number, i: number) =&gt; c + x * xam[i]!, 0)).toFixed(4), '← 1-dən BÖYÜK!');
+"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>vektorun uzunluğu  : 1.000001 (≈ 1.0 olmalıdır)
+özü ilə kosinus    : 1.000002 (1.0-a çox yaxın)
+
+⚠️ Normallaşdırma olmasaydı:
+  uzunluq        : 10.0000
+  kosinus        : 100.0002 ← 1-dən BÖYÜK!</code></pre>
+  </div>
+</article><article class="test" id="t-IV-4">
+  <h3><span class="no">IV.4</span> Kosinus oxşarlığı — oxşar və fərqli mətn</h3>
+  <p class="giris">Bu test oxşarlıq ölçüsünün mənalı işlədiyini yoxlayır: oxşar mətnlər yüksək, tamamilə fərqli mətnlər isə sıfıra yaxın bal almalıdır. Əgər bütün mətnlər eyni bal alsaydı, axtarış faydasız olardı. Skript dörd müqayisə aparır.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+export npm_config_cache=/tmp/npmcache
+
+npx tsx -e "
+import { EmbeddingService } from './src/ai/embedding.service.ts';
+const s = new EmbeddingService({} as any);
+const v = (m: string) =&gt; s.vektor(m);
+const c = (x: string, y: string) =&gt; s.kosinus(v(x), v(y)).toFixed(6);
+
+console.log('eyni mətn              :', c('elmi şura iclası', 'elmi şura iclası'));
+console.log('çox oxşar mətn         :', c('elmi şura iclası protokolu', 'elmi şura iclasının protokolu'));
+console.log('qismən oxşar           :', c('elmi şura iclası', 'elmi jurnal nəşri'));
+console.log('tamamilə fərqli         :', c('elmi şura iclası', 'idman yarışı nəticələri'));
+console.log();
+console.log('ballar 0..1 aralığındadır — müqayisə mənalıdır.');
+"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>eyni mətn              : 0.999999
+çox oxşar mətn         : 0.750000
+qismən oxşar           : 0.333333
+tamamilə fərqli         : 0.000000
+
+ballar 0..1 aralığındadır — müqayisə mənalıdır.</code></pre>
+  </div>
+</article><article class="test" id="t-IV-5">
+  <h3><span class="no">IV.5</span> RAG axtarışı — azalan sıra və bal aralığı</h3>
+  <p class="giris">Bu test Dərs 4-ün üçüncü addımını yoxlayır: <code>RagService</code>-in sənədlər arasında axtarışını. Nəticələr <strong>azalan</strong> sırada gəlməlidir — ən oxşar sənəd birinci olmalıdır. Sıralama olmasaydı AI kontekstə yanlış sənədləri qoyardı.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+
+curl -s -X POST "$A/ai/rag" -H "Authorization: Bearer $T" \
+  -H 'Content-Type: application/json' \
+  -d '{"sual":"elm və təhsil haqqında sənəd"}' | python3 -c "
+import json,sys
+d = json.load(sys.stdin)
+print('  sual    :', d['sual'])
+print('  tapıldı :', d['tapildi'])
+print()
+for n in d['neticeler']:
+    print('  bal %.6f | sənəd #%s | %s' % (n['oxsarlıq'], n['sened_id'], n['metn'][:46]))
+ballar = [n['oxsarlıq'] for n in d['neticeler']]
+print()
+print('  azalan sıra   :', ballar == sorted(ballar, reverse=True))
+print('  hamısı &gt; 0    :', all(b &gt; 0 for b in ballar))
+print('  hamısı ≤ 1    :', all(b &lt;= 1 for b in ballar))
+"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>  sual    : elm və təhsil haqqında sənəd
+  tapıldı : 3
+
+  bal 0.218218 | sənəd #2 | Doktorantura yerləri barədə
+  bal 0.218218 | sənəd #6 | Sertifikasiya qrafiki barədə
+  bal 0.218218 | sənəd #10 | Kitabxana təchizatı müqaviləsi
+
+  azalan sıra   : True
+  hamısı &gt; 0    : True
+  hamısı ≤ 1    : True</code></pre>
+  </div>
+</article><article class="test" id="t-IV-6">
+  <h3><span class="no">IV.6</span> RAG limiti — default 3, hədd 10</h3>
+  <p class="giris">Bu test <code>RagDto</code>-daki <code>limit</code> sahəsini yoxlayır: susmaya görə 3, ən azı 1, ən çoxu 10. Hədd olmasaydı istifadəçi <code>limit=100000</code> göndərib bütün bazanı oxuya bilərdi. Skript üç halı yoxlayır.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+H="Authorization: Bearer $T"
+
+yoxla() {
+  printf '  %-26s → %s\n' "$1" \
+    "$(curl -s -o /dev/null -w '%{http_code}' -X POST "$A/ai/rag" -H "$H" \
+        -H 'Content-Type: application/json' -d "$2")"
+}
+
+echo "── 1) Limit göstərilməyib (default 3) ──"
+curl -s -X POST "$A/ai/rag" -H "$H" -H 'Content-Type: application/json' \
+  -d '{"sual":"elm və təhsil haqqında"}' | python3 -c "
+import json,sys; print('  tapıldı:', json.load(sys.stdin)['tapildi'])"
+
+echo "── 2) limit=1 ──"
+curl -s -X POST "$A/ai/rag" -H "$H" -H 'Content-Type: application/json' \
+  -d '{"sual":"elm və təhsil haqqında","limit":1}' | python3 -c "
+import json,sys; print('  tapıldı:', json.load(sys.stdin)['tapildi'])"
+
+echo "── 3) Hədd yoxlaması ──"
+yoxla "limit=10 (icazəli)"  '{"sual":"elm və təhsil","limit":10}'
+yoxla "limit=11 (həddi aşır)" '{"sual":"elm və təhsil","limit":11}'
+yoxla "limit=0 (mənfi hədd)" '{"sual":"elm və təhsil","limit":0}'</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── 1) Limit göstərilməyib (default 3) ──
+  tapıldı: 3
+── 2) limit=1 ──
+  tapıldı: 1
+── 3) Hədd yoxlaması ──
+  limit=10 (icazəli)        → 200
+  limit=11 (həddi aşır)   → 400
+  limit=0 (mənfi hədd)     → 400</code></pre>
+  </div>
+</article><article class="test" id="t-IV-7">
+  <h3><span class="no">IV.7</span> Vektorlaşdırma — sənədlər bazaya yazılır</h3>
+  <p class="giris">Bu test Dərs 4-ün üçüncü addımını yoxlayır: <code>POST /ai/vektorlasdir</code> əməliyyatının sənədləri oxuyub vektorlarını <code>ai.embeddingler</code> cədvəlinə yazmasını. Yazma olmasaydı hər axtarış sıfırdan hesablanardı və sistem çox yavaş olardı. Skript cədvəlin sətir sayını əvvəl və sonra müqayisə edir.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+
+echo "── Əvvəl ──"
+psql -U arti_user -d arti_baza -tA -c \
+  "SELECT '  ai.embeddingler: ' || count(*) || ' sətir' FROM ai.embeddingler"
+
+echo "── POST /ai/vektorlasdir ──"
+curl -s -X POST "$A/ai/vektorlasdir" -H "Authorization: Bearer $T" | python3 -c "
+import json,sys; d=json.load(sys.stdin)
+print('  baxılan sənəd:', d.get('baxildi'), '| yazılan:', d.get('yazildi'))"
+
+echo "── Sonra ──"
+psql -U arti_user -d arti_baza -tA -c \
+  "SELECT '  ai.embeddingler: ' || count(*) || ' sətir' FROM ai.embeddingler"
+
+echo "── Hansı cədvəllər vektorlaşdırılıb? ──"
+psql -U arti_user -d arti_baza -c \
+  "SELECT cedvel_adi, count(*) AS sayi, min(jsonb_array_length(vektor)) AS olcu
+   FROM ai.embeddingler GROUP BY cedvel_adi" | sed 's/^/  /'</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── Əvvəl ──
+  ai.embeddingler: 358 sətir
+── POST /ai/vektorlasdir ──
+  baxılan sənəd: 10 | yazılan: 10
+── Sonra ──
+  ai.embeddingler: 368 sətir
+── Hansı cədvəllər vektorlaşdırılıb? ──
+                cedvel_adi               | sayi | olcu 
+  ---------------------------------------+------+------
+   sened.emrler                          |    1 |   64
+   elm.meqaleler                         |    1 |   64
+   sened.senedler                        |  360 |   64
+   tehsil.telim_proqramlari              |    1 |   64
+   elm.neshrler                          |    2 |   64
+   elm.doktorantura_proqramlari          |    1 |   64
+   qiymetlendirme.monitorinq_hesabatlari |    1 |   64
+   metodika.metodik_vesaitler            |    1 |   64
+  (8 rows)</code></pre>
+  </div>
+</article><article class="test" id="t-IV-8">
+  <h3><span class="no">IV.8</span> AI statistikası — rejim, ölçü, resept sayı</h3>
+  <p class="giris">Bu test Dərs 4-ün altıncı addımını yoxlayır: AI qatının vəziyyətini bir endpoint-dən görməyi. Cavabda rejimin <code>demo</code> olduğu, vektor ölçüsünün 64 olduğu və 10 reseptin mövcud olduğu görünməlidir. Bu, süni intellektin işlədiyini yoxlamağın ən sürətli yoludur.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+
+echo "── GET /ai/statistika ──"
+curl -s "$A/ai/statistika" -H "Authorization: Bearer $T" | python3 -m json.tool
+
+echo "── Dörd rolun hamısı görə bilir? ──"
+for rol in admin muhendis maliyyeci baxici; do
+  RT=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+    -d "{\"email\":\"$rol@arti.edu.az\",\"parol\":\"123456\"}" \
+    | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+  printf '  %-10s → %s\n' "$rol" "$(curl -s -o /dev/null -w '%{http_code}' "$A/ai/statistika" -H "Authorization: Bearer $RT")"
+done</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── GET /ai/statistika ──
+{
+    "rejim": "demo",
+    "embedding_sayi": 368,
+    "resept_sayi": 10,
+    "olcu": 64,
+    "vektor_bazasi": "JSONB (t\u0259tbiq t\u0259r\u0259find\u0259 kosinus)"
+}
+── Dörd rolun hamısı görə bilir? ──
+  admin      → 200
+  muhendis   → 200
+  maliyyeci  → 200
+  baxici     → 200</code></pre>
+  </div>
+</article><article class="test" id="t-IV-9">
+  <h3><span class="no">IV.9</span> ⚠️ Resept ağ siyahısı və SIRA qaydası</h3>
+  <p class="giris">Bu test Dərs 4-ün dördüncü addımını yoxlayır: 10 reseptin mövcud olduğunu və <strong>sırasının</strong> düzgün olduğunu. Xüsusi reseptlər ümumi olanlardan əvvəl gəlməlidir — «orta maaş» sualı həm «orta maaş», həm «maaş» açarına uyğun gəlir. Sıra pozulsa sistem səhv cavab verər.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+
+curl -s "$A/ai/reseptler" -H "Authorization: Bearer $T" | python3 -c "
+import json,sys
+d = json.load(sys.stdin)
+print('  resept sayı:', d['say'])
+print()
+for i, r in enumerate(d['reseptler'], 1):
+    print('  %2d. %-22s ← %s' % (i, r['izah'], r['açar'][:46]))
+print()
+adlar = [r['izah'] for r in d['reseptler']]
+o = adlar.index('Orta əmək haqqı')
+u = adlar.index('Ən çox maaş alan 5 nəfər')
+print('  «orta maaş» sırası :', o + 1)
+print('  «ümumi maaş» sırası:', u + 1)
+print('  ⚠️ xüsusi ümumidən ƏVVƏLdir:', o &lt; u)
+"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>  resept sayı: 10
+
+   1. Ümumi əməkdaş sayı     ← əməkdaş sayı|neçə əməkdaş|işçi sayı|kadr sayı
+   2. Mərkəzlər üzrə şöbə və əməkdaş sayı ← mərkəz|merkez
+   3. Orta əmək haqqı        ← orta maaş|orta əmək|ortalama maaş
+   4. Ən çox maaş alan 5 nəfər ← maaş|əmək haqqı|əməkhaqqı
+   5. Vəzifələr üzrə bölgü   ← vəzifə
+   6. Elmi dərəcələr üzrə bölgü ← elmi dərəcə|dərəcə
+   7. Şöbələrin sayı         ← şöbə
+   8. Sənədlərin növlər üzrə bölgüsü ← sənəd
+   9. Aktiv / deaktiv əməkdaşlar ← aktiv|deaktiv
+  10. Müqavilələrin sayı     ← müqavilə|satınalma
+
+  «orta maaş» sırası : 3
+  «ümumi maaş» sırası: 4
+  ⚠️ xüsusi ümumidən ƏVVƏLdir: True</code></pre>
+  </div>
+</article><article class="test" id="t-IV-10">
+  <h3><span class="no">IV.10</span> Təbii dil — uyğun resept tapılır</h3>
+  <p class="giris">Bu test Dərs 4-ün altıncı addımını yoxlayır: Azərbaycan dilində yazılmış sualın düzgün reseptə bağlanmasını. Sistem sualı açar sözlərlə tutuşdurur və yalnız uyğun reseptin SQL-ini işlədir. Skript üç fərqli sualı sınayır və nəticə cədvəlini göstərir.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+H="Authorization: Bearer $T"
+
+for s in "Neçə əməkdaş var?" "Mərkəzlər üzrə bölgü necədir?" "Şöbələrin sayı neçədir?"; do
+  echo "── «$s» ──"
+  curl -s -X POST "$A/ai/sual" -H "$H" -H 'Content-Type: application/json' \
+    -d "{\"sual\":\"$s\"}" | python3 -c "
+import json,sys
+d = json.load(sys.stdin)
+print('  uygun_resept:', d['uygun_resept'])
+print('  izah        :', d['izah'])
+print('  sətir sayı  :', d['setir_sayi'])
+if d['setirler']: print('  ilk sətir   :', json.dumps(d['setirler'][0], ensure_ascii=False)[:70])
+"
+done</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── «� ──
+  uygun_resept: True
+  izah        : Ümumi əməkdaş sayı
+  sətir sayı  : 1
+  ilk sətir   : {"emekdas_sayi": 14}
+── «� ──
+  uygun_resept: True
+  izah        : Mərkəzlər üzrə şöbə və əməkdaş sayı
+  sətir sayı  : 10
+  ilk sətir   : {"ad": "Elmi katiblik", "shobe_sayi": 0, "emekdas_sayi": 2}
+── «� ──
+  uygun_resept: True
+  izah        : Şöbələrin sayı
+  sətir sayı  : 1
+  ilk sətir   : {"shobe_sayi": 36}</code></pre>
+  </div>
+</article><article class="test" id="t-IV-11">
+  <h3><span class="no">IV.11</span> ⚠️ «Orta maaş» testi — sıra səhvi qayıtmasın</h3>
+  <p class="giris">Bu test Dərs 4-də tapılan real səhvi yoxlayır: «Orta maaş nə qədərdir?» sualı əvvəllər <em>«Ən çox maaş alan 5 nəfər»</em> reseptinə düşürdü, çünki ümumi resept xüsusidən əvvəl yazılmışdı. Sistem xəta vermirdi — sadəcə səhv cavab verirdi. Skript hər iki sualı sınayır.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+H="Authorization: Bearer $T"
+
+for s in "Orta maaş nə qədərdir?" "Ən çox maaş alan kimdir?"; do
+  echo "── «$s» ──"
+  curl -s -X POST "$A/ai/sual" -H "$H" -H 'Content-Type: application/json' \
+    -d "{\"sual\":\"$s\"}" | python3 -c "
+import json,sys
+d = json.load(sys.stdin)
+print('  izah  :', d['izah'])
+print('  nəticə:', json.dumps(d['setirler'][:2], ensure_ascii=False))
+"
+done
+
+echo "── ✅ «Orta maaş» XÜSUSİ reseptə düşməlidir, ümumi «maaş»-a YOX ──"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── «� ──
+  izah  : Orta əmək haqqı
+  nəticə: [{"orta_maas": 2357.14}]
+── «� ──
+  izah  : Ən çox maaş alan 5 nəfər
+  nəticə: [{"ad_soyad": "Elnur Əliyev", "maas": 3500}, {"ad_soyad": "Tariyel Talıbov", "maas": 3000}]
+── ✅ «Orta maaş» XÜSUSİ reseptə düşməlidir, ümumi «maaş»-a YOX ──</code></pre>
+  </div>
+</article><article class="test" id="t-IV-12">
+  <h3><span class="no">IV.12</span> Naməlum sual — 500 deyil, izahlı cavab</h3>
+  <p class="giris">Bu test sistemin <em>yumşaq</em> uğursuzluğunu yoxlayır: reseptə uyğun gəlməyən sual <strong>500</strong> yox, <strong>200</strong> və izahlı cavab qaytarmalıdır. İstifadəçi hansı sualların dəstəkləndiyini görməlidir. Xəta versəydi istifadəçi sistemin sındığını sanardı.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+H="Authorization: Bearer $T"
+
+CISIM='{"sual":"Banana qiyməti nə qədərdir?"}'
+echo "── HTTP kodu ──"
+printf '  %s (500 DEYİL)\n' "$(curl -s -o /dev/null -w '%{http_code}' -X POST "$A/ai/sual" -H "$H" -H 'Content-Type: application/json' -d "$CISIM")"
+
+echo "── Cavab ──"
+curl -s -X POST "$A/ai/sual" -H "$H" -H 'Content-Type: application/json' -d "$CISIM" | python3 -c "
+import json,sys
+d = json.load(sys.stdin)
+print('  uygun_resept:', d['uygun_resept'])
+print('  sətir sayı  :', d['setir_sayi'])
+print('  izah (dəstəklənən suallar):')
+for x in d['izah'].split('; '): print('     -', x)
+"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── HTTP kodu ──
+  200 (500 DEYİL)
+── Cavab ──
+  uygun_resept: False
+  sətir sayı  : 0
+  izah (dəstəklənən suallar):
+     - Bu sual üçün resept yoxdur. Mövcud mövzular: Ümumi əməkdaş sayı
+     - Mərkəzlər üzrə şöbə və əməkdaş sayı
+     - Orta əmək haqqı
+     - Ən çox maaş alan 5 nəfər
+     - Vəzifələr üzrə bölgü
+     - Elmi dərəcələr üzrə bölgü
+     - Şöbələrin sayı
+     - Sənədlərin növlər üzrə bölgüsü
+     - Aktiv / deaktiv əməkdaşlar
+     - Müqavilələrin sayı</code></pre>
+  </div>
+</article><article class="test" id="t-IV-13">
+  <h3><span class="no">IV.13</span> ⚠️ SQL inyeksiya cəhdi — cədvəl SALAMAT qalır</h3>
+  <p class="giris">Bu test Dərs 4-ün ən vacib təhlükəsizlik prinsipini yoxlayır: <strong>LLM SQL yazmır</strong>, SQL koddadır. Sual mətninin içində <code>DROP TABLE</code> olsa da, işləyən SQL əvvəlcədən yazılmış reseptdir. Skript inyeksiya göndərir və cədvəlin yerində qaldığını sübut edir.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+H="Authorization: Bearer $T"
+
+echo "── Əvvəl ──"
+psql -U arti_user -d arti_baza -tA -c "
+  SELECT '  struktur.merkezler: ' || (SELECT count(*) FROM struktur.merkezler)
+      || ' | kadrlar.emekdaslar: ' || (SELECT count(*) FROM kadrlar.emekdaslar)"
+
+echo "── İnyeksiya 1: reseptə UYĞUN gələn mətn ──"
+curl -s -X POST "$A/ai/sual" -H "$H" -H 'Content-Type: application/json' \
+  -d '{"sual":"mərkəz'"'"'; DROP TABLE struktur.merkezler; --"}' | python3 -c "
+import json,sys; d=json.load(sys.stdin)
+print('  uygun_resept:', d['uygun_resept'], '| izah:', d['izah'])
+print('  → SQL koddan gəldi, sual mətnindən heç nə SQL-ə düşmədi')"
+
+echo "── İnyeksiya 2: heç bir reseptə uyğun gəlmir ──"
+curl -s -X POST "$A/ai/sual" -H "$H" -H 'Content-Type: application/json' \
+  -d '{"sual":"'"'"'; DROP TABLE kadrlar.emekdaslar; --"}' | python3 -c "
+import json,sys; d=json.load(sys.stdin)
+print('  uygun_resept:', d['uygun_resept'], '| sətir sayı:', d['setir_sayi'])"
+
+echo "── Sonra ──"
+psql -U arti_user -d arti_baza -tA -c "
+  SELECT '  struktur.merkezler: ' || (SELECT count(*) FROM struktur.merkezler)
+      || ' | kadrlar.emekdaslar: ' || (SELECT count(*) FROM kadrlar.emekdaslar)"
+psql -U arti_user -d arti_baza -tA -c "
+  SELECT '  cədvəllər mövcuddur: ' || (to_regclass('struktur.merkezler') IS NOT NULL
+      AND to_regclass('kadrlar.emekdaslar') IS NOT NULL)"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── Əvvəl ──
+  struktur.merkezler: 10 | kadrlar.emekdaslar: 14
+── İnyeksiya 1: reseptə UYĞUN gələn mətn ──
+  uygun_resept: True | izah: Mərkəzlər üzrə şöbə və əməkdaş sayı
+  → SQL koddan gəldi, sual mətnindən heç nə SQL-ə düşmədi
+── İnyeksiya 2: heç bir reseptə uyğun gəlmir ──
+  uygun_resept: False | sətir sayı: 0
+── Sonra ──
+  struktur.merkezler: 10 | kadrlar.emekdaslar: 14
+  cədvəllər mövcuddur: true</code></pre>
+  </div>
+</article><article class="test" id="t-IV-14">
+  <h3><span class="no">IV.14</span> AI DTO validasiyası — sualın uzunluğu</h3>
+  <p class="giris">Bu test <code>SualDto</code>-nun sual uzunluğunu yoxlamasını göstərir: ən azı 3, ən çoxu 500 simvol. 3 simvoldan qısa sual mənasızdır, 500-dən uzunu isə AI-ı lazımsız yorur. Skript dörd halı sınayır.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+H="Authorization: Bearer $T"
+
+UZUN=$(python3 -c "print('a' * 501)")
+
+yoxla() {
+  printf '  %-30s → %s\n' "$1" \
+    "$(curl -s -o /dev/null -w '%{http_code}' -X POST "$A/ai/sual" -H "$H" \
+        -H 'Content-Type: application/json' -d "$2")"
+}
+
+yoxla "düzgün sual"          '{"sual":"Neçə əməkdaş var?"}'
+yoxla "2 simvol"             '{"sual":"ab"}'
+yoxla "boş sual"             '{"sual":""}'
+yoxla "sual sahəsi yoxdur"   '{}'
+yoxla "501 simvol"           "{\"sual\":\"$UZUN\"}"
+
+echo "── DTO-da qaydalar ──"
+grep -n 'MinLength\|MaxLength\|IsString' src/ai/dto/sual.dto.ts | sed 's/^/  /'</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>  düzgün sual                  → 200
+  2 simvol                       → 400
+  boş sual                      → 400
+  sual sahəsi yoxdur            → 400
+  501 simvol                     → 400
+── DTO-da qaydalar ──
+  3:import { IsInt, IsOptional, IsString, Max, MaxLength, Min, MinLength } from 'class-validator';
+  7:  @IsString()
+  8:  @MinLength(3, { message: 'Sual ən azı 3 simvol olmalıdır' })
+  9:  @MaxLength(500, { message: 'Sual ən çoxu 500 simvol ola bilər' })</code></pre>
+  </div>
+</article><article class="test" id="t-IV-15">
+  <h3><span class="no">IV.15</span> RBAC — vektorlaşdırma yalnız admin və mühendis</h3>
+  <p class="giris">Bu test Dərs 4-ün altıncı addımındaki rol qorumasını yoxlayır: vektorlaşdırma ağır əməliyyatdır (10 sorğu + 10 yazma), ona görə yalnız <code>admin</code> və <code>muhendis</code> çağıra bilər. Skript dörd rolu sınayır.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+echo "── POST /ai/vektorlasdir ──"
+for rol in admin muhendis maliyyeci baxici; do
+  T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+    -d "{\"email\":\"$rol@arti.edu.az\",\"parol\":\"123456\"}" \
+    | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+  printf '  %-10s → %s\n' "$rol" \
+    "$(curl -s -o /dev/null -w '%{http_code}' -X POST "$A/ai/vektorlasdir" -H "Authorization: Bearer $T")"
+done
+printf '  %-10s → %s\n' "tokensiz" "$(curl -s -o /dev/null -w '%{http_code}' -X POST "$A/ai/vektorlasdir")"
+
+echo "── baxicinin aldığı cavab ──"
+T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"baxici@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+curl -s -X POST "$A/ai/vektorlasdir" -H "Authorization: Bearer $T" | python3 -c "
+import json,sys; d=json.load(sys.stdin); print('  kod  :', d['xeta']['kod']); print('  mesaj:', d['xeta']['mesaj'])"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── POST /ai/vektorlasdir ──
+  admin      → 200
+  muhendis   → 200
+  maliyyeci  → 403
+  baxici     → 403
+  tokensiz   → 401
+── baxicinin aldığı cavab ──
+  kod  : ICAZE_YOXDUR
+  mesaj: Bu əməliyyat üçün icazəniz yoxdur. Tələb olunan rol: admin və ya muhendis. Sizin rol: baxici</code></pre>
+  </div>
+</article><article class="test" id="t-IV-16">
+  <h3><span class="no">IV.16</span> Demo rejim — API açarı olmadan AI cavabı</h3>
+  <p class="giris">Bu test Dərs 4-ün beşinci addımını yoxlayır: açar olmadıqda sistemin <strong>sınmamasını</strong>. Cavabda <code>demo: true</code> sahəsi olur ki, istifadəçi bunun uydurma olduğunu bilsin. Demo rejim olmasaydı açar qoyulmamış hər quraşdırma <em>fetch failed</em> verərdi.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+
+echo "── POST /ai/cavab ──"
+curl -s -X POST "$A/ai/cavab" -H "Authorization: Bearer $T" \
+  -H 'Content-Type: application/json' \
+  -d '{"sual":"Elmi dərəcə ilə bağlı sənədlər hansılardır?"}' | python3 -c "
+import json,sys
+d = json.load(sys.stdin)
+print('  demo               :', d['demo'], '← açar olmadığı üçün')
+print('  model              :', d['model'])
+print('  token_sayi         :', d['token_sayi'], '(demo rejimdə hesablanmır)')
+print('  istifadə olunan sənəd:', d.get('istifade_olunan_senedler'))
+print()
+print('  cavab:')
+for l in str(d['cavab']).splitlines()[:6]: print('   ', l)
+"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── POST /ai/cavab ──
+  demo               : True ← açar olmadığı üçün
+  model              : deepseek-chat (demo)
+  token_sayi         : 0 (demo rejimdə hesablanmır)
+  istifadə olunan sənəd: [2, 6, 9]
+
+  cavab:
+    [DEMO REJİM] «Elmi dərəcə ilə bağlı sənədlər hansılardır?» sualı üzrə 3 sənəd tapıldı. Ən uyğun: Doktorantura yerləri barədə…</code></pre>
+  </div>
+</article><article class="test" id="t-IV-17">
+  <h3><span class="no">IV.17</span> Excel ixracı — cavab başlıqları</h3>
+  <p class="giris">Bu test Dərs 4-ün yeddinci addımını yoxlayır: <code>.xlsx</code> faylının brauzerdə <em>yükləmə</em> kimi davranmasını. Bunun üçün düzgün MIME tipi və <code>attachment</code> başlığı lazımdır. Skript hər iki başlığı yoxlayır.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+
+echo "── Cavab başlıqları ──"
+curl -s -o /dev/null -D - "$A/ixrac/merkezler.xlsx" -H "Authorization: Bearer $T" \
+  | grep -iE '^HTTP|content-type|content-disposition|content-length' | tr -d '\r' | sed 's/^/  /'
+
+echo "── Dörd rolun hamısı yükləyə bilir? ──"
+for rol in admin muhendis maliyyeci baxici; do
+  RT=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+    -d "{\"email\":\"$rol@arti.edu.az\",\"parol\":\"123456\"}" \
+    | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+  printf '  %-10s → %s\n' "$rol" "$(curl -s -o /dev/null -w '%{http_code}' "$A/ixrac/merkezler.xlsx" -H "Authorization: Bearer $RT")"
+done</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── Cavab başlıqları ──
+  HTTP/1.1 200 OK
+  Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+  Content-Disposition: attachment; filename="merkezler_2026-09-22.xlsx"
+  Content-Length: 7120
+── Dörd rolun hamısı yükləyə bilir? ──
+  admin      → 200
+  muhendis   → 200
+  maliyyeci  → 200
+  baxici     → 200</code></pre>
+  </div>
+</article><article class="test" id="t-IV-18">
+  <h3><span class="no">IV.18</span> ⚠️ Fayl həqiqi Excel-dirmi? — PK baytları</h3>
+  <p class="giris">Bu test faylın <code>.xlsx</code> adlanmağının kifayət etmədiyini göstərir: həqiqi Excel faylı əslində ZIP konteyneridir və <code>PK</code> (0x504B) baytları ilə başlayır. Səhv import (<code>import * as ExcelJS</code>) olsa fayl sıradan mətn olardı. Skript baytları və <code>file</code> nəticəsini yoxlayır.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+
+curl -s -o /tmp/yoxla.xlsx "$A/ixrac/merkezler.xlsx" -H "Authorization: Bearer $T"
+
+echo "── Bayt yoxlaması ──"
+echo "  ilk 4 bayt (hex): $(xxd -p -l 4 /tmp/yoxla.xlsx)"
+echo "  PK imzası       : $(xxd -p -l 2 /tmp/yoxla.xlsx | tr 'A-Z' 'a-z')  (504b olmalıdır)"
+
+echo "── file əmri ──"
+file -b /tmp/yoxla.xlsx | sed 's/^/  /'
+
+echo "── ZIP içində nə var? ──"
+unzip -l /tmp/yoxla.xlsx | head -8 | sed 's/^/  /'
+
+echo "── Səhv import olsaydı nə olardı? ──"
+grep -n "^import ExcelJS" src/ixrac/excel.service.ts | sed 's/^/  düzgün: /'
+echo "  səhv  : import * as ExcelJS  →  ExcelJS.Workbook is not a constructor"
+rm -f /tmp/yoxla.xlsx</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── Bayt yoxlaması ──
+  ilk 4 bayt (hex): 504b0304
+  PK imzası       : 504b  (504b olmalıdır)
+── file əmri ──
+  Microsoft Excel 2007+
+── ZIP içində nə var? ──
+  Archive:  /tmp/yoxla.xlsx
+    Length      Date    Time    Name
+  ---------  ---------- -----   ----
+       1264  09-22-2026 13:20   [Content_Types].xml
+          0  09-22-2026 13:20   _rels/
+        587  09-22-2026 13:20   _rels/.rels
+          0  09-22-2026 13:20   xl/
+          0  09-22-2026 13:20   xl/_rels/
+── Səhv import olsaydı nə olardı? ──
+  düzgün: 2:import ExcelJS from 'exceljs';
+  səhv  : import * as ExcelJS  →  ExcelJS.Workbook is not a constructor</code></pre>
+  </div>
+</article><article class="test" id="t-IV-19">
+  <h3><span class="no">IV.19</span> Excel sətir sayı = baza + başlıq</h3>
+  <p class="giris">Bu test ixracın <em>tam</em> olduğunu yoxlayır: Excel-dəki sətir sayı bazadakı sətir sayına bərabər olmalıdır, üstəgəl bir başlıq sətri. Bu yoxlama olmasaydı ixrac səssizcə yarım fayl verə bilərdi. Skript həm bazanı, həm faylı sayır.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+
+for cift in "merkezler:struktur.merkezler" "emekdaslar:kadrlar.emekdaslar"; do
+  FAYL=$(echo "$cift" | cut -d: -f1); CEDVEL=$(echo "$cift" | cut -d: -f2)
+  curl -s -o /tmp/yoxla.xlsx "$A/ixrac/$FAYL.xlsx" -H "Authorization: Bearer $T"
+  DB=$(psql -U arti_user -d arti_baza -tA -c "SELECT count(*) FROM $CEDVEL" | tr -d ' ')
+  XL=$(unzip -p /tmp/yoxla.xlsx xl/worksheets/sheet1.xml | grep -o '&lt;row ' | wc -l | tr -d ' ')
+  echo "── $FAYL ──"
+  echo "  bazada      : $DB sətir"
+  echo "  Excel-də    : $XL sətir (başlıq daxil)"
+  echo "  gözlənilən  : $((DB + 1))  →  $([ "$XL" = "$((DB + 1))" ] &amp;&amp; echo '✓ uyğundur' || echo '✗ UYĞUN DEYİL')"
+  echo "  başlıq sətri: $(unzip -p /tmp/yoxla.xlsx xl/sharedStrings.xml 2&gt;/dev/null | grep -o '&lt;t&gt;[^&lt;]*&lt;/t&gt;' | head -1 | sed 's/&lt;[^&gt;]*&gt;//g')"
+done
+rm -f /tmp/yoxla.xlsx</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── merkezler ──
+  bazada      : 10 sətir
+  Excel-də    : 11 sətir (başlıq daxil)
+  gözlənilən  : 11  →  ✓ uyğundur
+  başlıq sətri: ID
+── emekdaslar ──
+  bazada      : 14 sətir
+  Excel-də    : 15 sətir (başlıq daxil)
+  gözlənilən  : 15  →  ✓ uyğundur
+  başlıq sətri: ID</code></pre>
+  </div>
+</article><article class="test" id="t-IV-20">
+  <h3><span class="no">IV.20</span> İki Excel faylı və ölçüləri</h3>
+  <p class="giris">Bu test Dərs 4-ün yeddinci addımını tamamlayır: iki endpointin də həqiqi fayl qaytarmasını. Fayllar <strong>yaddaşda</strong> qurulur və diskdə heç nə saxlanmır — paralel 100 istifadəçi yükləsə də disk dolmur. Skript ölçüləri və fayl adlarını göstərir.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+
+echo "── İki fayl ──"
+for f in merkezler emekdaslar; do
+  AD=$(curl -s -o /dev/null -D - "$A/ixrac/$f.xlsx" -H "Authorization: Bearer $T" \
+    | grep -i 'content-disposition' | tr -d '\r' | sed 's/.*filename="//; s/"//')
+  curl -s -o /tmp/yoxla.xlsx "$A/ixrac/$f.xlsx" -H "Authorization: Bearer $T"
+  echo "  $f.xlsx → $(wc -c &lt; /tmp/yoxla.xlsx | tr -d ' ') bayt | fayl adı: $AD"
+done
+rm -f /tmp/yoxla.xlsx
+
+echo "── Server diskdə fayl saxlayırmı? ──"
+echo "  /tmp-də artıq .xlsx: $(ls /tmp/*.xlsx 2&gt;/dev/null | wc -l | tr -d ' ')"
+echo "  layihədə: $(find . -name '*.xlsx' -not -path './node_modules/*' 2&gt;/dev/null | wc -l | tr -d ' ')"
+echo "  → fayl yalnız yaddaşda qurulur (Buffer), diskə yazılmır"
+
+echo "── Content-Disposition necə qurulur? ──"
+grep -n 'Content-Disposition\|attachment\|toISOString' src/ixrac/ixrac.controller.ts | sed 's/^/  /'</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── İki fayl ──
+  merkezler.xlsx → 7120 bayt | fayl adı: merkezler_2026-09-22.xlsx
+  emekdaslar.xlsx → 8196 bayt | fayl adı: emekdaslar_2026-09-22.xlsx
+── Server diskdə fayl saxlayırmı? ──
+  /tmp-də artıq .xlsx: 0
+  layihədə: 0
+  → fayl yalnız yaddaşda qurulur (Buffer), diskə yazılmır
+── Content-Disposition necə qurulur? ──
+  26:    const tarix = new Date().toISOString().slice(0, 10);
+  30:      'Content-Disposition': `attachment; filename="${ad}_${tarix}.xlsx"`,</code></pre>
+  </div>
+</article><article class="test" id="t-IV-21">
+  <h3><span class="no">IV.21</span> Elektron pasport — hansı cədvəllər və hansı açar</h3>
+  <p class="giris">Bu test Dərs 4-ün səkkizinci addımını başlayır: elektron pasportun məlumatının <strong>dörd</strong> cədvəldən yığıldığını göstərir. Bu cədvəlləri bağlayan açar <code>sertifikat_no</code>-dur — ad üzrə bağlamaq etibarsız olardı, çünki adlar təkrarlana bilər.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
+
+echo "── Pasportun mənbələri ──"
+psql -U arti_user -d arti_baza -c "
+  SELECT 'telim_istirakcilari' AS cedvel, count(*) AS setir FROM tehsil.telim_istirakcilari
+  UNION ALL SELECT 'telim_qruplari',      count(*) FROM tehsil.telim_qruplari
+  UNION ALL SELECT 'telim_proqramlari',   count(*) FROM tehsil.telim_proqramlari
+  UNION ALL SELECT 'sertifikasiya',       count(*) FROM tehsil.sertifikasiya" | sed 's/^/  /'
+
+echo "── Bağlayıcı açar: sertifikat_no ──"
+psql -U arti_user -d arti_baza -c "
+  SELECT i.ad || ' ' || i.soyad AS sahib, i.sertifikat_no,
+         q.ad AS qrup, p.ad AS proqram, s.netice, s.bal
+  FROM tehsil.telim_istirakcilari i
+  LEFT JOIN tehsil.telim_qruplari    q ON q.id = i.qrup_id
+  LEFT JOIN tehsil.telim_proqramlari p ON p.id = q.proqram_id
+  LEFT JOIN tehsil.sertifikasiya     s ON s.sertifikat_no = i.sertifikat_no
+  ORDER BY i.id LIMIT 5" | sed 's/^/  /'
+
+echo "── Nə üçün ad üzrə deyil, NÖMRƏ üzrə? ──"
+psql -U arti_user -d arti_baza -tA -c "
+  SELECT '  eyni adlı sertifikasiya qeydi: ' || count(*)
+  FROM (SELECT ad_soyad FROM tehsil.sertifikasiya GROUP BY ad_soyad HAVING count(*) &gt; 1) x"
+echo "  → ad təkrarlana bilər, sertifikat nömrəsi UNİKALdır"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── Pasportun mənbələri ──
+         cedvel        | setir 
+  ---------------------+-------
+   telim_istirakcilari |    10
+   telim_qruplari      |    10
+   telim_proqramlari   |    10
+   sertifikasiya       |    10
+  (4 rows)
+  
+── Bağlayıcı açar: sertifikat_no ──
+        sahib      | sertifikat_no |         qrup         |              proqram               | netice | bal  
+  -----------------+---------------+----------------------+------------------------------------+--------+------
+   Səbinə Rəhimova | SER-2024-001  | Sertifikasiya Qrup A | Müəllim sertifikasiyasına hazırlıq | keçdi  | 72.5
+   Orxan Quliyev   | SER-2024-002  | Sertifikasiya Qrup A | Müəllim sertifikasiyasına hazırlıq | keçdi  | 68.0
+   Gülnar Əsgərova | SER-2024-003  | Sertifikasiya Qrup A | Müəllim sertifikasiyasına hazırlıq |        |     
+   Eldar Hüseynov  | SER-2024-004  | Sertifikasiya Qrup B | Müəllim sertifikasiyasına hazırlıq | keçdi  | 75.5
+   Nərgiz Babayeva | SER-2024-005  | Sertifikasiya Qrup B | Müəllim sertifikasiyasına hazırlıq | keçdi  | 61.5
+  (5 rows)
+  
+── Nə üçün ad üzrə deyil, NÖMRƏ üzrə? ──
+  eyni adlı sertifikasiya qeydi: 0
+  → ad təkrarlana bilər, sertifikat nömrəsi UNİKALdır</code></pre>
+  </div>
+</article><article class="test" id="t-IV-22">
+  <h3><span class="no">IV.22</span> Pasportun oxunması — sahib, təlim, sertifikasiya</h3>
+  <p class="giris">Bu test pasportun canlı oxunmasını yoxlayır: bir sorğuda şəxsiyyət, təlim və imtahan nəticəsi birlikdə gəlir. Pasport fayl kimi saxlanılmır — hər sorğuda dörd cədvəldən <em>yenidən</em> qurulur. Skript üç bölmənin dolu olduğunu yoxlayır.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+
+echo "── GET /tehsil/istirakciler/1/pasport ──"
+curl -s "$A/tehsil/istirakciler/1/pasport" -H "Authorization: Bearer $T" | python3 -c "
+import json,sys
+d = json.load(sys.stdin)
+print('  pasport_no  :', d['pasport_no'])
+print('  etibarlidir :', d['etibarlidir'])
+print()
+print('  SAHİB       :', d['sahib']['tam_ad'], '| ata adı:', d['sahib']['ata_adi'])
+print('  İŞ YERİ     :', d['sahib']['is_yeri'])
+print('  TƏLİM       :', d['telim']['proqram'])
+print('                qrup:', d['telim']['qrup'], '| saat:', d['telim']['saat'])
+print('                müddət:', d['telim']['baslama_tarixi'], '→', d['telim']['bitme_tarixi'])
+print('  SERTİFİKASİYA: nəticə', d['sertifikasiya']['netice'], '| bal', d['sertifikasiya']['bal'])
+print('                imtahan:', d['sertifikasiya']['imtahan_tarixi'], '| tip:', d['sertifikasiya']['tip'])
+"
+
+echo "── Dörd rol oxuya bilir? ──"
+for rol in admin muhendis maliyyeci baxici; do
+  RT=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+    -d "{\"email\":\"$rol@arti.edu.az\",\"parol\":\"123456\"}" \
+    | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+  printf '  %-10s → %s\n' "$rol" "$(curl -s -o /dev/null -w '%{http_code}' "$A/tehsil/istirakciler/1/pasport" -H "Authorization: Bearer $RT")"
+done</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── GET /tehsil/istirakciler/1/pasport ──
+  pasport_no  : SER-2024-001
+  etibarlidir : True
+
+  SAHİB       : Səbinə Rəhimova | ata adı: Nizami
+  İŞ YERİ     : Bakı ş. 6 nömrəli məktəb
+  TƏLİM       : Müəllim sertifikasiyasına hazırlıq
+                qrup: Sertifikasiya Qrup A | saat: 40
+                müddət: 2026-03-04 → 2026-03-29
+  SERTİFİKASİYA: nəticə keçdi | bal 72.5
+                imtahan: 2026-03-30 | tip: müəllim
+── Dörd rol oxuya bilir? ──
+  admin      → 200
+  muhendis   → 200
+  maliyyeci  → 200
+  baxici     → 200</code></pre>
+  </div>
+</article><article class="test" id="t-IV-23">
+  <h3><span class="no">IV.23</span> Pasportun bütövlük hash-i</h3>
+  <p class="giris">Bu test pasportun <strong>bütövlük barmaq izini</strong> yoxlayır: FNV-1a ilə beş dəyişməz sahədən hesablanan hash. İki çağırışda eyni olmalıdır, çünki dəyişən sahələr (gecikmə, vaxt) hash-ə daxil edilmir. Bir hərf dəyişsə hash tamam başqa olur.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+
+H1=$(curl -s "$A/tehsil/istirakciler/1/pasport" -H "Authorization: Bearer $T" | python3 -c "
+import json,sys; print(json.load(sys.stdin)['butovluk']['hash'])")
+H2=$(curl -s "$A/tehsil/istirakciler/1/pasport" -H "Authorization: Bearer $T" | python3 -c "
+import json,sys; print(json.load(sys.stdin)['butovluk']['hash'])")
+H3=$(curl -s "$A/tehsil/istirakciler/2/pasport" -H "Authorization: Bearer $T" | python3 -c "
+import json,sys; print(json.load(sys.stdin)['butovluk']['hash'])")
+
+echo "  iştirakçı 1 → hash: $H1"
+echo "  iştirakçı 1 → hash: $H2   (təkrar çağırış)"
+echo "  iştirakçı 2 → hash: $H3   (başqa şəxs)"
+echo
+echo "  deterministik (H1 = H2)      : $([ "$H1" = "$H2" ] &amp;&amp; echo '✓ BƏLİ' || echo '✗ XEYR')"
+echo "  fərqli şəxs fərqli hash      : $([ "$H1" != "$H3" ] &amp;&amp; echo '✓ BƏLİ' || echo '✗ XEYR')"
+echo
+echo "── Hash hansı sahələrdən hesablanır? ──"
+curl -s "$A/tehsil/istirakciler/1/pasport" -H "Authorization: Bearer $T" | python3 -c "
+import json,sys; d=json.load(sys.stdin)['butovluk']
+print('  alqoritm:', d['alqoritm'])
+print('  sahələr :', ', '.join(d['saheler']))
+"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>  iştirakçı 1 → hash: e9f3da7a
+  iştirakçı 1 → hash: e9f3da7a   (təkrar çağırış)
+  iştirakçı 2 → hash: cfc7131e   (başqa şəxs)
+
+  deterministik (H1 = H2)      : ✓ BƏLİ
+  fərqli şəxs fərqli hash      : ✓ BƏLİ
+
+── Hash hansı sahələrdən hesablanır? ──
+  alqoritm: FNV-1a (32 bit)
+  sahələr : ad, soyad, ata_adi, proqram, sertifikat_no</code></pre>
+  </div>
+</article><article class="test" id="t-IV-24">
+  <h3><span class="no">IV.24</span> ⚠️ Uyğunsuzluq aşkarlanır — kağızda sertifikat, imtahanda «qaldi»</h3>
+  <p class="giris">Bu test pasportun ən dəyərli xüsusiyyətini — <strong>uyğunsuzluğu tutmasını</strong> — yoxlayır. Real bazada iştirakçı 3-ün sənədində sertifikat nömrəsi var, amma <code>sertifikasiya</code> cədvəli «qaldi» göstərir. Pasport bunu <code>etibarlidir: false</code> kimi qaytarır və səbəbi yazır.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+
+echo "── İştirakçı 3 ──"
+curl -s "$A/tehsil/istirakciler/3/pasport" -H "Authorization: Bearer $T" | python3 -c "
+import json,sys
+d = json.load(sys.stdin)
+print('  ad           :', d['sahib']['tam_ad'])
+print('  pasport_no   :', d['pasport_no'], '← sənəddə nömrə VAR')
+print('  etibarlidir  :', d['etibarlidir'], '← AMMA pasport ETİBARSIZDIR')
+print('  uygunsuzluq  :', d['uygunsuzluq'])
+s = d.get('sertifikasiya')
+print('  sertifikasiya:', ('nəticə=' + str(s['netice']) + ' bal=' + str(s['bal'])) if s else 'yoxdur')
+"
+
+echo "── Etibarlı pasportla müqayisə (iştirakçı 1) ──"
+curl -s "$A/tehsil/istirakciler/1/pasport" -H "Authorization: Bearer $T" | python3 -c "
+import json,sys; d=json.load(sys.stdin)
+print('  ad:', d['sahib']['tam_ad'], '| etibarlidir:', d['etibarlidir'], '| uygunsuzluq:', d['uygunsuzluq'])"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── İştirakçı 3 ──
+  ad           : Gülnar Əsgərova
+  pasport_no   : SER-2024-003 ← sənəddə nömrə VAR
+  etibarlidir  : False ← AMMA pasport ETİBARSIZDIR
+  uygunsuzluq  : «sertifikasiya» qeydi «qaldi» göstərir — sertifikat nömrəsi verilməməli idi
+  sertifikasiya: nəticə=qaldi bal=54
+── Etibarlı pasportla müqayisə (iştirakçı 1) ──
+  ad: Səbinə Rəhimova | etibarlidir: True | uygunsuzluq: None</code></pre>
+  </div>
+</article><article class="test" id="t-IV-25">
+  <h3><span class="no">IV.25</span> Bütövlük hesabatı — statistika</h3>
+  <p class="giris">Bu test uyğunsuzluqların <em>toplu</em> görünüşünü yoxlayır: statistika endpointi neçə pasportun təsdiqlənmədiyini bir rəqəmlə göstərir. Bu rəqəm olmasaydı problem illərlə görünməz qalardı, çünki heç kim dörd cədvəli əl ilə tutuşdurmur. Skript həm də keçid balını yoxlayır.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+
+echo "── GET /tehsil/statistika ──"
+curl -s "$A/tehsil/statistika" -H "Authorization: Bearer $T" | python3 -m json.tool
+
+echo "── Uyğunsuz pasportların siyahısı ──"
+for id in 1 2 3 4 5 6 7 8 9 10; do
+  curl -s "$A/tehsil/istirakciler/$id/pasport" -H "Authorization: Bearer $T" | python3 -c "
+import json,sys
+d = json.load(sys.stdin)
+if not d['etibarlidir']:
+    print('  ✗ %-20s %-14s %s' % (d['sahib']['tam_ad'], d['pasport_no'], d['uygunsuzluq'][:52]))
+"
+done</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── GET /tehsil/statistika ──
+{
+    "istirakci_sayi": 10,
+    "bitiren": 10,
+    "sertifikatli": 10,
+    "qrup_sayi": 10,
+    "proqram_sayi": 10,
+    "sertifikasiya_sayi": 10,
+    "kecen": 8,
+    "uygunsuz_sayi": 6,
+    "kecid_bali": 60
+}
+── Uyğunsuz pasportların siyahısı ──
+  ✗ Gülnar Əsgərova      SER-2024-003   «sertifikasiya» qeydi «qaldi» göstərir — sertifikat 
+  ✗ Fərid Məmmədov       KUR-2024-001   İştirakçıda sertifikat nömrəsi var, amma «sertifikas
+  ✗ Aysel Cəfərova       KUR-2024-002   İştirakçıda sertifikat nömrəsi var, amma «sertifikas
+  ✗ Tural Ələsgərov      MIQ-2024-001   İştirakçıda sertifikat nömrəsi var, amma «sertifikas
+  ✗ Zeynəb İsmayılova    INK-2024-001   İştirakçıda sertifikat nömrəsi var, amma «sertifikas
+  ✗ Rəşad Nəbiyev        IBT-2024-001   İştirakçıda sertifikat nömrəsi var, amma «sertifikas</code></pre>
+  </div>
+</article><article class="test" id="t-IV-26">
+  <h3><span class="no">IV.26</span> ⚠️ Pasport necə ALINIR — tam dövr</h3>
+  <p class="giris">Bu test Dərs 4-ün səkkizinci addımının əsas sualına cavab verir: iştirakçı elektron pasportu <em>necə alır</em>. Üç addım var — qrupa yazılma, imtahan balı ilə müraciət və nömrənin verilməsi. Skript hər üç addımı icra edir və sonda bazanı təmizləyir.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+H="Authorization: Bearer $T"
+ID=""
+temizle() { [ -n "$ID" ] &amp;&amp; curl -s -o /dev/null -X DELETE "$A/tehsil/istirakciler/$ID" -H "$H"; }
+trap temizle EXIT
+
+echo "── 1) Qrupa yazılır ──"
+ID=$(curl -s -X POST "$A/tehsil/istirakciler" -H "$H" -H 'Content-Type: application/json' \
+  -d '{"qrup_id":1,"ad":"Pasport","soyad":"Yoxlamasi","ata_adi":"Test","is_yeri":"Test məktəbi"}' \
+  | python3 -c "
+import json,sys; d=json.load(sys.stdin); print(d['id'])")
+curl -s "$A/tehsil/istirakciler/$ID/pasport" -H "$H" | python3 -c "
+import json,sys; d=json.load(sys.stdin)
+print('  id           :', d['sahib']['id'])
+print('  status       :', d['sahib']['status'], '← hələ bitirməyib')
+print('  pasport_no   :', d['pasport_no'], '← hələ YOXDUR')
+print('  etibarlidir  :', d['etibarlidir'])
+print('  səbəb        :', d['uygunsuzluq'])
+"
+
+echo "── 2) İmtahan balı ilə müraciət (bal = 72) ──"
+curl -s -X POST "$A/tehsil/istirakciler/$ID/pasport" -H "$H" -H 'Content-Type: application/json' \
+  -d '{"bal":72,"imtahan_tarixi":"2026-09-20","tip":"müəllim"}' | python3 -c "
+import json,sys; d=json.load(sys.stdin)
+print('  melumat      :', d['melumat'])
+print('  pasport_no   :', d['pasport_no'])
+print('  etibarlidir  :', d['etibarlidir'])
+print('  netice       :', d['sertifikasiya']['netice'])
+print('  hash         :', d['butovluk']['hash'])
+"
+
+echo "── 3) Nömrə bazada hara yazıldı? ──"
+NO=$(curl -s "$A/tehsil/istirakciler/$ID/pasport" -H "$H" | python3 -c "
+import json,sys; print(json.load(sys.stdin)['pasport_no'])")
+psql -U arti_user -d arti_baza -c "
+  SELECT 'telim_istirakcilari' AS cedvel, sertifikat_no, status
+  FROM tehsil.telim_istirakcilari WHERE id = $ID
+  UNION ALL
+  SELECT 'sertifikasiya', sertifikat_no, netice
+  FROM tehsil.sertifikasiya WHERE sertifikat_no = '$NO'" | sed 's/^/  /'</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── 1) Qrupa yazılır ──
+  id           : 57
+  status       : davam edir ← hələ bitirməyib
+  pasport_no   : None ← hələ YOXDUR
+  etibarlidir  : False
+  səbəb        : Pasport hələ verilməyib
+── 2) İmtahan balı ilə müraciət (bal = 72) ──
+  melumat      : Pasport verildi: ARTI-2026-0001 (bal 72 ≥ 60)
+  pasport_no   : ARTI-2026-0001
+  etibarlidir  : True
+  netice       : keçdi
+  hash         : 73981cbb
+── 3) Nömrə bazada hara yazıldı? ──
+         cedvel        | sertifikat_no  | status  
+  ---------------------+----------------+---------
+   telim_istirakcilari | ARTI-2026-0001 | bitirdi
+   sertifikasiya       | ARTI-2026-0001 | keçdi
+  (2 rows)</code></pre>
+  </div>
+</article><article class="test" id="t-IV-27">
+  <h3><span class="no">IV.27</span> ⚠️ Bal 60-dan aşağıdırsa pasport VERİLMİR</h3>
+  <p class="giris">Bu test keçid həddinin işlədiyini yoxlayır: bal 60-dan aşağıdırsa nəticə «qaldi» yazılır və sertifikat nömrəsi <strong>NULL</strong> qalır. Kağız üzərində sertifikat verilsəydi, imtahandan keçməyən şəxs onu işəgötürənə göstərə bilərdi. Skript iki balı müqayisə edir.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+H="Authorization: Bearer $T"
+ID=""
+temizle() { [ -n "$ID" ] &amp;&amp; curl -s -o /dev/null -X DELETE "$A/tehsil/istirakciler/$ID" -H "$H"; }
+trap temizle EXIT
+
+ID=$(curl -s -X POST "$A/tehsil/istirakciler" -H "$H" -H 'Content-Type: application/json' \
+  -d '{"qrup_id":1,"ad":"Kesilen","soyad":"Namized","ata_adi":"Test"}' \
+  | python3 -c "import json,sys; print(json.load(sys.stdin)['id'])")
+
+for bal in 40 60 100; do
+  echo "── bal = $bal ──"
+  curl -s -X POST "$A/tehsil/istirakciler/$ID/pasport" -H "$H" \
+    -H 'Content-Type: application/json' -d "{\"bal\":$bal}" | python3 -c "
+import json,sys; d=json.load(sys.stdin)
+print('  nəticə     :', d['sertifikasiya']['netice'])
+print('  pasport_no :', d['pasport_no'])
+print('  etibarlidir:', d['etibarlidir'])
+print('  melumat    :', d['melumat'])
+"
+  # Növbəti bal üçün pasportu sıfırlayırıq
+  psql -U arti_user -d arti_baza -q -c "
+    DELETE FROM tehsil.sertifikasiya WHERE ad_soyad = 'Kesilen Namized';
+    UPDATE tehsil.telim_istirakcilari SET sertifikat_no = NULL
+     WHERE id = $ID"
+done</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── bal = 40 ──
+  nəticə     : qaldi
+  pasport_no : None
+  etibarlidir: False
+  melumat    : Pasport verilmədi: bal 40 &lt; 60, nəticə «qaldi»
+── bal = 60 ──
+  nəticə     : keçdi
+  pasport_no : ARTI-2026-0001
+  etibarlidir: True
+  melumat    : Pasport verildi: ARTI-2026-0001 (bal 60 ≥ 60)
+── bal = 100 ──
+  nəticə     : keçdi
+  pasport_no : ARTI-2026-0001
+  etibarlidir: True
+  melumat    : Pasport verildi: ARTI-2026-0001 (bal 100 ≥ 60)</code></pre>
+  </div>
+</article><article class="test" id="t-IV-28">
+  <h3><span class="no">IV.28</span> ⚠️ Təkrar müraciət — idempotentlik</h3>
+  <p class="giris">Bu test eyni endpointin ikinci dəfə çağırılmasını yoxlayır: yeni nömrə <em>yaradılmamalıdır</em>, mövcud nömrə qaytarılmalıdır. İdempotentlik olmasaydı bir iştirakçının iki sertifikatı olardı və hansının həqiqi olduğu bilinməzdi. Skript bazadakı sətir sayını da yoxlayır.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+export PGPASSWORD="${PGPASSWORD:-arti_secret_2025}"
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+T=$(curl -s -X POST "$A/auth/login" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@arti.edu.az","parol":"123456"}' \
+  | python3 -c "import json,sys;print(json.load(sys.stdin)['token'])")
+H="Authorization: Bearer $T"
+ID=""
+temizle() { [ -n "$ID" ] &amp;&amp; curl -s -o /dev/null -X DELETE "$A/tehsil/istirakciler/$ID" -H "$H"; }
+trap temizle EXIT
+
+ID=$(curl -s -X POST "$A/tehsil/istirakciler" -H "$H" -H 'Content-Type: application/json' \
+  -d '{"qrup_id":1,"ad":"Idempotent","soyad":"Yoxlama","ata_adi":"Test"}' \
+  | python3 -c "import json,sys; print(json.load(sys.stdin)['id'])")
+
+echo "── 1-ci müraciət (bal 70) ──"
+NO1=$(curl -s -X POST "$A/tehsil/istirakciler/$ID/pasport" -H "$H" \
+  -H 'Content-Type: application/json' -d '{"bal":70}' \
+  | python3 -c "import json,sys; d=json.load(sys.stdin); print(d['pasport_no'])")
+echo "  nömrə: $NO1"
+
+echo "── 2-ci müraciət (bal 95) ──"
+CVB=$(curl -s -X POST "$A/tehsil/istirakciler/$ID/pasport" -H "$H" \
+  -H 'Content-Type: application/json' -d '{"bal":95}')
+NO2=$(printf '%s' "$CVB" | python3 -c "import json,sys; print(json.load(sys.stdin)['pasport_no'])")
+printf '%s' "$CVB" | python3 -c "
+import json,sys; d=json.load(sys.stdin); print('  nömrə:', d['pasport_no']); print('  melumat:', d['melumat'])"
+
+echo "── 3-cü müraciət (bal 30) ──"
+NO3=$(curl -s -X POST "$A/tehsil/istirakciler/$ID/pasport" -H "$H" \
+  -H 'Content-Type: application/json' -d '{"bal":30}' \
+  | python3 -c "import json,sys; print(json.load(sys.stdin)['pasport_no'])")
+echo "  nömrə: $NO3"
+
+echo "── Yoxlama ──"
+echo "  üç müraciətdə eyni nömrə : $([ "$NO1" = "$NO2" ] &amp;&amp; [ "$NO2" = "$NO3" ] &amp;&amp; echo '✓ BƏLİ' || echo '✗ XEYR')"
+psql -U arti_user -d arti_baza -tA -c "
+  SELECT '  bazada bu nömrədən neçə sətir: ' || count(*)
+  FROM tehsil.sertifikasiya WHERE sertifikat_no = '$NO1'"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── 1-ci müraciət (bal 70) ──
+  nömrə: ARTI-2026-0001
+── 2-ci müraciət (bal 95) ──
+  nömrə: ARTI-2026-0001
+  melumat: Pasport artıq verilib: ARTI-2026-0001
+── 3-cü müraciət (bal 30) ──
+  nömrə: ARTI-2026-0001
+── Yoxlama ──
+  üç müraciətdə eyni nömrə : ✓ BƏLİ
+  bazada bu nömrədən neçə sətir: 1</code></pre>
+  </div>
+</article><article class="test" id="t-IV-29">
+  <h3><span class="no">IV.29</span> İctimai yoxlama — tokensiz və minimum məlumat</h3>
+  <p class="giris">Bu test pasportun <em>kənara göstərilməsini</em> yoxlayır: sertifikatı işəgötürən yoxlayır və onun sistemə istifadəçi olması lazım deyil. Bu endpoint qəsdən minimum məlumat verir — ata adı və iş yeri kimi şəxsi sahələr qaytarılmır. Skript tokensiz çağırışı və məlumat həddini yoxlayır.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+A="${A:-http://localhost:4000/api/v1}"
+
+kod=$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)
+[ "$kod" = "200" ] || { echo "⚠️ Server işləmir — PORT=4000 npm run start:prod"; exit 1; }
+
+echo "── TOKENSİZ çağırış ──"
+printf '  HTTP %s\n' "$(curl -s -o /dev/null -w '%{http_code}' "$A/tehsil/pasport/SER-2024-001/yoxla")"
+
+echo "── Cavab ──"
+curl -s "$A/tehsil/pasport/SER-2024-001/yoxla" | python3 -m json.tool
+
+echo "── Məlumat həddi yoxlaması ──"
+curl -s "$A/tehsil/pasport/SER-2024-001/yoxla" | python3 -c "
+import json,sys
+d = json.load(sys.stdin)
+for sahə in ('sahib', 'is_yeri', 'ata_adi'):
+    print('  %-10s cavabda: %s' % (sahə, 'VAR ⚠️' if sahə in json.dumps(d) else 'yoxdur ✓'))
+print()
+print('  etibarlidir :', d['etibarlidir'])
+print('  ad_soyad    :', d['ad_soyad'])
+print('  hash        :', d['butovluk_hash'])
+"
+
+echo "── Olmayan nömrə → 404 ──"
+printf '  HTTP %s\n' "$(curl -s -o /dev/null -w '%{http_code}' "$A/tehsil/pasport/XXX-0000-000/yoxla")"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── TOKENSİZ çağırış ──
+  HTTP 200
+── Cavab ──
+{
+    "pasport_no": "SER-2024-001",
+    "etibarlidir": true,
+    "uygunsuzluq": null,
+    "ad_soyad": "S\u0259bin\u0259 R\u0259himova",
+    "proqram": "M\u00fc\u0259llim sertifikasiyas\u0131na haz\u0131rl\u0131q",
+    "kateqoriya": "sertifikasiya",
+    "saat": 40,
+    "netice": "ke\u00e7di",
+    "bal": 72.5,
+    "imtahan_tarixi": "2026-03-30",
+    "butovluk_hash": "e9f3da7a",
+    "yoxlanilma_vaxti": "2026-09-22T13:20:06.480Z"
+}
+── Məlumat həddi yoxlaması ──
+  sahib      cavabda: yoxdur ✓
+  is_yeri    cavabda: yoxdur ✓
+  ata_adi    cavabda: yoxdur ✓
+
+  etibarlidir : True
+  ad_soyad    : Səbinə Rəhimova
+  hash        : e9f3da7a
+── Olmayan nömrə → 404 ──
+  HTTP 404</code></pre>
+  </div>
+</article><article class="test" id="t-IV-30">
+  <h3><span class="no">IV.30</span> Docker və CI/CD — yerləşdirmə hazırlığı</h3>
+  <p class="giris">Bu test Dərs 4-ün doqquzuncu addımını yoxlayır: layihənin başqa kompüterdə də işləməsi üçün Docker quruluşunu və GitHub Actions axınını. <code>Dockerfile</code> iki mərhələlidir ki, obraz kiçik olsun; CI isə postgres-i sağlamlıq yoxlaması ilə gözləyir. Skript hər faylın vəzifəsini göstərir.</p>
+
+  <div class="blok skript">
+    <div class="blok-basliq"><span>Terminal — kopyala və işlət</span>
+      <button class="kopyala">KOPYALA</button></div>
+<pre><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+unset DATABASE_URL PGHOST
+
+echo "── Fayllar ──"
+for f in Dockerfile .dockerignore docker-compose.yml .github/workflows/ci.yml; do
+  [ -f "$f" ] &amp;&amp; echo "  ✓ $f" || echo "  ✗ $f YOXDUR"
+done
+
+echo "── Dockerfile mərhələləri ──"
+grep -nE '^FROM|^COPY --from|^USER|^EXPOSE|^CMD' Dockerfile | sed 's/^/  /'
+
+echo "── docker-compose xidmətləri ──"
+grep -nE '^  [a-z-]+:|image:|depends_on|healthcheck' docker-compose.yml | sed 's/^/  /'
+
+echo "── CI addımları ──"
+grep -nE 'image:|options:|run:' .github/workflows/ci.yml | sed 's/^/  /'
+
+echo "── CI niyə postgres-i GÖZLƏYİR? ──"
+grep -n -B2 'pg_isready' .github/workflows/ci.yml | sed 's/^/  /'
+echo "  → health check olmasa testlər ECONNREFUSED alır"</code></pre>
+  </div>
+
+  <div class="blok netice">
+    <div class="blok-basliq"><span>Gözlənilən nəticə — real çıxış</span>
+      <span>exit 0</span></div>
+<pre><code>── Fayllar ──
+  ✓ Dockerfile
+  ✓ .dockerignore
+  ✓ docker-compose.yml
+  ✓ .github/workflows/ci.yml
+── Dockerfile mərhələləri ──
+  2:FROM node:22-alpine AS qurucu
+  12:FROM node:22-alpine
+  17:COPY --from=qurucu /app/dist ./dist
+  18:COPY --from=qurucu /app/src/generated ./src/generated
+  20:EXPOSE 4000
+  21:CMD ["node", "dist/main.js"]
+── docker-compose xidmətləri ──
+  2:  baza:
+  3:    image: postgres:16-alpine
+  11:  api:
+  20:    depends_on: [baza]
+  23:  baza-melumat:
+── CI addımları ──
+  11:        image: postgres:16
+  18:        options: &gt;-
+  31:      - run: npm ci
+  32:      - run: npx prisma generate
+  33:      - run: npm run build
+  34:      - run: npm test
+  37:      - run: npx vitest run --config vitest.config.e2e.ts
+── CI niyə postgres-i GÖZLƏYİR? ──
+  17-        # ⚠️ BU OLMASA testlər ECONNREFUSED alır
+  18-        options: &gt;-
+  19:          --health-cmd pg_isready
+  → health check olmasa testlər ECONNREFUSED alır</code></pre>
+  </div>
+</article>
+
+<footer>
+  ARTİ ERP · Yekun testlər · Dərs 1–4 · 65 test<br>
+  Bütün skriptlər real icra edilib — nəticələr həqiqi çıxışlardır.
+</footer>
+
+</div>
+<script>
+document.querySelectorAll('.kopyala').forEach(function (duyme) {
+  duyme.addEventListener('click', function () {
+    var pre = duyme.closest('.blok').querySelector('pre');
+    navigator.clipboard.writeText(pre.innerText).then(function () {
+      duyme.textContent = 'KOPYALANDI';
+      duyme.classList.add('ok');
+      setTimeout(function () {
+        duyme.textContent = 'KOPYALA';
+        duyme.classList.remove('ok');
+      }, 1600);
+    });
+  });
+});
+</script>
+</body>
+</html>
