@@ -39,6 +39,23 @@ def fayl(yol: str) -> str:
     return f"{basliq}cat > {yol} <<'EOF'\n{govde}\nEOF"
 
 
+def app_module_araliq() -> str:
+    """ADDIM 6 üçün ARALIQ `app.module.ts` — `IxracModule` hələ YOXDUR.
+
+    ⚠️ `src/ixrac/ixrac.module.ts` yalnız ADDIM 7-də yaradılır. Əgər bu addım
+    onu import etsə, `nest build` belə sınır:
+        error TS2307: Cannot find module './ixrac/ixrac.module.js'
+    Ona görə modul qeydiyyatı bu addımda AI ilə bitir, ixrac isə növbəti
+    addımda — fayl YARADILDIQDAN SONRA — əlavə olunur.
+    """
+    s = fayl("src/app.module.ts")
+    s = s.replace("import { IxracModule } from './ixrac/ixrac.module.js';\n", "")
+    s = s.replace("    IxracModule,\n", "")
+    if "IxracModule" in s:
+        raise SystemExit("XƏTA: app_module_araliq — IxracModule silinmədi")
+    return s
+
+
 def terminal(metn: str) -> str:
     return metn.strip()
 
@@ -442,7 +459,7 @@ addim(
         ("src/ai/ai.service.ts", fayl("src/ai/ai.service.ts")),
         ("src/ai/ai.controller.ts", fayl("src/ai/ai.controller.ts")),
         ("src/ai/ai.module.ts", fayl("src/ai/ai.module.ts")),
-        ("src/app.module.ts", fayl("src/app.module.ts")),
+        ("src/app.module.ts", app_module_araliq()),
     ],
     c_yoxla="""cd ~/Deepseek_ARTI/DS_Backend
 
@@ -455,7 +472,10 @@ grep -n -B1 'vektorlasdir' src/ai/ai.controller.ts | head -4
 # 3) AiModule kök modula qoşulubmu?
 grep -n 'AiModule' src/app.module.ts
 
-# 4) Build
+# 4) ⚠️ IxracModule HƏLƏ YOXDUR — qeydiyyat növbəti addımdadır
+grep -c 'IxracModule' src/app.module.ts        # → 0
+
+# 5) Build — məhz bu yoxlama irəliyə istinadı tutur
 npm run build && echo "✓ build keçdi\"""",
     c_olmaz="""$ curl -s -o /dev/null -w '%{http_code}\\n' -X POST \\
     localhost:4000/api/v1/ai/vektorlasdir \\
@@ -518,6 +538,7 @@ addim(
         ("src/ixrac/excel.service.ts", fayl("src/ixrac/excel.service.ts")),
         ("src/ixrac/ixrac.controller.ts", fayl("src/ixrac/ixrac.controller.ts")),
         ("src/ixrac/ixrac.module.ts", fayl("src/ixrac/ixrac.module.ts")),
+        ("src/app.module.ts", fayl("src/app.module.ts")),
     ],
     c_yoxla="""cd ~/Deepseek_ARTI/DS_Backend
 
@@ -530,7 +551,10 @@ grep -n "import ExcelJS" src/ixrac/excel.service.ts
 # 3) ⚠️ Düzgün MIME tipi göndərilirmi?
 grep -n 'spreadsheetml' src/ixrac/ixrac.controller.ts
 
-# 4) Fayl REAL Excel-dirmi?
+# 4) ⚠️ app.module.ts-ə IxracModule əlavə olundumu?
+grep -n 'IxracModule' src/app.module.ts
+
+# 5) Fayl REAL Excel-dirmi?
 npm run build && node dist/main.js &
 sleep 6
 TOKEN=$(curl -s -X POST localhost:4000/api/v1/auth/login \\

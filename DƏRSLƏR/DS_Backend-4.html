@@ -1613,7 +1613,6 @@ import { SaglamliqModule } from './saglamliq/saglamliq.module.js';
 import { StrukturModule } from './struktur/struktur.module.js';
 import { KadrlarModule } from './kadrlar/kadrlar.module.js';
 import { AiModule } from './ai/ai.module.js';
-import { IxracModule } from './ixrac/ixrac.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard.js';
 import { RolesGuard } from './auth/guards/roles.guard.js';
@@ -1629,7 +1628,6 @@ import { AuditInterceptor } from './common/interceptors/audit.interceptor.js';
     StrukturModule,
     KadrlarModule,
     AiModule,
-    IxracModule,
   ],
   providers: [
     // ⚠️ SIRA MÜTLƏQDİR:
@@ -1661,7 +1659,10 @@ grep -n -B1 'vektorlasdir' src/ai/ai.controller.ts | head -4
 # 3) AiModule kök modula qoşulubmu?
 grep -n 'AiModule' src/app.module.ts
 
-# 4) Build
+# 4) ⚠️ IxracModule HƏLƏ YOXDUR — qeydiyyat növbəti addımdadır
+grep -c 'IxracModule' src/app.module.ts        # → 0
+
+# 5) Build — məhz bu yoxlama irəliyə istinadı tutur
 npm run build &amp;&amp; echo "✓ build keçdi"</code></pre>
       <div class="olmaz">
         <span class="olmaz-basliq">⚠️ Bu kod olmasa nə olardı</span>
@@ -1900,6 +1901,49 @@ import { IxracController } from './ixrac.controller.js';
 })
 export class IxracModule {}
 EOF</code></pre>
+    <p class="fayl-ad">src/app.module.ts</p>
+<pre><code>mkdir -p src
+cat &gt; src/app.module.ts &lt;&lt;'EOF'
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { PrismaModule } from './prisma/prisma.module.js';
+import { SaglamliqModule } from './saglamliq/saglamliq.module.js';
+import { StrukturModule } from './struktur/struktur.module.js';
+import { KadrlarModule } from './kadrlar/kadrlar.module.js';
+import { AiModule } from './ai/ai.module.js';
+import { IxracModule } from './ixrac/ixrac.module.js';
+import { AuthModule } from './auth/auth.module.js';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard.js';
+import { RolesGuard } from './auth/guards/roles.guard.js';
+import { AuditInterceptor } from './common/interceptors/audit.interceptor.js';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+
+    PrismaModule,
+    SaglamliqModule,
+    AuthModule,
+    StrukturModule,
+    KadrlarModule,
+    AiModule,
+    IxracModule,
+  ],
+  providers: [
+    // ⚠️ SIRA MÜTLƏQDİR:
+    // 1) JwtAuthGuard — əvvəlcə "sən kimsən?" sualına cavab verir
+    // 2) RolesGuard   — sonra "icazən varmı?" sualına
+    // Tərs olsa RolesGuard `user`-i tapa bilməz.
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
+    { provide: APP_GUARD, useClass: RolesGuard },
+
+    // Audit ən sonda — əməliyyat bitdikdən sonra yazır
+    { provide: APP_INTERCEPTOR, useClass: AuditInterceptor },
+  ],
+})
+export class AppModule {}
+EOF</code></pre>
     </div>
 
     <div class="hisse hisse-c">
@@ -1916,7 +1960,10 @@ grep -n "import ExcelJS" src/ixrac/excel.service.ts
 # 3) ⚠️ Düzgün MIME tipi göndərilirmi?
 grep -n 'spreadsheetml' src/ixrac/ixrac.controller.ts
 
-# 4) Fayl REAL Excel-dirmi?
+# 4) ⚠️ app.module.ts-ə IxracModule əlavə olundumu?
+grep -n 'IxracModule' src/app.module.ts
+
+# 5) Fayl REAL Excel-dirmi?
 npm run build &amp;&amp; node dist/main.js &amp;
 sleep 6
 TOKEN=$(curl -s -X POST localhost:4000/api/v1/auth/login \
