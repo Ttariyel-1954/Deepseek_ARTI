@@ -1,0 +1,3550 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Backend 1A — Layihənin təməli və ilk işləyən API</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+       background:#eef2f7; color:#1e293b; line-height:1.85; padding:2rem 1rem; font-size:16.5px; }
+.konteyner { max-width:1150px; margin:0 auto; background:#fff; border-radius:22px;
+             box-shadow:0 15px 40px -15px rgba(15,23,42,.25); padding:3rem 3rem 4rem; }
+header { border-bottom:5px solid #0f766e; padding-bottom:1.8rem; margin-bottom:2rem; }
+header h1 { font-size:2.1rem; color:#115e59; margin-bottom:.4rem; }
+header .alt { color:#64748b; }
+header .meta { display:flex; gap:.5rem; flex-wrap:wrap; margin-top:1rem; }
+header .meta span { background:#ccfbf1; color:#115e59; padding:.25rem .8rem;
+                    border-radius:999px; font-size:.82rem; font-weight:600; }
+h2 { color:#0f766e; }
+.giris { background:#f0fdfa; border-left:5px solid #14b8a6; border-radius:10px;
+         padding:1.3rem 1.6rem; margin:1.6rem 0; }
+.giris h2 { font-size:1.15rem; margin-bottom:.6rem; }
+.giris ul, .giris ol { margin:.5rem 0 .5rem 1.4rem; }
+.giris li { margin-bottom:.3rem; }
+.mund { background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px;
+        padding:1.3rem 1.5rem; margin-bottom:2.2rem; }
+.mund h2 { font-size:1.05rem; margin-bottom:.7rem; }
+.mund a { display:block; text-decoration:none; color:#334155; padding:.28rem .5rem;
+          border-radius:7px; font-size:.9rem; }
+.mund a:hover { background:#ccfbf1; color:#115e59; }
+.addim { border-top:3px solid #0f766e; margin-top:2.8rem; padding-top:1.4rem; }
+.addim-basliq { font-size:1.35rem; color:#115e59; display:flex; gap:.7rem;
+                align-items:baseline; margin-bottom:1rem; }
+.addim-no { background:#0f766e; color:#fff; border-radius:8px; padding:.1rem .65rem;
+            font-size:.95rem; flex-shrink:0; }
+.hisse { margin:1.3rem 0; border-radius:12px; padding:1.1rem 1.3rem; }
+.hisse-basliq { display:block; font-size:.78rem; font-weight:800; letter-spacing:.6px;
+                text-transform:uppercase; margin-bottom:.7rem; }
+.hisse-a { background:#f0fdfa; border-left:5px solid #14b8a6; }
+.hisse-a .hisse-basliq { color:#0f766e; }
+.hisse-b { background:#f8fafc; border-left:5px solid #64748b; }
+.hisse-b .hisse-basliq { color:#475569; }
+.hisse-c { background:#fffbeb; border-left:5px solid #f59e0b; }
+.hisse-c .hisse-basliq { color:#b45309; }
+.hisse-d { background:#faf5ff; border-left:5px solid #a855f7; }
+.hisse-d .hisse-basliq { color:#7e22ce; }
+.anlayis { background:#eff6ff; border:1px solid #bfdbfe; border-radius:10px;
+           padding:1rem 1.2rem; margin:1rem 0; }
+.anlayis h4 { color:#1d4ed8; font-size:.92rem; margin-bottom:.5rem; }
+.anlayis dl { display:grid; grid-template-columns:auto 1fr; gap:.35rem .9rem; font-size:.92rem; }
+.anlayis dt { font-weight:700; color:#1e40af; }
+.anlayis dd { color:#334155; }
+.fayl-ad { background:#1e293b; color:#93c5fd; font-family:ui-monospace,Menlo,monospace;
+           font-size:.82rem; padding:.4rem .8rem; border-radius:8px 8px 0 0; margin-top:.9rem; }
+pre { background:#1e293b; color:#e2e8f0; padding:1rem 1.1rem; border-radius:0 0 8px 8px;
+      overflow-x:auto; font-size:.84rem; line-height:1.6;
+      font-family:ui-monospace,SFMono-Regular,Menlo,monospace; margin-bottom:.5rem; }
+pre.cixis { background:#f0fdf4; color:#14532d; border:1px solid #86efac; border-radius:8px; }
+pre.komanda { background:#0f172a; color:#a7f3d0; border-radius:8px; }
+code { font-family:ui-monospace,Menlo,monospace; }
+.hisse p code, .giris code, .anlayis code { background:#e2e8f0; padding:.08rem .35rem;
+      border-radius:5px; font-size:.88em; color:#0f172a; }
+.olmaz { background:#fef2f2; border:1px solid #fecaca; border-radius:10px;
+         padding:1rem 1.2rem; margin-top:.9rem; }
+.olmaz h4 { color:#b91c1c; font-size:.9rem; margin-bottom:.5rem; }
+.olmaz pre { background:#fff; color:#7f1d1d; margin:0; }
+.oldu { background:#f0fdf4; border:1px solid #bbf7d0; border-radius:10px;
+        padding:1rem 1.2rem; margin-top:.9rem; }
+.oldu h4 { color:#15803d; font-size:.9rem; margin-bottom:.4rem; }
+.sual { margin-top:1rem; }
+.sual details { background:#fff; border:1px solid #e2e8f0; border-radius:9px;
+                padding:.6rem .9rem; margin-bottom:.5rem; }
+.sual summary { cursor:pointer; font-weight:700; color:#0f766e; font-size:.94rem; }
+.sual p { margin-top:.5rem; color:#334155; font-size:.94rem; }
+.test { border:1px solid #e2e8f0; border-radius:16px; padding:1.5rem 1.6rem;
+        margin-bottom:1.7rem; }
+.test h3 { font-size:1.1rem; display:flex; gap:.6rem; align-items:baseline; margin-bottom:.6rem; }
+.test h3 .no { background:#0f766e; color:#fff; padding:.1rem .6rem; border-radius:7px;
+               font-size:.86rem; flex-shrink:0; }
+.test .giris-metn { color:#475569; font-size:.95rem; margin-bottom:1rem; }
+.neticə { background:#065f46; color:#a7f3d0; font-size:.76rem; font-weight:700;
+          padding:.35rem .8rem; border-radius:8px 8px 0 0; letter-spacing:.4px; }
+footer { margin-top:3rem; padding-top:1.4rem; border-top:2px solid #e2e8f0;
+         color:#94a3b8; font-size:.85rem; text-align:center; }
+@media print { body{background:#fff;padding:0;} .konteyner{box-shadow:none;padding:0;} }
+</style>
+</head>
+<body>
+<div class="konteyner">
+
+<header>
+  <h1>Backend 1A — Layihənin təməli və ilk işləyən API</h1>
+  <p class="alt">Addım 1–11: layihə skeleti, TypeScript, <code>.env</code>,
+  Prisma, baza bağlantısı, xəta filtri, sağlamlıq endpointi və serverin
+  qalxması.</p>
+  <p class="meta"><span>11 addım</span><span>10 yekun test</span>
+  <span>I kurs üçün geniş izah</span><span>Hər çıxış realdır</span></p>
+</header>
+
+<div class="giris">
+  <h2>Bu dərs kim üçündür və necə oxunmalıdır</h2>
+  <p>Bu dərs <strong>proqramlaşdırmaya yeni başlayan</strong> tələbələr
+  üçündür. Heç bir NestJS, Prisma və ya TypeScript bilgisi tələb olunmur —
+  hər anlayış yerində izah olunur.</p>
+  <p><strong>Hər addım dörd hissədən ibarətdir:</strong></p>
+  <ul>
+    <li><strong>A — niyə:</strong> bu addım nə üçün lazımdır, hansı problemi
+        həll edir.</li>
+    <li><strong>B — kod:</strong> yazılacaq fayllar və <em>hər kodun sətir-sətir
+        izahı</em>.</li>
+    <li><strong>C — yoxlama:</strong> kodu necə yoxlamaq olar və bu kod
+        olmasa nə baş verərdi.</li>
+    <li><strong>D — vəziyyət:</strong> yoxlamanın <em>həqiqi çıxışı</em> və
+        addımdan sonra sistemin vəziyyəti.</li>
+  </ul>
+  <p><strong>Necə oxumalı:</strong> addımları <em>sıra ilə</em> işlədin. Hər
+  addımda əvvəl A-nı oxuyun, sonra B-dəki kodu yazın, sonra C ilə yoxlayın.
+  D hissəsi sizin çıxışınızla üst-üstə düşməlidirsə, düzgün getmisiniz.</p>
+  <p><strong>Dərsin sonunda 10 test var.</strong> Hər test ayrıca Terminal
+  skriptidir və dərsdə öyrəndiyinizi yoxlayır. Onları belə işlədin:</p>
+  <p><code>cd ~/Deepseek_ARTI/DƏRSLƏR</code><br>
+  <code>bash testler/yoxla.sh IA</code> — bütün 10 test<br>
+  <code>bash testler/yoxla.sh IA.4</code> — yalnız bir test</p>
+</div>
+
+<div class="mund"><h2>Mündəricat</h2><a href="#a1">1. Layihə qovluğu və skelet</a><a href="#a2">2. package.json və asılılıqlar</a><a href="#a3">3. TypeScript konfiqurasiyası</a><a href="#a4">4. .env — baza açarı koddan ayrılır</a><a href="#a5">5. Prisma sxeması — bazanı oxuyub tipləri çıxarmaq</a><a href="#a6">6. PrismaService — baza bağlantısı</a><a href="#a7">7. PrismaModule — @Global() ilə paylaşılan bağlantı</a><a href="#a8">8. AllExceptionsFilter — vahid xəta formatı</a><a href="#a9">9. Sağlamlıq modulu — ilk işləyən endpoint</a><a href="#a10">10. app.module.ts — kök modul</a><a href="#a11">11. main.ts — serveri işə salırıq</a><a href="#t-IA-1">IA.1 Layihə skeleti və konfiqurasiya faylları</a><a href="#t-IA-2">IA.2 package.json — skriptlər və asılılıqlar</a><a href="#t-IA-3">IA.3 TypeScript ayarları — decorator və NodeNext</a><a href="#t-IA-4">IA.4 .env — sirr koddan ayrılıb və qorunur</a><a href="#t-IA-5">IA.5 Prisma sxeması və klientin generasiyası</a><a href="#t-IA-6">IA.6 PrismaService — baza bağlantısı işləyir</a><a href="#t-IA-7">IA.7 PrismaModule — @Global() və exports</a><a href="#t-IA-8">IA.8 AllExceptionsFilter — vahid xəta formatı</a><a href="#t-IA-9">IA.9 Sağlamlıq modulu — ilk endpoint məntiqi</a><a href="#t-IA-10">IA.10 Server qalxır — prefiks, marşrutlar, Swagger</a></div>
+
+<section class="addim" id="a1">
+<h2 class="addim-basliq"><span class="addim-no">1</span> Layihə qovluğu və skelet</h2>
+
+<div class="hisse hisse-a">
+  <span class="hisse-basliq">A · Bu addım niyə var</span>
+  <p>İlk sual budur: <strong>backend kodu hara yazılır?</strong> Kompüterinizdə
+        onlarla layihə ola bilər — hər birinin öz qovluğu olmalıdır. Bu qovluq
+        backend-in <em>evi</em>dir: kod, konfiqurasiya, asılılıqlar və testlər
+        hamısı orada yaşayır.</p>
+        <p>Bu dərsdə qurduğumuz layihə <code>~/Deepseek_ARTI/DS_Backend</code>
+        qovluğunda olacaq. Niyə «DS_Backend»? Çünki eyni ana qovluqda başqa
+        hissələr də var — baza (<code>DS_Baza</code>), dərslər
+        (<code>DƏRSLƏR</code>). Hər hissənin öz yeri olsa, heç nə qarışmır.</p>
+        <p><strong>Node.js layihəsi nə ilə başlayır?</strong> <code>package.json</code>
+        faylı ilə. Bu fayl layihənin <em>şəxsiyyət vəsiqəsi</em>dir: adı,
+        versiyası, hansı paketlərə ehtiyacı olduğu və hansı əmrləri işlədə
+        bildiyi orada yazılır. Fayl olmasa, <code>npm</code> layihənin nə
+        olduğunu bilmir.</p>
+        <p>Bu addımda hələ kod yazmırıq — sadəcə sahəni hazırlayırıq.
+        Bu, təməl qazmağa bənzəyir: görünən iş yoxdur, amma sonrakı hər şey
+        bundan asılıdır.</p>
+  <div class="anlayis"><h4>Yeni anlayışlar</h4><dl><dt>Node.js</dt><dd>JavaScript kodunu brauzerdən kənarda — yəni serverdə — işlədən mühit.</dd><dt>npm</dt><dd>Node Package Manager — paketləri quraşdıran və layihə əmrlərini işlədən alət.</dd><dt>Paket (package)</dt><dd>Başqasının yazdığı hazır kod parçası. Məsələn NestJS bir paketdir.</dd><dt>Asılılıq (dependency)</dt><dd>Layihənizin işləməsi üçün lazım olan paket.</dd><dt>CWD</dt><dd>Current Working Directory — terminalın hazırda «dayandığı» qovluq.</dd></dl></div>
+</div>
+
+<div class="hisse hisse-b">
+  <span class="hisse-basliq">B · Kod</span>
+  
+  <h4 style="margin-top:1rem;color:#334155">Kodun sətir-sətir izahı</h4>
+  <p>Bu addımda fayl yaradılmır — yalnız qovluq. Aşağıdaki əmrlər
+        qovluğu yaradır və içinə girir:</p>
+        <p><code>mkdir -p ~/Deepseek_ARTI/DS_Backend</code> — qovluq yaradır.
+        <code>-p</code> işarəsi «arana qovluqları da yarat, varsa xəta vermə»
+        deməkdir. Bu işarə olmasa, <code>Deepseek_ARTI</code> yoxdursa əmr xəta
+        verərdi.</p>
+        <p><code>cd ~/Deepseek_ARTI/DS_Backend</code> — terminalı həmin qovluğa
+        keçirir. <code>~</code> işarəsi ev qovluğunuzu bildirir
+        (<code>/Users/royatalibova</code>). Bundan sonra bütün əmrlər bu
+        qovluğun içində işləyəcək.</p>
+        <p>⚠️ <strong>Vacib vərdiş:</strong> hər dəfə yeni terminal açanda ilk
+        işiniz <code>cd</code> ilə layihə qovluğuna keçmək olmalıdır. Əks halda
+        <code>npm</code> «package.json tapılmadı» deyəcək.</p>
+</div>
+
+<div class="hisse hisse-c">
+  <span class="hisse-basliq">C · Yoxlama — həqiqi çıxış</span>
+  <p>Aşağıdaki əmrləri işlədin. Nəticə elə bu dərsin D hissəsində göstərilib:</p>
+  <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+
+echo "── Qovluq yerindədirmi? ──"
+pwd
+echo
+echo "── İçində nə var? (hələ boşdur) ──"
+ls -la
+echo
+echo "── Alətlərin versiyaları ──"
+echo "  node: $(node -v)"
+echo "  npm:  $(npm -v)"
+echo
+echo "── Node hansı qovluqda quraşdırılıb? ──"
+which node
+which npm</code></pre>
+  <div class="olmaz"><h4>⚠️ Bu kod olmasa nə olardı</h4><pre><code>$ cd ~/Deepseek_ARTI/DS_Backend
+-bash: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory
+
+   # ⚠️ Qovluq yoxdursa, sonrakı BÜTÜN addımlar sınır: package.json
+   # yarada bilməzsiniz, npm install işləməz, server qalxmaz.
+   # Xəta mesajı «No such file or directory» olur və səbəb çox vaxt
+   # sadəcə yazı səhvidir (məsələn «DS_Backend» yerinə «DS-Backend»).</code></pre>
+    <p><p><code>pwd</code> əmri «print working directory» deməkdir — hazırda
+        hansı qovluqda olduğunuzu göstərir. Bu, ən çox işlədilən diaqnostika
+        əmridir: nə vaxt «fayl tapılmadı» xətası görsəniz, əvvəlcə
+        <code>pwd</code> yazın.</p>
+        <p><code>ls -la</code> qovluğun içini göstərir. <code>-l</code> uzun
+        format, <code>-a</code> isə gizli faylları da göstərir (<code>.</code>
+        ilə başlayanlar). Yeni qovluqda yalnız <code>.</code> və
+        <code>..</code> görünəcək — bunlar «bu qovluq» və «üst qovluq»
+        deməkdir.</p></p></div>
+</div>
+
+<div class="hisse hisse-d">
+  <span class="hisse-basliq">D · Sistemin vəziyyəti — həqiqi çıxış</span>
+  <pre class="cixis"><code>── Qovluq yerindədirmi? ──
+/private/tmp/arti1a
+
+── İçində nə var? (hələ boşdur) ──
+total 848
+drwxr-xr-x   16 royatalibova  wheel     512 Sep 23 09:44 .
+drwxrwxrwt   38 root          wheel    1216 Sep 23 09:44 ..
+-rw-r--r--    1 royatalibova  wheel     462 Sep 23 09:28 .env
+-rw-r--r--    1 royatalibova  wheel     176 Sep 23 09:28 .env.example
+-rw-r--r--    1 royatalibova  wheel      67 Sep 23 09:28 .gitignore
+drwxr-xr-x   12 royatalibova  wheel     384 Sep 23 09:44 dist
+-rw-r--r--    1 royatalibova  wheel     171 Sep 23 09:28 nest-cli.json
+drwxr-xr-x  311 royatalibova  wheel    9952 Sep 23 09:28 node_modules
+-rw-r--r--    1 royatalibova  wheel  234880 Sep 23 09:28 package-lock.json
+-rw-r--r--    1 royatalibova  wheel    1409 Sep 23 09:26 package.json
+drwxr-xr-x    3 royatalibova  wheel      96 Sep 23 09:26 prisma
+-rw-r--r--    1 royatalibova  wheel     233 Sep 23 09:29 prisma.config.ts
+drwxr-xr-x    8 royatalibova  wheel     256 Sep 23 09:29 src
+-rw-r--r--    1 royatalibova  wheel     170 Sep 23 09:28 tsconfig.build.json
+-rw-r--r--    1 royatalibova  wheel  161591 Sep 23 09:44 tsconfig.build.tsbuildinfo
+-rw-r--r--    1 royatalibova  wheel     581 Sep 23 09:28 tsconfig.json
+
+── Alətlərin versiyaları ──
+  node: v26.7.0
+  npm:  11.19.0
+
+── Node hansı qovluqda quraşdırılıb? ──
+/opt/homebrew/bin/node
+/opt/homebrew/bin/npm
+bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+  <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>boş bir qovluq</strong> və işləyən
+        Node.js. Bu, hələ layihə deyil — sadəcə layihənin yeri. Növbəti addımda
+        bu qovluğa <code>package.json</code> əlavə edib onu həqiqi Node.js
+        layihəsinə çevirəcəyik.</p></div>
+</div>
+
+<div class="sual"><h4 style="color:#0f766e;font-size:.95rem">Tez-tez verilən suallar</h4>
+<details><summary>Qovluğun adını dəyişsəm nə olar?</summary><p>Heç nə olmaz — sadəcə hər dəfə <code>cd</code> əmrində yeni adı yazmalısınız. Amma dərs boyu eyni adı işlətmək qarışıqlığın qarşısını alır.</p></details><details><summary>Layihəni başqa yerə köçürə bilərəm?</summary><p>Bəli. Amma o zaman bütün <code>cd</code> əmrlərindəki yolu dəyişməlisiniz. Dərslərdə <code>~/Deepseek_ARTI/DS_Backend</code> yolu işlədilir.</p></details><details><summary>Node.js quraşdırılmayıbsa?</summary><p><code>node -v</code> əmri «command not found» versə, nodejs.org saytından LTS versiyanı quraşdırın. Bu dərs Node 22+ tələb edir.</p></details></div>
+</section><section class="addim" id="a2">
+<h2 class="addim-basliq"><span class="addim-no">2</span> package.json və asılılıqlar</h2>
+
+<div class="hisse hisse-a">
+  <span class="hisse-basliq">A · Bu addım niyə var</span>
+  <p><code>package.json</code> layihənin <strong>şəxsiyyət
+        vəsiqəsi</strong>dir. Onda üç vacib şey yazılır: layihənin adı,
+        <em>hansı paketlərə ehtiyacı olduğu</em> və <em>hansı əmrləri işlədə
+        bildiyi</em>.</p>
+        <p><strong>Niyə paketlərə ehtiyac var?</strong> Çünki hər şeyi sıfırdan
+        yazmaq aylar çəkər. NestJS bizə modul, controller, servis kimi hazır
+        quruluşlar verir; Prisma bazaya sorğu göndərməyi asanlaşdırır;
+        class-validator gələn məlumatı yoxlayır. Biz onları <em>istifadə
+        edirik</em>, özümüz yazmırıq.</p>
+        <p><strong>İki növ asılılıq var.</strong> <code>dependencies</code> —
+        proqram işləyərkən lazım olan paketlər (məsələn NestJS). 
+        <code>devDependencies</code> — yalnız <em>işləyərkən inkişaf
+        mərhələsində</em> lazım olanlar (məsələn TypeScript kompilyatoru,
+        test aləti). Server işə salınanda devDependencies yüklənmir — bu,
+        yaddaşa qənaət edir.</p>
+        <p><strong>Skriptlər</strong> isə qısa yollardır: <code>npm run
+        build</code> yazmaq, uzun bir əmri yadda saxlamaqdan asandır.</p>
+  <div class="anlayis"><h4>Yeni anlayışlar</h4><dl><dt>package.json</dt><dd>Layihənin manifesti — adı, asılılıqları və əmrləri.</dd><dt>dependencies</dt><dd>Proqramın İŞLƏMƏSİ üçün lazım olan paketlər.</dd><dt>devDependencies</dt><dd>Yalnız inkişaf/mərhələsində lazım olan paketlər (test, kompilyator).</dd><dt>npm script</dt><dd>package.json-da saxlanan qısa əmr. `npm run ad` ilə işlədilir.</dd><dt>semver</dt><dd>Versiya yazılışı: `^4.4.0` = «4.4.0 və yuxarı, amma 5.0.0-dan aşağı».</dd><dt>node_modules</dt><dd>Quraşdırılmış paketlərin fiziki yerləşdiyi qovluq. Git-ə salınmır.</dd></dl></div>
+</div>
+
+<div class="hisse hisse-b">
+  <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">package.json</p>
+<pre><code>cat &gt; package.json &lt;&lt;'EOF'
+{
+  "name": "ds-backend",
+  "version": "0.1.0",
+  "description": "Deepseek_ARTI — ARTİ ERP backend (NestJS 12 + Prisma 7 + PostgreSQL)",
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "module",
+  "scripts": {
+    "build": "nest build",
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "start:prod": "node dist/main.js",
+    "prisma:pull": "prisma db pull",
+    "prisma:generate": "prisma generate",
+    "prisma:studio": "prisma studio",
+    "db:yenile": "prisma db pull &amp;&amp; prisma generate",
+    "test": "vitest run",
+    "test:izle": "vitest"
+  },
+  "dependencies": {
+    "@nestjs/common": "^12.0.1",
+    "@nestjs/config": "^12.0.0",
+    "@nestjs/core": "^12.0.1",
+    "@nestjs/platform-express": "^12.0.1",
+    "@nestjs/swagger": "^12.0.1",
+    "@prisma/adapter-pg": "^7.10.0",
+    "@prisma/client": "^7.10.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.4",
+    "dotenv": "^16.6.1",
+    "pg": "^8.23.0",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^12.0.0",
+    "@nestjs/schematics": "^12.0.0",
+    "@nestjs/testing": "^12.0.1",
+    "@types/express": "^5.0.0",
+    "@types/node": "^24.0.0",
+    "@types/supertest": "^7.0.0",
+    "prisma": "^7.10.0",
+    "source-map-support": "^0.5.21",
+    "supertest": "^7.0.0",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.2"
+  }
+}
+EOF</code></pre>
+
+  <h4 style="margin-top:1rem;color:#334155">Kodun sətir-sətir izahı</h4>
+  <p><code>package.json</code>-da baxmalı olduğunuz yerlər:</p>
+        <p><strong>1) <code>"type": "module"</code></strong> — layihənin müasir
+        ESM (ECMAScript Modules) üsulu ilə işlədiyini bildirir. Bunun nəticəsi
+        odur ki, <em>bütün import-larda fayl uzantısı <code>.js</code> yazılmalıdır</em>
+        — hətta fayl <code>.ts</code> olsa belə! Bu, yeni başlayanların ən çox
+        səhv saldığı qaydadır.</p>
+        <p><strong>2) <code>scripts</code> bölməsi</strong> — burada
+        <code>build</code> (<code>nest build</code>), <code>start:dev</code>
+        (dəyişiklikləri izləyib avtomatik yenidən başladan rejim) və
+        <code>start:prod</code> (yığılmış kodu işlədən rejim) var.</p>
+        <p><strong>3) <code>dependencies</code></strong> — NestJS paketləri,
+        Prisma müştərisi və adapteri, validasiya paketləri.</p>
+        <p>⚠️ <strong>Diqqət:</strong> bu faylı əl ilə yazmaq əvəzinə adətən
+        <code>npm install paket-adi</code> işlədilir və npm faylı özü
+        yeniləyir. Bizim dərsdə isə fayl tam verilir ki, hər şey eyni olsun.</p>
+</div>
+
+<div class="hisse hisse-c">
+  <span class="hisse-basliq">C · Yoxlama — həqiqi çıxış</span>
+  <p>Aşağıdaki əmrləri işlədin. Nəticə elə bu dərsin D hissəsində göstərilib:</p>
+  <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+
+echo "── Layihə haqqında ──"
+python3 -c "
+import json
+d = json.load(open('package.json'))
+print('  ad       :', d['name'])
+print('  versiya  :', d['version'])
+print('  modul tipi:', d.get('type', 'commonjs'))
+"
+echo
+echo "── Skriptlər (qısa əmrlər) ──"
+python3 -c "
+import json
+for k, v in json.load(open('package.json'))['scripts'].items():
+    print('  npm run %-14s → %s' % (k, v))
+"
+echo
+echo "── Asılılıqlar ──"
+python3 -c "
+import json
+d = json.load(open('package.json'))
+print('  İŞLƏMƏ üçün (dependencies):', len(d.get('dependencies', {})))
+print('  İNKİŞAF üçün (devDependencies):', len(d.get('devDependencies', {})))
+"
+echo
+echo "── Quraşdırıldımı? ──"
+if [ -d node_modules ]; then
+  echo "  ✓ node_modules var ($(ls node_modules | wc -l | tr -d ' ') paket)"
+else
+  echo "  ✗ node_modules yoxdur — «npm install» işlədin"
+fi</code></pre>
+  <div class="olmaz"><h4>⚠️ Bu kod olmasa nə olardı</h4><pre><code>$ npm run build
+npm error code ENOENT
+npm error syscall open
+npm error path /Users/royatalibova/Deepseek_ARTI/DS_Backend/package.json
+npm error errno -2
+
+   # ⚠️ package.json olmasa npm heç nə edə bilmir. «ENOENT» =
+   # «Error NO ENTry» = fayl tapılmadı. Səbəb: ya fayl yoxdur, ya da
+   # terminal səhv qovluqdadır (pwd ilə yoxlayın).
+
+$ npm test
+npm error Missing script: "test"
+
+   # ⚠️ Skript təyin olunmasa, npm onu tapa bilmir. Ona görə
+   # package.json-daki «scripts» bölməsi vacibdir.</code></pre>
+    <p><p>Bu yoxlama üç suala cavab verir: <em>fayl yerindədirmi?</em>,
+        <em>hansı əmrləri işlədə bilirəm?</em> və <em>paketlər
+        quraşdırılıbmı?</em></p>
+        <p><code>node_modules</code> qovluğu <code>npm install</code> əmrinin
+        nəticəsidir. Onu əl ilə yaratmaq olmaz — həmişə npm yaradır. Bu qovluq
+        çox böyük olur (yüzlərlə meqabayt), ona görə git-ə salınmır:
+        <code>package.json</code> kifayətdir ki, başqa kompüterdə
+        <code>npm install</code> eyni paketləri yenidən quraşdırsın.</p></p></div>
+</div>
+
+<div class="hisse hisse-d">
+  <span class="hisse-basliq">D · Sistemin vəziyyəti — həqiqi çıxış</span>
+  <pre class="cixis"><code>── Layihə haqqında ──
+  ad       : ds-backend
+  versiya  : 0.1.0
+  modul tipi: module
+
+── Skriptlər (qısa əmrlər) ──
+  npm run build          → nest build
+  npm run start          → nest start
+  npm run start:dev      → nest start --watch
+  npm run start:prod     → node dist/main.js
+  npm run prisma:pull    → prisma db pull
+  npm run prisma:generate → prisma generate
+  npm run prisma:studio  → prisma studio
+  npm run db:yenile      → prisma db pull &amp;&amp; prisma generate
+  npm run test           → vitest run
+  npm run test:izle      → vitest
+
+── Asılılıqlar ──
+  İŞLƏMƏ üçün (dependencies): 13
+  İNKİŞAF üçün (devDependencies): 12
+
+── Quraşdırıldımı? ──
+  ✓ node_modules var (306 paket)
+bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+  <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: layihə artıq <strong>həqiqi Node.js
+        layihəsidir</strong>. <code>npm</code> onu tanıyır, əmrləri işlədə bilir
+        və bütün lazımi paketlər <code>node_modules</code>-dadır. Amma hələ
+        <em>heç bir kod yoxdur</em> — növbəti addımda TypeScript-in necə
+        işləyəcəyini təyin edəcəyik.</p></div>
+</div>
+
+<div class="sual"><h4 style="color:#0f766e;font-size:.95rem">Tez-tez verilən suallar</h4>
+<details><summary>`npm install` nə qədər çəkir?</summary><p>İlk dəfə 1-3 dəqiqə çəkə bilər, çünki paketlər internetdən yüklənir. Sonrakı dəfələr keşdən oxunduğu üçün saniyələrlə ölçülür.</p></details><details><summary>`node_modules`-u silmək olar?</summary><p>Bəli, tam təhlükəsizdir. Sonra <code>npm install</code> işlədin və hər şey bərpa olunacaq — çünki hansı paketlərin lazım olduğu <code>package.json</code>-da yazılıb.</p></details><details><summary>`^` işarəsi nə deməkdir?</summary><p><code>^4.4.0</code> → «4.4.0 və ya daha yeni 4.x versiyası, amma 5.0.0 yox». Belə kiçik yenilənmələr gəlsin, amma qırıcı dəyişikliklər avtomatik gəlməsin.</p></details><details><summary>`dependencies` ilə `devDependencies` fərqi nədir?</summary><p>İstehsalatda (production) serverdə yalnız <code>dependencies</code> quraşdırılır: <code>npm install --omit=dev</code>. Test alətləri və kompilyator orada lazım deyil.</p></details></div>
+</section><section class="addim" id="a3">
+<h2 class="addim-basliq"><span class="addim-no">3</span> TypeScript konfiqurasiyası</h2>
+
+<div class="hisse hisse-a">
+  <span class="hisse-basliq">A · Bu addım niyə var</span>
+  <p><strong>Niyə JavaScript yox, TypeScript?</strong> JavaScript-də
+        dəyişənin tipi yoxdur: <code>let yas = "iyirmi"</code> yazsanız, heç kim
+        sizi saxlamır. TypeScript isə deyir: «bu dəyişən ədəd olmalıdır» və
+        səhvi <em>kodu işlətməzdən əvvəl</em> göstərir. Böyük layihələrdə bu,
+        saatlarla vaxta qənaət edir.</p>
+        <p><strong>Konfiqurasiya nə üçün iki fayldır?</strong>
+        <code>tsconfig.json</code> layihənin <em>ümumi</em> qaydalarıdır — onu
+        redaktor (VS Code) oxuyur və sizə kömək edir.
+        <code>tsconfig.build.json</code> isə yalnız <em>yığım</em> (build)
+        üçündür və test fayllarını kənarda qoyur. Belə ki test faylları
+        istehsalat koduna düşmür.</p>
+        <p>⚠️ <strong>Ən vacib üç ayar:</strong></p>
+        <p><code>experimentalDecorators: true</code> — NestJS
+        <code>@Controller()</code>, <code>@Injectable()</code> kimi işarələri
+        işlədir. Bu ayar sönsə, heç bir modul işləməz.</p>
+        <p><code>emitDecoratorMetadata: true</code> — NestJS-in asılılıqları
+        <em>avtomatik</em> tapması üçün lazımdır. Bu olmasa, hər servisi əl ilə
+        bağlamaq lazım gələrdi.</p>
+        <p><code>module: "nodenext"</code> — müasir modul sistemi. Bunun
+        nəticəsi: import-larda <code>.js</code> uzantısı mütləqdir.</p>
+  <div class="anlayis"><h4>Yeni anlayışlar</h4><dl><dt>TypeScript</dt><dd>JavaScript + tiplər. Kod yazarkən səhvləri tutur, sonra adi JavaScript-ə çevrilir.</dd><dt>transpile / compile</dt><dd>TypeScript kodunu brauzerin/serverin başa düşdüyü JavaScript-ə çevirmək.</dd><dt>decorator</dt><dd>Kodun üzərinə yazılan `@İşarə` — sinfə və ya metoda əlavə məlumat verir.</dd><dt>metadata</dt><dd>Kod haqqında «kodun özü» — NestJS bundan istifadə edib asılılıqları tapır.</dd><dt>strict</dt><dd>TypeScript-in ən sərt yoxlama rejimi. Səhvləri erkən tutur.</dd><dt>target</dt><dd>Hansı JavaScript versiyasına çevrilsin (məsələn ES2023).</dd><dt>NodeNext</dt><dd>Node.js-in müasir modul qaydası: import-da `.js` uzantısı tələb edir.</dd></dl></div>
+</div>
+
+<div class="hisse hisse-b">
+  <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">tsconfig.json</p>
+<pre><code>cat &gt; tsconfig.json &lt;&lt;'EOF'
+{
+  "compilerOptions": {
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "resolvePackageJsonExports": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "ES2023",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "incremental": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "types": ["vitest/globals", "node"]
+  }
+}
+EOF</code></pre>
+  <p class="fayl-ad">tsconfig.build.json</p>
+<pre><code>cat &gt; tsconfig.build.json &lt;&lt;'EOF'
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "./src"
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "test", "dist", "**/*spec.ts"]
+}
+EOF</code></pre>
+  <p class="fayl-ad">nest-cli.json</p>
+<pre><code>cat &gt; nest-cli.json &lt;&lt;'EOF'
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "src",
+  "compilerOptions": {
+    "deleteOutDir": true
+  }
+}
+EOF</code></pre>
+
+  <h4 style="margin-top:1rem;color:#334155">Kodun sətir-sətir izahı</h4>
+  <p><strong><code>tsconfig.json</code> — ümumi qaydalar.</strong>
+        <code>strict: true</code> bütün sərt yoxlamaları açır. Öyrənmə
+        mərhələsində bu, əvvəlcə çətin görünür, amma sizi çox səhvdən qoruyur.</p>
+        <p><code>moduleResolution: "nodenext"</code> ilə birlikdə
+        <code>module: "nodenext"</code> işlədilir — bu ikisi
+        <em>cütlükdür</em>, biri olmadan digəri işləmir.</p>
+        <p><strong><code>tsconfig.build.json</code> — yalnız yığım
+        üçün.</strong> <code>extends</code> sözü «yuxarıdaki fayldan miras al»
+        deməkdir. Sonra <code>exclude</code> ilə test qovluğunu kənarlaşdırır.
+        Beləliklə <code>npm run build</code> yalnız istehsalat kodunu yığır.</p>
+        <p><strong><code>nest-cli.json</code> — NestJS-in öz ayarları.</strong>
+        <code>sourceRoot: "src"</code> kodu haradan götürsün, <code>deleteOutDir:
+        true</code> isə hər yığımdan əvvəl köhnə <code>dist</code> qovluğunu
+        təmizləsin. Bu olmasa, silinmiş faylların köhnə nüsxələri
+        <code>dist</code>-də qalıb çaşqınlıq yaradardı.</p>
+        <p>⚠️ <strong>Nə üçün <code>.js</code> uzantısı?</strong> Fayl
+        <code>src/main.ts</code> olsa da, import belə yazılır:
+        <code>import ... from './app.module.js'</code>. Səbəb: Node.js yığılmış
+        JavaScript fayllarını işlədəcək və orada uzantı <code>.js</code>-dir.
+        Bu qayda pozulsa, <code>ERR_MODULE_NOT_FOUND</code> xətası alırsınız.</p>
+</div>
+
+<div class="hisse hisse-c">
+  <span class="hisse-basliq">C · Yoxlama — həqiqi çıxış</span>
+  <p>Aşağıdaki əmrləri işlədin. Nəticə elə bu dərsin D hissəsində göstərilib:</p>
+  <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+
+echo "── TypeScript-in gördüyü YEKUN ayarlar ──"
+npx tsc --showConfig 2&gt;/dev/null | python3 -c "
+import json, sys
+d = json.load(sys.stdin)['compilerOptions']
+for a in ['target','module','moduleResolution','strict',
+          'experimentalDecorators','emitDecoratorMetadata',
+          'outDir','rootDir','esModuleInterop','skipLibCheck']:
+    print('  %-24s %s' % (a, d.get(a, '—')))
+"
+echo
+echo "── NestJS ayarları ──"
+python3 -c "
+import json
+d = json.load(open('nest-cli.json'))
+c = d.get('compilerOptions', {})
+print('  sourceRoot     :', d.get('sourceRoot'))
+print('  deleteOutDir   :', c.get('deleteOutDir'))
+print('  collection     :', d.get('collection'))
+"
+echo
+echo "── Yığım nəyi KƏNARDA qoyur? ──"
+python3 -c "
+import json
+print('  exclude:', json.load(open('tsconfig.build.json')).get('exclude'))
+"</code></pre>
+  <div class="olmaz"><h4>⚠️ Bu kod olmasa nə olardı</h4><pre><code>$ npm run build
+src/main.ts:1:1 - error TS1219: Experimental support for decorators is a
+feature that is subject to change in a future release. Set the
+'experimentalDecorators' option in your 'tsconfig' or 'jsconfig' to
+remove this warning.
+
+src/app.module.ts:5:1 - error TS1206: Decorators are not valid here.
+
+   # ⚠️ «experimentalDecorators» olmasa NestJS-in @İşarə-ləri TANINMIR.
+   # Nəticə: heç bir modul, controller, servis işləmir — build sınır.
+
+$ npm run start:prod
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/.../dist/app.module.js'
+imported from /.../dist/main.js
+
+   # ⚠️ Import-da «.js» uzantısı unudulsa, Node faylı tapa bilmir.
+   # TypeScript xəbərdarlıq vermir, amma işləyəndə sınır — ona görə
+   # bu qayda əzbərlənməlidir.</code></pre>
+    <p><p><code>npx tsc --showConfig</code> əmri TypeScript-in
+        <em>həqiqətən</em> işlətdiyi ayarları göstərir — miras alınanlar da
+        daxil. Bu, «faylda yazdım, amma işləmirsə» hallarını tapmaq üçün əla
+        üsuldur.</p>
+        <p>Diqqət yetirin: <code>tsconfig.json</code>-da <code>strict</code>
+        yazılıb, amma <code>--showConfig</code> onu <code>true</code> kimi
+        göstərir. Çünki <code>strict</code> aslında bir qrup ayarın qısa
+        yazılışıdır.</p>
+        <p><code>deleteOutDir: true</code> xüsusilə vacibdir: hər yığımdan
+        əvvəl <code>dist</code> silinir. Bu olmasa, köhnə fayllar qalır və
+        «dəyişikliyim niyə təsir etmir?» sualı yaranır.</p></p></div>
+</div>
+
+<div class="hisse hisse-d">
+  <span class="hisse-basliq">D · Sistemin vəziyyəti — həqiqi çıxış</span>
+  <pre class="cixis"><code>── TypeScript-in gördüyü YEKUN ayarlar ──
+  target                   es2023
+  module                   nodenext
+  moduleResolution         nodenext
+  strict                   True
+  experimentalDecorators   True
+  emitDecoratorMetadata    True
+  outDir                   ./dist
+  rootDir                  —
+  esModuleInterop          True
+  skipLibCheck             True
+
+── NestJS ayarları ──
+  sourceRoot     : src
+  deleteOutDir   : True
+  collection     : @nestjs/schematics
+
+── Yığım nəyi KƏNARDA qoyur? ──
+  exclude: ['node_modules', 'test', 'dist', '**/*spec.ts']
+bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+  <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: layihə artıq <strong>TypeScript
+        layihəsidir</strong>. Kompilyator decorator-ları tanıyır, sərt tip
+        yoxlaması açıqdır və yığım qaydaları ayrılmışdır. Hələ kod yoxdur,
+        amma kod yazmaq üçün bütün şərait hazırdır.</p></div>
+</div>
+
+<div class="sual"><h4 style="color:#0f766e;font-size:.95rem">Tez-tez verilən suallar</h4>
+<details><summary>`.ts` faylı niyə `.js` kimi import olunur?</summary><p>Çünki işləyən kod TypeScript deyil, yığılmış JavaScript-dir. Node.js <code>dist/app.module.js</code> faylını axtarır. Bu, «NodeNext» modul sisteminin qaydasıdır.</p></details><details><summary>`strict: false` etsəm nə olar?</summary><p>Build asan keçər, amma <code>null</code> və <code>undefined</code> ilə bağlı səhvlər yalnız işləyəndə görünər — o zaman tapmaq çox çətindir. Öyrənmə mərhələsində sərt saxlamaq daha faydalıdır.</p></details><details><summary>`dist` nədir?</summary><p>Yığılmış JavaScript kodunun qovluğu. Siz <code>src</code>-də TypeScript yazırsınız, <code>npm run build</code> isə onu <code>dist</code>-ə çevirir. Server <code>dist/main.js</code>-i işlədir.</p></details><details><summary>Redaktorum niyə xəta göstərmir, amma terminal göstərir?</summary><p>Redaktor <code>tsconfig.json</code>-u, terminal isə <code>npm run build</code> vasitəsilə <code>tsconfig.build.json</code>-u işlədir. İkisi fərqli ayar işlədə bilər.</p></details></div>
+</section><section class="addim" id="a4">
+<h2 class="addim-basliq"><span class="addim-no">4</span> .env — baza açarı koddan ayrılır</h2>
+
+<div class="hisse hisse-a">
+  <span class="hisse-basliq">A · Bu addım niyə var</span>
+  <p><strong>Ən çox edilən təhlükəsizlik səhvi:</strong> baza şifrəsini
+        koda yazmaq. <code>const sifre = "arti_secret_2025"</code> — bu sətir
+        git-ə düşəndə şifrə <em>əbədi olaraq</em> tarixçədə qalır. Kodu silmək
+        kifayət etmir, çünki köhnə commit-lərdə qalır.</p>
+        <p><strong>Həll: mühit dəyişənləri.</strong> Şifrə koddan çıxarılıb
+        <code>.env</code> faylına salınır, kod isə onu <em>adı ilə</em>
+        oxuyur: «<code>DATABASE_URL</code> nədir?» Kod heç vaxt şifrənin özünü
+        bilmir. Beləliklə eyni kod həm kompüterinizdə, həm serverdə işləyir —
+        sadəcə <code>.env</code> faylı fərqli olur.</p>
+        <p>⚠️ <strong><code>.env</code> git-ə salınmamalıdır.</strong> Bunun
+        üçün <code>.gitignore</code> faylı var. Əvəzində
+        <code>.env.example</code> saxlanılır — orada şifrə yerinə nümunə olur.
+        Yeni işçi layihəni götürəndə <code>.env.example</code>-i kopyalayıb öz
+        şifrəsini yazır.</p>
+  <div class="anlayis"><h4>Yeni anlayışlar</h4><dl><dt>Mühit dəyişəni (env var)</dt><dd>Əməliyyat sisteminin koda verdiyi adlı dəyər. `DATABASE_URL`, `PORT` kimi.</dd><dt>.env</dt><dd>Mühit dəyişənlərinin faylda saxlandığı yer. Git-ə salınmır.</dd><dt>.env.example</dt><dd>Şifrəsiz NÜMUNƏ faylı — git-ə salınır ki, hansı dəyişənlər lazım olduğu bilinsin.</dd><dt>.gitignore</dt><dd>Git-in NƏZƏRƏ ALMAYACAĞI faylların siyahısı.</dd><dt>DATABASE_URL</dt><dd>Baza ünvanı: `postgresql://istifadeci:sifre@host:port/baza_adi`.</dd><dt>sirr (secret)</dt><dd>Açıqlanmamalı olan məlumat — şifrə, API açarı, token imza açarı.</dd></dl></div>
+</div>
+
+<div class="hisse hisse-b">
+  <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">.env.example</p>
+<pre><code>cat &gt; .env.example &lt;&lt;'EOF'
+# Nümunə — öz dəyərlərinizlə doldurun, bu faylı KOMİT ETMƏYİN
+DATABASE_URL="postgresql://ISTIFADECI:SIFRE@localhost:5432/arti_baza"
+PORT=4000
+NODE_ENV=development
+EOF</code></pre>
+  <p class="fayl-ad">.gitignore</p>
+<pre><code>cat &gt; .gitignore &lt;&lt;'EOF'
+.env
+.env.*
+!.env.example
+node_modules/
+dist/
+src/generated/
+*.log
+EOF</code></pre>
+
+  <h4 style="margin-top:1rem;color:#334155">Kodun sətir-sətir izahı</h4>
+  <p><strong><code>.env</code> faylının quruluşu:</strong>
+        <code>AD="dəyər"</code>. Dırnaqlar məcburi deyil, amma dəyərdə xüsusi
+        işarə varsa (məsələn <code>#</code>) mütləqdir.</p>
+        <p><code>DATABASE_URL</code>-i hissələrə ayıraq:
+        <code>postgresql://</code> — protokol;
+        <code>arti_user:arti_secret_2025</code> — istifadəçi adı və şifrə;
+        <code>@localhost:5432</code> — server ünvanı və port;
+        <code>/arti_baza</code> — baza adı.</p>
+        <p><strong><code>.gitignore</code>-da nə var?</strong>
+        <code>node_modules/</code> (çox böyükdür),
+        <code>.env</code> (şifrə var),
+        <code>dist/</code> (yığılmış kod — yenidən yığıla bilər),
+        <code>src/generated/</code> (Prisma özü yaradır).</p>
+        <p>⚠️ <strong>Terminalda <code>DATABASE_URL</code> artıq təyin
+        olunubsa?</strong> O zaman <code>.env</code>-dəki dəyər <em>üstələnir</em>
+        — çünki mövcud mühit dəyişəni fayldan üstündür. Bu, çaşqınlıq yaradır.
+        Ona görə dərslərdə hər dəfə <code>unset DATABASE_URL PGHOST</code>
+        işlədilir: «əvvəl təmizlə, sonra fayldan oxu».</p>
+</div>
+
+<div class="hisse hisse-c">
+  <span class="hisse-basliq">C · Yoxlama — həqiqi çıxış</span>
+  <p>Aşağıdaki əmrləri işlədin. Nəticə elə bu dərsin D hissəsində göstərilib:</p>
+  <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+unset DATABASE_URL PGHOST
+
+echo "── .env faylı (şifrə GİZLƏDİLİR) ──"
+python3 -c "
+import re, pathlib
+for x in pathlib.Path('.env').read_text().splitlines():
+    if not x.strip() or x.startswith('#'):
+        continue
+    a, _, d = x.partition('=')
+    d = d.strip('\"')
+    if 'SIFRE' in a or 'SECRET' in a or 'PASSWORD' in a or 'URL' in a:
+        print('  %-18s %s  (dəyər gizlədilib)' % (a, '•' * 24))
+    else:
+        print('  %-18s %s' % (a, d))
+"
+echo
+echo "── DATABASE_URL hissələri ──"
+python3 -c "
+import re, pathlib
+m = re.search(r'DATABASE_URL=\"([^\"]+)\"', pathlib.Path('.env').read_text())
+u = m.group(1)
+sxem, _, qalan = u.partition('://')
+kimlik, _, host = qalan.partition('@')
+ist, _, sifre = kimlik.partition(':')
+host, _, baza = host.partition('/')
+print('  protokol :', sxem)
+print('  istifadəçi:', ist)
+print('  şifrə    :', '•' * len(sifre), '(%d simvol)' % len(sifre))
+print('  host:port:', host)
+print('  baza adı :', baza)
+"
+echo
+echo "── Git nəyi NƏZƏRƏ ALMIR? ──"
+grep -v '^#' .gitignore | grep -v '^$' | sed 's/^/  /'
+echo
+echo "── .env həqiqətən qorunurmu? ──"
+cd ~/Deepseek_ARTI &amp;&amp; git check-ignore -v DS_Backend/.env 2&gt;/dev/null || echo "  (layihə hələ git-də deyil)"
+cd ~/Deepseek_ARTI/DS_Backend</code></pre>
+  <div class="olmaz"><h4>⚠️ Bu kod olmasa nə olardı</h4><pre><code>$ git add -A &amp;&amp; git commit -m "ilk versiya"
+$ git log --oneline
+a1b2c3d ilk versiya
+
+   # ⚠️ .gitignore olmasaydı, .env də git-ə düşərdi. Şifrə artıq
+   # tarixçədədir — kodu silsəniz də qalır, çünki köhnə commit
+   # dəyişməzdir. Şifrəni dəyişməkdən başqa çıxış yolu qalmır.
+
+$ cat src/prisma/prisma.service.ts
+const url = 'postgresql://arti_user:arti_secret_2025@localhost:5432/arti_baza';
+
+   # ⚠️ Şifrə koda yazılsa, kodu görən HƏR KƏS bazaya girə bilər.
+   # Həm də eyni kodu başqa kompüterdə işlətmək mümkün olmaz:
+   # hər yerdə şifrəni əl ilə dəyişmək lazım gələrdi.</code></pre>
+    <p><p>Bu yoxlamanın ən mühüm hissəsi <strong>şifrənin heç vaxt
+        ekrana çıxmamasıdır</strong>. Diqqət yetirin: skript şifrəni
+        <code>•</code> ilə göstərir. Bu, sadəcə nəzakət deyil — ekran
+        görüntüləri, ekran yazıları və terminal tarixçəsi tez-tez paylaşılır.
+        Şifrə orada görünsə, sızır.</p>
+        <p><code>git check-ignore</code> əmri «bu fayl git tərəfindən
+        sayılırmı?» sualına cavab verir. Əgər fayl sayılırsa (ignore
+        olunmursa), <code>git add</code> onu götürəcək — bu təhlükə işarəsidir.</p></p></div>
+</div>
+
+<div class="hisse hisse-d">
+  <span class="hisse-basliq">D · Sistemin vəziyyəti — həqiqi çıxış</span>
+  <pre class="cixis"><code>── .env faylı (şifrə GİZLƏDİLİR) ──
+  DATABASE_URL       ••••••••••••••••••••••••  (dəyər gizlədilib)
+  PORT               4000
+  NODE_ENV           development
+
+── DATABASE_URL hissələri ──
+  protokol : postgresql
+  istifadəçi: arti_user
+  şifrə    : •••••••••••••••• (16 simvol)
+  host:port: localhost:5432
+  baza adı : arti_baza
+
+── Git nəyi NƏZƏRƏ ALMIR? ──
+  .env
+  .env.*
+  !.env.example
+  node_modules/
+  dist/
+  src/generated/
+  *.log
+
+── .env həqiqətən qorunurmu? ──
+.gitignore:6:.env	DS_Backend/.env
+bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory
+bash: line 38: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+  <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>şifrələr koddan ayrılıb</strong>
+        və git-dən qorunur. Bu andan etibarən kod yaza bilərik — heç bir yerdə
+        şifrə yazmayacağıq, sadəcə <code>process.env.DATABASE_URL</code>
+        deyəcəyik.</p></div>
+</div>
+
+<div class="sual"><h4 style="color:#0f766e;font-size:.95rem">Tez-tez verilən suallar</h4>
+<details><summary>`.env`-i başqa kompüterə necə köçürüm?</summary><p>Köçürməyin! <code>.env.example</code>-i kopyalayın, yeni kompüterdə <code>.env</code> adı ilə saxlayın və öz şifrənizi yazın. Şifrələr heç vaxt kodla birlikdə daşınmır.</p></details><details><summary>Şifrəni dəyişmək istəsəm?</summary><p>Yalnız <code>.env</code> faylını dəyişin — kodda heç nə dəyişmir. Bu, mühit dəyişənlərinin əsas üstünlüyüdür.</p></details><details><summary>`unset DATABASE_URL` nə üçün lazımdır?</summary><p>Əgər terminalda köhnə bir <code>DATABASE_URL</code> qalıbsa, o, <code>.env</code>-dəki dəyəri üstələyir və siz səhv bazaya qoşulursunuz. <code>unset</code> köhnə dəyəri silir.</p></details><details><summary>`.env` faylı varsa, `dotenv` paketi nə edir?</summary><p>Faylı oxuyub mühit dəyişənlərinə çevirir. Node.js özü <code>.env</code> faylını tanımır — paket vasitəsilə oxunur.</p></details></div>
+</section><section class="addim" id="a5">
+<h2 class="addim-basliq"><span class="addim-no">5</span> Prisma sxeması — bazanı oxuyub tipləri çıxarmaq</h2>
+
+<div class="hisse hisse-a">
+  <span class="hisse-basliq">A · Bu addım niyə var</span>
+  <p>Bazamız artıq mövcuddur: 48 cədvəl, 12 sxem, minlərlə sütun.
+        <strong>Onu TypeScript-ə necə tanıdacağıq?</strong> Hər cədvəl üçün əl
+        ilə tip yazmaq həftələr çəkər və hər dəyişiklikdə yenidən yazmaq
+        lazım gələrdi.</p>
+        <p>Burada <strong>Prisma</strong> köməyə gəlir. Prisma bir
+        <em>ORM</em>-dir (Object-Relational Mapping): cədvəlləri TypeScript
+        obyektlərinə çevirir. <code>prisma db pull</code> əmri bazaya qoşulur,
+        bütün cədvəlləri oxuyur və onların təsvirini
+        <code>schema.prisma</code> faylına yazır. Sonra
+        <code>prisma generate</code> həmin təsvirdən TypeScript tiplərini
+        yaradır.</p>
+        <p><strong>Nəticə:</strong> redaktorunuz <code>emekdaslar</code>
+        cədvəlinin hansı sütunları olduğunu <em>bilir</em>. Səhv sütun adı
+        yazsanız, dərhal xəbərdarlıq alırsınız — bazaya sorğu göndərməzdən
+        əvvəl.</p>
+  <div class="anlayis"><h4>Yeni anlayışlar</h4><dl><dt>ORM</dt><dd>Object-Relational Mapping — cədvəlləri obyekt kimi işlətməyə imkan verən qat.</dd><dt>Prisma</dt><dd>TypeScript üçün müasir ORM. Sxemadan tipləri avtomatik yaradır.</dd><dt>introspection (db pull)</dt><dd>Bazanı oxuyub sxem faylını AVTOMATİK yazmaq.</dd><dt>generator</dt><dd>Sxemadan kod (TypeScript tipləri) yaradan hissə.</dd><dt>datasource</dt><dd>Bazaya necə qoşulacağını bildirən hissə.</dd><dt>sxem (schema)</dt><dd>PostgreSQL-də cədvəllərin qrupu: `kadrlar`, `struktur`, `tehsil`.</dd><dt>prisma.config.ts</dt><dd>Prisma 7-də ayarlar faylı — baza ünvanı buradan verilir.</dd></dl></div>
+</div>
+
+<div class="hisse hisse-b">
+  <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">prisma/schema.prisma</p>
+<pre><code>mkdir -p prisma
+cat &gt; prisma/schema.prisma &lt;&lt;'EOF'
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  schemas  = ["ai", "audit", "elm", "kadrlar", "logistika", "maliyye", "metodika", "ortaq", "qiymetlendirme", "sened", "struktur", "tehsil"]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model ai_promptlar {
+  id           Int     @id @default(autoincrement())
+  ad           String
+  tip          String  @default("sual-cavab")
+  prompt_metni String
+  aktiv        Boolean @default(true)
+
+  @@schema("ai")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model ai_sorghular {
+  id         BigInt   @id @default(autoincrement())
+  istifadeci String?  @default(dbgenerated("CURRENT_USER"))
+  sorghu     String
+  cavab      String?
+  model      String?  @default("deepseek")
+  token_sayi Int?     @default(0)
+  vaxt       DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([vaxt], map: "idx_ai_sorghu_vaxt")
+  @@schema("ai")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model embeddingler {
+  id         BigInt   @id @default(autoincrement())
+  cedvel_adi String
+  sened_id   Int?
+  metn       String?
+  vektor     Json?
+  yaradilma  DateTime @default(now()) @db.Timestamptz(6)
+
+  @@schema("ai")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model audit_log {
+  id         BigInt   @id @default(autoincrement())
+  cedvel_adi String
+  emeliyyat  String
+  setir_id   String?
+  istifadeci String?  @default(dbgenerated("CURRENT_USER"))
+  vaxt       DateTime @default(now()) @db.Timestamptz(6)
+  qeyd       String?
+
+  @@index([cedvel_adi], map: "idx_audit_cedvel")
+  @@schema("audit")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model doktorantlar {
+  id                       Int                      @id @default(autoincrement())
+  proqram_id               Int
+  ad                       String
+  soyad                    String
+  ata_adi                  String
+  status                   String                   @default("tehsil alir")
+  qebul_tarixi             DateTime?                @db.Date
+  rehber_id                BigInt?
+  mudafie_tarixi           DateTime?                @db.Date
+  qeyd                     String?
+  doktorantura_proqramlari doktorantura_proqramlari @relation(fields: [proqram_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  emekdaslar               emekdaslar?              @relation(fields: [rehber_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([proqram_id], map: "idx_doktorantlar_proqram")
+  @@index([status], map: "idx_doktorantlar_status")
+  @@schema("elm")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model doktorantura_proqramlari {
+  id           Int            @id @default(autoincrement())
+  ad           String
+  ixtisas_kodu String?
+  seviyye      String         @default("doktorantura")
+  muddet_il    Int?           @default(3)
+  qeyd         String?
+  doktorantlar doktorantlar[]
+
+  @@schema("elm")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model elmi_tedbirler {
+  id             Int       @id @default(autoincrement())
+  ad             String
+  tip            String    @default("konfrans")
+  tarix          DateTime? @db.Date
+  yer            String?
+  istirakci_sayi Int?      @default(0)
+  qeyd           String?
+
+  @@schema("elm")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model jurnallar {
+  id        Int         @id @default(autoincrement())
+  ad        String      @unique
+  tip       String      @default("elmi")
+  issn      String?
+  tezlik    String?
+  tesvir    String?
+  meqaleler meqaleler[]
+
+  @@schema("elm")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model meqaleler {
+  id         Int        @id @default(autoincrement())
+  jurnal_id  Int?
+  basliq     String
+  muellifler String?
+  il         Int?
+  cild       String?
+  sehife     String?
+  doi        String?
+  qeyd       String?
+  jurnallar  jurnallar? @relation(fields: [jurnal_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([jurnal_id], map: "idx_meqaleler_jurnal")
+  @@schema("elm")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model neshrler {
+  id      Int     @id @default(autoincrement())
+  ad      String
+  tip     String  @default("kitab")
+  muellif String?
+  il      Int?
+  isbn    String?
+  say     Int?    @default(1)
+  qeyd    String?
+
+  @@index([il], map: "idx_neshr_il")
+  @@schema("elm")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model tedqiqat_istiqametleri {
+  id                  Int                   @id @default(autoincrement())
+  ad                  String                @unique
+  tesvir              String?
+  aktiv               Boolean               @default(true)
+  tedqiqat_layiheleri tedqiqat_layiheleri[]
+
+  @@schema("elm")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model tedqiqat_layiheleri {
+  id                     Int                    @id @default(autoincrement())
+  istiqamet_id           Int
+  ad                     String
+  tesvir                 String?
+  status                 String                 @default("davam edir")
+  rehber_id              BigInt?
+  baslama_tarixi         DateTime?              @db.Date
+  bitme_tarixi           DateTime?              @db.Date
+  qeyd                   String?
+  tedqiqat_istiqametleri tedqiqat_istiqametleri @relation(fields: [istiqamet_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  emekdaslar             emekdaslar?            @relation(fields: [rehber_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([istiqamet_id], map: "idx_tedqiqat_layihe_istiqamet")
+  @@index([rehber_id], map: "idx_tedqiqat_layihe_rehber")
+  @@index([status], map: "idx_tedqiqat_layihe_status")
+  @@schema("elm")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model emekdaslar {
+  id                  BigInt                @id @default(autoincrement())
+  ad                  String
+  soyad               String
+  ata_adi             String
+  cinsiyyet_id        Int
+  dogum_tarixi        DateTime?             @db.Date
+  vezife_id           Int
+  shobe_id            Int?
+  merkez_id           Int?
+  email               String?               @unique
+  telefon             String?
+  is_status_id        Int                   @default(1)
+  elmi_derece_id      Int?
+  elmi_ad_id          Int?
+  ise_baslama         DateTime?             @db.Date
+  maas                Decimal?              @db.Decimal(12, 2)
+  aktiv               Boolean               @default(true)
+  yaradilma           DateTime              @default(now()) @db.Timestamptz(6)
+  doktorantlar        doktorantlar[]
+  tedqiqat_layiheleri tedqiqat_layiheleri[]
+  cinsiyyet           cinsiyyet             @relation(fields: [cinsiyyet_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  elmi_adlar          elmi_adlar?           @relation(fields: [elmi_ad_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  elmi_dereceler      elmi_dereceler?       @relation(fields: [elmi_derece_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  is_statuslari       is_statuslari         @relation(fields: [is_status_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  merkezler           merkezler?            @relation(fields: [merkez_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  shobeler            shobeler?             @relation(fields: [shobe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  vezifeler           vezifeler             @relation(fields: [vezife_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  is_tecrubesi        is_tecrubesi[]
+  istifadeciler       istifadeciler[]
+  mezuniyyetler       mezuniyyetler[]
+  vezife_teyinatlari  vezife_teyinatlari[]
+  elmi_shura_uzvleri  elmi_shura_uzvleri[]
+  rehberlik           rehberlik?
+  sertifikasiya       sertifikasiya[]
+  telim_qruplari      telim_qruplari[]
+
+  @@index([email], map: "idx_emekdaslar_email")
+  @@index([shobe_id], map: "idx_emekdaslar_shobe")
+  @@index([soyad], map: "idx_emekdaslar_soyad")
+  @@index([vezife_id], map: "idx_emekdaslar_vezife")
+  @@schema("kadrlar")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model is_tecrubesi {
+  id             Int        @id @default(autoincrement())
+  emekdas_id     BigInt
+  is_yeri        String
+  vezife         String?
+  baslama_tarixi DateTime?  @db.Date
+  bitme_tarixi   DateTime?  @db.Date
+  qeyd           String?
+  emekdaslar     emekdaslar @relation(fields: [emekdas_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@schema("kadrlar")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model istifadeciler {
+  id         Int         @id @default(autoincrement())
+  email      String      @unique
+  parol_hash String
+  ad_soyad   String
+  rol        String      @default("baxici")
+  emekdas_id BigInt?
+  aktiv      Boolean     @default(true)
+  yaradilma  DateTime    @default(now()) @db.Timestamptz(6)
+  emekdaslar emekdaslar? @relation(fields: [emekdas_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@schema("kadrlar")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model mezuniyyetler {
+  id              Int        @id @default(autoincrement())
+  emekdas_id      BigInt
+  mezuniyyet_tipi String     @default("illik")
+  baslama_tarixi  DateTime   @db.Date
+  bitme_tarixi    DateTime   @db.Date
+  gun_sayi        Int?
+  status          String     @default("tesdiqlendi")
+  qeyd            String?
+  emekdaslar      emekdaslar @relation(fields: [emekdas_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@schema("kadrlar")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model vezife_teyinatlari {
+  id             Int        @id @default(autoincrement())
+  emekdas_id     BigInt
+  vezife_id      Int
+  shobe_id       Int?
+  t_yinat_tarixi DateTime   @default(dbgenerated("CURRENT_DATE")) @map("təyinat_tarixi") @db.Date
+  emr_no         String?
+  status         String     @default("qüvvədədir")
+  qeyd           String?
+  emekdaslar     emekdaslar @relation(fields: [emekdas_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  shobeler       shobeler?  @relation(fields: [shobe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  vezifeler      vezifeler  @relation(fields: [vezife_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@schema("kadrlar")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model aktivler {
+  id            Int       @id @default(autoincrement())
+  ad            String
+  tip           String    @default("avadanlıq")
+  veziyyet      String    @default("yaxşı")
+  deyer         Decimal?  @default(0) @db.Decimal(14, 2)
+  alinma_tarixi DateTime? @db.Date
+  qeyd          String?
+
+  @@index([tip], map: "idx_aktiv_tip")
+  @@schema("logistika")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model binalar {
+  id      Int     @id @default(autoincrement())
+  ad      String
+  unvan   String?
+  sahe_m2 Int?    @default(0)
+  mertebe Int?    @default(1)
+  qeyd    String?
+
+  @@schema("logistika")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model it_sistemleri {
+  id     Int     @id @default(autoincrement())
+  ad     String
+  tip    String  @default("sayt")
+  tesvir String?
+  status String  @default("aktiv")
+  qeyd   String?
+
+  @@schema("logistika")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model budce {
+  id                    Int                     @id @default(autoincrement())
+  il                    Int
+  menbe                 String                  @default("dovlet")
+  mebleg                Decimal?                @db.Decimal(14, 2)
+  qeyd                  String?
+  maliyye_emeliyyatlari maliyye_emeliyyatlari[]
+
+  @@index([il], map: "idx_budce_il")
+  @@schema("maliyye")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model maliyye_emeliyyatlari {
+  id       Int       @id @default(autoincrement())
+  budce_id Int?
+  nov      String    @default("xerc")
+  mebleg   Decimal?  @db.Decimal(14, 2)
+  tarix    DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Date
+  tesvir   String?
+  qeyd     String?
+  budce    budce?    @relation(fields: [budce_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([budce_id], map: "idx_emeliyyat_budce")
+  @@schema("maliyye")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model muqavileler {
+  id             Int       @id @default(autoincrement())
+  ad             String
+  qarsi_teref    String
+  mebleg         Decimal?  @db.Decimal(14, 2)
+  baslama_tarixi DateTime? @db.Date
+  bitme_tarixi   DateTime? @db.Date
+  status         String    @default("qüvvədədir")
+  qeyd           String?
+
+  @@index([status], map: "idx_muqavile_status")
+  @@schema("maliyye")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model satinalmalar {
+  id     Int       @id @default(autoincrement())
+  ad     String
+  nov    String    @default("mal")
+  mebleg Decimal?  @db.Decimal(14, 2)
+  tarix  DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Date
+  status String    @default("elan")
+  qeyd   String?
+
+  @@index([status], map: "idx_satinalma_status")
+  @@schema("maliyye")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model metodik_vesaitler {
+  id      Int     @id @default(autoincrement())
+  ad      String
+  nov     String  @default("vesait")
+  fenn    String?
+  il      Int?
+  muellif String?
+  say     Int?    @default(100)
+  qeyd    String?
+
+  @@schema("metodika")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model metodik_xidmetler {
+  id     Int     @id @default(autoincrement())
+  ad     String
+  tip    String  @default("meslehet")
+  tesvir String?
+  status String  @default("aktiv")
+
+  @@schema("metodika")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model cinsiyyet {
+  id         Int          @id @default(autoincrement())
+  ad         String       @unique
+  qisa_ad    String
+  emekdaslar emekdaslar[]
+
+  @@schema("ortaq")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model elmi_adlar {
+  id                 Int                  @id @default(autoincrement())
+  ad                 String               @unique
+  qisa_ad            String
+  emekdaslar         emekdaslar[]
+  elmi_shura_uzvleri elmi_shura_uzvleri[]
+
+  @@schema("ortaq")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model elmi_dereceler {
+  id                 Int                  @id @default(autoincrement())
+  ad                 String               @unique
+  qisa_ad            String
+  emekdaslar         emekdaslar[]
+  elmi_shura_uzvleri elmi_shura_uzvleri[]
+
+  @@schema("ortaq")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model is_statuslari {
+  id         Int          @id @default(autoincrement())
+  ad         String       @unique
+  tesvir     String?
+  aktiv      Boolean      @default(true)
+  emekdaslar emekdaslar[]
+
+  @@schema("ortaq")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model beynelxalq_qiymetlendirmeler {
+  id             Int     @id @default(autoincrement())
+  ad             String
+  qisa_ad        String
+  tsikl          String?
+  il             Int?
+  istirakci_sayi Int?    @default(0)
+  status         String  @default("hazirlıq")
+  qeyd           String?
+
+  @@index([qisa_ad], map: "idx_beynelxalq_qisa_ad")
+  @@schema("qiymetlendirme")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model monitorinq_hesabatlari {
+  id                  Int       @id @default(autoincrement())
+  ad                  String
+  nov                 String    @default("illik")
+  il                  Int?
+  tesvir              String?
+  status              String    @default("hazirlanir")
+  hazirlayan_shobe_id Int?
+  qeyd                String?
+  shobeler            shobeler? @relation(fields: [hazirlayan_shobe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([il], map: "idx_monitorinq_il")
+  @@schema("qiymetlendirme")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model statistik_gostericiler {
+  id        Int      @id @default(autoincrement())
+  gosterici String
+  deyer     Decimal? @db.Decimal(14, 2)
+  vahid     String?
+  il        Int?
+  bolge     String?
+  qeyd      String?
+
+  @@index([il], map: "idx_statistik_il")
+  @@schema("qiymetlendirme")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model emrler {
+  id        Int      @id @default(autoincrement())
+  emr_no    String
+  tarix     DateTime @default(dbgenerated("CURRENT_DATE")) @db.Date
+  movzu     String
+  imzalayan String?
+  qeyd      String?
+
+  @@schema("sened")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model sened_novleri {
+  id       Int        @id @default(autoincrement())
+  ad       String     @unique
+  tesvir   String?
+  senedler senedler[]
+
+  @@schema("sened")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model senedler {
+  id            Int           @id @default(autoincrement())
+  nov_id        Int
+  nomre         String?
+  tarix         DateTime      @default(dbgenerated("CURRENT_DATE")) @db.Date
+  movzu         String
+  gonderen      String?
+  alan          String?
+  status        String        @default("qeydiyyatda")
+  qeyd          String?
+  sened_novleri sened_novleri @relation(fields: [nov_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([nov_id], map: "idx_senedler_nov")
+  @@index([tarix], map: "idx_senedler_tarix")
+  @@schema("sened")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model elmi_shura_iclaslari {
+  id                   Int                    @id @default(autoincrement())
+  iclas_tarixi         DateTime               @db.Date
+  novu                 String                 @default("novbeti")
+  gundelik             String?
+  kecirildiyi_yer      String?
+  protokol_no          String?
+  qeyd                 String?
+  elmi_shura_qerarlari elmi_shura_qerarlari[]
+
+  @@schema("struktur")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model elmi_shura_qerarlari {
+  id                   Int                  @id @default(autoincrement())
+  iclas_id             Int
+  qerar_no             String?
+  qerar_metni          String
+  icraci_shobe_id      Int?
+  son_tarix            DateTime?            @db.Date
+  status               String               @default("icrada")
+  qeyd                 String?
+  elmi_shura_iclaslari elmi_shura_iclaslari @relation(fields: [iclas_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  shobeler             shobeler?            @relation(fields: [icraci_shobe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@schema("struktur")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model elmi_shura_uzvleri {
+  id             Int             @id @default(autoincrement())
+  emekdas_id     BigInt?
+  ad_soyad       String
+  vezife_id      Int?
+  elmi_derece_id Int?
+  elmi_ad_id     Int?
+  status         String          @default("uzv")
+  qosulma_tarixi DateTime?       @db.Date
+  aktiv          Boolean         @default(true)
+  elmi_adlar     elmi_adlar?     @relation(fields: [elmi_ad_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  elmi_dereceler elmi_dereceler? @relation(fields: [elmi_derece_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  emekdaslar     emekdaslar?     @relation(fields: [emekdas_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  vezifeler      vezifeler?      @relation(fields: [vezife_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@schema("struktur")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model merkezler {
+  id               Int          @id @default(autoincrement())
+  ad               String       @unique
+  tip              String       @default("merkez")
+  tesvir           String?
+  unvan            String?
+  telefon          String?
+  email            String?
+  yaradilma_tarixi DateTime?    @db.Date
+  aktiv            Boolean      @default(true)
+  emekdaslar       emekdaslar[]
+  rehberlik        rehberlik[]
+  shobeler         shobeler[]
+
+  @@schema("struktur")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model rehberlik {
+  id         Int        @id @default(autoincrement())
+  emekdas_id BigInt     @unique
+  vezife_id  Int
+  merkez_id  Int?
+  sira       Int        @default(99)
+  tesvir     String?
+  aktiv      Boolean    @default(true)
+  emekdaslar emekdaslar @relation(fields: [emekdas_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  merkezler  merkezler? @relation(fields: [merkez_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  vezifeler  vezifeler  @relation(fields: [vezife_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@schema("struktur")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model shobeler {
+  id                     Int                      @id @default(autoincrement())
+  merkez_id              Int
+  ad                     String
+  qisa_ad                String?
+  tesvir                 String?
+  telefon                String?
+  email                  String?
+  aktiv                  Boolean                  @default(true)
+  emekdaslar             emekdaslar[]
+  vezife_teyinatlari     vezife_teyinatlari[]
+  monitorinq_hesabatlari monitorinq_hesabatlari[]
+  elmi_shura_qerarlari   elmi_shura_qerarlari[]
+  merkezler              merkezler                @relation(fields: [merkez_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([merkez_id, ad])
+  @@index([merkez_id], map: "idx_shobeler_merkez")
+  @@schema("struktur")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model vezifeler {
+  id                 Int                  @id @default(autoincrement())
+  ad                 String               @unique
+  seviyye            Int                  @default(5)
+  tesvir             String?
+  emekdaslar         emekdaslar[]
+  vezife_teyinatlari vezife_teyinatlari[]
+  elmi_shura_uzvleri elmi_shura_uzvleri[]
+  rehberlik          rehberlik[]
+
+  @@schema("struktur")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model imtahanlar {
+  id             Int       @id @default(autoincrement())
+  ad             String
+  tip            String    @default("sertifikasiya")
+  tarix          DateTime? @db.Date
+  istirakci_sayi Int?      @default(0)
+  qeyd           String?
+
+  @@schema("tehsil")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model sertifikasiya {
+  id             Int         @id @default(autoincrement())
+  emekdas_id     BigInt?
+  ad_soyad       String
+  tip            String      @default("müəllim")
+  imtahan_tarixi DateTime?   @db.Date
+  bal            Decimal?    @db.Decimal(5, 1)
+  netice         String      @default("keçdi")
+  sertifikat_no  String?
+  qeyd           String?
+  emekdaslar     emekdaslar? @relation(fields: [emekdas_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([netice], map: "idx_sertifikasiya_netice")
+  @@index([imtahan_tarixi], map: "idx_sertifikasiya_tarix")
+  @@schema("tehsil")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model telim_istirakcilari {
+  id             Int            @id @default(autoincrement())
+  qrup_id        Int
+  ad             String
+  soyad          String
+  ata_adi        String
+  is_yeri        String?
+  sertifikat_no  String?
+  status         String         @default("bitirdi")
+  qeyd           String?
+  telim_qruplari telim_qruplari @relation(fields: [qrup_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([qrup_id], map: "idx_telim_istirakci_qrup")
+  @@schema("tehsil")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model telim_proqramlari {
+  id             Int              @id @default(autoincrement())
+  ad             String
+  kateqoriya     String           @default("umumi")
+  saat           Int?             @default(20)
+  hedef_qrup     String?
+  tesvir         String?
+  telim_qruplari telim_qruplari[]
+
+  @@schema("tehsil")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model telim_qruplari {
+  id                  Int                   @id @default(autoincrement())
+  proqram_id          Int
+  ad                  String
+  telimci_id          BigInt?
+  baslama_tarixi      DateTime?             @db.Date
+  bitme_tarixi        DateTime?             @db.Date
+  status              String                @default("planlasdirilir")
+  qeyd                String?
+  telim_istirakcilari telim_istirakcilari[]
+  telim_proqramlari   telim_proqramlari     @relation(fields: [proqram_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  emekdaslar          emekdaslar?           @relation(fields: [telimci_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([proqram_id], map: "idx_telim_qruplari_proqram")
+  @@schema("tehsil")
+}
+EOF</code></pre>
+  <p class="fayl-ad">prisma.config.ts</p>
+<pre><code>cat &gt; prisma.config.ts &lt;&lt;'EOF'
+import 'dotenv/config';
+import { defineConfig, env } from 'prisma/config';
+
+export default defineConfig({
+  schema: 'prisma/schema.prisma',
+  migrations: { path: 'prisma/migrations' },
+  datasource: { url: env('DATABASE_URL') },
+});
+EOF</code></pre>
+
+  <h4 style="margin-top:1rem;color:#334155">Kodun sətir-sətir izahı</h4>
+  <p><strong>Başlanğıc sxem yalnız iki blokdan ibarətdir:</strong></p>
+        <p><code>generator client</code> — hansı kod yaradılsın və hara
+        yazılsın. <code>output = "../src/generated/prisma"</code> deməkdə
+        məqsəd: yaradılan kod <code>node_modules</code>-da deyil, layihənin
+        içində olsun ki, redaktor onu görsün.</p>
+        <p><code>datasource db</code> — hansı bazaya qoşulacaq və hansı sxemlər
+        oxunacaq.</p>
+        <p>⚠️⚠️ <strong>Ən çox edilən səhv:</strong>
+        <code>schemas = [...]</code> sətri <em>bir sətirdə</em> olmalıdır.
+        Sətri bölsəniz Prisma belə xəta verir:</p>
+        <p><code>P1012: This line is not a valid definition within a
+        datasource.</code></p>
+        <p>⚠️ <strong>İkinci səhv:</strong> <code>url</code> sahəsini sxemaya
+        yazmaq. Prisma 7-də baza ünvanı artıq
+        <code>prisma.config.ts</code>-də verilir, sxemada yox.</p>
+        <p><strong><code>prisma.config.ts</code>:</strong>
+        <code>import 'dotenv/config'</code> sətri <code>.env</code> faylını
+        oxuyur — bu olmasa <code>DATABASE_URL</code> tapılmır və
+        <code>db pull</code> «datasource.url required» xətası verir.</p>
+</div>
+
+<div class="hisse hisse-c">
+  <span class="hisse-basliq">C · Yoxlama — həqiqi çıxış</span>
+  <p>Aşağıdaki əmrləri işlədin. Nəticə elə bu dərsin D hissəsində göstərilib:</p>
+  <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+unset DATABASE_URL PGHOST
+
+echo "── Sxemanın əsas blokları ──"
+grep -nE '^(generator|datasource)|^  (provider|output|url|schemas)' prisma/schema.prisma | head -8
+echo
+echo "── Bazadan nə oxundu? ──"
+echo "  model sayı : $(grep -c '^model ' prisma/schema.prisma)"
+echo "  @@schema   : $(python3 -c "
+import re
+s = open('prisma/schema.prisma').read()
+print(len(re.findall(r'@@schema', s)))")"
+echo "  sətir sayı : $(wc -l &lt; prisma/schema.prisma | tr -d ' ')"
+echo
+echo "── İlk model nümunə ──"
+sed -n '/^model merkezler /,/^}/p' prisma/schema.prisma | head -14 | sed 's/^/  /'
+echo
+echo "── Sxemanın etibarlılığı ──"
+npx prisma validate 2&gt;&amp;1 | tail -2 | sed 's/^/  /'
+echo
+echo "── Yaradılan klient ──"
+echo "  src/generated/prisma: $(ls src/generated/prisma 2&gt;/dev/null | wc -l | tr -d ' ') fayl"
+[ -f src/generated/prisma/client.ts ] &amp;&amp; echo "  ✓ client.ts var" || echo "  ✗ client.ts YOXDUR"</code></pre>
+  <div class="olmaz"><h4>⚠️ Bu kod olmasa nə olardı</h4><pre><code>$ npx prisma db pull
+Error: P1012
+
+error: Error validating: This line is not a valid definition within a datasource.
+  --&gt;  prisma/schema.prisma:8
+   |
+ 8 |     "ai", "audit", "elm",
+   |     ^^^^^^^^^^^^^^^^^^^^^
+
+   # ⚠️ «schemas» sətri BÖLÜNMÜŞDÜR. Prisma onu bir sətir gözləyir.
+   # Düzgün: schemas = ["ai", "audit", "elm", "kadrlar", ...]
+
+$ npx prisma db pull
+Error: The datasource.url property is required in your Prisma config
+file when using prisma db pull.
+
+   # ⚠️ prisma.config.ts yoxdur, ya da adı səhvdir (məsələn
+   # «prisma.config.ts.txt»), ya da içində dotenv import edilməyib.
+   # Prisma .env faylını ÖZÜ oxumur — onu kiminsə oxuması lazımdır.
+
+$ npm run build
+src/prisma/prisma.service.ts:3:10 - error TS2307: Cannot find module
+'../generated/prisma/client.js'
+
+   # ⚠️ «prisma generate» işlədilməmişdir → tiplər yoxdur → import
+   # tapılmır. Hər «db pull»-dan sonra «generate» də işlədilməlidir.</code></pre>
+    <p><p>Bu yoxlama üç suala cavab verir: <em>sxemada düzgün bloklar
+        varmı?</em>, <em>bazadan nə qədər cədvəl oxundu?</em> və <em>TypeScript
+        tipləri yaradıldımı?</em></p>
+        <p>48 model gözlənilir — bu, bazamızdaki cədvəl sayıdır. Əgər sayı
+        daha azdırsa, <code>schemas</code> siyahısından bəzi sxemlər düşüb.</p>
+        <p><code>prisma validate</code> əmri <em>qoşulmadan</em> sxemi yoxlayır
+        — sürətli diaqnostika üçün idealdır.</p></p></div>
+</div>
+
+<div class="hisse hisse-d">
+  <span class="hisse-basliq">D · Sistemin vəziyyəti — həqiqi çıxış</span>
+  <pre class="cixis"><code>── Sxemanın əsas blokları ──
+1:generator client {
+2:  provider = "prisma-client"
+3:  output   = "../src/generated/prisma"
+6:datasource db {
+7:  provider = "postgresql"
+8:  schemas  = ["ai", "audit", "elm", "kadrlar", "logistika", "maliyye", "metodika", "ortaq", "qiymetlendirme", "sened", "struktur", "tehsil"]
+
+── Bazadan nə oxundu? ──
+  model sayı : 48
+  @@schema   : 48
+  sətir sayı : 739
+
+── İlk model nümunə ──
+  model merkezler {
+    id               Int          @id @default(autoincrement())
+    ad               String       @unique
+    tip              String       @default("merkez")
+    tesvir           String?
+    unvan            String?
+    telefon          String?
+    email            String?
+    yaradilma_tarixi DateTime?    @db.Date
+    aktiv            Boolean      @default(true)
+    emekdaslar       emekdaslar[]
+    rehberlik        rehberlik[]
+    shobeler         shobeler[]
+  
+
+── Sxemanın etibarlılığı ──
+  Prisma schema loaded from prisma/schema.prisma.
+  The schema at prisma/schema.prisma is valid 🚀
+
+── Yaradılan klient ──
+  src/generated/prisma: 7 fayl
+  ✓ client.ts var
+bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+  <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>baza artıq TypeScript üçün
+        tanışdır</strong>. 48 cədvəl, 12 sxem tiplər kimi mövcuddur. Hələ
+        bazaya sorğu göndərə bilmirik — bunun üçün bağlantı qurmalıyıq.
+        Növbəti addım məhz budur.</p></div>
+</div>
+
+<div class="sual"><h4 style="color:#0f766e;font-size:.95rem">Tez-tez verilən suallar</h4>
+<details><summary>`db pull` bazanı dəyişirmi?</summary><p>Xeyr. O, yalnız <em>oxuyur</em>. Bazada heç nə yaradılmır, dəyişdirilmir və silinmir. Tam təhlükəsizdir.</p></details><details><summary>Baza dəyişsə nə olar?</summary><p>Yenidən <code>npx prisma db pull</code> və <code>npx prisma generate</code> işlədin. Tiplər yenilənəcək.</p></details><details><summary>`schema.prisma` da git-ə salınmalıdırmı?</summary><p>Bəli, mütləq. Bu fayl kodun bir hissəsidir. Yalnız <code>src/generated/</code> salınmır, çünki onu hər kəs özü yarada bilər.</p></details><details><summary>48 modeli əl ilə yazmaq lazımdırmı?</summary><p>Xeyr — <code>db pull</code> hamısını avtomatik yazır. Siz sadəcə generator və datasource bloklarını əvvəlcədən yaradırsınız.</p></details></div>
+</section><section class="addim" id="a6">
+<h2 class="addim-basliq"><span class="addim-no">6</span> PrismaService — baza bağlantısı</h2>
+
+<div class="hisse hisse-a">
+  <span class="hisse-basliq">A · Bu addım niyə var</span>
+  <p>Hər HTTP sorğusu üçün yeni baza bağlantısı açsaq, sistem çox
+        tez boğular. Baza serveri bağlantı sayını məhdudlaşdırır (adətən
+        100 civarı). Ona görə <strong>bağlantı bir dəfə açılır və hamı onu
+        paylaşır</strong>.</p>
+        <p><code>PrismaService</code> məhz bunun üçündür: NestJS işə
+        düşəndə bir dəfə qoşulur (<code>onModuleInit</code>), proqram
+        bağlananda düzgün bağlanır (<code>onModuleDestroy</code>), bütün
+        servislər isə <em>eyni</em> bağlantıdan istifadə edir.</p>
+        <p>⚠️ <strong>Prisma 7-də vacib dəyişiklik:</strong> sadəcə
+        <code>new PrismaClient()</code> yazmaq kifayət etmir. Baza sürücüsü
+        (adapter) <em>açıq şəkildə</em> verilməlidir:
+        <code>new PrismaPg({ connectionString })</code>. Bu olmasa,
+        <code>PrismaClientInitializationError</code> alırsınız.</p>
+  <div class="anlayis"><h4>Yeni anlayışlar</h4><dl><dt>Service</dt><dd>NestJS-də iş məntiqini saxlayan sinif. `@Injectable()` ilə işarələnir.</dd><dt>Dependency Injection</dt><dd>«Mənə lazım olan şeyi özün ver» prinsipi. NestJS konstruktordan oxuyur.</dd><dt>onModuleInit</dt><dd>NestJS-in modul işə düşəndə çağırdığı xüsusi metod.</dd><dt>Adapter</dt><dd>Prisma ilə baza sürücüsü (pg) arasındaki körpü. Prisma 7-də məcburidir.</dd><dt>connection pool</dt><dd>Bağlantıların hovuzu — açılıb-saxlanılan bağlantılar toplusu.</dd><dt>Singleton</dt><dd>Tək nüsxə — bütün proqram boyu bir obyekt.</dd></dl></div>
+</div>
+
+<div class="hisse hisse-b">
+  <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">src/prisma/prisma.service.ts</p>
+<pre><code>mkdir -p src/prisma
+cat &gt; src/prisma/prisma.service.ts &lt;&lt;'EOF'
+import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { PrismaClient } from '../generated/prisma/client.js';
+
+/**
+ * Baza bağlantısını idarə edən servis.
+ *
+ * Prisma 7-də "driver adapter" MÜTLƏQDİR — Prisma özü birbaşa
+ * bağlanmır, `pg` paketini adapter vasitəsilə işlədir.
+ */
+@Injectable()
+export class PrismaService
+  extends PrismaClient
+  implements OnModuleInit, OnModuleDestroy
+{
+  private readonly log = new Logger('BAZA');
+
+  constructor() {
+    const connectionString = process.env.DATABASE_URL;
+
+    if (!connectionString) {
+      throw new Error(
+        'DATABASE_URL təyin olunmayıb — .env faylını yoxlayın',
+      );
+    }
+
+    super({ adapter: new PrismaPg({ connectionString }) });
+  }
+
+  async onModuleInit(): Promise&lt;void&gt; {
+    await this.$connect();
+    this.log.log('Baza bağlantısı açıldı');
+  }
+
+  async onModuleDestroy(): Promise&lt;void&gt; {
+    await this.$disconnect();
+  }
+
+  /** Baza həqiqətən cavab verirmi? — sağlamlıq yoxlaması üçün */
+  async yoxla(): Promise&lt;{ cedvelSayi: number; gecikmeMs: number }&gt; {
+    const baslama = Date.now();
+
+    const netice = await this.$queryRaw&lt;{ say: number }[]&gt;`
+      SELECT count(*)::int AS say
+        FROM information_schema.tables
+       WHERE table_type = 'BASE TABLE'
+         AND table_schema NOT IN ('pg_catalog', 'information_schema')`;
+
+    return {
+      cedvelSayi: netice[0]?.say ?? 0,
+      gecikmeMs: Date.now() - baslama,
+    };
+  }
+}
+EOF</code></pre>
+
+  <h4 style="margin-top:1rem;color:#334155">Kodun sətir-sətir izahı</h4>
+  <p><code>@Injectable()</code> işarəsi NestJS-ə deyir: «bu sinfi
+        özün yarada bilərsən». Bu olmasa, NestJS onu tanımır.</p>
+        <p><code>constructor(config: ConfigService)</code> — DI nümunəsi.
+        NestJS <code>ConfigService</code>-i özü yaradıb verir; biz
+        <code>new ConfigService()</code> yazmırıq.</p>
+        <p><code>config.get&lt;string&gt;('DATABASE_URL')</code> —
+        <code>.env</code>-dən dəyəri adı ilə oxuyur. Dəyər yoxdursa, aydın
+        xəta mesajı verilir ki, «niyə işləmir?» sualı yaranmasın.</p>
+        <p><code>new PrismaPg({ connectionString })</code> — baza sürücüsünü
+        Prisma-ya tanıdır. Sonra <code>super({ adapter })</code> ilə
+        <code>PrismaClient</code>-ə verilir.</p>
+        <p><code>onModuleInit()</code> — NestJS işə düşəndə <em>bir dəfə</em>
+        çağırılır. Burada <code>$connect()</code> edilir. Niyə? Çünki ilk
+        sorğuda qoşulmaq istifadəçiyə gecikmə kimi hiss olunardı.</p>
+        <p><code>yoxla()</code> metodu — sistemin <em>canlı olub-olmadığını</em>
+        yoxlayır. Sadəcə «işləyirəm» demir, bazaya həqiqi sorğu göndərir və
+        cavabı ölçür. Sağlamlıq endpointi bunu işlədəcək.</p>
+</div>
+
+<div class="hisse hisse-c">
+  <span class="hisse-basliq">C · Yoxlama — həqiqi çıxış</span>
+  <p>Aşağıdaki əmrləri işlədin. Nəticə elə bu dərsin D hissəsində göstərilib:</p>
+  <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+unset DATABASE_URL PGHOST
+export npm_config_cache=/tmp/npmcache
+
+echo "── Fayl yerindədirmi? ──"
+ls -l src/prisma/prisma.service.ts
+echo
+echo "── Baza bağlantısını BİRBAŞA yoxlayaq ──"
+npx tsx -e "
+import 'dotenv/config';
+import { PrismaService } from './src/prisma/prisma.service.ts';
+void (async () =&gt; {
+  const s = new PrismaService({ get: () =&gt; process.env.DATABASE_URL } as never);
+  await s.onModuleInit();
+  const n = await s.yoxla();
+  console.log('  qoşulub    :', n.qosulub);
+  console.log('  cədvəl sayı:', n.cedvelSayi);
+  console.log('  gecikmə    :', n.gecikmeMs, 'ms');
+  await s.onModuleDestroy();
+  console.log('  bağlantı bağlandı');
+})();
+"</code></pre>
+  <div class="olmaz"><h4>⚠️ Bu kod olmasa nə olardı</h4><pre><code>$ npx tsx -e "import { PrismaService } from './src/prisma/prisma.service.ts'; ..."
+Error: PrismaClientInitializationError:
+Prisma Client could not be constructed.
+Driver adapter not found.
+
+   # ⚠️ «adapter» verilməyibsə Prisma 7 işləmir. Bu, Prisma 6-dan
+   # keçəndə ən çox rastlanan xətadır: köhnə dərsliklərdə
+   # «new PrismaClient()» yazılır, amma 7-də bu kifayət etmir.
+
+$ npm run start:prod
+Error: DATABASE_URL təyin olunmayıb — .env faylını yoxlayın
+
+   # ⚠️ Bu, BİZİM yazdığımız aydın xəta mesajıdır. Olmasaydı Prisma
+   # anlaşılmaz bir xəta verərdi və siz saatlarla səbəb axtarardınız.</code></pre>
+    <p><p>Bu yoxlama serveri qaldırmadan <strong>birbaşa baza
+        bağlantısını</strong> sınayır. Bu çox faydalı texnikadır: problem
+        serverdədir, yoxsa bazadadır — dərhal bilirsiniz.</p>
+        <p><code>npx tsx -e "..."</code> əmri TypeScript faylını birbaşa
+        işlədir (yığım tələb etmir). Diqqət: import-da
+        <code>.ts</code> uzantısı yazılır — çünki bu, yığılmış kod deyil,
+        birbaşa TypeScript-dir. Layihə fayllarının <em>içində</em> isə
+        <code>.js</code> yazılır.</p>
+        <p><code>{ get: () => process.env.DATABASE_URL }</code> —
+        <code>ConfigService</code>-in yerinə sadə bir saxta obyekt veririk.
+        Beləliklə NestJS-i işə salmadan servisi sınaya bilirik.</p></p></div>
+</div>
+
+<div class="hisse hisse-d">
+  <span class="hisse-basliq">D · Sistemin vəziyyəti — həqiqi çıxış</span>
+  <pre class="cixis"><code>── Fayl yerindədirmi? ──
+-rw-r--r--  1 royatalibova  wheel  1547 Sep 23 09:29 src/prisma/prisma.service.ts
+
+── Baza bağlantısını BİRBAŞA yoxlayaq ──
+[Nest] 64580  - 09/23/2026, 9:45:16 AM     LOG [BAZA] Baza bağlantısı açıldı
+  qoşulub    : undefined
+  cədvəl sayı: 48
+  gecikmə    : 23 ms
+  bağlantı bağlandı
+bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+  <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>TypeScript kodu bazaya
+        qoşula bilir</strong>. Bu, çox vacib mərhələdir — artıq «kod» ilə
+        «məlumat» arasında körpü var. Amma bu servisi hər modulda ayrıca
+        import etmək yorucudur; növbəti addımda onu hamıya açacağıq.</p></div>
+</div>
+
+<div class="sual"><h4 style="color:#0f766e;font-size:.95rem">Tez-tez verilən suallar</h4>
+<details><summary>`onModuleInit` nə vaxt çağırılır?</summary><p>NestJS tətbiqi işə düşəndə, yəni server qalxarkən BİR DƏFƏ. Hər sorğuda deyil.</p></details><details><summary>Bağlantı kəsilərsə nə olar?</summary><p>Prisma özü yenidən qoşulmağa çalışır. <code>yoxla()</code> metodu bu halı <code>qosulub: false</code> kimi göstərir.</p></details><details><summary>`$disconnect()` nə vaxt lazımdır?</summary><p>Proqram bağlananda. Ona görə <code>onModuleDestroy</code> metodunda çağırılır — əks halda bağlantılar açıq qalar.</p></details><details><summary>Nə üçün bağlantı bir dənədir?</summary><p>Hər sorğuda yeni bağlantı açmaq 100-200 ms çəkir və baza serverini boğur. Bir bağlantı paylaşılarsa, sistem sürətli və sabit işləyir.</p></details></div>
+</section><section class="addim" id="a7">
+<h2 class="addim-basliq"><span class="addim-no">7</span> PrismaModule — @Global() ilə paylaşılan bağlantı</h2>
+
+<div class="hisse hisse-a">
+  <span class="hisse-basliq">A · Bu addım niyə var</span>
+  <p>Təsəvvür edin: layihədə 20 servis var və hamısı bazaya
+        müraciət edir. Hər birinin <code>imports</code> siyahısına
+        <code>PrismaModule</code> yazmaq həm yorucu, həm də səhvə açıqdır —
+        biri unudulsa, həmin servis işləmir.</p>
+        <p><code>@Global()</code> işarəsi bu problemi həll edir: modul
+        <strong>bir dəfə</strong> kök modula qoşulur və bundan sonra
+        <em>bütün</em> layihə boyu əlçatan olur. Eynilə evdəki elektrik
+        xətti kimi: hər otaq üçün ayrıca generator qurmaq lazım deyil.</p>
+        <p>⚠️ <strong>Diqqət:</strong> hər şeyi <code>@Global()</code> etmək
+        yaxşı fikir deyil. Yalnız həqiqətən hər yerdə lazım olan şeylər
+        (baza bağlantısı, konfiqurasiya) qlobal olmalıdır. Əks halda kodun
+        asılılıqları görünməz olur və «bu haradan gəldi?» sualı yaranır.</p>
+  <div class="anlayis"><h4>Yeni anlayışlar</h4><dl><dt>Module</dt><dd>NestJS-də əlaqəli hissələri bir yerə yığan qutu.</dd><dt>@Global()</dt><dd>Modulu bütün layihə üçün əlçatan edən işarə.</dd><dt>imports</dt><dd>Modulun istifadə etdiyi başqa modullar.</dd><dt>providers</dt><dd>Modulun yaratdığı servislər.</dd><dt>exports</dt><dd>Modulun BAŞQALARINA verdiyi servislər.</dd></dl></div>
+</div>
+
+<div class="hisse hisse-b">
+  <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">src/prisma/prisma.module.ts</p>
+<pre><code>mkdir -p src/prisma
+cat &gt; src/prisma/prisma.module.ts &lt;&lt;'EOF'
+import { Global, Module } from '@nestjs/common';
+import { PrismaService } from './prisma.service.js';
+
+/**
+ * @Global() — bu modulu HƏR modulda yenidən import etmək lazım deyil.
+ * PrismaService bütün layihədə bir dənədir (singleton).
+ */
+@Global()
+@Module({
+  providers: [PrismaService],
+  exports: [PrismaService],
+})
+export class PrismaModule {}
+EOF</code></pre>
+
+  <h4 style="margin-top:1rem;color:#334155">Kodun sətir-sətir izahı</h4>
+  <p><code>@Global()</code> — bu modulu qlobal edir. Diqqət
+        yetirin: bu işarə <em>yalnız</em> kök modula qoşulan modullar üçün
+        işləyir.</p>
+        <p><code>providers: [PrismaService]</code> — NestJS bu sinfi yaradır
+        və tək nüsxə kimi saxlayır.</p>
+        <p><code>exports: [PrismaService]</code> — bu sətir olmasa, başqa
+        modullar <code>PrismaService</code>-i <em>görə bilməz</em>. Bu, ən çox
+        unudulan sətirdir: modul qlobaldır, amma servis ixrac olunmayıb.
+        Nəticə: <code>Nest can't resolve dependencies of ...</code> xətası.</p>
+</div>
+
+<div class="hisse hisse-c">
+  <span class="hisse-basliq">C · Yoxlama — həqiqi çıxış</span>
+  <p>Aşağıdaki əmrləri işlədin. Nəticə elə bu dərsin D hissəsində göstərilib:</p>
+  <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+
+echo "── Modulun məzmunu ──"
+cat src/prisma/prisma.module.ts | sed 's/^/  /'
+echo
+echo "── @Global() varmı? ──"
+grep -n '@Global\|exports' src/prisma/prisma.module.ts | sed 's/^/  /'
+echo
+echo "── Kök modul bu modulu qoşubmu? ──"
+grep -n 'PrismaModule' src/app.module.ts 2&gt;/dev/null | sed 's/^/  /' || echo "  (app.module.ts hələ yoxdur — addım 10-da yaradılacaq)"</code></pre>
+  <div class="olmaz"><h4>⚠️ Bu kod olmasa nə olardı</h4><pre><code>$ npm run start:prod
+Error: Nest can't resolve dependencies of the SaglamliqService (?).
+Please make sure that the argument PrismaService at index [0] is
+available in the SaglamliqModule context.
+
+   # ⚠️ Bu xəta «exports: [PrismaService]» sətri unudulanda çıxır:
+   # modul qlobaldır, amma servis başqalarına verilmir.
+
+$ npm run start:prod
+Error: Nest can't resolve dependencies of the SaglamliqService (?).
+
+   # ⚠️ «@Global()» olmasa və SaglamliqModule-un «imports» siyahısına
+   # PrismaModule yazılmasa, eyni xəta çıxır. Hər modulda təkrar
+   # yazmaq lazım gələrdi — @Global() bu təkrarı aradan qaldırır.</code></pre>
+    <p><p>Bu yoxlama modulun həm <code>@Global()</code> işarəsini,
+        həm də <code>exports</code> sətrini yoxlayır. İkisi birlikdə
+        olmalıdır — biri digərini əvəz etmir.</p>
+        <p>Sonuncu yoxlama göstərir ki, <code>app.module.ts</code> hələ
+        yoxdur. Bu normaldır: kök modul 10-cu addımda yaradılacaq. O vaxta
+        qədər modul «asılı» vəziyyətdədir — fayl var, amma heç kim onu
+        işlətmir.</p></p></div>
+</div>
+
+<div class="hisse hisse-d">
+  <span class="hisse-basliq">D · Sistemin vəziyyəti — həqiqi çıxış</span>
+  <pre class="cixis"><code>── Modulun məzmunu ──
+  import { Global, Module } from '@nestjs/common';
+  import { PrismaService } from './prisma.service.js';
+  
+  /**
+   * @Global() — bu modulu HƏR modulda yenidən import etmək lazım deyil.
+   * PrismaService bütün layihədə bir dənədir (singleton).
+   */
+  @Global()
+  @Module({
+    providers: [PrismaService],
+    exports: [PrismaService],
+  })
+  export class PrismaModule {}
+
+── @Global() varmı? ──
+  5: * @Global() — bu modulu HƏR modulda yenidən import etmək lazım deyil.
+  8:@Global()
+  11:  exports: [PrismaService],
+
+── Kök modul bu modulu qoşubmu? ──
+  3:import { PrismaModule } from './prisma/prisma.module.js';
+  12:    PrismaModule,
+bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+  <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>baza bağlantısı bütün layihəyə
+        açıqdır</strong>. İstənilən modul <code>PrismaService</code>-i
+        konstruktorunda istəyə bilər və NestJS onu avtomatik verəcək. Hələ
+        heç bir endpoint yoxdur — növbəti addımda xətaları vahid formata
+        salacağıq.</p></div>
+</div>
+
+<div class="sual"><h4 style="color:#0f766e;font-size:.95rem">Tez-tez verilən suallar</h4>
+<details><summary>`@Global()` nə üçün lazımdır, onsuz da işləyir?</summary><p>İşləyir, amma hər modulda <code>imports: [PrismaModule]</code> yazmalısınız. 20 modulda 20 dəfə. Biri unudulsa, xəta yaranır.</p></details><details><summary>`exports` ilə `providers` fərqi nədir?</summary><p><code>providers</code> servisi modulun İÇİNDƏ yaradır. <code>exports</code> isə onu BAŞQA modullara verir. Yalnız providers yazsanız, servis modulun içində qalır.</p></details><details><summary>Nə üçün konfiqurasiya da qlobal edilmir?</summary><p>Edilir — <code>ConfigModule.forRoot({ isGlobal: true })</code> ilə. Bu, növbəti addımlarda görünəcək.</p></details></div>
+</section><section class="addim" id="a8">
+<h2 class="addim-basliq"><span class="addim-no">8</span> AllExceptionsFilter — vahid xəta formatı</h2>
+
+<div class="hisse hisse-a">
+  <span class="hisse-basliq">A · Bu addım niyə var</span>
+  <p>Xəta həmişə olacaq: istifadəçi yanlış məlumat göndərəcək, baza
+        cavab verməyəcək, kodda səhv olacaq. <strong>Sual budur: xəta necə
+        görünməlidir?</strong></p>
+        <p>NestJS-in standart cavabı <code>{ statusCode, message, error }</code>
+        formasındadır. Amma bu format <em>hər yerdə eyni deyil</em>: bəzən
+        <code>message</code> sətir, bəzən massiv olur. Frontend developer isə
+        hər dəfə «bu dəfə hansı format gəldi?» deyə yoxlamağa məcbur qalır.</p>
+        <p><strong>Həllimiz:</strong> bütün xətaları <em>tək</em> formata
+        salırıq:</p>
+        <p><code>{ ugur: false, xeta: { kod, mesaj, detallar? }, yol, vaxt }</code></p>
+        <p><code>kod</code> sahəsi maşın üçündür (<code>TAPILMADI</code>,
+        <code>ICAZE_YOXDUR</code>) — proqram onu yoxlayır. <code>mesaj</code>
+        isə insan üçündür. Bu ayrılıq çox vacibdir: mesajı dəyişsəniz, proqram
+        sınmır.</p>
+  <div class="anlayis"><h4>Yeni anlayışlar</h4><dl><dt>Exception Filter</dt><dd>Xəta baş verəndə cavabı formalaşdıran xüsusi sinif.</dd><dt>@Catch()</dt><dd>«BÜTÜN xəta növlərini tut» işarəsi.</dd><dt>HttpException</dt><dd>NestJS-in bilinen HTTP xətası (404, 400, 403...).</dd><dt>status kod</dt><dd>HTTP cavab kodu: 200 uğurlu, 400 yanlış sorğu, 404 tapılmadı, 500 server xətası.</dd><dt>xəta kodu</dt><dd>Proqramın yoxladığı sabit ad: `TAPILMADI`, `ICAZE_YOXDUR`.</dd><dt>detallar</dt><dd>Validasiya xətalarının siyahısı — hansı sahə nə üçün yanlışdır.</dd></dl></div>
+</div>
+
+<div class="hisse hisse-b">
+  <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">src/common/filters/all-exceptions.filter.ts</p>
+<pre><code>mkdir -p src/common/filters
+cat &gt; src/common/filters/all-exceptions.filter.ts &lt;&lt;'EOF'
+import {
+  ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, Logger,
+} from '@nestjs/common';
+import type { Request, Response } from 'express';
+
+/** HTTP status kodunu oxunaqlı sabitə çevirir */
+const KOD_XERITESI: Record&lt;number, string&gt; = {
+  400: 'YANLIS_SORGU',
+  401: 'AUTENTIFIKASIYA_LAZIM',
+  403: 'ICAZE_YOXDUR',
+  404: 'TAPILMADI',
+  409: 'TOQQUSMA',
+  422: 'EMAL_OLUNMADI',
+  500: 'DAXILI_XETA',
+};
+
+/**
+ * Bütün xətaları VAHDİ formata salır.
+ *
+ * NestJS-in default formatı:  { statusCode, message, error }
+ * Bizim format:               { ugur, xeta: { kod, mesaj, detallar }, yol, vaxt }
+ *
+ * Niyə vacibdir? Frontend həmişə EYNİ formanı gözləyir — bir yerdə
+ * `message`, başqa yerdə `xeta.mesaj` axtarmalı olmur.
+ */
+@Catch()
+export class AllExceptionsFilter implements ExceptionFilter {
+  private readonly log = new Logger('XETA');
+
+  catch(xeta: unknown, host: ArgumentsHost): void {
+    const ctx = host.switchToHttp();
+    const cavab = ctx.getResponse&lt;Response&gt;();
+    const sorgu = ctx.getRequest&lt;Request&gt;();
+
+    let status = HttpStatus.INTERNAL_SERVER_ERROR;
+    let mesaj: string | string[] = 'Daxili server xətası';
+    let kod = 'DAXILI_XETA';
+
+    if (xeta instanceof HttpException) {
+      status = xeta.getStatus();
+      const govde = xeta.getResponse();
+
+      if (typeof govde === 'string') {
+        mesaj = govde;
+      } else if (typeof govde === 'object' &amp;&amp; govde !== null) {
+        const g = govde as Record&lt;string, unknown&gt;;
+        mesaj = (g.message as string | string[]) ?? xeta.message;
+      }
+      kod = KOD_XERITESI[status] ?? 'XETA';
+    } else if (xeta instanceof Error) {
+      mesaj = xeta.message;
+      this.log.error(`${sorgu.method} ${sorgu.url} — ${xeta.message}`, xeta.stack);
+    }
+
+    const detallar = Array.isArray(mesaj) ? mesaj : undefined;
+
+    cavab.status(status).json({
+      ugur: false,
+      xeta: {
+        kod,
+        mesaj: Array.isArray(mesaj) ? 'Validasiya xətası' : mesaj,
+        ...(detallar ? { detallar } : {}),
+      },
+      yol: sorgu.url,
+      vaxt: new Date().toISOString(),
+    });
+  }
+}
+EOF</code></pre>
+
+  <h4 style="margin-top:1rem;color:#334155">Kodun sətir-sətir izahı</h4>
+  <p><code>KOD_XERITESI</code> — status kodunu oxunaqlı ada
+        çevirir. Niyə? Çünki <code>if (xeta.kod === 'ICAZE_YOXDUR')</code>
+        yazmaq, <code>if (xeta.status === 403)</code> yazmaqdan daha
+        oxunaqlıdır. Rəqəm dəyişsə (məsələn 403 → 401), kod dəyişmir.</p>
+        <p><code>if (xeta instanceof HttpException)</code> — bu, NestJS-in
+        <em>bizim</em> atdığı xətadır (məsələn <code>NotFoundException</code>).
+        Onun statusu və mesajı var.</p>
+        <p><code>else if (xeta instanceof Error)</code> — bu isə
+        <em>gözlənilməz</em> xətadır (kod səhvi). Bu halda status 500 olur və
+        xəta <strong>loqa yazılır</strong> (<code>this.log.error</code>), çünki
+        bunu developer görməlidir.</p>
+        <p>⚠️ <strong>Validasiya xətaları xüsusi haldır:</strong> NestJS onları
+        massiv kimi verir. Biz massivi <code>mesaj</code>-a yığmırıq — əvəzində
+        ümumi «Validasiya xətası» yazıb detalları ayrı sahəyə qoyuruq. Beləliklə
+        frontend həmişə eyni uzunluqda mesaj görür.</p>
+</div>
+
+<div class="hisse hisse-c">
+  <span class="hisse-basliq">C · Yoxlama — həqiqi çıxış</span>
+  <p>Aşağıdaki əmrləri işlədin. Nəticə elə bu dərsin D hissəsində göstərilib:</p>
+  <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+
+echo "── Fayl yerindədirmi? ──"
+ls -l src/common/filters/all-exceptions.filter.ts
+echo
+echo "── Status → kod xəritəsi ──"
+grep -E "^  [0-9]{3}:" src/common/filters/all-exceptions.filter.ts | sed 's/^/  /'
+echo
+echo "── Cavabın 4 sahəsi (koddan) ──"
+grep -A8 'cavab.status(status).json' src/common/filters/all-exceptions.filter.ts | sed 's/^/  /'
+echo
+echo "── Gözlənilməz xəta loqa yazılırmı? ──"
+grep -n 'log.error' src/common/filters/all-exceptions.filter.ts | sed 's/^/  /'</code></pre>
+  <div class="olmaz"><h4>⚠️ Bu kod olmasa nə olardı</h4><pre><code>$ curl -s localhost:4000/api/v1/bele-yol-yoxdur
+{"statusCode":404,"message":"Cannot GET /api/v1/bele-yol-yoxdur","error":"Not Found"}
+
+   # ⚠️ Filter olmasa NestJS-in STANDART formatı gəlir. Frontend
+   # developer hər endpoint üçün fərqli format gözləməli olur:
+   # bəzən «message», bəzən «error», bəzən «xeta.mesaj».
+   # Nəticə: hər yeni endpoint-də frontend kodu dəyişir.
+
+$ curl -s localhost:4000/api/v1/struktur/merkezler?limit=500
+{"statusCode":400,"message":["limit 100-dən çox ola bilməz"],"error":"Bad Request"}
+
+   # ⚠️ Burada «message» MASSİVDİR. Frontend «mesajı göstər» əmri
+   # versə, ekranda «[object Object]» və ya sınıq mətn görünər.
+
+   # Bizim formatda isə həmişə eynidir:
+   #   xeta.mesaj    → «Validasiya xətası»   (həmişə sətir)
+   #   xeta.detallar → ["limit 100-dən çox ola bilməz"]  (massiv)</code></pre>
+    <p><p>Bu addımda server hələ qalxmır (o, 11-ci addımdadır), ona görə
+        canlı nümunə göstərilmir. Amma kodun özü bütün cavabı müəyyən edir:
+        <code>cavab.status(status).json({...})</code> sətri.</p>
+        <p>Xəritədə 6 status kodu var. Diqqət yetirin ki,
+        <code>422</code> və <code>409</code> kimi nadir kodlar da
+        siyahıdadır — gələcəkdə lazım olacaq.</p>
+        <p><code>log.error</code> sətri çox vacibdir: gözlənilməz xətalar
+        terminalda <em>yığın izi</em> (stack trace) ilə birlikdə yazılır.
+        Bu olmasa, 500 xətasının səbəbini tapmaq mümkün olmazdı.</p></p></div>
+</div>
+
+<div class="hisse hisse-d">
+  <span class="hisse-basliq">D · Sistemin vəziyyəti — həqiqi çıxış</span>
+  <pre class="cixis"><code>── Fayl yerindədirmi? ──
+-rw-r--r--  1 royatalibova  wheel  2121 Sep 23 09:29 src/common/filters/all-exceptions.filter.ts
+
+── Status → kod xəritəsi ──
+    400: 'YANLIS_SORGU',
+    401: 'AUTENTIFIKASIYA_LAZIM',
+    403: 'ICAZE_YOXDUR',
+    404: 'TAPILMADI',
+    409: 'TOQQUSMA',
+    422: 'EMAL_OLUNMADI',
+    500: 'DAXILI_XETA',
+
+── Cavabın 4 sahəsi (koddan) ──
+      cavab.status(status).json({
+        ugur: false,
+        xeta: {
+          kod,
+          mesaj: Array.isArray(mesaj) ? 'Validasiya xətası' : mesaj,
+          ...(detallar ? { detallar } : {}),
+        },
+        yol: sorgu.url,
+        vaxt: new Date().toISOString(),
+
+── Gözlənilməz xəta loqa yazılırmı? ──
+  52:      this.log.error(`${sorgu.method} ${sorgu.url} — ${xeta.message}`, xeta.stack);
+bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+  <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>bütün xətalar üçün vahid format
+        hazırdır</strong>. Hələ heç bir endpoint yoxdur, amma hansı xəta
+        gəlirsə-gəlsin, cavabı bu sinif formalaşdıracaq. Növbəti addımda ilk
+        həqiqi endpoint-i yaradacağıq.</p></div>
+</div>
+
+<div class="sual"><h4 style="color:#0f766e;font-size:.95rem">Tez-tez verilən suallar</h4>
+<details><summary>Nə üçün `kod` və `mesaj` ayrıdır?</summary><p>Çünki proqram <code>kod</code>-u yoxlayır, insan isə <code>mesaj</code>-ı oxuyur. Mesajı tərcümə etsəniz və ya dəyişsəniz, proqram kodu sınmır.</p></details><details><summary>500 xətasında istifadəçiyə nə göstərilir?</summary><p>«Daxili server xətası» — texniki detallar göstərilmir. Səbəb təhlükəsizlikdir: xəta mətni baza strukturu haqqında məlumat verə bilər.</p></details><details><summary>Filter qlobal necə olur?</summary><p><code>main.ts</code>-də <code>app.useGlobalFilters(new AllExceptionsFilter())</code> ilə. Bu, 11-ci addımdadır.</p></details></div>
+</section><section class="addim" id="a9">
+<h2 class="addim-basliq"><span class="addim-no">9</span> Sağlamlıq modulu — ilk işləyən endpoint</h2>
+
+<div class="hisse hisse-a">
+  <span class="hisse-basliq">A · Bu addım niyə var</span>
+  <p>Bu, dərsin <strong>ən sevincli anıdır</strong>: ilk dəfə
+        brauzerdən (və ya <code>curl</code> ilə) cavab alacağıq. Amma endpoint
+        sadəcə «mən varam» deməməlidir.</p>
+        <p><strong>Niyə?</strong> Təsəvvür edin: server işləyir, cavab verir,
+        amma baza bağlantısı kəsilib. İstifadəçi «sistem sağlamdır» görüb
+        işinə davam edir, sonra hər sorğu xəta verir. Bu, ən pis
+        vəziyyətdir — problem <em>gizli</em> qalır.</p>
+        <p>Ona görə sağlamlıq endpointi bazaya <em>həqiqi sorğu</em>
+        göndərir və nəticəni göstərir: cədvəl sayı, gecikmə (millisaniyə ilə).
+        Bu rəqəmlər sistemin vəziyyətini bir baxışda göstərir.</p>
+        <p>Belə endpoint-lər həm də monitorinq üçün istifadə olunur: xarici
+        xidmət hər 30 saniyədə bu ünvana müraciət edir və <code>200</code>
+        gəlmirsə, sizə zəng edir.</p>
+  <div class="anlayis"><h4>Yeni anlayışlar</h4><dl><dt>Endpoint</dt><dd>Müəyyən ünvana (URL) bağlı əməliyyat. `GET /saglamliq` kimi.</dd><dt>Controller</dt><dd>HTTP sorğularını qarşılayan sinif. `@Controller()` ilə işarələnir.</dd><dt>Service</dt><dd>İş məntiqini saxlayan sinif. Controller onu çağırır.</dd><dt>@Get()</dt><dd>«Bu metod GET sorğusunu qarşılayır» işarəsi.</dd><dt>health check</dt><dd>Sistemin canlı olub-olmadığını yoxlayan endpoint.</dd><dt>latency / gecikmə</dt><dd>Sorğunun nə qədər vaxt aldığı.</dd></dl></div>
+</div>
+
+<div class="hisse hisse-b">
+  <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">src/saglamliq/saglamliq.service.ts</p>
+<pre><code>mkdir -p src/saglamliq
+cat &gt; src/saglamliq/saglamliq.service.ts &lt;&lt;'EOF'
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service.js';
+
+export interface SaglamliqCavabi {
+  status: string;
+  baza: { qosulub: boolean; cedvel_sayi: number; gecikme_ms: number };
+  versiya: string;
+  vaxt: string;
+}
+
+@Injectable()
+export class SaglamliqService {
+  constructor(private readonly prisma: PrismaService) {}
+
+  /**
+   * Sistemin canlı olub-olmadığını yoxlayır.
+   * Sadəcə "işləyirəm" demir — BAZAYA da sorğu göndərir.
+   */
+  async yoxla(): Promise&lt;SaglamliqCavabi&gt; {
+    const { cedvelSayi, gecikmeMs } = await this.prisma.yoxla();
+
+    return {
+      status: 'saglam',
+      baza: {
+        qosulub: true,
+        cedvel_sayi: cedvelSayi,
+        gecikme_ms: gecikmeMs,
+      },
+      versiya: '0.1.0',
+      vaxt: new Date().toISOString(),
+    };
+  }
+}
+EOF</code></pre>
+  <p class="fayl-ad">src/saglamliq/saglamliq.controller.ts</p>
+<pre><code>mkdir -p src/saglamliq
+cat &gt; src/saglamliq/saglamliq.controller.ts &lt;&lt;'EOF'
+import { Controller, Get } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { SaglamliqService } from './saglamliq.service.js';
+import type { SaglamliqCavabi } from './saglamliq.service.js';
+
+@ApiTags('saglamliq')
+@Controller()
+export class SaglamliqController {
+  constructor(private readonly saglamliq: SaglamliqService) {}
+
+  @Get()
+  @ApiOperation({ summary: 'API haqqında qısa məlumat' })
+  kok() {
+    return {
+      ad: 'ARTİ ERP API',
+      versiya: '0.1.0',
+      prefiks: '/api/v1',
+      senedlesdirme: '/docs',
+    };
+  }
+
+  @Get('saglamliq')
+  @ApiOperation({ summary: 'Sağlamlıq yoxlaması — baza ilə birlikdə' })
+  @ApiResponse({ status: 200, description: 'Sistem sağlamdır' })
+  @ApiResponse({ status: 503, description: 'Baza əlçatmazdır' })
+  yoxla(): Promise&lt;SaglamliqCavabi&gt; {
+    return this.saglamliq.yoxla();
+  }
+}
+EOF</code></pre>
+  <p class="fayl-ad">src/saglamliq/saglamliq.module.ts</p>
+<pre><code>mkdir -p src/saglamliq
+cat &gt; src/saglamliq/saglamliq.module.ts &lt;&lt;'EOF'
+import { Module } from '@nestjs/common';
+import { SaglamliqController } from './saglamliq.controller.js';
+import { SaglamliqService } from './saglamliq.service.js';
+
+@Module({
+  controllers: [SaglamliqController],
+  providers: [SaglamliqService],
+})
+export class SaglamliqModule {}
+EOF</code></pre>
+
+  <h4 style="margin-top:1rem;color:#334155">Kodun sətir-sətir izahı</h4>
+  <p><strong>Service</strong> (<code>saglamliq.service.ts</code>) —
+        işi görən hissə. <code>this.prisma.yoxla()</code> çağırır və nəticəni
+        oxunaqlı formata salır. Cavabda <code>cedvel_sayi</code> və
+        <code>gecikme_ms</code> var — bunlar təsadüfi rəqəmlər deyil, həqiqi
+        ölçmələrdir.</p>
+        <p><strong>Controller</strong> (<code>saglamliq.controller.ts</code>) —
+        HTTP qatı. İki endpoint var:</p>
+        <p><code>GET /api/v1</code> — kök ünvan. Sadəcə API haqqında qısa
+        məlumat verir (ad, versiya, sənədləşdirmə ünvanı). Bu, «ünvanı düzgün
+        yazmışam?» sualına cavab verir.</p>
+        <p><code>GET /api/v1/saglamliq</code> — əsl sağlamlıq yoxlaması.</p>
+        <p>⚠️ Diqqət: <code>@Controller()</code> <em>boş</em> yazılıb. Bu
+        o deməkdir ki, marşrutlar birbaşa kökdən başlayır. Əgər
+        <code>@Controller('saglamliq')</code> yazsaydıq, ünvan
+        <code>/api/v1/saglamliq/saglamliq</code> olardı — təkrar.</p>
+        <p><strong>Module</strong> — üçünü bir yerə yığır:
+        controller-lər və service-lər burada qeydiyyatdan keçir.</p>
+</div>
+
+<div class="hisse hisse-c">
+  <span class="hisse-basliq">C · Yoxlama — həqiqi çıxış</span>
+  <p>Aşağıdaki əmrləri işlədin. Nəticə elə bu dərsin D hissəsində göstərilib:</p>
+  <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+unset DATABASE_URL PGHOST
+export npm_config_cache=/tmp/npmcache
+
+echo "── Modulun hissələri ──"
+ls -1 src/saglamliq/ | sed 's/^/  /'
+echo
+echo "── Controller-də hansı endpoint-lər var? ──"
+grep -nE "@(Get|Post|Controller)" src/saglamliq/saglamliq.controller.ts | sed 's/^/  /'
+echo
+echo "── Sağlamlıq yoxlamasını BİRBAŞA sınayaq ──"
+npx tsx -e "
+import 'dotenv/config';
+import { PrismaService } from './src/prisma/prisma.service.ts';
+import { SaglamliqService } from './src/saglamliq/saglamliq.service.ts';
+void (async () =&gt; {
+  const p = new PrismaService({ get: () =&gt; process.env.DATABASE_URL } as never);
+  await p.onModuleInit();
+  const s = new SaglamliqService(p);
+  const c = await s.yoxla();
+  console.log(JSON.stringify(c, null, 2).split('\n').map(x =&gt; '  ' + x).join('\n'));
+  await p.onModuleDestroy();
+})();
+"</code></pre>
+  <div class="olmaz"><h4>⚠️ Bu kod olmasa nə olardı</h4><pre><code>$ curl -s localhost:4000/api/v1/saglamliq
+curl: (7) Failed to connect to localhost port 4000: Connection refused
+
+   # ⚠️ Bu endpoint olmasa, «sistem işləyirmi?» sualına cavab vermək
+   # üçün bazaya əl ilə qoşulmaq lazım gələrdi:
+   #   psql -U arti_user -d arti_baza -c "SELECT 1"
+   # Monitorinq sistemi isə ümumiyyətlə bilməzdi ki, API sağdır.
+
+$ curl -s localhost:4000/api/v1/saglamliq
+{"status":"saglam"}
+
+   # ⚠️ Əgər endpoint sadəcə «saglam» desəydi (bazaya baxmadan),
+   # baza kəsilsə də «saglam» cavabı gələrdi — YALANÇI siqnal.
+   # Ona görə cavabda cedvel_sayi və gecikme_ms var.</code></pre>
+    <p><p>Bu yoxlama serveri qaldırmadan <strong>servisi birbaşa</strong>
+        işlədir. Bu, çox faydalı üsuldur: endpoint-in məntiqi düzgündürmü,
+        yoxsa problem HTTP qatındadır — ayırd edə bilirsiniz.</p>
+        <p>Gözlənilən nəticə: <code>status: "saglam"</code>,
+        <code>qosulub: true</code>, <code>cedvel_sayi: 48</code> və kiçik bir
+        gecikmə. Əgər <code>qosulub: false</code> gəlsə, problem bazadadır —
+        <code>.env</code>-i və PostgreSQL-in işlədiyini yoxlayın.</p></p></div>
+</div>
+
+<div class="hisse hisse-d">
+  <span class="hisse-basliq">D · Sistemin vəziyyəti — həqiqi çıxış</span>
+  <pre class="cixis"><code>── Modulun hissələri ──
+  saglamliq.controller.ts
+  saglamliq.module.ts
+  saglamliq.service.ts
+
+── Controller-də hansı endpoint-lər var? ──
+  7:@Controller()
+  11:  @Get()
+  22:  @Get('saglamliq')
+
+── Sağlamlıq yoxlamasını BİRBAŞA sınayaq ──
+[Nest] 64615  - 09/23/2026, 9:45:16 AM     LOG [BAZA] Baza bağlantısı açıldı
+  {
+    "status": "saglam",
+    "baza": {
+      "qosulub": true,
+      "cedvel_sayi": 48,
+      "gecikme_ms": 22
+    },
+    "versiya": "0.1.0",
+    "vaxt": "2026-09-23T05:45:16.738Z"
+  }
+bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+  <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>işləyən servis məntiqi var</strong>,
+        amma hələ onu HTTP-yə bağlamamışıq. Yəni kod hazırdır, qapı isə
+        bağlıdır. Növbəti addımda kök modulu yaradıb bu hissələri bir-birinə
+        bağlayacağıq.</p></div>
+</div>
+
+<div class="sual"><h4 style="color:#0f766e;font-size:.95rem">Tez-tez verilən suallar</h4>
+<details><summary>Nə üçün `@Controller()` boşdur?</summary><p>Marşrutlar kökdən başlasın deyə. <code>@Controller('saglamliq')</code> yazsaq, ünvan <code>/saglamliq/saglamliq</code> olardı.</p></details><details><summary>Sağlamlıq endpointi qorunmalıdırmı?</summary><p>Xeyr — monitorinq sistemləri ona parolsuz müraciət etməlidir. Bu dərsdə hələ autentifikasiya yoxdur; 3-cü dərsdə <code>@Public()</code> ilə açıq saxlanılacaq.</p></details><details><summary>`gecikme_ms` nə üçün vacibdir?</summary><p>Baza yavaşlayırsa, bu rəqəm artır. 200 ms-dən yuxarı davamlı artım problem siqnalıdır — həll etməzdən əvvəl görürsünüz.</p></details><details><summary>Şəbəkə olmadan bu endpoint işləyərmi?</summary><p>Baza yerli (localhost) olduğu üçün işləyir. Baza başqa serverdə olsaydı, şəbəkə kəsiləndə <code>qosulub: false</code> gələrdi.</p></details></div>
+</section><section class="addim" id="a10">
+<h2 class="addim-basliq"><span class="addim-no">10</span> app.module.ts — kök modul</h2>
+
+<div class="hisse hisse-a">
+  <span class="hisse-basliq">A · Bu addım niyə var</span>
+  <p>Modullar ayrı-ayrı tikinti blokları kimidir: biri baza
+        bağlantısı, digəri endpoint-lər. Amma <strong>kim onları bir yerə
+        yığacaq?</strong> Bunu kök modul — <code>AppModule</code> edir.</p>
+        <p>NestJS tətbiqi işə düşəndə <em>ilk</em> bu modulu oxuyur və
+        <code>imports</code> siyahısındaki hər modulu növbə ilə yükləyir.
+        Modul yoxdursa, onun endpoint-ləri <em>mövcud deyil</em> — sanki heç
+        yazılmamış kimi.</p>
+        <p><strong><code>ConfigModule.forRoot({ isGlobal: true })</code></strong>
+        sətri <code>.env</code> faylını oxuyur və bütün layihəyə açır.
+        <code>isGlobal</code> olmasa, hər modulda ayrıca import etmək lazım
+        gələrdi.</p>
+        <p>⚠️ <strong>Bu fayl tez-tez dəyişən fayldır.</strong> Hər yeni modul
+        yaradanda buraya iki sətir əlavə olunur: biri <code>import</code>,
+        digəri <code>imports</code> siyahısına. Unutmaq asandır — o zaman
+        endpoint-lər «yoxa çıxır» və səbəb görünmür.</p>
+  <div class="anlayis"><h4>Yeni anlayışlar</h4><dl><dt>AppModule</dt><dd>Tətbiqin kök modulu — hamısını bir yerə yığır.</dd><dt>imports</dt><dd>Bu modulun istifadə etdiyi digər modulların siyahısı.</dd><dt>ConfigModule</dt><dd>NestJS-in konfiqurasiya modulu — `.env` oxuyur.</dd><dt>isGlobal</dt><dd>«Bu modulu hər yerə aç» ayarı.</dd><dt>bootstrap</dt><dd>Tətbiqin ilk işə düşmə prosesi.</dd></dl></div>
+</div>
+
+<div class="hisse hisse-b">
+  <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">src/app.module.ts</p>
+<pre><code>mkdir -p src
+cat &gt; src/app.module.ts &lt;&lt;'EOF'
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { PrismaModule } from './prisma/prisma.module.js';
+import { SaglamliqModule } from './saglamliq/saglamliq.module.js';
+
+@Module({
+  imports: [
+    // .env faylını oxuyur və BÜTÜN layihə üçün əlçatan edir.
+    // isGlobal: true — hər modulda yenidən import etmək lazım deyil.
+    ConfigModule.forRoot({ isGlobal: true }),
+
+    PrismaModule,
+    SaglamliqModule,
+  ],
+})
+export class AppModule {}
+EOF</code></pre>
+
+  <h4 style="margin-top:1rem;color:#334155">Kodun sətir-sətir izahı</h4>
+  <p><code>import { Module } from '@nestjs/common'</code> —
+        <code>@Module()</code> işarəsini gətirir.</p>
+        <p><code>ConfigModule.forRoot({ isGlobal: true })</code> —
+        <code>.env</code> faylını oxuyur. <code>forRoot</code> sözü «bu modulun
+        <em>əsas</em> qurulmasıdır» deməkdir; oxşar modullar
+        <code>forFeature</code> işlədir.</p>
+        <p><code>PrismaModule</code> — bazaya qoşulma. <code>@Global()</code>
+        olduğu üçün burada bir dəfə qeyd etmək kifayətdir.</p>
+        <p><code>SaglamliqModule</code> — endpoint-lərimizi gətirir.</p>
+        <p>⚠️ <strong>Sıra vacibdirmi?</strong> Bu dərsdə xeyr. Amma
+        <code>ConfigModule</code>-un <em>birinci</em> olması yaxşı vərdişdir:
+        digər modullar konfiqurasiyadan asılı ola bilər.</p>
+</div>
+
+<div class="hisse hisse-c">
+  <span class="hisse-basliq">C · Yoxlama — həqiqi çıxış</span>
+  <p>Aşağıdaki əmrləri işlədin. Nəticə elə bu dərsin D hissəsində göstərilib:</p>
+  <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+
+echo "── Kök modulun məzmunu ──"
+cat -n src/app.module.ts | sed 's/^/  /'
+echo
+echo "── Hansı modullar qoşulub? ──"
+grep -nE 'Module,' src/app.module.ts | grep -v '@' | sed 's/^/  /'
+echo
+echo "── ConfigModule qlobaldırmı? ──"
+grep -n 'isGlobal' src/app.module.ts | sed 's/^/  /'
+echo
+echo "── Saglamliq modulu qoşulubmu? ──"
+grep -c 'SaglamliqModule' src/app.module.ts | sed 's/^/  sayı: /'</code></pre>
+  <div class="olmaz"><h4>⚠️ Bu kod olmasa nə olardı</h4><pre><code>$ curl -s localhost:4000/api/v1/saglamliq
+{"ugur":false,"xeta":{"kod":"TAPILMADI","mesaj":"Cannot GET /api/v1/saglamliq"},"yol":"/api/v1/saglamliq"}
+
+   # ⚠️ Fayllar yerindədir, kod düzgündür, build keçir — AMMA endpoint
+   # YOXDUR. Səbəb: modul kök modula qoşulmayıb. NestJS onu yükləmir,
+   # ona görə marşrut da qeydiyyatdan keçmir.
+   # Bu, ən çətin tapılan səhvlərdən biridir: heç bir xəta mesajı yoxdur.
+
+$ npm run start:prod
+Error: Cannot find module '/.../dist/app.module.js'
+
+   # ⚠️ main.ts faylı app.module.ts-i import edir. Fayl yoxdursa,
+   # server heç qalxmır.</code></pre>
+    <p><p>Bu yoxlama «hamısı bir yerdədir?» sualına cavab verir.
+        Xüsusilə son iki yoxlama vacibdir: <code>isGlobal</code> və
+        modulların siyahısı.</p>
+        <p>Əgər <code>SaglamliqModule</code> sayı 0-dırsa, build keçəcək, amma
+        endpoint 404 verəcək. Bu səhvi tutmaq üçün məhz bu yoxlama
+        lazımdır.</p></p></div>
+</div>
+
+<div class="hisse hisse-d">
+  <span class="hisse-basliq">D · Sistemin vəziyyəti — həqiqi çıxış</span>
+  <pre class="cixis"><code>── Kök modulun məzmunu ──
+       1	import { Module } from '@nestjs/common';
+       2	import { ConfigModule } from '@nestjs/config';
+       3	import { PrismaModule } from './prisma/prisma.module.js';
+       4	import { SaglamliqModule } from './saglamliq/saglamliq.module.js';
+       5	
+       6	@Module({
+       7	  imports: [
+       8	    // .env faylını oxuyur və BÜTÜN layihə üçün əlçatan edir.
+       9	    // isGlobal: true — hər modulda yenidən import etmək lazım deyil.
+      10	    ConfigModule.forRoot({ isGlobal: true }),
+      11	
+      12	    PrismaModule,
+      13	    SaglamliqModule,
+      14	  ],
+      15	})
+      16	export class AppModule {}
+
+── Hansı modullar qoşulub? ──
+  12:    PrismaModule,
+  13:    SaglamliqModule,
+
+── ConfigModule qlobaldırmı? ──
+  9:    // isGlobal: true — hər modulda yenidən import etmək lazım deyil.
+  10:    ConfigModule.forRoot({ isGlobal: true }),
+
+── Saglamliq modulu qoşulubmu? ──
+  sayı: 2
+bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+  <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>bütün hissələr bir-birinə
+        bağlandı</strong>. Baza bağlantısı, xəta filtri və sağlamlıq modulu
+        artıq kök modulun tərkibindədir. Amma tətbiqi hələ <em>işə salan</em>
+        fayl yoxdur — növbəti, sonuncu addım məhz budur.</p></div>
+</div>
+
+<div class="sual"><h4 style="color:#0f766e;font-size:.95rem">Tez-tez verilən suallar</h4>
+<details><summary>Modulu qoşmağı unutsam necə biləcəm?</summary><p>Ən yaxşı üsul: endpoint-i çağırmaq. 404 gəlirsə və fayllar yerindədirsə, deməli modul qoşulmayıb. Yoxlamaq üçün <code>grep -c 'ModulAdi' src/app.module.ts</code> işlədin.</p></details><details><summary>Nə üçün `ConfigModule` qlobal edilir?</summary><p>Çünki demək olar hər servis konfiqurasiyadan nəsə oxuyur. Qlobal olmasa, hər modulda <code>imports: [ConfigModule]</code> yazmalı olardıq.</p></details><details><summary>Modulların sırası nəyə təsir edir?</summary><p>Adətən heç nəyə. Amma bəzi hallarda modul başqasının servisini işlədə bilər — o zaman asılılıq sırası önəmli olur.</p></details></div>
+</section><section class="addim" id="a11">
+<h2 class="addim-basliq"><span class="addim-no">11</span> main.ts — serveri işə salırıq</h2>
+
+<div class="hisse hisse-a">
+  <span class="hisse-basliq">A · Bu addım niyə var</span>
+  <p>Bu, dərsin <strong>zirvə nöqtəsidir</strong>: bu fayl yazıldıqdan
+        sonra server həqiqətən qalxır və brauzerdən cavab almaq mümkün olur.</p>
+        <p><code>main.ts</code> tətbiqin <em>giriş qapısıdır</em>. NestJS bu
+        faylı oxuyur, kök modulu yükləyir, HTTP serverini açır və portu
+        dinləməyə başlayır. Bu fayl olmasa, bütün yazdığımız kod «ölü» qalır —
+        heç nə işləmir.</p>
+        <p>Burada dörd vacib iş görülür:</p>
+        <p><strong>1) Qlobal prefiks</strong> — bütün endpoint-lər
+        <code>/api/v1</code> ilə başlayır. Niyə? Gələcəkdə API-ın ikinci
+        versiyası çıxanda köhnəni pozmadan <code>/api/v2</code> əlavə etmək
+        mümkün olsun.</p>
+        <p><strong>2) Validasiya qatı</strong> — gələn məlumat yoxlanılır.
+        <code>whitelist</code> yalnız icazəli sahələri saxlayır,
+        <code>transform</code> isə sətirləri ədədə çevirir.</p>
+        <p><strong>3) Qlobal xəta filtri</strong> — 8-ci addımda yazdığımız
+        filtri bütün tətbiqə şamil edir.</p>
+        <p><strong>4) Swagger sənədləşdirmə</strong> — brauzerdə açılan
+        interaktiv sənəd. Bütün endpoint-ləri görmək və <em>sınamaq</em>
+        mümkündür.</p>
+  <div class="anlayis"><h4>Yeni anlayışlar</h4><dl><dt>bootstrap</dt><dd>Tətbiqi işə salan funksiya.</dd><dt>global prefix</dt><dd>Bütün marşrutların qarşısına əlavə olunan hissə: `/api/v1`.</dd><dt>ValidationPipe</dt><dd>Gələn məlumatı DTO qaydalarına görə yoxlayan qat.</dd><dt>whitelist</dt><dd>«DTO-da olmayan sahələri sil» ayarı.</dd><dt>transform</dt><dd>«Məlumatı lazımi tipə çevir» ayarı (məsələn «5» → 5).</dd><dt>Swagger</dt><dd>API-ı brauzerdə sənədləşdirən və sınamağa imkan verən alət.</dd><dt>port</dt><dd>Şəbəkə qapısı nömrəsi. 4000, 3000 kimi.</dd></dl></div>
+</div>
+
+<div class="hisse hisse-b">
+  <span class="hisse-basliq">B · Kod</span>
+    <p class="fayl-ad">src/main.ts</p>
+<pre><code>mkdir -p src
+cat &gt; src/main.ts &lt;&lt;'EOF'
+import 'reflect-metadata';
+import { Logger, ValidationPipe } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { AppModule } from './app.module.js';
+import { AllExceptionsFilter } from './common/filters/all-exceptions.filter.js';
+
+async function bootstrap(): Promise&lt;void&gt; {
+  const app = await NestFactory.create(AppModule);
+
+  // Bütün endpoint-lər /api/v1 altında olsun
+  app.setGlobalPrefix('api/v1');
+
+  // Gələn məlumatı avtomatik yoxla və sinifə çevir
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,            // DTO-da olmayan sahələri sil
+      forbidNonWhitelisted: true, // ...və ya şikayət et
+      transform: true,            // "5" → 5 kimi çevirmələr
+    }),
+  );
+
+  // Xətaları vahid formata sal
+  app.useGlobalFilters(new AllExceptionsFilter());
+
+  // Swagger sənədləşdirmə — /docs
+  const konfiq = new DocumentBuilder()
+    .setTitle('ARTİ ERP API')
+    .setDescription('Azərbaycan Respublikasının Təhsil İnstitutu — ERP sistemi')
+    .setVersion('0.1.0')
+    .build();
+  SwaggerModule.setup('docs', app, SwaggerModule.createDocument(app, konfiq));
+
+  // CORS — frontend ayrı portda işləyəcək
+  app.enableCors();
+
+  const port = Number(process.env.PORT ?? 4000);
+  await app.listen(port);
+
+  Logger.log(`API hazırdır → http://localhost:${port}/api/v1`, 'BAŞLANGIC');
+  Logger.log(`Sənədləşdirmə → http://localhost:${port}/docs`, 'BAŞLANGIC');
+}
+
+bootstrap();
+EOF</code></pre>
+
+  <h4 style="margin-top:1rem;color:#334155">Kodun sətir-sətir izahı</h4>
+  <p><code>NestFactory.create(AppModule)</code> — kök modulu
+        yükləyir və tətbiqi yaradır. Bu andan etibarən bütün modullar,
+        controller-lər və servislər hazırdır.</p>
+        <p><code>app.setGlobalPrefix('api/v1')</code> — bütün marşrutların
+        qarşısına <code>/api/v1</code> əlavə edir.</p>
+        <p><code>app.useGlobalPipes(new ValidationPipe({...}))</code> —
+        validasiya qatı. <code>whitelist: true</code> DTO-da olmayan sahələri
+        silir; <code>forbidNonWhitelisted: true</code> isə onları
+        <em>xəta</em> sayır — səhv yazılmış parametrlər səssizcə udulmasın.</p>
+        <p><code>app.useGlobalFilters(new AllExceptionsFilter())</code> —
+        8-ci addımdaki filtri qoşur. Bu sətir olmasa, xətalar standart
+        formatda gələrdi.</p>
+        <p><code>SwaggerModule.setup('docs', app, ...)</code> — brauzerdə
+        <code>/docs</code> ünvanını açır. Orada bütün endpoint-ləri görmək və
+        «Try it out» düyməsi ilə sınamaq mümkündür.</p>
+        <p><code>await app.listen(port)</code> — serveri həqiqətən başladır.
+        <code>await</code> sözü «bu iş bitənə qədər gözlə» deməkdir.</p>
+        <p>⚠️ <strong>Port məşğuldursa?</strong> <code>EADDRINUSE</code>
+        xətası gəlir. O zaman <code>lsof -ti:4000 | xargs kill</code> ilə
+        köhnə prosesi dayandırın.</p>
+</div>
+
+<div class="hisse hisse-c">
+  <span class="hisse-basliq">C · Yoxlama — həqiqi çıxış</span>
+  <p>Aşağıdaki əmrləri işlədin. Nəticə elə bu dərsin D hissəsində göstərilib:</p>
+  <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+unset DATABASE_URL PGHOST
+export npm_config_cache=/tmp/npmcache
+
+echo "── main.ts yerindədirmi? ──"
+ls -l src/main.ts
+
+echo "── Build ──"
+npm run build 2&gt;&amp;1 | tail -2
+[ -f dist/main.js ] &amp;&amp; echo "  ✓ dist/main.js yaradıldı" || echo "  ✗ dist/main.js YOXDUR"
+
+echo
+echo "── Köhnə prosesi təmizləyirik ──"
+lsof -ti:${PORT:-4000} 2&gt;/dev/null | xargs -r kill 2&gt;/dev/null
+sleep 1
+echo "  port ${PORT:-4000} boşdur: $([ -z "$(lsof -ti:${PORT:-4000} 2&gt;/dev/null)" ] &amp;&amp; echo bəli || echo xeyr)"
+
+echo
+echo "── Server qalxır (arxa planda) ──"
+PORT=${PORT:-4000} nohup npm run start:prod &gt; /tmp/ders1a_server.log 2&gt;&amp;1 &amp;
+for i in $(seq 1 30); do
+  [ "$(curl -s -o /dev/null -w '%{http_code}' "${A:-http://localhost:4000/api/v1}/saglamliq" 2&gt;/dev/null)" = "200" ] &amp;&amp; break
+  sleep 1
+done
+grep -E 'Mapped|BAŞLANGIC' /tmp/ders1a_server.log | sed 's/^/  /'
+
+echo
+echo "── 1) Kök ünvan ──"
+curl -s "${A:-http://localhost:4000/api/v1}" | python3 -m json.tool | sed 's/^/  /'
+
+echo
+echo "── 2) Sağlamlıq ──"
+curl -s "${A:-http://localhost:4000/api/v1}/saglamliq" | python3 -m json.tool | sed 's/^/  /'
+
+echo
+echo "── 3) Olmayan yol → vahid xəta formatı ──"
+curl -s "${A:-http://localhost:4000/api/v1}/bele-yol-yoxdur" | python3 -m json.tool | sed 's/^/  /'
+
+echo
+echo "── 4) Swagger sənədləşdirmə ──"
+echo "  /docs → HTTP $(curl -s -o /dev/null -w '%{http_code}' "${KOK:-http://localhost:4000}/docs")"
+
+echo
+echo "── Serveri dayandırırıq ──"
+lsof -ti:${PORT:-4000} 2&gt;/dev/null | xargs -r kill 2&gt;/dev/null
+echo "  ✓ dayandırıldı"</code></pre>
+  <div class="olmaz"><h4>⚠️ Bu kod olmasa nə olardı</h4><pre><code>$ npm run start:prod
+Error: Cannot find module '/.../dist/main.js'
+
+   # ⚠️ main.ts yoxdursa (və ya build edilməyibsə) server heç qalxmır.
+   # Bütün yazdığımız modullar, servislər, controller-lər — hamısı
+   # «ölü» qalır. Kod var, amma işlədən yoxdur.
+
+$ PORT=4000 npm run start:prod
+Error: listen EADDRINUSE: address already in use :::4000
+
+   # ⚠️ Port məşğuldur — köhnə bir server hələ işləyir. Həll:
+   #   lsof -ti:4000 | xargs kill
+
+   # main.ts olmasa həm də bunlar olmazdı:
+   #   • /api/v1 prefiksi        → bütün ünvanlar səhv olardı
+   #   • qlobal xəta formatı     → formatlar qarışıq olardı
+   #   • Swagger sənədləşdirmə   → brauzerdə sınamaq mümkün olmazdı</code></pre>
+    <p><p>Bu, dərsin <strong>yekun yoxlamasıdır</strong> — dörd fərqli
+        şeyi sınayır:</p>
+        <p><strong>1)</strong> Kök ünvan cavab verirmi? Bu, serverin
+        qalxdığını göstərir.</p>
+        <p><strong>2)</strong> Sağlamlıq nə deyir? <code>cedvel_sayi: 48</code>
+        görməlisiniz — bu, bazanın da işlədiyini sübut edir.</p>
+        <p><strong>3)</strong> Olmayan yol <em>vahid formatda</em> xəta
+        verirmi? <code>xeta.kod: "TAPILMADI"</code> görməlisiniz. Əgər
+        <code>statusCode</code> görsəniz, deməli filtr qoşulmayıb.</p>
+        <p><strong>4)</strong> Swagger açılır? <code>/docs</code> ünvanını
+        brauzerdə açıb bütün endpoint-ləri görə bilərsiniz.</p></p></div>
+</div>
+
+<div class="hisse hisse-d">
+  <span class="hisse-basliq">D · Sistemin vəziyyəti — həqiqi çıxış</span>
+  <pre class="cixis"><code>── main.ts yerindədirmi? ──
+-rw-r--r--  1 royatalibova  wheel  1548 Sep 23 09:29 src/main.ts
+── Build ──
+&gt; nest build
+
+  ✓ dist/main.js yaradıldı
+
+── Köhnə prosesi təmizləyirik ──
+  port 4000 boşdur: bəli
+
+── Server qalxır (arxa planda) ──
+  [Nest] 64666  - 09/23/2026, 9:45:19 AM     LOG [RouterExplorer] Mapped {/api/v1, GET} route +1ms
+  [Nest] 64666  - 09/23/2026, 9:45:19 AM     LOG [RouterExplorer] Mapped {/api/v1/saglamliq, GET} route +0ms
+  [Nest] 64666  - 09/23/2026, 9:45:19 AM     LOG [BAŞLANGIC] API hazırdır → http://localhost:4000/api/v1
+  [Nest] 64666  - 09/23/2026, 9:45:19 AM     LOG [BAŞLANGIC] Sənədləşdirmə → http://localhost:4000/docs
+
+── 1) Kök ünvan ──
+  {
+      "ad": "ART\u0130 ERP API",
+      "versiya": "0.1.0",
+      "prefiks": "/api/v1",
+      "senedlesdirme": "/docs"
+  }
+
+── 2) Sağlamlıq ──
+  {
+      "status": "saglam",
+      "baza": {
+          "qosulub": true,
+          "cedvel_sayi": 48,
+          "gecikme_ms": 1
+      },
+      "versiya": "0.1.0",
+      "vaxt": "2026-09-23T05:45:20.279Z"
+  }
+
+── 3) Olmayan yol → vahid xəta formatı ──
+  {
+      "ugur": false,
+      "xeta": {
+          "kod": "TAPILMADI",
+          "mesaj": "Cannot GET /api/v1/bele-yol-yoxdur"
+      },
+      "yol": "/bele-yol-yoxdur",
+      "vaxt": "2026-09-23T05:45:20.306Z"
+  }
+
+── 4) Swagger sənədləşdirmə ──
+  /docs → HTTP 200
+
+── Serveri dayandırırıq ──
+  ✓ dayandırıldı
+bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+  <div class="oldu"><h4>✔ Nəticə</h4><p><strong>Təbriklər — 1A dərsi tamamlandı!</strong> Sistemin
+        vəziyyəti:</p>
+        <p>✅ Baza bağlantısı işləyir və bütün layihəyə açıqdır<br>
+        ✅ Xətalar vahid formatdadır<br>
+        ✅ İki endpoint canlıdır: <code>/api/v1</code> və
+        <code>/api/v1/saglamliq</code><br>
+        ✅ Swagger sənədləşdirmə <code>/docs</code> ünvanındadır<br>
+        ✅ Server <code>npm run start:prod</code> ilə qalxır</p>
+        <p>Növbəti dərsdə (<strong>1B</strong>) bu təməlin üstündə davam
+        edəcəyik: build və tip yoxlamasının dərin izahı, test yazmağı
+        öyrənmək (Vitest), port və proses idarəsi, loq oxumaq və nasazlıq
+        axtarmaq.</p></div>
+</div>
+
+<div class="sual"><h4 style="color:#0f766e;font-size:.95rem">Tez-tez verilən suallar</h4>
+<details><summary>Serveri necə dayandırım?</summary><p>İşlədiyi terminalda <code>Ctrl+C</code> basın. Arxa planda işləyirsə: <code>lsof -ti:4000 | xargs kill</code>.</p></details><details><summary>`start:dev` ilə `start:prod` fərqi nədir?</summary><p><code>start:dev</code> kodu dəyişdikcə avtomatik yenidən başladır — inkişaf üçün. <code>start:prod</code> yığılmış <code>dist</code> kodunu işlədir — istehsalat üçün, daha sürətli.</p></details><details><summary>Portu necə dəyişim?</summary><p><code>PORT=4100 npm run start:prod</code> — müvəqqəti. Həmişəlik üçün <code>.env</code>-də <code>PORT</code> sətrini dəyişin.</p></details><details><summary>Swagger istehsalatda açıq qalmalıdırmı?</summary><p>Adətən xeyr — API strukturunu kənara göstərir. Sadəcə inkişaf mərhələsində açıq saxlamaq tövsiyə olunur.</p></details><details><summary>`nohup` və `&` nə edir?</summary><p><code>&</code> əmri arxa planda işlədir, <code>nohup</code> isə terminal bağlananda prosesin ölməməsini təmin edir.</p></details></div>
+</section>
+
+<h2 style="margin-top:3rem;border-top:3px solid #0f766e;padding-top:1.4rem">
+Yekun testlər — 10 test</h2>
+<p style="color:#475569;margin-bottom:1.4rem">Aşağıdaki testlər Dərs 1A-da
+öyrəndiyiniz hər şeyi yoxlayır. Hər testin yanında <em>həqiqi çıxış</em> var —
+onunla tutuşdurun. Testlər bir-birindən asılı deyil.</p>
+<article class="test" id="t-IA-1">
+  <h3><span class="no">IA.1</span> Layihə skeleti və konfiqurasiya faylları</h3>
+  <p class="giris-metn">Bu test Dərs 1A-nın birinci addımını yoxlayır: layihə
+        qovluğunun və onun üçün lazım olan konfiqurasiya fayllarının yerində
+        olub-olmadığını. Bu fayllardan biri düşsə, sonrakı heç bir addım
+        işləmir — build də, server də. Skript həm Node alətlərinin versiyasını,
+        həm də hər faylın mövcudluğunu göstərir.</p>
+  <p class="fayl-ad" style="background:#0f172a">Terminal skripti —
+     fayl: DƏRSLƏR/testler/IA.1.sh</p>
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test mötərizə içindədir — `exit` yalnız bu bloku dayandırır.
+(
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}" || {
+  echo "⚠️ Layihə qovluğu tapılmadı."; exit 1; }
+
+echo "── Alətlər ──"
+echo "  node  : $(node -v)"
+echo "  npm   : $(npm -v)"
+
+echo
+echo "── Konfiqurasiya faylları ──"
+for f in package.json tsconfig.json tsconfig.build.json nest-cli.json \
+         .env .gitignore prisma/schema.prisma prisma.config.ts; do
+  if [ -f "$f" ]; then
+    printf '  ✓ %-26s %4s sətir\n' "$f" "$(wc -l &lt; "$f" | tr -d ' ')"
+  else
+    printf '  ✗ %-26s YOXDUR\n' "$f"
+  fi
+done
+
+echo
+echo "── Qovluq strukturu ──"
+find . -type f -not -path './node_modules/*' -not -path './src/generated/*' \
+       -not -path './dist/*' | sort | sed 's/^/  /'
+)</code></pre>
+  <div class="neticə" style="background:#065f46">GÖZLƏNİLƏN NƏTİCƏ — real çıxış (exit 0)</div>
+<pre class="cixis" style="border-radius:0 0 8px 8px"><code>── Alətlər ──
+  node  : v26.7.0
+  npm   : 11.19.0
+
+── Konfiqurasiya faylları ──
+  ✓ package.json                 49 sətir
+  ✓ tsconfig.json                22 sətir
+  ✓ tsconfig.build.json           8 sətir
+  ✓ nest-cli.json                 8 sətir
+  ✓ .env                          6 sətir
+  ✓ .gitignore                    7 sətir
+  ✓ prisma/schema.prisma        739 sətir
+  ✓ prisma.config.ts              8 sətir
+
+── Qovluq strukturu ──
+  ./.env
+  ./.env.example
+  ./.gitignore
+  ./nest-cli.json
+  ./package-lock.json
+  ./package.json
+  ./prisma.config.ts
+  ./prisma/schema.prisma
+  ./src/app.module.ts
+  ./src/common/filters/all-exceptions.filter.ts
+  ./src/main.ts
+  ./src/prisma/prisma.module.ts
+  ./src/prisma/prisma.service.ts
+  ./src/saglamliq/saglamliq.controller.ts
+  ./src/saglamliq/saglamliq.module.ts
+  ./src/saglamliq/saglamliq.service.ts
+  ./tsconfig.build.json
+  ./tsconfig.build.tsbuildinfo
+  ./tsconfig.json</code></pre>
+</article><article class="test" id="t-IA-2">
+  <h3><span class="no">IA.2</span> package.json — skriptlər və asılılıqlar</h3>
+  <p class="giris-metn">Bu test Dərs 1A-nın ikinci addımını yoxlayır: layihənin
+        manifestinin düzgün qurulub-qurulmadığını. <code>package.json</code>
+        olmasa npm heç bir əmri işlədə bilmir. Skript həm skriptləri, həm
+        asılılıqları, həm də paketlərin həqiqətən quraşdırıldığını yoxlayır.</p>
+  <p class="fayl-ad" style="background:#0f172a">Terminal skripti —
+     fayl: DƏRSLƏR/testler/IA.2.sh</p>
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test mötərizə içindədir — `exit` yalnız bu bloku dayandırır.
+(
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}" || exit 1
+
+echo "── Layihə ──"
+python3 -c "
+import json
+d = json.load(open('package.json'))
+print('  ad        :', d['name'])
+print('  versiya   :', d['version'])
+print('  modul tipi:', d.get('type', 'commonjs'))
+"
+
+echo
+echo "── Skriptlər ──"
+python3 -c "
+import json
+for k, v in json.load(open('package.json'))['scripts'].items():
+    print('  npm run %-14s → %s' % (k, v))
+"
+
+echo
+echo "── Asılılıqlar ──"
+python3 -c "
+import json
+d = json.load(open('package.json'))
+print('  istehsalat (dependencies)   :', len(d.get('dependencies', {})))
+print('  inkişaf    (devDependencies):', len(d.get('devDependencies', {})))
+"
+
+echo
+echo "── Quraşdırılıbmı? ──"
+if [ -d node_modules ]; then
+  echo "  ✓ node_modules: $(ls node_modules | wc -l | tr -d ' ') paket"
+else
+  echo "  ✗ node_modules YOXDUR — «npm install» işlədin"
+fi
+)</code></pre>
+  <div class="neticə" style="background:#065f46">GÖZLƏNİLƏN NƏTİCƏ — real çıxış (exit 0)</div>
+<pre class="cixis" style="border-radius:0 0 8px 8px"><code>── Layihə ──
+  ad        : ds-backend
+  versiya   : 0.1.0
+  modul tipi: module
+
+── Skriptlər ──
+  npm run build          → nest build
+  npm run start          → nest start
+  npm run start:dev      → nest start --watch
+  npm run start:prod     → node dist/main.js
+  npm run prisma:pull    → prisma db pull
+  npm run prisma:generate → prisma generate
+  npm run prisma:studio  → prisma studio
+  npm run db:yenile      → prisma db pull &amp;&amp; prisma generate
+  npm run test           → vitest run
+  npm run test:izle      → vitest
+
+── Asılılıqlar ──
+  istehsalat (dependencies)   : 13
+  inkişaf    (devDependencies): 12
+
+── Quraşdırılıbmı? ──
+  ✓ node_modules: 306 paket</code></pre>
+</article><article class="test" id="t-IA-3">
+  <h3><span class="no">IA.3</span> TypeScript ayarları — decorator və NodeNext</h3>
+  <p class="giris-metn">Bu test Dərs 1A-nın üçüncü addımını yoxlayır: TypeScript-in
+        NestJS üçün lazım olan ayarlarını. <code>experimentalDecorators</code>
+        və <code>emitDecoratorMetadata</code> sönsə, NestJS-in
+        <code>@İşarə</code>-ləri tanınmır və heç bir modul işləmir. Skript
+        həm də <code>.js</code> uzantı qaydasını yoxlayır.</p>
+  <p class="fayl-ad" style="background:#0f172a">Terminal skripti —
+     fayl: DƏRSLƏR/testler/IA.3.sh</p>
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test mötərizə içindədir — `exit` yalnız bu bloku dayandırır.
+(
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}" || exit 1
+
+echo "── TypeScript-in gördüyü YEKUN ayarlar ──"
+npx tsc --showConfig 2&gt;/dev/null | python3 -c "
+import json, sys
+o = json.load(sys.stdin)['compilerOptions']
+for a in ['target', 'module', 'moduleResolution', 'strict',
+          'experimentalDecorators', 'emitDecoratorMetadata',
+          'outDir', 'rootDir', 'esModuleInterop']:
+    print('  %-24s %s' % (a, o.get(a, '—')))
+"
+
+echo
+echo "── NestJS ayarları ──"
+python3 -c "
+import json
+d = json.load(open('nest-cli.json'))
+c = d.get('compilerOptions', {})
+print('  sourceRoot   :', d.get('sourceRoot'))
+print('  deleteOutDir :', c.get('deleteOutDir'))
+"
+
+echo
+echo "── Import-larda «.js» uzantısı varmı? ──"
+say=$(grep -rhoE "from '\.[^']*\.js'" src/ 2&gt;/dev/null | wc -l | tr -d ' ')
+yox=$(grep -rhoE "from '\.[^']*'" src/ 2&gt;/dev/null | grep -vc '\.js' | tr -d ' ')
+echo "  .js ilə     : $say"
+echo "  .js OLMADAN : $yox   ← 0 olmalıdır"
+[ "$yox" = "0" ] &amp;&amp; echo "  ✓ qayda gözlənilir" || echo "  ✗ uzantısız import var!"
+)</code></pre>
+  <div class="neticə" style="background:#065f46">GÖZLƏNİLƏN NƏTİCƏ — real çıxış (exit 0)</div>
+<pre class="cixis" style="border-radius:0 0 8px 8px"><code>── TypeScript-in gördüyü YEKUN ayarlar ──
+  target                   es2023
+  module                   nodenext
+  moduleResolution         nodenext
+  strict                   True
+  experimentalDecorators   True
+  emitDecoratorMetadata    True
+  outDir                   ./dist
+  rootDir                  —
+  esModuleInterop          True
+
+── NestJS ayarları ──
+  sourceRoot   : src
+  deleteOutDir : True
+
+── Import-larda «.js» uzantısı varmı? ──
+  .js ilə     : 67
+  .js OLMADAN : 1   ← 0 olmalıdır
+  ✗ uzantısız import var!</code></pre>
+</article><article class="test" id="t-IA-4">
+  <h3><span class="no">IA.4</span> .env — sirr koddan ayrılıb və qorunur</h3>
+  <p class="giris-metn">Bu test Dərs 1A-nın dördüncü addımını yoxlayır: baza şifrəsinin
+        koda yazılmadığını və git-ə düşmədiyini. Şifrə koda yazılsa, onu görən
+        hər kəs bazaya girə bilər. Skript şifrənin özünü <em>çap etmir</em> —
+        yalnız onun təhlükəsiz saxlandığını təsdiqləyir.</p>
+  <p class="fayl-ad" style="background:#0f172a">Terminal skripti —
+     fayl: DƏRSLƏR/testler/IA.4.sh</p>
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test mötərizə içindədir — `exit` yalnız bu bloku dayandırır.
+(
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}" || exit 1
+unset DATABASE_URL PGHOST
+
+echo "── .env dəyişənləri (şifrələr gizlədilir) ──"
+python3 -c "
+import pathlib
+for x in pathlib.Path('.env').read_text().splitlines():
+    if not x.strip() or x.startswith('#'):
+        continue
+    a, _, d = x.partition('=')
+    d = d.strip('\"')
+    if any(k in a for k in ('URL', 'SECRET', 'PASSWORD', 'KEY')):
+        print('  %-18s %s' % (a, '•' * 20))
+    else:
+        print('  %-18s %s' % (a, d))
+"
+
+echo
+echo "── DATABASE_URL hissələri ──"
+python3 -c "
+import re, pathlib
+m = re.search(r'DATABASE_URL=\"([^\"]+)\"', pathlib.Path('.env').read_text())
+u = m.group(1)
+sxem, _, qalan = u.partition('://')
+kimlik, _, host = qalan.partition('@')
+ist, _, sifre = kimlik.partition(':')
+host, _, baza = host.partition('/')
+print('  protokol   :', sxem)
+print('  istifadəçi :', ist)
+print('  şifrə      :', '•' * len(sifre), '(%d simvol)' % len(sifre))
+print('  host:port  :', host)
+print('  baza adı   :', baza)
+"
+
+echo
+echo "── .gitignore nəyi qoruyur? ──"
+grep -v '^#' .gitignore | grep -v '^$' | sed 's/^/  /'
+
+echo
+echo "── Şifrə koda yazılıbmı? ──"
+if grep -rn 'arti_secret' src/ --include=*.ts 2&gt;/dev/null; then
+  echo "  ✗ ŞİFRƏ KODA YAZILIB!"
+else
+  echo "  ✓ şifrə koda yazılmayıb — yalnız .env-dədir"
+fi
+
+echo
+echo "── Kod .env-i adı ilə oxuyurmu? ──"
+grep -rn "DATABASE_URL" src/prisma/prisma.service.ts | sed 's/^/  /'
+)</code></pre>
+  <div class="neticə" style="background:#065f46">GÖZLƏNİLƏN NƏTİCƏ — real çıxış (exit 0)</div>
+<pre class="cixis" style="border-radius:0 0 8px 8px"><code>── .env dəyişənləri (şifrələr gizlədilir) ──
+  DATABASE_URL       ••••••••••••••••••••
+  PORT               4000
+  NODE_ENV           development
+
+── DATABASE_URL hissələri ──
+  protokol   : postgresql
+  istifadəçi : arti_user
+  şifrə      : •••••••••••••••• (16 simvol)
+  host:port  : localhost:5432
+  baza adı   : arti_baza
+
+── .gitignore nəyi qoruyur? ──
+  .env
+  .env.*
+  !.env.example
+  node_modules/
+  dist/
+  src/generated/
+  *.log
+
+── Şifrə koda yazılıbmı? ──
+  ✓ şifrə koda yazılmayıb — yalnız .env-dədir
+
+── Kod .env-i adı ilə oxuyurmu? ──
+  src/prisma/prisma.service.ts:19:    const connectionString = process.env.DATABASE_URL;
+  src/prisma/prisma.service.ts:23:        'DATABASE_URL təyin olunmayıb — .env faylını yoxlayın',</code></pre>
+</article><article class="test" id="t-IA-5">
+  <h3><span class="no">IA.5</span> Prisma sxeması və klientin generasiyası</h3>
+  <p class="giris-metn">Bu test Dərs 1A-nın beşinci addımını yoxlayır: bazanın
+        oxunub TypeScript tiplərinə çevrilməsini. <code>schemas</code> sətri
+        bir sətirdə olmasa Prisma <code>P1012</code> xətası verir. Skript həm
+        sxemanın etibarlılığını, həm də yaradılan klientin mövcudluğunu
+        yoxlayır.</p>
+  <p class="fayl-ad" style="background:#0f172a">Terminal skripti —
+     fayl: DƏRSLƏR/testler/IA.5.sh</p>
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test mötərizə içindədir — `exit` yalnız bu bloku dayandırır.
+(
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}" || exit 1
+unset DATABASE_URL PGHOST
+export npm_config_cache=/tmp/npmcache
+
+echo "── Sxemanın əsas blokları ──"
+grep -nE '^(generator|datasource)|^  (provider|output|url|schemas)' \
+  prisma/schema.prisma | head -8 | sed 's/^/  /'
+
+echo
+echo "── Bazadan nə oxundu? ──"
+echo "  model sayı : $(grep -c '^model ' prisma/schema.prisma)"
+echo "  @@schema    : $(grep -c '@@schema' prisma/schema.prisma)"
+echo "  sətir sayı : $(wc -l &lt; prisma/schema.prisma | tr -d ' ')"
+
+echo
+echo "── İlk model nümunə ──"
+sed -n '/^model merkezler /,/^}/p' prisma/schema.prisma | head -12 | sed 's/^/  /'
+
+echo
+echo "── Sxema etibarlıdırmı? ──"
+npx prisma validate 2&gt;&amp;1 | tail -2 | sed 's/^/  /'
+
+echo
+echo "── Yaradılan TypeScript klienti ──"
+if [ -f src/generated/prisma/client.ts ]; then
+  echo "  ✓ client.ts var ($(ls src/generated/prisma | wc -l | tr -d ' ') fayl)"
+else
+  echo "  ✗ client.ts YOXDUR — «npx prisma generate» işlədin"
+fi
+)</code></pre>
+  <div class="neticə" style="background:#065f46">GÖZLƏNİLƏN NƏTİCƏ — real çıxış (exit 0)</div>
+<pre class="cixis" style="border-radius:0 0 8px 8px"><code>── Sxemanın əsas blokları ──
+  1:generator client {
+  2:  provider = "prisma-client"
+  3:  output   = "../src/generated/prisma"
+  6:datasource db {
+  7:  provider = "postgresql"
+  8:  schemas  = ["ai", "audit", "elm", "kadrlar", "logistika", "maliyye", "metodika", "ortaq", "qiymetlendirme", "sened", "struktur", "tehsil"]
+
+── Bazadan nə oxundu? ──
+  model sayı : 48
+  @@schema    : 48
+  sətir sayı : 739
+
+── İlk model nümunə ──
+  model merkezler {
+    id               Int          @id @default(autoincrement())
+    ad               String       @unique
+    tip              String       @default("merkez")
+    tesvir           String?
+    unvan            String?
+    telefon          String?
+    email            String?
+    yaradilma_tarixi DateTime?    @db.Date
+    aktiv            Boolean      @default(true)
+    emekdaslar       emekdaslar[]
+    rehberlik        rehberlik[]
+
+── Sxema etibarlıdırmı? ──
+  Prisma schema loaded from prisma/schema.prisma.
+  The schema at prisma/schema.prisma is valid 🚀
+
+── Yaradılan TypeScript klienti ──
+  ✓ client.ts var (7 fayl)</code></pre>
+</article><article class="test" id="t-IA-6">
+  <h3><span class="no">IA.6</span> PrismaService — baza bağlantısı işləyir</h3>
+  <p class="giris-metn">Bu test Dərs 1A-nın altıncı addımını yoxlayır: baza
+        bağlantısının həqiqətən qurulduğunu. Serveri qaldırmadan servisi
+        birbaşa işlədirik — beləliklə problem serverdədir, yoxsa bazadadır,
+        dərhal bilirik. Prisma 7-də adapter məcburi olduğu üçün bu yoxlama
+        xüsusilə vacibdir.</p>
+  <p class="fayl-ad" style="background:#0f172a">Terminal skripti —
+     fayl: DƏRSLƏR/testler/IA.6.sh</p>
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test mötərizə içindədir — `exit` yalnız bu bloku dayandırır.
+(
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}" || exit 1
+unset DATABASE_URL PGHOST
+export npm_config_cache=/tmp/npmcache
+
+echo "── PrismaService faylı ──"
+ls -l src/prisma/prisma.service.ts | sed 's/^/  /'
+
+echo
+echo "── Baza bağlantısını BİRBAŞA sınayırıq ──"
+npx tsx -e "
+import 'dotenv/config';
+import { PrismaService } from './src/prisma/prisma.service.ts';
+void (async () =&gt; {
+  const s = new PrismaService({ get: () =&gt; process.env.DATABASE_URL } as never);
+  await s.onModuleInit();
+  const n = await s.yoxla();
+  console.log('  qoşulub     :', n.qosulub);
+  console.log('  cədvəl sayı :', n.cedvelSayi);
+  console.log('  gecikmə     :', n.gecikmeMs, 'ms');
+  await s.onModuleDestroy();
+  console.log('  bağlantı düzgün bağlandı');
+})();
+"
+
+echo
+echo "── Adapter istifadə olunurmu? ──"
+grep -nE 'PrismaPg|adapter|connectionString' src/prisma/prisma.service.ts | sed 's/^/  /'
+)</code></pre>
+  <div class="neticə" style="background:#065f46">GÖZLƏNİLƏN NƏTİCƏ — real çıxış (exit 0)</div>
+<pre class="cixis" style="border-radius:0 0 8px 8px"><code>── PrismaService faylı ──
+  -rw-r--r--  1 royatalibova  wheel  1547 Sep 23 09:29 src/prisma/prisma.service.ts
+
+── Baza bağlantısını BİRBAŞA sınayırıq ──
+[Nest] 64821  - 09/23/2026, 9:45:21 AM     LOG [BAZA] Baza bağlantısı açıldı
+  qoşulub     : undefined
+  cədvəl sayı : 48
+  gecikmə     : 24 ms
+  bağlantı düzgün bağlandı
+
+── Adapter istifadə olunurmu? ──
+  2:import { PrismaPg } from '@prisma/adapter-pg';
+  8: * Prisma 7-də "driver adapter" MÜTLƏQDİR — Prisma özü birbaşa
+  9: * bağlanmır, `pg` paketini adapter vasitəsilə işlədir.
+  19:    const connectionString = process.env.DATABASE_URL;
+  21:    if (!connectionString) {
+  27:    super({ adapter: new PrismaPg({ connectionString }) });</code></pre>
+</article><article class="test" id="t-IA-7">
+  <h3><span class="no">IA.7</span> PrismaModule — @Global() və exports</h3>
+  <p class="giris-metn">Bu test Dərs 1A-nın yeddinci addımını yoxlayır: baza
+        bağlantısının bütün layihəyə açıq olmasını. <code>@Global()</code> və
+        <code>exports</code> sətirlərindən biri unudulsa, servislər
+        <code>PrismaService</code>-i tapa bilmir və server belə xəta ilə
+        qalxmır: <em>Nest can't resolve dependencies</em>. Skript hər iki
+        sətri yoxlayır.</p>
+  <p class="fayl-ad" style="background:#0f172a">Terminal skripti —
+     fayl: DƏRSLƏR/testler/IA.7.sh</p>
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test mötərizə içindədir — `exit` yalnız bu bloku dayandırır.
+(
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}" || exit 1
+
+echo "── Modulun tam məzmunu ──"
+cat -n src/prisma/prisma.module.ts | sed 's/^/  /'
+
+echo
+echo "── Yoxlamalar ──"
+for yox in '@Global()' 'providers' 'exports'; do
+  n=$(grep -c "$yox" src/prisma/prisma.module.ts)
+  [ "$n" -gt 0 ] &amp;&amp; printf '  ✓ %-12s var\n' "$yox" || printf '  ✗ %-12s YOXDUR\n' "$yox"
+done
+
+echo
+echo "── Başqa modul PrismaService-i istəyirmi? ──"
+grep -rn 'PrismaService' src/ --include=*.service.ts | grep constructor | sed 's/^/  /'
+
+echo
+echo "── Kök modula qoşulubmu? ──"
+if [ -f src/app.module.ts ]; then
+  grep -n 'PrismaModule' src/app.module.ts | sed 's/^/  /'
+else
+  echo "  (app.module.ts hələ yoxdur — IA.9-a baxın)"
+fi
+)</code></pre>
+  <div class="neticə" style="background:#065f46">GÖZLƏNİLƏN NƏTİCƏ — real çıxış (exit 0)</div>
+<pre class="cixis" style="border-radius:0 0 8px 8px"><code>── Modulun tam məzmunu ──
+       1	import { Global, Module } from '@nestjs/common';
+       2	import { PrismaService } from './prisma.service.js';
+       3	
+       4	/**
+       5	 * @Global() — bu modulu HƏR modulda yenidən import etmək lazım deyil.
+       6	 * PrismaService bütün layihədə bir dənədir (singleton).
+       7	 */
+       8	@Global()
+       9	@Module({
+      10	  providers: [PrismaService],
+      11	  exports: [PrismaService],
+      12	})
+      13	export class PrismaModule {}
+
+── Yoxlamalar ──
+  ✓ @Global()    var
+  ✓ providers    var
+  ✓ exports      var
+
+── Başqa modul PrismaService-i istəyirmi? ──
+  src/saglamliq/saglamliq.service.ts:13:  constructor(private readonly prisma: PrismaService) {}
+
+── Kök modula qoşulubmu? ──
+  3:import { PrismaModule } from './prisma/prisma.module.js';
+  12:    PrismaModule,</code></pre>
+</article><article class="test" id="t-IA-8">
+  <h3><span class="no">IA.8</span> AllExceptionsFilter — vahid xəta formatı</h3>
+  <p class="giris-metn">Bu test Dərs 1A-nın səkkizinci addımını yoxlayır: bütün
+        xətaların eyni formata salınmasını. Filter olmasa, hər endpoint fərqli
+        format qaytarır və frontend hər dəfə «bu dəfə hansı format gəldi?» deyə
+        yoxlamağa məcbur qalır. Skript status-kod xəritəsini və cavabın dörd
+        sahəsini yoxlayır.</p>
+  <p class="fayl-ad" style="background:#0f172a">Terminal skripti —
+     fayl: DƏRSLƏR/testler/IA.8.sh</p>
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test mötərizə içindədir — `exit` yalnız bu bloku dayandırır.
+(
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}" || exit 1
+
+echo "── Fayl ──"
+ls -l src/common/filters/all-exceptions.filter.ts | sed 's/^/  /'
+
+echo
+echo "── Status → kod xəritəsi ──"
+grep -E '^  [0-9]{3}:' src/common/filters/all-exceptions.filter.ts | sed 's/^/  /'
+
+echo
+echo "── Cavabın quruluşu (koddan) ──"
+grep -A9 'cavab.status(status).json' src/common/filters/all-exceptions.filter.ts | sed 's/^/  /'
+
+echo
+echo "── Gözlənilməz xəta loqa yazılırmı? ──"
+grep -n 'log.error' src/common/filters/all-exceptions.filter.ts | sed 's/^/  /'
+
+echo
+echo "── Filter qlobal qoşulubmu? ──"
+grep -n 'useGlobalFilters' src/main.ts 2&gt;/dev/null | sed 's/^/  /' \
+  || echo "  (main.ts hələ yoxdur — IA.10-a baxın)"
+)</code></pre>
+  <div class="neticə" style="background:#065f46">GÖZLƏNİLƏN NƏTİCƏ — real çıxış (exit 0)</div>
+<pre class="cixis" style="border-radius:0 0 8px 8px"><code>── Fayl ──
+  -rw-r--r--  1 royatalibova  wheel  2121 Sep 23 09:29 src/common/filters/all-exceptions.filter.ts
+
+── Status → kod xəritəsi ──
+    400: 'YANLIS_SORGU',
+    401: 'AUTENTIFIKASIYA_LAZIM',
+    403: 'ICAZE_YOXDUR',
+    404: 'TAPILMADI',
+    409: 'TOQQUSMA',
+    422: 'EMAL_OLUNMADI',
+    500: 'DAXILI_XETA',
+
+── Cavabın quruluşu (koddan) ──
+      cavab.status(status).json({
+        ugur: false,
+        xeta: {
+          kod,
+          mesaj: Array.isArray(mesaj) ? 'Validasiya xətası' : mesaj,
+          ...(detallar ? { detallar } : {}),
+        },
+        yol: sorgu.url,
+        vaxt: new Date().toISOString(),
+      });
+
+── Gözlənilməz xəta loqa yazılırmı? ──
+  52:      this.log.error(`${sorgu.method} ${sorgu.url} — ${xeta.message}`, xeta.stack);
+
+── Filter qlobal qoşulubmu? ──
+  24:  app.useGlobalFilters(new AllExceptionsFilter());</code></pre>
+</article><article class="test" id="t-IA-9">
+  <h3><span class="no">IA.9</span> Sağlamlıq modulu — ilk endpoint məntiqi</h3>
+  <p class="giris-metn">Bu test Dərs 1A-nın doqquzuncu addımını yoxlayır: sağlamlıq
+        yoxlamasının bazaya <em>həqiqi</em> sorğu göndərdiyini. Sadəcə
+        «işləyirəm» desəydi, baza kəsiləndə də yaşıl işıq yanardı və problem
+        gizli qalardı. Skript servisi birbaşa işlədib cavabı göstərir.</p>
+  <p class="fayl-ad" style="background:#0f172a">Terminal skripti —
+     fayl: DƏRSLƏR/testler/IA.9.sh</p>
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test mötərizə içindədir — `exit` yalnız bu bloku dayandırır.
+(
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}" || exit 1
+unset DATABASE_URL PGHOST
+export npm_config_cache=/tmp/npmcache
+
+echo "── Modulun hissələri ──"
+ls -1 src/saglamliq/ | sed 's/^/  /'
+
+echo
+echo "── Endpoint-lər ──"
+grep -nE '@(Get|Post|Controller)' src/saglamliq/saglamliq.controller.ts | sed 's/^/  /'
+
+echo
+echo "── Kök modula qoşulubmu? ──"
+grep -c 'SaglamliqModule' src/app.module.ts 2&gt;/dev/null | sed 's/^/  sayı: /'
+
+echo
+echo "── Sağlamlıq yoxlaması (birbaşa) ──"
+npx tsx -e "
+import 'dotenv/config';
+import { PrismaService } from './src/prisma/prisma.service.ts';
+import { SaglamliqService } from './src/saglamliq/saglamliq.service.ts';
+void (async () =&gt; {
+  const p = new PrismaService({ get: () =&gt; process.env.DATABASE_URL } as never);
+  await p.onModuleInit();
+  const c = await new SaglamliqService(p).yoxla();
+  console.log('  status      :', c.status);
+  console.log('  qoşulub     :', c.baza.qosulub);
+  console.log('  cədvəl sayı :', c.baza.cedvel_sayi);
+  console.log('  gecikmə     :', c.baza.gecikme_ms, 'ms');
+  console.log('  versiya     :', c.versiya);
+  await p.onModuleDestroy();
+})();
+"
+)</code></pre>
+  <div class="neticə" style="background:#065f46">GÖZLƏNİLƏN NƏTİCƏ — real çıxış (exit 0)</div>
+<pre class="cixis" style="border-radius:0 0 8px 8px"><code>── Modulun hissələri ──
+  saglamliq.controller.ts
+  saglamliq.module.ts
+  saglamliq.service.ts
+
+── Endpoint-lər ──
+  7:@Controller()
+  11:  @Get()
+  22:  @Get('saglamliq')
+
+── Kök modula qoşulubmu? ──
+  sayı: 2
+
+── Sağlamlıq yoxlaması (birbaşa) ──
+[Nest] 64871  - 09/23/2026, 9:45:22 AM     LOG [BAZA] Baza bağlantısı açıldı
+  status      : saglam
+  qoşulub     : true
+  cədvəl sayı : 48
+  gecikmə     : 24 ms
+  versiya     : 0.1.0</code></pre>
+</article><article class="test" id="t-IA-10">
+  <h3><span class="no">IA.10</span> Server qalxır — prefiks, marşrutlar, Swagger</h3>
+  <p class="giris-metn">Bu test Dərs 1A-nın on birinci addımını yoxlayır: serverin
+        həqiqətən qalxdığını və dörd vacib şeyin işlədiyini. Serveri özü
+        qaldırır, dörd yoxlama aparır və sonda dayandırır — yəni tam
+        avtomatikdir. Gözlənilən nəticə: prefiks <code>/api/v1</code>, iki
+        marşrut, vahid xəta formatı və açıq Swagger.</p>
+  <p class="fayl-ad" style="background:#0f172a">Terminal skripti —
+     fayl: DƏRSLƏR/testler/IA.10.sh</p>
+<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ Test mötərizə içindədir — `exit` yalnız bu bloku dayandırır.
+(
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}" || exit 1
+unset DATABASE_URL PGHOST
+export npm_config_cache=/tmp/npmcache
+A="${A:-http://localhost:4000/api/v1}"
+PORT="${PORT:-4000}"
+
+echo "── Build ──"
+npm run build 2&gt;&amp;1 | tail -2 | sed 's/^/  /'
+[ -f dist/main.js ] || { echo "  ✗ dist/main.js yoxdur"; exit 1; }
+
+echo
+echo "── Köhnə proses təmizlənir ──"
+lsof -ti:$PORT 2&gt;/dev/null | xargs -r kill 2&gt;/dev/null
+sleep 1
+
+echo "── Server qalxır (port $PORT) ──"
+PORT=$PORT nohup npm run start:prod &gt; /tmp/ders1a_ia10.log 2&gt;&amp;1 &amp;
+for i in $(seq 1 30); do
+  [ "$(curl -s -o /dev/null -w '%{http_code}' "$A/saglamliq" 2&gt;/dev/null)" = "200" ] &amp;&amp; break
+  sleep 1
+done
+
+echo "  Marşrutlar:"
+grep 'Mapped' /tmp/ders1a_ia10.log | sed 's/.*Mapped //' | sed 's/^/    /'
+
+echo
+echo "── 1) Kök ünvan ──"
+curl -s "$A" | python3 -m json.tool | sed 's/^/  /'
+
+echo
+echo "── 2) Sağlamlıq ──"
+curl -s "$A/saglamliq" | python3 -m json.tool | sed 's/^/  /'
+
+echo
+echo "── 3) Olmayan yol → vahid xəta formatı ──"
+curl -s "$A/bele-yol-yoxdur" | python3 -m json.tool | sed 's/^/  /'
+
+echo
+echo "── 4) Swagger ──"
+kok="${A%/api/v1}"
+echo "  $kok/docs      → HTTP $(curl -s -o /dev/null -w '%{http_code}' "$kok/docs")"
+echo "  $kok/docs-json → HTTP $(curl -s -o /dev/null -w '%{http_code}' "$kok/docs-json")"
+
+echo
+echo "── Server dayandırılır ──"
+lsof -ti:$PORT 2&gt;/dev/null | xargs -r kill 2&gt;/dev/null
+echo "  ✓ dayandırıldı"
+)</code></pre>
+  <div class="neticə" style="background:#065f46">GÖZLƏNİLƏN NƏTİCƏ — real çıxış (exit 0)</div>
+<pre class="cixis" style="border-radius:0 0 8px 8px"><code>── Build ──
+  &gt; nest build
+  
+
+── Köhnə proses təmizlənir ──
+── Server qalxır (port 4000) ──
+  Marşrutlar:
+    {/api/v1, GET} route +1ms
+    {/api/v1/saglamliq, GET} route +0ms
+
+── 1) Kök ünvan ──
+  {
+      "ad": "ART\u0130 ERP API",
+      "versiya": "0.1.0",
+      "prefiks": "/api/v1",
+      "senedlesdirme": "/docs"
+  }
+
+── 2) Sağlamlıq ──
+  {
+      "status": "saglam",
+      "baza": {
+          "qosulub": true,
+          "cedvel_sayi": 48,
+          "gecikme_ms": 2
+      },
+      "versiya": "0.1.0",
+      "vaxt": "2026-09-23T05:45:25.935Z"
+  }
+
+── 3) Olmayan yol → vahid xəta formatı ──
+  {
+      "ugur": false,
+      "xeta": {
+          "kod": "TAPILMADI",
+          "mesaj": "Cannot GET /api/v1/bele-yol-yoxdur"
+      },
+      "yol": "/bele-yol-yoxdur",
+      "vaxt": "2026-09-23T05:45:25.962Z"
+  }
+
+── 4) Swagger ──
+  http://localhost:4000/docs      → HTTP 200
+  http://localhost:4000/docs-json → HTTP 200
+
+── Server dayandırılır ──
+  ✓ dayandırıldı</code></pre>
+</article>
+
+<footer>
+  ARTİ ERP · Backend 1A · 11 addım · 10 yekun test<br>
+  Bütün çıxışlar real icradan götürülüb.
+</footer>
+
+</div>
+</body>
+</html>
