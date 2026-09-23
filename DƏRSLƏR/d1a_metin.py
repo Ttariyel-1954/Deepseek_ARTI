@@ -618,6 +618,22 @@ const url = 'postgresql://arti_user:arti_secret_2025@localhost:5432/arti_baza';
         c="""cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 
+# ⚠️ ŞƏRT: bu addım bazaya qoşulur — .env faylı olmalıdır (ADDIM 4)
+if [ ! -f .env ]; then
+  echo "╔══════════════════════════════════════════════════════════════╗"
+  echo "║  ⚠️  .env FAYLI YOXDUR                                       ║"
+  echo "║  Bu addım bazaya qoşulur, ona görə DATABASE_URL lazımdır.    ║"
+  echo "║                                                              ║"
+  echo "║  HƏLL:                                                       ║"
+  echo "║   1) ADDIM 3-ün B blokunu işlədin (tsconfig faylları)        ║"
+  echo "║   2) ADDIM 4-ün B bloklarını işlədin (.env)                  ║"
+  echo "║   3) Sonra bu addıma qayıdın                                 ║"
+  echo "╚══════════════════════════════════════════════════════════════╝"
+  exit 1
+fi
+echo "  ✓ .env yerindədir (DATABASE_URL: $(grep -c '^DATABASE_URL=' .env) sətir)"
+
+
 echo "═══ 1) BAZANI OXUYURUQ — sxem yaranır ═══"
 echo "  npx prisma db pull → bazadaki cədvəlləri sxemaya yazır"
 echo "  (bu əmr bazanı YALNIZ OXUYUR — heç nə dəyişmir)"
@@ -746,6 +762,22 @@ src/prisma/prisma.service.ts:3:10 - error TS2307: Cannot find module
         fayllar=["src/prisma/prisma.service.ts"],
         c="""cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
+
+# ⚠️ ŞƏRT: bu addım bazaya qoşulur — .env faylı olmalıdır (ADDIM 4)
+if [ ! -f .env ]; then
+  echo "╔══════════════════════════════════════════════════════════════╗"
+  echo "║  ⚠️  .env FAYLI YOXDUR                                       ║"
+  echo "║  Bu addım bazaya qoşulur, ona görə DATABASE_URL lazımdır.    ║"
+  echo "║                                                              ║"
+  echo "║  HƏLL:                                                       ║"
+  echo "║   1) ADDIM 3-ün B blokunu işlədin (tsconfig faylları)        ║"
+  echo "║   2) ADDIM 4-ün B bloklarını işlədin (.env)                  ║"
+  echo "║   3) Sonra bu addıma qayıdın                                 ║"
+  echo "╚══════════════════════════════════════════════════════════════╝"
+  exit 1
+fi
+echo "  ✓ .env yerindədir (DATABASE_URL: $(grep -c '^DATABASE_URL=' .env) sətir)"
+
 export npm_config_cache=/tmp/npmcache
 
 echo "── Fayl yerindədirmi? ──"
@@ -1030,6 +1062,22 @@ $ curl -s localhost:4000/api/v1/struktur/merkezler?limit=500
         ],
         c="""cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
+
+# ⚠️ ŞƏRT: bu addım bazaya qoşulur — .env faylı olmalıdır (ADDIM 4)
+if [ ! -f .env ]; then
+  echo "╔══════════════════════════════════════════════════════════════╗"
+  echo "║  ⚠️  .env FAYLI YOXDUR                                       ║"
+  echo "║  Bu addım bazaya qoşulur, ona görə DATABASE_URL lazımdır.    ║"
+  echo "║                                                              ║"
+  echo "║  HƏLL:                                                       ║"
+  echo "║   1) ADDIM 3-ün B blokunu işlədin (tsconfig faylları)        ║"
+  echo "║   2) ADDIM 4-ün B bloklarını işlədin (.env)                  ║"
+  echo "║   3) Sonra bu addıma qayıdın                                 ║"
+  echo "╚══════════════════════════════════════════════════════════════╝"
+  exit 1
+fi
+echo "  ✓ .env yerindədir (DATABASE_URL: $(grep -c '^DATABASE_URL=' .env) sətir)"
+
 export npm_config_cache=/tmp/npmcache
 
 echo "── Modulun hissələri ──"
@@ -1229,6 +1277,22 @@ Error: Cannot find module '/.../dist/app.module.js'
         fayllar=["src/main.ts"],
         c="""cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
+
+# ⚠️ ŞƏRT: bu addım bazaya qoşulur — .env faylı olmalıdır (ADDIM 4)
+if [ ! -f .env ]; then
+  echo "╔══════════════════════════════════════════════════════════════╗"
+  echo "║  ⚠️  .env FAYLI YOXDUR                                       ║"
+  echo "║  Bu addım bazaya qoşulur, ona görə DATABASE_URL lazımdır.    ║"
+  echo "║                                                              ║"
+  echo "║  HƏLL:                                                       ║"
+  echo "║   1) ADDIM 3-ün B blokunu işlədin (tsconfig faylları)        ║"
+  echo "║   2) ADDIM 4-ün B bloklarını işlədin (.env)                  ║"
+  echo "║   3) Sonra bu addıma qayıdın                                 ║"
+  echo "╚══════════════════════════════════════════════════════════════╝"
+  exit 1
+fi
+echo "  ✓ .env yerindədir (DATABASE_URL: $(grep -c '^DATABASE_URL=' .env) sətir)"
+
 export npm_config_cache=/tmp/npmcache
 
 echo "── main.ts yerindədirmi? ──"

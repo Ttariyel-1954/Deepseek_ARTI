@@ -297,7 +297,7 @@ def addim_html(a, kes):
   <div class="kod-blok">
     <div class="kod-basliq"><span>Terminal əmrləri</span>
       <button class="kopyala">KOPYALA</button></div>
-    <pre class="komanda"><code>%(c)s</code></pre>
+    <pre class="komanda"><code>%(cg)s</code></pre>
   </div>
   <div class="olmaz"><h4>⚠️ Bu kod olmasa nə olardı</h4><pre><code>%(olmaz)s</code></pre>
     <p>%(c_izah)s</p></div>
@@ -319,7 +319,10 @@ def addim_html(a, kes):
 %(suallar)s</div>
 </section>""" % dict(
         no=a["no"], ad=e(a["ad"]), a=a["a"], anlayis=anlayis, fayllar=fayllar,
-        kod_izah=a["kod_izah"], c=e(a["c"].strip()), olmaz=e(a["olmaz"]),
+        kod_izah=a["kod_izah"],
+        c=e(a["c"].strip()),
+        cg=e("(\n" + a["c"].strip() + "\n)"),
+        olmaz=e(a["olmaz"]),
         c_izah=a["c_izah"], cixis=e(cixis), d_izah=a["d_izah"], suallar=suallar)
 
 
