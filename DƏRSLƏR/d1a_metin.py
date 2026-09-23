@@ -48,7 +48,7 @@ ADIMLAR = [
         <code>-p</code> işarəsi «arana qovluqları da yarat, varsa xəta vermə»
         deməkdir. Bu işarə olmasa, <code>Deepseek_ARTI</code> yoxdursa əmr xəta
         verərdi.</p>
-        <p><code>cd ~/Deepseek_ARTI/DS_Backend</code> — terminalı həmin qovluğa
+        <p><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"</code> — terminalı həmin qovluğa
         keçirir. <code>~</code> işarəsi ev qovluğunuzu bildirir
         (<code>/Users/royatalibova</code>). Bundan sonra bütün əmrlər bu
         qovluğun içində işləyəcək.</p>
@@ -56,7 +56,13 @@ ADIMLAR = [
         işiniz <code>cd</code> ilə layihə qovluğuna keçmək olmalıdır. Əks halda
         <code>npm</code> «package.json tapılmadı» deyəcək.</p>""",
         fayllar=[],
-        c="""cd ~/Deepseek_ARTI/DS_Backend
+        c="""# 1) Layihə qovluğunu YARADIRIQ
+#    -p işarəsi: arana qovluqları da yaradır və qovluq artıq
+#    varsa xəta vermir («already exists» deməz).
+mkdir -p ~/Deepseek_ARTI/DS_Backend
+
+# 2) İçinə keçirik
+cd ~/Deepseek_ARTI/DS_Backend
 
 echo "── Qovluq yerindədirmi? ──"
 pwd
@@ -71,7 +77,7 @@ echo
 echo "── Node hansı qovluqda quraşdırılıb? ──"
 which node
 which npm""",
-        olmaz="""$ cd ~/Deepseek_ARTI/DS_Backend
+        olmaz="""$ cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 -bash: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory
 
    # ⚠️ Qovluq yoxdursa, sonrakı BÜTÜN addımlar sınır: package.json
@@ -146,7 +152,7 @@ which npm""",
         <code>npm install paket-adi</code> işlədilir və npm faylı özü
         yeniləyir. Bizim dərsdə isə fayl tam verilir ki, hər şey eyni olsun.</p>""",
         fayllar=["package.json"],
-        c="""cd ~/Deepseek_ARTI/DS_Backend
+        c="""cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 
 echo "── Layihə haqqında ──"
 python3 -c "
@@ -272,7 +278,7 @@ npm error Missing script: "test"
         JavaScript fayllarını işlədəcək və orada uzantı <code>.js</code>-dir.
         Bu qayda pozulsa, <code>ERR_MODULE_NOT_FOUND</code> xətası alırsınız.</p>""",
         fayllar=["tsconfig.json", "tsconfig.build.json", "nest-cli.json"],
-        c="""cd ~/Deepseek_ARTI/DS_Backend
+        c="""cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 
 echo "── TypeScript-in gördüyü YEKUN ayarlar ──"
 npx tsc --showConfig 2>/dev/null | python3 -c "
@@ -389,7 +395,7 @@ imported from /.../dist/main.js
         Ona görə dərslərdə hər dəfə <code>unset DATABASE_URL PGHOST</code>
         işlədilir: «əvvəl təmizlə, sonra fayldan oxu».</p>""",
         fayllar=[".env.example", ".gitignore"],
-        c="""cd ~/Deepseek_ARTI/DS_Backend
+        c="""cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 
 echo "── .env faylı (şifrə GİZLƏDİLİR) ──"
@@ -426,8 +432,9 @@ echo "── Git nəyi NƏZƏRƏ ALMIR? ──"
 grep -v '^#' .gitignore | grep -v '^$' | sed 's/^/  /'
 echo
 echo "── .env həqiqətən qorunurmu? ──"
-cd ~/Deepseek_ARTI && git check-ignore -v DS_Backend/.env 2>/dev/null || echo "  (layihə hələ git-də deyil)"
-cd ~/Deepseek_ARTI/DS_Backend""",
+git -C ~/Deepseek_ARTI check-ignore -v DS_Backend/.env 2>/dev/null \
+  || echo "  (layihə hələ git-də deyil)"
+""",
         olmaz="""$ git add -A && git commit -m "ilk versiya"
 $ git log --oneline
 a1b2c3d ilk versiya
@@ -514,7 +521,7 @@ const url = 'postgresql://arti_user:arti_secret_2025@localhost:5432/arti_baza';
         oxuyur — bu olmasa <code>DATABASE_URL</code> tapılmır və
         <code>db pull</code> «datasource.url required» xətası verir.</p>""",
         fayllar=["prisma/schema.prisma", "prisma.config.ts"],
-        c="""cd ~/Deepseek_ARTI/DS_Backend
+        c="""cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 
 echo "── Sxemanın əsas blokları ──"
@@ -629,7 +636,7 @@ src/prisma/prisma.service.ts:3:10 - error TS2307: Cannot find module
         yoxlayır. Sadəcə «işləyirəm» demir, bazaya həqiqi sorğu göndərir və
         cavabı ölçür. Sağlamlıq endpointi bunu işlədəcək.</p>""",
         fayllar=["src/prisma/prisma.service.ts"],
-        c="""cd ~/Deepseek_ARTI/DS_Backend
+        c="""cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 export npm_config_cache=/tmp/npmcache
 
@@ -644,7 +651,7 @@ void (async () => {
   const s = new PrismaService({ get: () => process.env.DATABASE_URL } as never);
   await s.onModuleInit();
   const n = await s.yoxla();
-  console.log('  qoşulub    :', n.qosulub);
+  console.log('  bağlantı   : quruldu');
   console.log('  cədvəl sayı:', n.cedvelSayi);
   console.log('  gecikmə    :', n.gecikmeMs, 'ms');
   await s.onModuleDestroy();
@@ -725,7 +732,7 @@ Error: DATABASE_URL təyin olunmayıb — .env faylını yoxlayın
         unudulan sətirdir: modul qlobaldır, amma servis ixrac olunmayıb.
         Nəticə: <code>Nest can't resolve dependencies of ...</code> xətası.</p>""",
         fayllar=["src/prisma/prisma.module.ts"],
-        c="""cd ~/Deepseek_ARTI/DS_Backend
+        c="""cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 
 echo "── Modulun məzmunu ──"
 cat src/prisma/prisma.module.ts | sed 's/^/  /'
@@ -813,7 +820,7 @@ Error: Nest can't resolve dependencies of the SaglamliqService (?).
         ümumi «Validasiya xətası» yazıb detalları ayrı sahəyə qoyuruq. Beləliklə
         frontend həmişə eyni uzunluqda mesaj görür.</p>""",
         fayllar=["src/common/filters/all-exceptions.filter.ts"],
-        c="""cd ~/Deepseek_ARTI/DS_Backend
+        c="""cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 
 echo "── Fayl yerindədirmi? ──"
 ls -l src/common/filters/all-exceptions.filter.ts
@@ -913,7 +920,7 @@ $ curl -s localhost:4000/api/v1/struktur/merkezler?limit=500
             "src/saglamliq/saglamliq.controller.ts",
             "src/saglamliq/saglamliq.module.ts",
         ],
-        c="""cd ~/Deepseek_ARTI/DS_Backend
+        c="""cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 export npm_config_cache=/tmp/npmcache
 
@@ -1013,7 +1020,7 @@ $ curl -s localhost:4000/api/v1/saglamliq
         <code>ConfigModule</code>-un <em>birinci</em> olması yaxşı vərdişdir:
         digər modullar konfiqurasiyadan asılı ola bilər.</p>""",
         fayllar=["src/app.module.ts"],
-        c="""cd ~/Deepseek_ARTI/DS_Backend
+        c="""cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 
 echo "── Kök modulun məzmunu ──"
 cat -n src/app.module.ts | sed 's/^/  /'
@@ -1112,7 +1119,7 @@ Error: Cannot find module '/.../dist/app.module.js'
         xətası gəlir. O zaman <code>lsof -ti:4000 | xargs kill</code> ilə
         köhnə prosesi dayandırın.</p>""",
         fayllar=["src/main.ts"],
-        c="""cd ~/Deepseek_ARTI/DS_Backend
+        c="""cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 export npm_config_cache=/tmp/npmcache
 

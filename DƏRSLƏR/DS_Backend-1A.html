@@ -219,7 +219,7 @@ footer { margin-top:3rem; padding-top:1.4rem; border-top:2px solid #e2e8f0;
         <code>-p</code> işarəsi «arana qovluqları da yarat, varsa xəta vermə»
         deməkdir. Bu işarə olmasa, <code>Deepseek_ARTI</code> yoxdursa əmr xəta
         verərdi.</p>
-        <p><code>cd ~/Deepseek_ARTI/DS_Backend</code> — terminalı həmin qovluğa
+        <p><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"</code> — terminalı həmin qovluğa
         keçirir. <code>~</code> işarəsi ev qovluğunuzu bildirir
         (<code>/Users/royatalibova</code>). Bundan sonra bütün əmrlər bu
         qovluğun içində işləyəcək.</p>
@@ -234,7 +234,13 @@ footer { margin-top:3rem; padding-top:1.4rem; border-top:2px solid #e2e8f0;
   <div class="kod-blok">
     <div class="kod-basliq"><span>Terminal əmrləri</span>
       <button class="kopyala">KOPYALA</button></div>
-    <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+    <pre class="komanda"><code># 1) Layihə qovluğunu YARADIRIQ
+#    -p işarəsi: arana qovluqları da yaradır və qovluq artıq
+#    varsa xəta vermir («already exists» deməz).
+mkdir -p ~/Deepseek_ARTI/DS_Backend
+
+# 2) İçinə keçirik
+cd ~/Deepseek_ARTI/DS_Backend
 
 echo "── Qovluq yerindədirmi? ──"
 pwd
@@ -250,7 +256,7 @@ echo "── Node hansı qovluqda quraşdırılıb? ──"
 which node
 which npm</code></pre>
   </div>
-  <div class="olmaz"><h4>⚠️ Bu kod olmasa nə olardı</h4><pre><code>$ cd ~/Deepseek_ARTI/DS_Backend
+  <div class="olmaz"><h4>⚠️ Bu kod olmasa nə olardı</h4><pre><code>$ cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 -bash: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory
 
    # ⚠️ Qovluq yoxdursa, sonrakı BÜTÜN addımlar sınır: package.json
@@ -276,26 +282,12 @@ which npm</code></pre>
     <div class="kod-basliq cixis-basliq">
       <span>ÇIXIŞ — real nəticə</span></div>
     <pre class="cixis"><code>── Qovluq yerindədirmi? ──
-/private/tmp/arti1a
+/Users/royatalibova/Deepseek_ARTI/DS_Backend
 
 ── İçində nə var? (hələ boşdur) ──
-total 848
-drwxr-xr-x   16 royatalibova  wheel     512 Sep 23 09:44 .
-drwxrwxrwt   38 root          wheel    1216 Sep 23 09:44 ..
--rw-r--r--    1 royatalibova  wheel     462 Sep 23 09:28 .env
--rw-r--r--    1 royatalibova  wheel     176 Sep 23 09:28 .env.example
--rw-r--r--    1 royatalibova  wheel      67 Sep 23 09:28 .gitignore
-drwxr-xr-x   12 royatalibova  wheel     384 Sep 23 09:44 dist
--rw-r--r--    1 royatalibova  wheel     171 Sep 23 09:28 nest-cli.json
-drwxr-xr-x  311 royatalibova  wheel    9952 Sep 23 09:28 node_modules
--rw-r--r--    1 royatalibova  wheel  234880 Sep 23 09:28 package-lock.json
--rw-r--r--    1 royatalibova  wheel    1409 Sep 23 09:26 package.json
-drwxr-xr-x    3 royatalibova  wheel      96 Sep 23 09:26 prisma
--rw-r--r--    1 royatalibova  wheel     233 Sep 23 09:29 prisma.config.ts
-drwxr-xr-x    8 royatalibova  wheel     256 Sep 23 09:29 src
--rw-r--r--    1 royatalibova  wheel     170 Sep 23 09:28 tsconfig.build.json
--rw-r--r--    1 royatalibova  wheel  161591 Sep 23 09:44 tsconfig.build.tsbuildinfo
--rw-r--r--    1 royatalibova  wheel     581 Sep 23 09:28 tsconfig.json
+total 0
+drwxr-xr-x  2 royatalibova  staff   64 Sep 23 10:33 .
+drwxr-xr-x  9 royatalibova  staff  288 Sep 23 10:33 ..
 
 ── Alətlərin versiyaları ──
   node: v26.7.0
@@ -303,8 +295,7 @@ drwxr-xr-x    8 royatalibova  wheel     256 Sep 23 09:29 src
 
 ── Node hansı qovluqda quraşdırılıb? ──
 /opt/homebrew/bin/node
-/opt/homebrew/bin/npm
-bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+/opt/homebrew/bin/npm</code></pre>
   </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>boş bir qovluq</strong> və işləyən
         Node.js. Bu, hələ layihə deyil — sadəcə layihənin yeri. Növbəti addımda
@@ -422,7 +413,7 @@ EOF</code></pre>
   <div class="kod-blok">
     <div class="kod-basliq"><span>Terminal əmrləri</span>
       <button class="kopyala">KOPYALA</button></div>
-    <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+    <pre class="komanda"><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 
 echo "── Layihə haqqında ──"
 python3 -c "
@@ -509,8 +500,7 @@ npm error Missing script: "test"
   İNKİŞAF üçün (devDependencies): 12
 
 ── Quraşdırıldımı? ──
-  ✓ node_modules var (306 paket)
-bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+  ✓ node_modules var (306 paket)</code></pre>
   </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: layihə artıq <strong>həqiqi Node.js
         layihəsidir</strong>. <code>npm</code> onu tanıyır, əmrləri işlədə bilir
@@ -636,7 +626,7 @@ EOF</code></pre>
   <div class="kod-blok">
     <div class="kod-basliq"><span>Terminal əmrləri</span>
       <button class="kopyala">KOPYALA</button></div>
-    <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+    <pre class="komanda"><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 
 echo "── TypeScript-in gördüyü YEKUN ayarlar ──"
 npx tsc --showConfig 2&gt;/dev/null | python3 -c "
@@ -720,8 +710,7 @@ imported from /.../dist/main.js
   collection     : @nestjs/schematics
 
 ── Yığım nəyi KƏNARDA qoyur? ──
-  exclude: ['node_modules', 'test', 'dist', '**/*spec.ts']
-bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+  exclude: ['node_modules', 'test', 'dist', '**/*spec.ts']</code></pre>
   </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: layihə artıq <strong>TypeScript
         layihəsidir</strong>. Kompilyator decorator-ları tanıyır, sərt tip
@@ -806,7 +795,7 @@ EOF</code></pre>
   <div class="kod-blok">
     <div class="kod-basliq"><span>Terminal əmrləri</span>
       <button class="kopyala">KOPYALA</button></div>
-    <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+    <pre class="komanda"><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 
 echo "── .env faylı (şifrə GİZLƏDİLİR) ──"
@@ -843,8 +832,7 @@ echo "── Git nəyi NƏZƏRƏ ALMIR? ──"
 grep -v '^#' .gitignore | grep -v '^$' | sed 's/^/  /'
 echo
 echo "── .env həqiqətən qorunurmu? ──"
-cd ~/Deepseek_ARTI &amp;&amp; git check-ignore -v DS_Backend/.env 2&gt;/dev/null || echo "  (layihə hələ git-də deyil)"
-cd ~/Deepseek_ARTI/DS_Backend</code></pre>
+git -C ~/Deepseek_ARTI check-ignore -v DS_Backend/.env 2&gt;/dev/null   || echo "  (layihə hələ git-də deyil)"</code></pre>
   </div>
   <div class="olmaz"><h4>⚠️ Bu kod olmasa nə olardı</h4><pre><code>$ git add -A &amp;&amp; git commit -m "ilk versiya"
 $ git log --oneline
@@ -899,9 +887,7 @@ const url = 'postgresql://arti_user:arti_secret_2025@localhost:5432/arti_baza';
   *.log
 
 ── .env həqiqətən qorunurmu? ──
-.gitignore:6:.env	DS_Backend/.env
-bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory
-bash: line 38: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+.gitignore:6:.env	DS_Backend/.env</code></pre>
   </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>şifrələr koddan ayrılıb</strong>
         və git-dən qorunur. Bu andan etibarən kod yaza bilərik — heç bir yerdə
@@ -1725,7 +1711,7 @@ EOF</code></pre>
   <div class="kod-blok">
     <div class="kod-basliq"><span>Terminal əmrləri</span>
       <button class="kopyala">KOPYALA</button></div>
-    <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+    <pre class="komanda"><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 
 echo "── Sxemanın əsas blokları ──"
@@ -1826,8 +1812,7 @@ src/prisma/prisma.service.ts:3:10 - error TS2307: Cannot find module
 
 ── Yaradılan klient ──
   src/generated/prisma: 7 fayl
-  ✓ client.ts var
-bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+  ✓ client.ts var</code></pre>
   </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>baza artıq TypeScript üçün
         tanışdır</strong>. 48 cədvəl, 12 sxem tiplər kimi mövcuddur. Hələ
@@ -1949,7 +1934,7 @@ EOF</code></pre>
   <div class="kod-blok">
     <div class="kod-basliq"><span>Terminal əmrləri</span>
       <button class="kopyala">KOPYALA</button></div>
-    <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+    <pre class="komanda"><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 export npm_config_cache=/tmp/npmcache
 
@@ -1964,7 +1949,7 @@ void (async () =&gt; {
   const s = new PrismaService({ get: () =&gt; process.env.DATABASE_URL } as never);
   await s.onModuleInit();
   const n = await s.yoxla();
-  console.log('  qoşulub    :', n.qosulub);
+  console.log('  bağlantı   : quruldu');
   console.log('  cədvəl sayı:', n.cedvelSayi);
   console.log('  gecikmə    :', n.gecikmeMs, 'ms');
   await s.onModuleDestroy();
@@ -2010,12 +1995,11 @@ Error: DATABASE_URL təyin olunmayıb — .env faylını yoxlayın
 -rw-r--r--  1 royatalibova  wheel  1547 Sep 23 09:29 src/prisma/prisma.service.ts
 
 ── Baza bağlantısını BİRBAŞA yoxlayaq ──
-[Nest] 64580  - 09/23/2026, 9:45:16 AM     LOG [BAZA] Baza bağlantısı açıldı
-  qoşulub    : undefined
+[Nest] 69307  - 09/23/2026, 10:33:17 AM     LOG [BAZA] Baza bağlantısı açıldı
+  bağlantı   : quruldu
   cədvəl sayı: 48
-  gecikmə    : 23 ms
-  bağlantı bağlandı
-bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+  gecikmə    : 24 ms
+  bağlantı bağlandı</code></pre>
   </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>TypeScript kodu bazaya
         qoşula bilir</strong>. Bu, çox vacib mərhələdir — artıq «kod» ilə
@@ -2087,7 +2071,7 @@ EOF</code></pre>
   <div class="kod-blok">
     <div class="kod-basliq"><span>Terminal əmrləri</span>
       <button class="kopyala">KOPYALA</button></div>
-    <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+    <pre class="komanda"><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 
 echo "── Modulun məzmunu ──"
 cat src/prisma/prisma.module.ts | sed 's/^/  /'
@@ -2150,8 +2134,7 @@ Error: Nest can't resolve dependencies of the SaglamliqService (?).
 
 ── Kök modul bu modulu qoşubmu? ──
   3:import { PrismaModule } from './prisma/prisma.module.js';
-  12:    PrismaModule,
-bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+  12:    PrismaModule,</code></pre>
   </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>baza bağlantısı bütün layihəyə
         açıqdır</strong>. İstənilən modul <code>PrismaService</code>-i
@@ -2287,7 +2270,7 @@ EOF</code></pre>
   <div class="kod-blok">
     <div class="kod-basliq"><span>Terminal əmrləri</span>
       <button class="kopyala">KOPYALA</button></div>
-    <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+    <pre class="komanda"><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 
 echo "── Fayl yerindədirmi? ──"
 ls -l src/common/filters/all-exceptions.filter.ts
@@ -2360,8 +2343,7 @@ $ curl -s localhost:4000/api/v1/struktur/merkezler?limit=500
         vaxt: new Date().toISOString(),
 
 ── Gözlənilməz xəta loqa yazılırmı? ──
-  52:      this.log.error(`${sorgu.method} ${sorgu.url} — ${xeta.message}`, xeta.stack);
-bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+  52:      this.log.error(`${sorgu.method} ${sorgu.url} — ${xeta.message}`, xeta.stack);</code></pre>
   </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>bütün xətalar üçün vahid format
         hazırdır</strong>. Hələ heç bir endpoint yoxdur, amma hansı xəta
@@ -2512,7 +2494,7 @@ EOF</code></pre>
   <div class="kod-blok">
     <div class="kod-basliq"><span>Terminal əmrləri</span>
       <button class="kopyala">KOPYALA</button></div>
-    <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+    <pre class="komanda"><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 export npm_config_cache=/tmp/npmcache
 
@@ -2578,18 +2560,17 @@ $ curl -s localhost:4000/api/v1/saglamliq
   22:  @Get('saglamliq')
 
 ── Sağlamlıq yoxlamasını BİRBAŞA sınayaq ──
-[Nest] 64615  - 09/23/2026, 9:45:16 AM     LOG [BAZA] Baza bağlantısı açıldı
+[Nest] 69342  - 09/23/2026, 10:33:18 AM     LOG [BAZA] Baza bağlantısı açıldı
   {
     "status": "saglam",
     "baza": {
       "qosulub": true,
       "cedvel_sayi": 48,
-      "gecikme_ms": 22
+      "gecikme_ms": 24
     },
     "versiya": "0.1.0",
-    "vaxt": "2026-09-23T05:45:16.738Z"
-  }
-bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+    "vaxt": "2026-09-23T06:33:18.325Z"
+  }</code></pre>
   </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>işləyən servis məntiqi var</strong>,
         amma hələ onu HTTP-yə bağlamamışıq. Yəni kod hazırdır, qapı isə
@@ -2670,7 +2651,7 @@ EOF</code></pre>
   <div class="kod-blok">
     <div class="kod-basliq"><span>Terminal əmrləri</span>
       <button class="kopyala">KOPYALA</button></div>
-    <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+    <pre class="komanda"><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 
 echo "── Kök modulun məzmunu ──"
 cat -n src/app.module.ts | sed 's/^/  /'
@@ -2739,8 +2720,7 @@ Error: Cannot find module '/.../dist/app.module.js'
   10:    ConfigModule.forRoot({ isGlobal: true }),
 
 ── Saglamliq modulu qoşulubmu? ──
-  sayı: 2
-bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+  sayı: 2</code></pre>
   </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>bütün hissələr bir-birinə
         bağlandı</strong>. Baza bağlantısı, xəta filtri və sağlamlıq modulu
@@ -2861,7 +2841,7 @@ EOF</code></pre>
   <div class="kod-blok">
     <div class="kod-basliq"><span>Terminal əmrləri</span>
       <button class="kopyala">KOPYALA</button></div>
-    <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+    <pre class="komanda"><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 export npm_config_cache=/tmp/npmcache
 
@@ -2956,10 +2936,10 @@ Error: listen EADDRINUSE: address already in use :::4000
   port 4000 boşdur: bəli
 
 ── Server qalxır (arxa planda) ──
-  [Nest] 64666  - 09/23/2026, 9:45:19 AM     LOG [RouterExplorer] Mapped {/api/v1, GET} route +1ms
-  [Nest] 64666  - 09/23/2026, 9:45:19 AM     LOG [RouterExplorer] Mapped {/api/v1/saglamliq, GET} route +0ms
-  [Nest] 64666  - 09/23/2026, 9:45:19 AM     LOG [BAŞLANGIC] API hazırdır → http://localhost:4000/api/v1
-  [Nest] 64666  - 09/23/2026, 9:45:19 AM     LOG [BAŞLANGIC] Sənədləşdirmə → http://localhost:4000/docs
+  [Nest] 69398  - 09/23/2026, 10:33:21 AM     LOG [RouterExplorer] Mapped {/api/v1, GET} route +1ms
+  [Nest] 69398  - 09/23/2026, 10:33:21 AM     LOG [RouterExplorer] Mapped {/api/v1/saglamliq, GET} route +0ms
+  [Nest] 69398  - 09/23/2026, 10:33:21 AM     LOG [BAŞLANGIC] API hazırdır → http://localhost:4000/api/v1
+  [Nest] 69398  - 09/23/2026, 10:33:21 AM     LOG [BAŞLANGIC] Sənədləşdirmə → http://localhost:4000/docs
 
 ── 1) Kök ünvan ──
   {
@@ -2975,10 +2955,10 @@ Error: listen EADDRINUSE: address already in use :::4000
       "baza": {
           "qosulub": true,
           "cedvel_sayi": 48,
-          "gecikme_ms": 1
+          "gecikme_ms": 3
       },
       "versiya": "0.1.0",
-      "vaxt": "2026-09-23T05:45:20.279Z"
+      "vaxt": "2026-09-23T06:33:21.866Z"
   }
 
 ── 3) Olmayan yol → vahid xəta formatı ──
@@ -2989,15 +2969,14 @@ Error: listen EADDRINUSE: address already in use :::4000
           "mesaj": "Cannot GET /api/v1/bele-yol-yoxdur"
       },
       "yol": "/bele-yol-yoxdur",
-      "vaxt": "2026-09-23T05:45:20.306Z"
+      "vaxt": "2026-09-23T06:33:21.891Z"
   }
 
 ── 4) Swagger sənədləşdirmə ──
   /docs → HTTP 200
 
 ── Serveri dayandırırıq ──
-  ✓ dayandırıldı
-bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+  ✓ dayandırıldı</code></pre>
   </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p><strong>Təbriklər — 1A dərsi tamamlandı!</strong> Sistemin
         vəziyyəti:</p>
@@ -3441,7 +3420,7 @@ void (async () =&gt; {
   const s = new PrismaService({ get: () =&gt; process.env.DATABASE_URL } as never);
   await s.onModuleInit();
   const n = await s.yoxla();
-  console.log('  qoşulub     :', n.qosulub);
+  console.log('  bağlantı    : quruldu');
   console.log('  cədvəl sayı :', n.cedvelSayi);
   console.log('  gecikmə     :', n.gecikmeMs, 'ms');
   await s.onModuleDestroy();
@@ -3459,10 +3438,10 @@ grep -nE 'PrismaPg|adapter|connectionString' src/prisma/prisma.service.ts | sed 
   -rw-r--r--  1 royatalibova  wheel  1547 Sep 23 09:29 src/prisma/prisma.service.ts
 
 ── Baza bağlantısını BİRBAŞA sınayırıq ──
-[Nest] 64821  - 09/23/2026, 9:45:21 AM     LOG [BAZA] Baza bağlantısı açıldı
-  qoşulub     : undefined
+[Nest] 69551  - 09/23/2026, 10:33:23 AM     LOG [BAZA] Baza bağlantısı açıldı
+  bağlantı    : quruldu
   cədvəl sayı : 48
-  gecikmə     : 24 ms
+  gecikmə     : 28 ms
   bağlantı düzgün bağlandı
 
 ── Adapter istifadə olunurmu? ──
@@ -3672,11 +3651,11 @@ void (async () =&gt; {
   sayı: 2
 
 ── Sağlamlıq yoxlaması (birbaşa) ──
-[Nest] 64871  - 09/23/2026, 9:45:22 AM     LOG [BAZA] Baza bağlantısı açıldı
+[Nest] 69603  - 09/23/2026, 10:33:23 AM     LOG [BAZA] Baza bağlantısı açıldı
   status      : saglam
   qoşulub     : true
   cədvəl sayı : 48
-  gecikmə     : 24 ms
+  gecikmə     : 23 ms
   versiya     : 0.1.0</code></pre>
 </article><article class="test" id="t-IA-10">
   <h3><span class="no">IA.10</span> Server qalxır — prefiks, marşrutlar, Swagger</h3>
@@ -3767,10 +3746,10 @@ echo "  ✓ dayandırıldı"
       "baza": {
           "qosulub": true,
           "cedvel_sayi": 48,
-          "gecikme_ms": 2
+          "gecikme_ms": 1
       },
       "versiya": "0.1.0",
-      "vaxt": "2026-09-23T05:45:25.935Z"
+      "vaxt": "2026-09-23T06:33:27.420Z"
   }
 
 ── 3) Olmayan yol → vahid xəta formatı ──
@@ -3781,7 +3760,7 @@ echo "  ✓ dayandırıldı"
           "mesaj": "Cannot GET /api/v1/bele-yol-yoxdur"
       },
       "yol": "/bele-yol-yoxdur",
-      "vaxt": "2026-09-23T05:45:25.962Z"
+      "vaxt": "2026-09-23T06:33:27.446Z"
   }
 
 ── 4) Swagger ──

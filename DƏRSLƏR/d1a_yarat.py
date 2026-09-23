@@ -67,8 +67,8 @@ def muhit():
     return o
 
 
-def islet(emr, timeout=1200):
-    r = subprocess.run(["bash", "-c", emr], cwd=str(BACKEND), env=muhit(),
+def islet(emr, timeout=1200, cwd=None):
+    r = subprocess.run(["bash", "-c", emr], cwd=str(cwd or BACKEND), env=muhit(),
                        capture_output=True, text=True, timeout=timeout,
                        encoding="utf-8", errors="replace")
     return re.sub(r"\x1b\[[0-9;]*m", "", r.stdout + r.stderr).rstrip()
@@ -98,7 +98,17 @@ def icra():
     kes = {"addim": {}, "test": {}}
     print("ADDIMLAR (%d):" % len(ADIMLAR))
     for a in ADIMLAR:
-        cixis = islet(a["c"]) if a["c"].strip() else ""
+        if a["no"] == 1 and a["c"].strip():
+            # ⚠️ ADDIM 1 qovluğu SIFIRDAN yaradır. Çıxış dürüst olsun deyə
+            # əvvəlcə həqiqi qovluğu silirik və əmri ev qovluğundan işlədirik.
+            import shutil
+            home_arti = pathlib.Path.home() / "Deepseek_ARTI"
+            gercek = home_arti / "DS_Backend"
+            if gercek.exists():
+                shutil.rmtree(gercek)
+            cixis = islet(a["c"], cwd=home_arti)
+        else:
+            cixis = islet(a["c"]) if a["c"].strip() else ""
         kes["addim"][str(a["no"])] = cixis
         print("  ✓ ADDIM %-2d %-44s (%d sətir)"
               % (a["no"], a["ad"][:44], len(cixis.splitlines())))

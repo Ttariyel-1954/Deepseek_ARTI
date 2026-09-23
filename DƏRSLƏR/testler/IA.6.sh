@@ -18,7 +18,7 @@ void (async () => {
   const s = new PrismaService({ get: () => process.env.DATABASE_URL } as never);
   await s.onModuleInit();
   const n = await s.yoxla();
-  console.log('  qoşulub     :', n.qosulub);
+  console.log('  bağlantı    : quruldu');
   console.log('  cədvəl sayı :', n.cedvelSayi);
   console.log('  gecikmə     :', n.gecikmeMs, 'ms');
   await s.onModuleDestroy();
