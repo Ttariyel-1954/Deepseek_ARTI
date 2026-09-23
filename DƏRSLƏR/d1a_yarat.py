@@ -93,11 +93,17 @@ def fayl(yol):
     return p.read_text(encoding="utf-8").rstrip("\n")
 
 
+GIRIS = ('# ⚠️ Əvvəlcə layihə qovluğuna keçirik — yoxdursa yaradılır.\n'
+         '# Beləliklə bu bloku HARADAN yapışdırsanız da işləyir.\n'
+         'mkdir -p "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"\n'
+         'cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"\n')
+
+
 def blok(yol, govde, bashliq=None):
     dir_ = os.path.dirname(yol)
     pre = ("mkdir -p %s\n" % dir_) if dir_ else ""
     ad = bashliq or yol
-    kod = pre + "cat > %s <<'EOF'\n%s\nEOF" % (yol, govde)
+    kod = GIRIS + pre + "cat > %s <<'EOF'\n%s\nEOF" % (yol, govde)
     return ('  <div class="kod-blok b-kod">\n'
             '    <div class="kod-basliq"><span>%s</span>'
             '<button class="kopyala">KOPYALA</button></div>\n'
@@ -116,11 +122,19 @@ def icra():
             import shutil
             home_arti = pathlib.Path.home() / "Deepseek_ARTI"
             gercek = home_arti / "DS_Backend"
+            # ⚠️ Qovluğun ÖZÜNÜ silmirik! İstifadəçinin Terminal pəncərəsi
+            # onun içində ola bilər — silinsə shell «işlədiyim qovluq yoxdur»
+            # vəziyyətinə düşür və hər əmr "No such file or directory" verir.
+            # Ona görə yalnız İÇİNİ boşaldırıq, qovluq özü qalır.
             if gercek.exists():
-                shutil.rmtree(gercek)
+                for oge in gercek.iterdir():
+                    if oge.is_dir() and not oge.is_symlink():
+                        shutil.rmtree(oge)
+                    else:
+                        oge.unlink()
             # Şagird B hissəsində package.json yazır, SONRA C-ni işlədir.
             # Ona görə fayl qovluqda hazır olmalıdır ki, npm install işləsin.
-            gercek.mkdir(parents=True)
+            gercek.mkdir(parents=True, exist_ok=True)
             shutil.copy(BACKEND / "package.json", gercek / "package.json")
             cixis = islet(a["c"], cwd=home_arti, timeout=1800)
         else:
