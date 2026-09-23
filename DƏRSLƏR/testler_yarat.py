@@ -26,6 +26,7 @@ KOK = pathlib.Path(__file__).resolve().parent.parent
 DERS_Q = KOK / "DƏRSLƏR"
 CIXIS = DERS_Q / "Yekun_Testler.html"
 ISCI = pathlib.Path("/tmp/yekun_testler")
+TEST_Q = DERS_Q / "testler"          # 65 ayrı .sh faylı
 KES_JSON = pathlib.Path("/tmp/yekun_testler_cixis.json")
 
 LAYIHE = os.environ.get("TEST_LAYIHE", str(KOK / "DS_Backend"))
@@ -44,6 +45,84 @@ DERSLER = yukle("d1") + yukle("d2") + yukle("d3")
 
 
 PRELUDE = 'LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"'
+
+
+ISLEDICI = r'''#!/bin/bash
+# ══════════════════════════════════════════════════════════════════
+#  YEKUN TESTLƏR — İŞLƏDİCİ
+#
+#  Terminal-a heç nə YAPIŞDIRMAQ lazım deyil — bu faylı işlədin:
+#
+#    bash testler/yoxla.sh              → bütün 65 test
+#    bash testler/yoxla.sh III          → yalnız Dərs 3 (20 test)
+#    bash testler/yoxla.sh III.6        → yalnız bir test
+#    bash testler/yoxla.sh --siyahi     → testlərin siyahısı
+#
+#  ⚠️ Server AYRI terminalda işləməlidir:
+#    cd ~/Deepseek_ARTI/DS_Backend
+#    unset DATABASE_URL PGHOST
+#    PORT=4000 npm run start:prod
+# ══════════════════════════════════════════════════════════════════
+
+cd "$(dirname "$0")" || exit 1
+unset DATABASE_URL PGHOST
+
+YASIL=$'\033[32m'; QIRMIZI=$'\033[31m'; MAVI=$'\033[36m'; SIFIR=$'\033[0m'
+
+KECDI=0; XETA=0; ISLENDI=0
+
+if [ "$1" = "--siyahi" ] || [ "$1" = "-s" ]; then
+  echo "Mövcud testlər:"
+  for f in $(ls [I]*.sh 2>/dev/null | sort -t. -k1,1 -k2,2n); do
+    printf '  %s\n' "${f%.sh}"
+  done
+  exit 0
+fi
+
+if [ -z "$1" ]; then
+  FAYLLAR=$(ls [I]*.sh 2>/dev/null | sort -t. -k1,1 -k2,2n)
+  BASLIQ="BÜTÜN TESTLƏR"
+elif [ -f "$1.sh" ]; then
+  FAYLLAR="$1.sh"
+  BASLIQ="TEST $1"
+elif ls "$1".*.sh >/dev/null 2>&1; then
+  FAYLLAR=$(ls "$1".*.sh 2>/dev/null | sort -t. -k1,1 -k2,2n)
+  BASLIQ="DƏRS $1"
+else
+  echo "⚠️ «$1» tapılmadı."
+  echo "   Siyahı üçün: bash testler/yoxla.sh --siyahi"
+  exit 1
+fi
+
+SAY=0
+for f in $FAYLLAR; do SAY=$((SAY + 1)); done
+
+printf "\n${MAVI}════════════════════════════════════════════════════════════════${SIFIR}\n"
+printf "${MAVI}  %s — %d test${SIFIR}\n" "$BASLIQ" "$SAY"
+printf "${MAVI}════════════════════════════════════════════════════════════════${SIFIR}\n"
+
+for f in $FAYLLAR; do
+  printf "\n${MAVI}── %s ────────────────────────────────────────────────────${SIFIR}\n" "${f%.sh}"
+  if bash "$f"; then
+    printf "${YASIL}  ✓ %s KEÇDİ${SIFIR}\n" "${f%.sh}"
+    KECDI=$((KECDI + 1))
+  else
+    printf "${QIRMIZI}  ✗ %s UĞURSUZ${SIFIR}\n" "${f%.sh}"
+    XETA=$((XETA + 1))
+  fi
+  ISLENDI=$((ISLENDI + 1))
+done
+
+printf "\n${MAVI}════════════════════════════════════════════════════════════════${SIFIR}\n"
+printf "  İŞLƏDİLDİ: %d   ${YASIL}KEÇDİ: %d${SIFIR}   ${QIRMIZI}UĞURSUZ: %d${SIFIR}\n" \
+  "$ISLENDI" "$KECDI" "$XETA"
+if [ "$XETA" -eq 0 ]; then
+  printf "  ${YASIL}✓ HAMISI KEÇDİ${SIFIR}\n"
+  exit 0
+fi
+printf "  ${QIRMIZI}✗ %d TEST UĞURSUZ${SIFIR}\n" "$XETA"
+exit 1
+'''
 
 
 def sarla(skript: str) -> str:
@@ -71,6 +150,20 @@ def kecid(no: str) -> str:
 
 
 # ── İCRA ─────────────────────────────────────────────────────────────
+def skriptleri_yaz() -> int:
+    """65 testi ayrı .sh faylı kimi DƏRSLƏR/testler/ qovluğuna yazır."""
+    TEST_Q.mkdir(parents=True, exist_ok=True)
+    say = 0
+    for ders in DERSLER:
+        for t in ders["testler"]:
+            (TEST_Q / f"{t['no']}.sh").write_text(sarla(t["skript"]),
+                                                  encoding="utf-8")
+            say += 1
+    (TEST_Q / "yoxla.sh").write_text(ISLEDICI, encoding="utf-8")
+    os.chmod(TEST_Q / "yoxla.sh", 0o755)
+    return say
+
+
 def icra_et() -> dict:
     ISCI.mkdir(parents=True, exist_ok=True)
     ortam = os.environ.copy()
@@ -304,6 +397,21 @@ def qur(kes: dict) -> str:
   rəqəmi öz vəziyyətinizlə müqayisə edin.</p>
 </div>
 
+<div class="izah" style="background:#f0fdf4;border-left-color:#16a34a">
+  <p><b>✅ İki yol var — istədiyinizi seçin.</b></p>
+  <p style="margin-top:.6rem"><b>YOL 1 (asan) — fayldan işlədin, heç nə
+  yapışdırmayın.</b> Bütün 65 test ayrı fayl kimi
+  <code>DƏRSLƏR/testler/</code> qovluğundadır:</p>
+  <p style="margin-top:.5rem"><code>cd ~/Deepseek_ARTI/DƏRSLƏR</code><br>
+  <code>bash testler/yoxla.sh III</code>      ← Dərs 3-ün 20 testi<br>
+  <code>bash testler/yoxla.sh III.6</code>    ← yalnız bir test<br>
+  <code>bash testler/yoxla.sh</code>          ← hamısı (65)</p>
+  <p style="margin-top:.6rem"><b>YOL 2 — kopyala və yapışdır.</b> Aşağıdaki
+  hər testin skriptini kopyalayıb Terminal-a yapışdırın. Zsh hər sətri
+  <code>&gt;</code> işarəsi ilə göstərir — bu <b>normaldır</b>, blok sonuncu
+  <code>)</code> sətrində icra olunur.</p>
+</div>
+
 <div class="mund">
   <h2>Mündəricat — hər testə birbaşa keçid</h2>
   %s
@@ -330,6 +438,8 @@ def main() -> None:
     else:
         kes = kesden()
         print("  ✓ keşdən oxundu (%d test)" % len(kes))
+    yazilan = skriptleri_yaz()
+    print("  ✓ %d skript faylı yazıldı → %s/" % (yazilan, TEST_Q.name))
     CIXIS.write_text(qur(kes), encoding="utf-8")
     s = CIXIS.read_text(encoding="utf-8")
     print("✅ %s" % CIXIS.relative_to(KOK))
