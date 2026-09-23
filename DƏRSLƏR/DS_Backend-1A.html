@@ -301,14 +301,35 @@ EOF</code></pre>
     <div class="kod-basliq"><span>Terminal əmrləri</span>
       <button class="kopyala">KOPYALA</button></div>
     <pre class="komanda"><code>(
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ ŞƏRT: bu addımın B blokundaki fayllar yerində olmalıdır
+catmadi=0
+for f in "package.json"; do
+  [ -f "$f" ] || { echo "  ✗ $f YOXDUR"; catmadi=1; }
+done
+if [ "$catmadi" = "1" ]; then
+  echo ""
+  echo "╔══════════════════════════════════════════════════════════╗"
+  echo "║  ⚠️  B BLOKUNDAKI FAYLLAR YOXDUR                         ║"
+  echo "║  HƏLL: bu addımın B blok(lar)ını KOPYALA ilə işlədin,    ║"
+  echo "║        sonra bu addıma qayıdın.                          ║"
+  echo "╚══════════════════════════════════════════════════════════╝"
+  exit 1
+fi
+echo "  ✓ B faylları yerindədir"
+
 # ═══ HİSSƏ 1 · LAYİHƏ QOVLUĞUNU YARADIRIQ ═══
 
 # -p işarəsi: arana qovluqları da yaradır və qovluq artıq
 # varsa xəta vermir («already exists» deməz).
-mkdir -p ~/Deepseek_ARTI/DS_Backend
+# Layihənin yolu. Başqa yerə qurmaq istəsəniz bu sətri dəyişin.
+LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+mkdir -p "$LAYIHE"
 
 # İçinə keçirik
-cd ~/Deepseek_ARTI/DS_Backend
+cd "$LAYIHE"
 
 echo "── Qovluq yerindədirmi? ──"
 pwd
@@ -400,10 +421,23 @@ echo "   Bu, XƏTA DEYİL — paketlər düzgün quraşdırılıb."
 /Users/royatalibova/Deepseek_ARTI/DS_Backend
 
 ── İçində nə var? ──
-total 8
-drwxr-xr-x  3 royatalibova  staff    96 Sep 23 15:26 .
-drwxr-xr-x  9 royatalibova  staff   288 Sep 23 12:27 ..
--rw-r--r--  1 royatalibova  staff  1409 Sep 23 15:26 package.json
+total 840
+drwxr-xr-x   16 royatalibova  staff     512 Sep 23 15:38 .
+drwxr-xr-x    9 royatalibova  staff     288 Sep 23 12:27 ..
+-rw-r--r--    1 royatalibova  staff     462 Sep 23 15:38 .env
+-rw-r--r--    1 royatalibova  staff     176 Sep 23 15:38 .env.example
+-rw-r--r--    1 royatalibova  staff      67 Sep 23 15:38 .gitignore
+drwxr-xr-x   12 royatalibova  staff     384 Sep 23 15:38 dist
+-rw-r--r--    1 royatalibova  staff     171 Sep 23 15:38 nest-cli.json
+drwxr-xr-x  312 royatalibova  staff    9984 Sep 23 15:38 node_modules
+-rw-r--r--    1 royatalibova  staff  234534 Sep 23 15:38 package-lock.json
+-rw-r--r--    1 royatalibova  staff    1409 Sep 23 15:38 package.json
+drwxr-xr-x    3 royatalibova  staff      96 Sep 23 15:38 prisma
+-rw-r--r--    1 royatalibova  staff     233 Sep 23 15:38 prisma.config.ts
+drwxr-xr-x    8 royatalibova  staff     256 Sep 23 15:38 src
+-rw-r--r--    1 royatalibova  staff     170 Sep 23 15:38 tsconfig.build.json
+-rw-r--r--    1 royatalibova  staff  159116 Sep 23 15:38 tsconfig.build.tsbuildinfo
+-rw-r--r--    1 royatalibova  staff     581 Sep 23 15:38 tsconfig.json
 
 ── Alətlərin versiyaları ──
   node: v26.7.0
@@ -414,20 +448,20 @@ drwxr-xr-x  9 royatalibova  staff   288 Sep 23 12:27 ..
 /opt/homebrew/bin/npm
 
 ── package.json yerindədirmi? ──
--rw-r--r--  1 royatalibova  staff  1409 Sep 23 15:26 package.json
+-rw-r--r--  1 royatalibova  staff  1409 Sep 23 15:38 package.json
 
 npm install → paketləri node_modules/ qovluğuna yazır
 (ilk dəfə 1-3 dəqiqə çəkə bilər — paketlər internetdən gəlir)
 
 
-added 430 packages in 56s
+up to date in 285ms
 
 101 packages are looking for funding
   run `npm fund` for details
 
 ── Nəticə ──
-  ✓ node_modules: 306 paket
-  ölçüsü        : 488M
+  ✓ node_modules: 307 paket
+  ölçüsü        : 489M
 
 ── ⚠️ PAKETLƏR HARADA SAXLANILIR? ──
   LAYİHƏ paketləri : ./node_modules      ← LAYİHƏNİN İÇİNDƏ
@@ -448,11 +482,12 @@ added 430 packages in 56s
    (məsələn Prisma öz baza mühərrikini hazırlayır, esbuild ikili
    faylını yazır). npm 11 bunu təhlükəsizlik üçün bildirir.
    Bu, XƏTA DEYİL — paketlər düzgün quraşdırılıb.
-npm warn install-scripts 4 packages have install scripts not yet covered by allowScripts:
-npm warn install-scripts   prisma@7.10.0 (preinstall: node scripts/preinstall-entry.js)
+npm warn install-scripts 5 packages have install scripts not yet covered by allowScripts:
 npm warn install-scripts   @prisma/engines@7.10.0 (postinstall: node scripts/postinstall.js)
 npm warn install-scripts   @scarf/scarf@1.4.0 (postinstall: node ./report.js)
 npm warn install-scripts   esbuild@0.28.2 (postinstall: node install.js)
+npm warn install-scripts   fsevents@2.3.3 (install: (install scripts present))
+npm warn install-scripts   prisma@7.10.0 (preinstall: node scripts/preinstall-entry.js)
 npm warn install-scripts
 npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve &lt;pkg&gt;` to allow.</code></pre>
   </div>
@@ -588,6 +623,8 @@ npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install
     <div class="kod-basliq"><span>Terminal əmrləri</span>
       <button class="kopyala">KOPYALA</button></div>
     <pre class="komanda"><code>(
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
 cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 
 echo "── Layihə haqqında ──"
@@ -818,6 +855,24 @@ EOF</code></pre>
     <pre class="komanda"><code>(
 cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 
+# ⚠️ ŞƏRT: bu addımın B blokundaki fayllar yerində olmalıdır
+catmadi=0
+for f in "tsconfig.json" "tsconfig.build.json" "nest-cli.json"; do
+  [ -f "$f" ] || { echo "  ✗ $f YOXDUR"; catmadi=1; }
+done
+if [ "$catmadi" = "1" ]; then
+  echo ""
+  echo "╔══════════════════════════════════════════════════════════╗"
+  echo "║  ⚠️  B BLOKUNDAKI FAYLLAR YOXDUR                         ║"
+  echo "║  HƏLL: bu addımın B blok(lar)ını KOPYALA ilə işlədin,    ║"
+  echo "║        sonra bu addıma qayıdın.                          ║"
+  echo "╚══════════════════════════════════════════════════════════╝"
+  exit 1
+fi
+echo "  ✓ B faylları yerindədir"
+
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
 echo "── TypeScript-in gördüyü YEKUN ayarlar ──"
 npx tsc --showConfig 2&gt;/dev/null | python3 -c "
 import json, sys
@@ -1022,6 +1077,24 @@ EOF</code></pre>
       <button class="kopyala">KOPYALA</button></div>
     <pre class="komanda"><code>(
 cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ ŞƏRT: bu addımın B blokundaki fayllar yerində olmalıdır
+catmadi=0
+for f in ".env" ".env.example" ".gitignore"; do
+  [ -f "$f" ] || { echo "  ✗ $f YOXDUR"; catmadi=1; }
+done
+if [ "$catmadi" = "1" ]; then
+  echo ""
+  echo "╔══════════════════════════════════════════════════════════╗"
+  echo "║  ⚠️  B BLOKUNDAKI FAYLLAR YOXDUR                         ║"
+  echo "║  HƏLL: bu addımın B blok(lar)ını KOPYALA ilə işlədin,    ║"
+  echo "║        sonra bu addıma qayıdın.                          ║"
+  echo "╚══════════════════════════════════════════════════════════╝"
+  exit 1
+fi
+echo "  ✓ B faylları yerindədir"
+
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 
 echo "── B hissəsindəki fayllar yerindədirmi? ──"
@@ -1124,7 +1197,7 @@ const url = 'postgresql://arti_user:arti_secret_2025@localhost:5432/arti_baza';
   *.log
 
 ── .env həqiqətən qorunurmu? ──
-.gitignore:6:.env	DS_Backend/.env</code></pre>
+DS_Backend/.gitignore:1:.env	DS_Backend/.env</code></pre>
   </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>şifrələr koddan ayrılıb</strong>
         və git-dən qorunur. Bu andan etibarən kod yaza bilərik — heç bir yerdə
@@ -1958,6 +2031,24 @@ EOF</code></pre>
       <button class="kopyala">KOPYALA</button></div>
     <pre class="komanda"><code>(
 cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ ŞƏRT: bu addımın B blokundaki fayllar yerində olmalıdır
+catmadi=0
+for f in "prisma/schema.prisma" "prisma.config.ts"; do
+  [ -f "$f" ] || { echo "  ✗ $f YOXDUR"; catmadi=1; }
+done
+if [ "$catmadi" = "1" ]; then
+  echo ""
+  echo "╔══════════════════════════════════════════════════════════╗"
+  echo "║  ⚠️  B BLOKUNDAKI FAYLLAR YOXDUR                         ║"
+  echo "║  HƏLL: bu addımın B blok(lar)ını KOPYALA ilə işlədin,    ║"
+  echo "║        sonra bu addıma qayıdın.                          ║"
+  echo "╚══════════════════════════════════════════════════════════╝"
+  exit 1
+fi
+echo "  ✓ B faylları yerindədir"
+
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 
 # ⚠️ ŞƏRT: bu addım bazaya qoşulur — .env faylı olmalıdır (ADDIM 4)
@@ -2062,7 +2153,7 @@ src/prisma/prisma.service.ts:3:10 - error TS2307: Cannot find module
 Datasource "db": PostgreSQL database "arti_baza", schemas "ai, audit, elm, kadrlar, logistika, maliyye, metodika, ortaq, qiymetlendirme, sened, struktur, tehsil" at "localhost:5432"
 
 - Introspecting based on datasource defined in prisma/schema.prisma
-✔ Introspected 48 models and wrote them into prisma/schema.prisma in 84ms
+✔ Introspected 48 models and wrote them into prisma/schema.prisma in 88ms
       
 *** WARNING ***
 
@@ -2137,7 +2228,7 @@ Run prisma generate to generate Prisma Client.
   Nəticə: src/generated/prisma/client.ts
 
 
-✔ Generated Prisma Client (7.10.0) to ./src/generated/prisma in 103ms
+✔ Generated Prisma Client (7.10.0) to ./src/generated/prisma in 105ms
 
 
 ── Sxemanın əsas blokları ──
@@ -2309,6 +2400,24 @@ EOF</code></pre>
       <button class="kopyala">KOPYALA</button></div>
     <pre class="komanda"><code>(
 cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ ŞƏRT: bu addımın B blokundaki fayllar yerində olmalıdır
+catmadi=0
+for f in "src/prisma/prisma.service.ts"; do
+  [ -f "$f" ] || { echo "  ✗ $f YOXDUR"; catmadi=1; }
+done
+if [ "$catmadi" = "1" ]; then
+  echo ""
+  echo "╔══════════════════════════════════════════════════════════╗"
+  echo "║  ⚠️  B BLOKUNDAKI FAYLLAR YOXDUR                         ║"
+  echo "║  HƏLL: bu addımın B blok(lar)ını KOPYALA ilə işlədin,    ║"
+  echo "║        sonra bu addıma qayıdın.                          ║"
+  echo "╚══════════════════════════════════════════════════════════╝"
+  exit 1
+fi
+echo "  ✓ B faylları yerindədir"
+
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 
 # ⚠️ ŞƏRT: bu addım bazaya qoşulur — .env faylı olmalıdır (ADDIM 4)
@@ -2387,7 +2496,7 @@ Error: DATABASE_URL təyin olunmayıb — .env faylını yoxlayın
 -rw-r--r--  1 royatalibova  wheel  1547 Sep 23 09:29 src/prisma/prisma.service.ts
 
 ── Baza bağlantısını BİRBAŞA yoxlayaq ──
-[Nest] 84155  - 09/23/2026, 3:27:12 PM     LOG [BAZA] Baza bağlantısı açıldı
+[Nest] 86627  - 09/23/2026, 3:38:27 PM     LOG [BAZA] Baza bağlantısı açıldı
   bağlantı   : quruldu
   cədvəl sayı: 48
   gecikmə    : 22 ms
@@ -2468,6 +2577,24 @@ EOF</code></pre>
     <div class="kod-basliq"><span>Terminal əmrləri</span>
       <button class="kopyala">KOPYALA</button></div>
     <pre class="komanda"><code>(
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ ŞƏRT: bu addımın B blokundaki fayllar yerində olmalıdır
+catmadi=0
+for f in "src/prisma/prisma.module.ts"; do
+  [ -f "$f" ] || { echo "  ✗ $f YOXDUR"; catmadi=1; }
+done
+if [ "$catmadi" = "1" ]; then
+  echo ""
+  echo "╔══════════════════════════════════════════════════════════╗"
+  echo "║  ⚠️  B BLOKUNDAKI FAYLLAR YOXDUR                         ║"
+  echo "║  HƏLL: bu addımın B blok(lar)ını KOPYALA ilə işlədin,    ║"
+  echo "║        sonra bu addıma qayıdın.                          ║"
+  echo "╚══════════════════════════════════════════════════════════╝"
+  exit 1
+fi
+echo "  ✓ B faylları yerindədir"
+
 cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 
 echo "── Modulun məzmunu ──"
@@ -2673,6 +2800,24 @@ EOF</code></pre>
     <div class="kod-basliq"><span>Terminal əmrləri</span>
       <button class="kopyala">KOPYALA</button></div>
     <pre class="komanda"><code>(
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ ŞƏRT: bu addımın B blokundaki fayllar yerində olmalıdır
+catmadi=0
+for f in "src/common/filters/all-exceptions.filter.ts"; do
+  [ -f "$f" ] || { echo "  ✗ $f YOXDUR"; catmadi=1; }
+done
+if [ "$catmadi" = "1" ]; then
+  echo ""
+  echo "╔══════════════════════════════════════════════════════════╗"
+  echo "║  ⚠️  B BLOKUNDAKI FAYLLAR YOXDUR                         ║"
+  echo "║  HƏLL: bu addımın B blok(lar)ını KOPYALA ilə işlədin,    ║"
+  echo "║        sonra bu addıma qayıdın.                          ║"
+  echo "╚══════════════════════════════════════════════════════════╝"
+  exit 1
+fi
+echo "  ✓ B faylları yerindədir"
+
 cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 
 echo "── Fayl yerindədirmi? ──"
@@ -2912,6 +3057,24 @@ EOF</code></pre>
       <button class="kopyala">KOPYALA</button></div>
     <pre class="komanda"><code>(
 cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ ŞƏRT: bu addımın B blokundaki fayllar yerində olmalıdır
+catmadi=0
+for f in "src/saglamliq/saglamliq.service.ts" "src/saglamliq/saglamliq.controller.ts" "src/saglamliq/saglamliq.module.ts"; do
+  [ -f "$f" ] || { echo "  ✗ $f YOXDUR"; catmadi=1; }
+done
+if [ "$catmadi" = "1" ]; then
+  echo ""
+  echo "╔══════════════════════════════════════════════════════════╗"
+  echo "║  ⚠️  B BLOKUNDAKI FAYLLAR YOXDUR                         ║"
+  echo "║  HƏLL: bu addımın B blok(lar)ını KOPYALA ilə işlədin,    ║"
+  echo "║        sonra bu addıma qayıdın.                          ║"
+  echo "╚══════════════════════════════════════════════════════════╝"
+  exit 1
+fi
+echo "  ✓ B faylları yerindədir"
+
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 
 # ⚠️ ŞƏRT: bu addım bazaya qoşulur — .env faylı olmalıdır (ADDIM 4)
@@ -2995,16 +3158,16 @@ $ curl -s localhost:4000/api/v1/saglamliq
   22:  @Get('saglamliq')
 
 ── Sağlamlıq yoxlamasını BİRBAŞA sınayaq ──
-[Nest] 84192  - 09/23/2026, 3:27:12 PM     LOG [BAZA] Baza bağlantısı açıldı
+[Nest] 86665  - 09/23/2026, 3:38:28 PM     LOG [BAZA] Baza bağlantısı açıldı
   {
     "status": "saglam",
     "baza": {
       "qosulub": true,
       "cedvel_sayi": 48,
-      "gecikme_ms": 26
+      "gecikme_ms": 24
     },
     "versiya": "0.1.0",
-    "vaxt": "2026-09-23T11:27:12.589Z"
+    "vaxt": "2026-09-23T11:38:28.200Z"
   }</code></pre>
   </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>işləyən servis məntiqi var</strong>,
@@ -3091,6 +3254,24 @@ EOF</code></pre>
     <div class="kod-basliq"><span>Terminal əmrləri</span>
       <button class="kopyala">KOPYALA</button></div>
     <pre class="komanda"><code>(
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ ŞƏRT: bu addımın B blokundaki fayllar yerində olmalıdır
+catmadi=0
+for f in "src/app.module.ts"; do
+  [ -f "$f" ] || { echo "  ✗ $f YOXDUR"; catmadi=1; }
+done
+if [ "$catmadi" = "1" ]; then
+  echo ""
+  echo "╔══════════════════════════════════════════════════════════╗"
+  echo "║  ⚠️  B BLOKUNDAKI FAYLLAR YOXDUR                         ║"
+  echo "║  HƏLL: bu addımın B blok(lar)ını KOPYALA ilə işlədin,    ║"
+  echo "║        sonra bu addıma qayıdın.                          ║"
+  echo "╚══════════════════════════════════════════════════════════╝"
+  exit 1
+fi
+echo "  ✓ B faylları yerindədir"
+
 cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 
 echo "── Kök modulun məzmunu ──"
@@ -3288,6 +3469,24 @@ EOF</code></pre>
       <button class="kopyala">KOPYALA</button></div>
     <pre class="komanda"><code>(
 cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+# ⚠️ ŞƏRT: bu addımın B blokundaki fayllar yerində olmalıdır
+catmadi=0
+for f in "src/main.ts"; do
+  [ -f "$f" ] || { echo "  ✗ $f YOXDUR"; catmadi=1; }
+done
+if [ "$catmadi" = "1" ]; then
+  echo ""
+  echo "╔══════════════════════════════════════════════════════════╗"
+  echo "║  ⚠️  B BLOKUNDAKI FAYLLAR YOXDUR                         ║"
+  echo "║  HƏLL: bu addımın B blok(lar)ını KOPYALA ilə işlədin,    ║"
+  echo "║        sonra bu addıma qayıdın.                          ║"
+  echo "╚══════════════════════════════════════════════════════════╝"
+  exit 1
+fi
+echo "  ✓ B faylları yerindədir"
+
+cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 
 # ⚠️ ŞƏRT: bu addım bazaya qoşulur — .env faylı olmalıdır (ADDIM 4)
@@ -3409,10 +3608,10 @@ Error: listen EADDRINUSE: address already in use :::4000
   port 4000 boşdur: bəli
 
 ── Server qalxır (arxa planda) ──
-  [Nest] 84258  - 09/23/2026, 3:27:15 PM     LOG [RouterExplorer] Mapped {/api/v1, GET} route +1ms
-  [Nest] 84258  - 09/23/2026, 3:27:15 PM     LOG [RouterExplorer] Mapped {/api/v1/saglamliq, GET} route +0ms
-  [Nest] 84258  - 09/23/2026, 3:27:15 PM     LOG [BAŞLANGIC] API hazırdır → http://localhost:4000/api/v1
-  [Nest] 84258  - 09/23/2026, 3:27:15 PM     LOG [BAŞLANGIC] Sənədləşdirmə → http://localhost:4000/docs
+  [Nest] 86731  - 09/23/2026, 3:38:31 PM     LOG [RouterExplorer] Mapped {/api/v1, GET} route +0ms
+  [Nest] 86731  - 09/23/2026, 3:38:31 PM     LOG [RouterExplorer] Mapped {/api/v1/saglamliq, GET} route +1ms
+  [Nest] 86731  - 09/23/2026, 3:38:31 PM     LOG [BAŞLANGIC] API hazırdır → http://localhost:4000/api/v1
+  [Nest] 86731  - 09/23/2026, 3:38:31 PM     LOG [BAŞLANGIC] Sənədləşdirmə → http://localhost:4000/docs
 
 ── 1) Kök ünvan ──
   {
@@ -3428,10 +3627,10 @@ Error: listen EADDRINUSE: address already in use :::4000
       "baza": {
           "qosulub": true,
           "cedvel_sayi": 48,
-          "gecikme_ms": 2
+          "gecikme_ms": 3
       },
       "versiya": "0.1.0",
-      "vaxt": "2026-09-23T11:27:16.698Z"
+      "vaxt": "2026-09-23T11:38:32.397Z"
   }
 
 ── 3) Olmayan yol → vahid xəta formatı ──
@@ -3442,7 +3641,7 @@ Error: listen EADDRINUSE: address already in use :::4000
           "mesaj": "Cannot GET /api/v1/bele-yol-yoxdur"
       },
       "yol": "/bele-yol-yoxdur",
-      "vaxt": "2026-09-23T11:27:16.723Z"
+      "vaxt": "2026-09-23T11:38:32.422Z"
   }
 
 ── 4) Swagger sənədləşdirmə ──
@@ -3911,10 +4110,10 @@ grep -nE 'PrismaPg|adapter|connectionString' src/prisma/prisma.service.ts | sed 
   -rw-r--r--  1 royatalibova  wheel  1547 Sep 23 09:29 src/prisma/prisma.service.ts
 
 ── Baza bağlantısını BİRBAŞA sınayırıq ──
-[Nest] 84412  - 09/23/2026, 3:27:18 PM     LOG [BAZA] Baza bağlantısı açıldı
+[Nest] 86885  - 09/23/2026, 3:38:33 PM     LOG [BAZA] Baza bağlantısı açıldı
   bağlantı    : quruldu
   cədvəl sayı : 48
-  gecikmə     : 25 ms
+  gecikmə     : 22 ms
   bağlantı düzgün bağlandı
 
 ── Adapter istifadə olunurmu? ──
@@ -4124,7 +4323,7 @@ void (async () =&gt; {
   sayı: 2
 
 ── Sağlamlıq yoxlaması (birbaşa) ──
-[Nest] 84463  - 09/23/2026, 3:27:18 PM     LOG [BAZA] Baza bağlantısı açıldı
+[Nest] 86935  - 09/23/2026, 3:38:34 PM     LOG [BAZA] Baza bağlantısı açıldı
   status      : saglam
   qoşulub     : true
   cədvəl sayı : 48
@@ -4222,7 +4421,7 @@ echo "  ✓ dayandırıldı"
           "gecikme_ms": 2
       },
       "versiya": "0.1.0",
-      "vaxt": "2026-09-23T11:27:22.134Z"
+      "vaxt": "2026-09-23T11:38:38.023Z"
   }
 
 ── 3) Olmayan yol → vahid xəta formatı ──
@@ -4233,7 +4432,7 @@ echo "  ✓ dayandırıldı"
           "mesaj": "Cannot GET /api/v1/bele-yol-yoxdur"
       },
       "yol": "/bele-yol-yoxdur",
-      "vaxt": "2026-09-23T11:27:22.159Z"
+      "vaxt": "2026-09-23T11:38:38.051Z"
   }
 
 ── 4) Swagger ──

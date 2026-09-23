@@ -1,0 +1,739 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  schemas  = ["ai", "audit", "elm", "kadrlar", "logistika", "maliyye", "metodika", "ortaq", "qiymetlendirme", "sened", "struktur", "tehsil"]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model ai_promptlar {
+  id           Int     @id @default(autoincrement())
+  ad           String
+  tip          String  @default("sual-cavab")
+  prompt_metni String
+  aktiv        Boolean @default(true)
+
+  @@schema("ai")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model ai_sorghular {
+  id         BigInt   @id @default(autoincrement())
+  istifadeci String?  @default(dbgenerated("CURRENT_USER"))
+  sorghu     String
+  cavab      String?
+  model      String?  @default("deepseek")
+  token_sayi Int?     @default(0)
+  vaxt       DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([vaxt], map: "idx_ai_sorghu_vaxt")
+  @@schema("ai")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model embeddingler {
+  id         BigInt   @id @default(autoincrement())
+  cedvel_adi String
+  sened_id   Int?
+  metn       String?
+  vektor     Json?
+  yaradilma  DateTime @default(now()) @db.Timestamptz(6)
+
+  @@schema("ai")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model audit_log {
+  id         BigInt   @id @default(autoincrement())
+  cedvel_adi String
+  emeliyyat  String
+  setir_id   String?
+  istifadeci String?  @default(dbgenerated("CURRENT_USER"))
+  vaxt       DateTime @default(now()) @db.Timestamptz(6)
+  qeyd       String?
+
+  @@index([cedvel_adi], map: "idx_audit_cedvel")
+  @@schema("audit")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model doktorantlar {
+  id                       Int                      @id @default(autoincrement())
+  proqram_id               Int
+  ad                       String
+  soyad                    String
+  ata_adi                  String
+  status                   String                   @default("tehsil alir")
+  qebul_tarixi             DateTime?                @db.Date
+  rehber_id                BigInt?
+  mudafie_tarixi           DateTime?                @db.Date
+  qeyd                     String?
+  doktorantura_proqramlari doktorantura_proqramlari @relation(fields: [proqram_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  emekdaslar               emekdaslar?              @relation(fields: [rehber_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([proqram_id], map: "idx_doktorantlar_proqram")
+  @@index([status], map: "idx_doktorantlar_status")
+  @@schema("elm")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model doktorantura_proqramlari {
+  id           Int            @id @default(autoincrement())
+  ad           String
+  ixtisas_kodu String?
+  seviyye      String         @default("doktorantura")
+  muddet_il    Int?           @default(3)
+  qeyd         String?
+  doktorantlar doktorantlar[]
+
+  @@schema("elm")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model elmi_tedbirler {
+  id             Int       @id @default(autoincrement())
+  ad             String
+  tip            String    @default("konfrans")
+  tarix          DateTime? @db.Date
+  yer            String?
+  istirakci_sayi Int?      @default(0)
+  qeyd           String?
+
+  @@schema("elm")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model jurnallar {
+  id        Int         @id @default(autoincrement())
+  ad        String      @unique
+  tip       String      @default("elmi")
+  issn      String?
+  tezlik    String?
+  tesvir    String?
+  meqaleler meqaleler[]
+
+  @@schema("elm")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model meqaleler {
+  id         Int        @id @default(autoincrement())
+  jurnal_id  Int?
+  basliq     String
+  muellifler String?
+  il         Int?
+  cild       String?
+  sehife     String?
+  doi        String?
+  qeyd       String?
+  jurnallar  jurnallar? @relation(fields: [jurnal_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([jurnal_id], map: "idx_meqaleler_jurnal")
+  @@schema("elm")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model neshrler {
+  id      Int     @id @default(autoincrement())
+  ad      String
+  tip     String  @default("kitab")
+  muellif String?
+  il      Int?
+  isbn    String?
+  say     Int?    @default(1)
+  qeyd    String?
+
+  @@index([il], map: "idx_neshr_il")
+  @@schema("elm")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model tedqiqat_istiqametleri {
+  id                  Int                   @id @default(autoincrement())
+  ad                  String                @unique
+  tesvir              String?
+  aktiv               Boolean               @default(true)
+  tedqiqat_layiheleri tedqiqat_layiheleri[]
+
+  @@schema("elm")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model tedqiqat_layiheleri {
+  id                     Int                    @id @default(autoincrement())
+  istiqamet_id           Int
+  ad                     String
+  tesvir                 String?
+  status                 String                 @default("davam edir")
+  rehber_id              BigInt?
+  baslama_tarixi         DateTime?              @db.Date
+  bitme_tarixi           DateTime?              @db.Date
+  qeyd                   String?
+  tedqiqat_istiqametleri tedqiqat_istiqametleri @relation(fields: [istiqamet_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  emekdaslar             emekdaslar?            @relation(fields: [rehber_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([istiqamet_id], map: "idx_tedqiqat_layihe_istiqamet")
+  @@index([rehber_id], map: "idx_tedqiqat_layihe_rehber")
+  @@index([status], map: "idx_tedqiqat_layihe_status")
+  @@schema("elm")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model emekdaslar {
+  id                  BigInt                @id @default(autoincrement())
+  ad                  String
+  soyad               String
+  ata_adi             String
+  cinsiyyet_id        Int
+  dogum_tarixi        DateTime?             @db.Date
+  vezife_id           Int
+  shobe_id            Int?
+  merkez_id           Int?
+  email               String?               @unique
+  telefon             String?
+  is_status_id        Int                   @default(1)
+  elmi_derece_id      Int?
+  elmi_ad_id          Int?
+  ise_baslama         DateTime?             @db.Date
+  maas                Decimal?              @db.Decimal(12, 2)
+  aktiv               Boolean               @default(true)
+  yaradilma           DateTime              @default(now()) @db.Timestamptz(6)
+  doktorantlar        doktorantlar[]
+  tedqiqat_layiheleri tedqiqat_layiheleri[]
+  cinsiyyet           cinsiyyet             @relation(fields: [cinsiyyet_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  elmi_adlar          elmi_adlar?           @relation(fields: [elmi_ad_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  elmi_dereceler      elmi_dereceler?       @relation(fields: [elmi_derece_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  is_statuslari       is_statuslari         @relation(fields: [is_status_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  merkezler           merkezler?            @relation(fields: [merkez_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  shobeler            shobeler?             @relation(fields: [shobe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  vezifeler           vezifeler             @relation(fields: [vezife_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  is_tecrubesi        is_tecrubesi[]
+  istifadeciler       istifadeciler[]
+  mezuniyyetler       mezuniyyetler[]
+  vezife_teyinatlari  vezife_teyinatlari[]
+  elmi_shura_uzvleri  elmi_shura_uzvleri[]
+  rehberlik           rehberlik?
+  sertifikasiya       sertifikasiya[]
+  telim_qruplari      telim_qruplari[]
+
+  @@index([email], map: "idx_emekdaslar_email")
+  @@index([shobe_id], map: "idx_emekdaslar_shobe")
+  @@index([soyad], map: "idx_emekdaslar_soyad")
+  @@index([vezife_id], map: "idx_emekdaslar_vezife")
+  @@schema("kadrlar")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model is_tecrubesi {
+  id             Int        @id @default(autoincrement())
+  emekdas_id     BigInt
+  is_yeri        String
+  vezife         String?
+  baslama_tarixi DateTime?  @db.Date
+  bitme_tarixi   DateTime?  @db.Date
+  qeyd           String?
+  emekdaslar     emekdaslar @relation(fields: [emekdas_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@schema("kadrlar")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model istifadeciler {
+  id         Int         @id @default(autoincrement())
+  email      String      @unique
+  parol_hash String
+  ad_soyad   String
+  rol        String      @default("baxici")
+  emekdas_id BigInt?
+  aktiv      Boolean     @default(true)
+  yaradilma  DateTime    @default(now()) @db.Timestamptz(6)
+  emekdaslar emekdaslar? @relation(fields: [emekdas_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@schema("kadrlar")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model mezuniyyetler {
+  id              Int        @id @default(autoincrement())
+  emekdas_id      BigInt
+  mezuniyyet_tipi String     @default("illik")
+  baslama_tarixi  DateTime   @db.Date
+  bitme_tarixi    DateTime   @db.Date
+  gun_sayi        Int?
+  status          String     @default("tesdiqlendi")
+  qeyd            String?
+  emekdaslar      emekdaslar @relation(fields: [emekdas_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@schema("kadrlar")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model vezife_teyinatlari {
+  id             Int        @id @default(autoincrement())
+  emekdas_id     BigInt
+  vezife_id      Int
+  shobe_id       Int?
+  t_yinat_tarixi DateTime   @default(dbgenerated("CURRENT_DATE")) @map("təyinat_tarixi") @db.Date
+  emr_no         String?
+  status         String     @default("qüvvədədir")
+  qeyd           String?
+  emekdaslar     emekdaslar @relation(fields: [emekdas_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  shobeler       shobeler?  @relation(fields: [shobe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  vezifeler      vezifeler  @relation(fields: [vezife_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@schema("kadrlar")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model aktivler {
+  id            Int       @id @default(autoincrement())
+  ad            String
+  tip           String    @default("avadanlıq")
+  veziyyet      String    @default("yaxşı")
+  deyer         Decimal?  @default(0) @db.Decimal(14, 2)
+  alinma_tarixi DateTime? @db.Date
+  qeyd          String?
+
+  @@index([tip], map: "idx_aktiv_tip")
+  @@schema("logistika")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model binalar {
+  id      Int     @id @default(autoincrement())
+  ad      String
+  unvan   String?
+  sahe_m2 Int?    @default(0)
+  mertebe Int?    @default(1)
+  qeyd    String?
+
+  @@schema("logistika")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model it_sistemleri {
+  id     Int     @id @default(autoincrement())
+  ad     String
+  tip    String  @default("sayt")
+  tesvir String?
+  status String  @default("aktiv")
+  qeyd   String?
+
+  @@schema("logistika")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model budce {
+  id                    Int                     @id @default(autoincrement())
+  il                    Int
+  menbe                 String                  @default("dovlet")
+  mebleg                Decimal?                @db.Decimal(14, 2)
+  qeyd                  String?
+  maliyye_emeliyyatlari maliyye_emeliyyatlari[]
+
+  @@index([il], map: "idx_budce_il")
+  @@schema("maliyye")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model maliyye_emeliyyatlari {
+  id       Int       @id @default(autoincrement())
+  budce_id Int?
+  nov      String    @default("xerc")
+  mebleg   Decimal?  @db.Decimal(14, 2)
+  tarix    DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Date
+  tesvir   String?
+  qeyd     String?
+  budce    budce?    @relation(fields: [budce_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([budce_id], map: "idx_emeliyyat_budce")
+  @@schema("maliyye")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model muqavileler {
+  id             Int       @id @default(autoincrement())
+  ad             String
+  qarsi_teref    String
+  mebleg         Decimal?  @db.Decimal(14, 2)
+  baslama_tarixi DateTime? @db.Date
+  bitme_tarixi   DateTime? @db.Date
+  status         String    @default("qüvvədədir")
+  qeyd           String?
+
+  @@index([status], map: "idx_muqavile_status")
+  @@schema("maliyye")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model satinalmalar {
+  id     Int       @id @default(autoincrement())
+  ad     String
+  nov    String    @default("mal")
+  mebleg Decimal?  @db.Decimal(14, 2)
+  tarix  DateTime? @default(dbgenerated("CURRENT_DATE")) @db.Date
+  status String    @default("elan")
+  qeyd   String?
+
+  @@index([status], map: "idx_satinalma_status")
+  @@schema("maliyye")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model metodik_vesaitler {
+  id      Int     @id @default(autoincrement())
+  ad      String
+  nov     String  @default("vesait")
+  fenn    String?
+  il      Int?
+  muellif String?
+  say     Int?    @default(100)
+  qeyd    String?
+
+  @@schema("metodika")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model metodik_xidmetler {
+  id     Int     @id @default(autoincrement())
+  ad     String
+  tip    String  @default("meslehet")
+  tesvir String?
+  status String  @default("aktiv")
+
+  @@schema("metodika")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model cinsiyyet {
+  id         Int          @id @default(autoincrement())
+  ad         String       @unique
+  qisa_ad    String
+  emekdaslar emekdaslar[]
+
+  @@schema("ortaq")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model elmi_adlar {
+  id                 Int                  @id @default(autoincrement())
+  ad                 String               @unique
+  qisa_ad            String
+  emekdaslar         emekdaslar[]
+  elmi_shura_uzvleri elmi_shura_uzvleri[]
+
+  @@schema("ortaq")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model elmi_dereceler {
+  id                 Int                  @id @default(autoincrement())
+  ad                 String               @unique
+  qisa_ad            String
+  emekdaslar         emekdaslar[]
+  elmi_shura_uzvleri elmi_shura_uzvleri[]
+
+  @@schema("ortaq")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model is_statuslari {
+  id         Int          @id @default(autoincrement())
+  ad         String       @unique
+  tesvir     String?
+  aktiv      Boolean      @default(true)
+  emekdaslar emekdaslar[]
+
+  @@schema("ortaq")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model beynelxalq_qiymetlendirmeler {
+  id             Int     @id @default(autoincrement())
+  ad             String
+  qisa_ad        String
+  tsikl          String?
+  il             Int?
+  istirakci_sayi Int?    @default(0)
+  status         String  @default("hazirlıq")
+  qeyd           String?
+
+  @@index([qisa_ad], map: "idx_beynelxalq_qisa_ad")
+  @@schema("qiymetlendirme")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model monitorinq_hesabatlari {
+  id                  Int       @id @default(autoincrement())
+  ad                  String
+  nov                 String    @default("illik")
+  il                  Int?
+  tesvir              String?
+  status              String    @default("hazirlanir")
+  hazirlayan_shobe_id Int?
+  qeyd                String?
+  shobeler            shobeler? @relation(fields: [hazirlayan_shobe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([il], map: "idx_monitorinq_il")
+  @@schema("qiymetlendirme")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model statistik_gostericiler {
+  id        Int      @id @default(autoincrement())
+  gosterici String
+  deyer     Decimal? @db.Decimal(14, 2)
+  vahid     String?
+  il        Int?
+  bolge     String?
+  qeyd      String?
+
+  @@index([il], map: "idx_statistik_il")
+  @@schema("qiymetlendirme")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model emrler {
+  id        Int      @id @default(autoincrement())
+  emr_no    String
+  tarix     DateTime @default(dbgenerated("CURRENT_DATE")) @db.Date
+  movzu     String
+  imzalayan String?
+  qeyd      String?
+
+  @@schema("sened")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model sened_novleri {
+  id       Int        @id @default(autoincrement())
+  ad       String     @unique
+  tesvir   String?
+  senedler senedler[]
+
+  @@schema("sened")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model senedler {
+  id            Int           @id @default(autoincrement())
+  nov_id        Int
+  nomre         String?
+  tarix         DateTime      @default(dbgenerated("CURRENT_DATE")) @db.Date
+  movzu         String
+  gonderen      String?
+  alan          String?
+  status        String        @default("qeydiyyatda")
+  qeyd          String?
+  sened_novleri sened_novleri @relation(fields: [nov_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([nov_id], map: "idx_senedler_nov")
+  @@index([tarix], map: "idx_senedler_tarix")
+  @@schema("sened")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model elmi_shura_iclaslari {
+  id                   Int                    @id @default(autoincrement())
+  iclas_tarixi         DateTime               @db.Date
+  novu                 String                 @default("novbeti")
+  gundelik             String?
+  kecirildiyi_yer      String?
+  protokol_no          String?
+  qeyd                 String?
+  elmi_shura_qerarlari elmi_shura_qerarlari[]
+
+  @@schema("struktur")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model elmi_shura_qerarlari {
+  id                   Int                  @id @default(autoincrement())
+  iclas_id             Int
+  qerar_no             String?
+  qerar_metni          String
+  icraci_shobe_id      Int?
+  son_tarix            DateTime?            @db.Date
+  status               String               @default("icrada")
+  qeyd                 String?
+  elmi_shura_iclaslari elmi_shura_iclaslari @relation(fields: [iclas_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  shobeler             shobeler?            @relation(fields: [icraci_shobe_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@schema("struktur")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model elmi_shura_uzvleri {
+  id             Int             @id @default(autoincrement())
+  emekdas_id     BigInt?
+  ad_soyad       String
+  vezife_id      Int?
+  elmi_derece_id Int?
+  elmi_ad_id     Int?
+  status         String          @default("uzv")
+  qosulma_tarixi DateTime?       @db.Date
+  aktiv          Boolean         @default(true)
+  elmi_adlar     elmi_adlar?     @relation(fields: [elmi_ad_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  elmi_dereceler elmi_dereceler? @relation(fields: [elmi_derece_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  emekdaslar     emekdaslar?     @relation(fields: [emekdas_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  vezifeler      vezifeler?      @relation(fields: [vezife_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@schema("struktur")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model merkezler {
+  id               Int          @id @default(autoincrement())
+  ad               String       @unique
+  tip              String       @default("merkez")
+  tesvir           String?
+  unvan            String?
+  telefon          String?
+  email            String?
+  yaradilma_tarixi DateTime?    @db.Date
+  aktiv            Boolean      @default(true)
+  emekdaslar       emekdaslar[]
+  rehberlik        rehberlik[]
+  shobeler         shobeler[]
+
+  @@schema("struktur")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model rehberlik {
+  id         Int        @id @default(autoincrement())
+  emekdas_id BigInt     @unique
+  vezife_id  Int
+  merkez_id  Int?
+  sira       Int        @default(99)
+  tesvir     String?
+  aktiv      Boolean    @default(true)
+  emekdaslar emekdaslar @relation(fields: [emekdas_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  merkezler  merkezler? @relation(fields: [merkez_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  vezifeler  vezifeler  @relation(fields: [vezife_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@schema("struktur")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model shobeler {
+  id                     Int                      @id @default(autoincrement())
+  merkez_id              Int
+  ad                     String
+  qisa_ad                String?
+  tesvir                 String?
+  telefon                String?
+  email                  String?
+  aktiv                  Boolean                  @default(true)
+  emekdaslar             emekdaslar[]
+  vezife_teyinatlari     vezife_teyinatlari[]
+  monitorinq_hesabatlari monitorinq_hesabatlari[]
+  elmi_shura_qerarlari   elmi_shura_qerarlari[]
+  merkezler              merkezler                @relation(fields: [merkez_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([merkez_id, ad])
+  @@index([merkez_id], map: "idx_shobeler_merkez")
+  @@schema("struktur")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model vezifeler {
+  id                 Int                  @id @default(autoincrement())
+  ad                 String               @unique
+  seviyye            Int                  @default(5)
+  tesvir             String?
+  emekdaslar         emekdaslar[]
+  vezife_teyinatlari vezife_teyinatlari[]
+  elmi_shura_uzvleri elmi_shura_uzvleri[]
+  rehberlik          rehberlik[]
+
+  @@schema("struktur")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model imtahanlar {
+  id             Int       @id @default(autoincrement())
+  ad             String
+  tip            String    @default("sertifikasiya")
+  tarix          DateTime? @db.Date
+  istirakci_sayi Int?      @default(0)
+  qeyd           String?
+
+  @@schema("tehsil")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model sertifikasiya {
+  id             Int         @id @default(autoincrement())
+  emekdas_id     BigInt?
+  ad_soyad       String
+  tip            String      @default("müəllim")
+  imtahan_tarixi DateTime?   @db.Date
+  bal            Decimal?    @db.Decimal(5, 1)
+  netice         String      @default("keçdi")
+  sertifikat_no  String?
+  qeyd           String?
+  emekdaslar     emekdaslar? @relation(fields: [emekdas_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([netice], map: "idx_sertifikasiya_netice")
+  @@index([imtahan_tarixi], map: "idx_sertifikasiya_tarix")
+  @@schema("tehsil")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model telim_istirakcilari {
+  id             Int            @id @default(autoincrement())
+  qrup_id        Int
+  ad             String
+  soyad          String
+  ata_adi        String
+  is_yeri        String?
+  sertifikat_no  String?
+  status         String         @default("bitirdi")
+  qeyd           String?
+  telim_qruplari telim_qruplari @relation(fields: [qrup_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([qrup_id], map: "idx_telim_istirakci_qrup")
+  @@schema("tehsil")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model telim_proqramlari {
+  id             Int              @id @default(autoincrement())
+  ad             String
+  kateqoriya     String           @default("umumi")
+  saat           Int?             @default(20)
+  hedef_qrup     String?
+  tesvir         String?
+  telim_qruplari telim_qruplari[]
+
+  @@schema("tehsil")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model telim_qruplari {
+  id                  Int                   @id @default(autoincrement())
+  proqram_id          Int
+  ad                  String
+  telimci_id          BigInt?
+  baslama_tarixi      DateTime?             @db.Date
+  bitme_tarixi        DateTime?             @db.Date
+  status              String                @default("planlasdirilir")
+  qeyd                String?
+  telim_istirakcilari telim_istirakcilari[]
+  telim_proqramlari   telim_proqramlari     @relation(fields: [proqram_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  emekdaslar          emekdaslar?           @relation(fields: [telimci_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([proqram_id], map: "idx_telim_qruplari_proqram")
+  @@schema("tehsil")
+}

@@ -68,10 +68,13 @@ ADIMLAR = [
 
 # -p işarəsi: arana qovluqları da yaradır və qovluq artıq
 # varsa xəta vermir («already exists» deməz).
-mkdir -p ~/Deepseek_ARTI/DS_Backend
+# Layihənin yolu. Başqa yerə qurmaq istəsəniz bu sətri dəyişin.
+LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+
+mkdir -p "$LAYIHE"
 
 # İçinə keçirik
-cd ~/Deepseek_ARTI/DS_Backend
+cd "$LAYIHE"
 
 echo "── Qovluq yerindədirmi? ──"
 pwd

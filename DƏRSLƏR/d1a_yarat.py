@@ -65,22 +65,24 @@ def sarla(skript: str) -> str:
             "(\n" + skript.strip("\n") + "\n)\n")
 
 
-def muhit():
+def muhit(layihe=BACKEND):
     o = os.environ.copy()
     o.update({"npm_config_cache": "/tmp/npmcache", "NO_COLOR": "1",
               "TERM": "dumb", "PYTHONIOENCODING": "utf-8",
               "LANG": "en_US.UTF-8", "LC_ALL": "en_US.UTF-8",
-              "PORT": PORT, "A": API, "LAYIHE": str(BACKEND)})
+              "PORT": PORT, "A": API})
+    if layihe:
+        o["LAYIHE"] = str(layihe)
+    else:
+        o.pop("LAYIHE", None)
     o.pop("DATABASE_URL", None)
     o.pop("PGHOST", None)
     return o
 
 
-def islet(emr, timeout=1200, cwd=None, layihe=None):
-    m = muhit()
-    if layihe:
-        m["LAYIHE"] = str(layihe)
-    r = subprocess.run(["bash", "-c", emr], cwd=str(cwd or BACKEND), env=m,
+def islet(emr, timeout=1200, cwd=None, layihe=BACKEND):
+    r = subprocess.run(["bash", "-c", emr], cwd=str(cwd or BACKEND),
+                       env=muhit(layihe),
                        capture_output=True, text=True, timeout=timeout,
                        encoding="utf-8", errors="replace")
     return re.sub(r"\x1b\[[0-9;]*m", "", r.stdout + r.stderr).rstrip()
@@ -117,26 +119,11 @@ def icra():
     print("ADDIMLAR (%d):" % len(ADIMLAR))
     for a in ADIMLAR:
         if a["no"] == 1 and a["c"].strip():
-            # ⚠️ ADDIM 1 qovluğu SIFIRDAN yaradır. Çıxış dürüst olsun deyə
-            # əvvəlcə həqiqi qovluğu silirik və əmri ev qovluğundan işlədirik.
-            import shutil
-            home_arti = pathlib.Path.home() / "Deepseek_ARTI"
-            gercek = home_arti / "DS_Backend"
-            # ⚠️ Qovluğun ÖZÜNÜ silmirik! İstifadəçinin Terminal pəncərəsi
-            # onun içində ola bilər — silinsə shell «işlədiyim qovluq yoxdur»
-            # vəziyyətinə düşür və hər əmr "No such file or directory" verir.
-            # Ona görə yalnız İÇİNİ boşaldırıq, qovluq özü qalır.
-            if gercek.exists():
-                for oge in gercek.iterdir():
-                    if oge.is_dir() and not oge.is_symlink():
-                        shutil.rmtree(oge)
-                    else:
-                        oge.unlink()
-            # Şagird B hissəsində package.json yazır, SONRA C-ni işlədir.
-            # Ona görə fayl qovluqda hazır olmalıdır ki, npm install işləsin.
-            gercek.mkdir(parents=True, exist_ok=True)
-            shutil.copy(BACKEND / "package.json", gercek / "package.json")
-            cixis = islet(a["c"], cwd=home_arti, timeout=1800)
+            # ⚠️ ADDIM 1 yol dəyişəni TƏYİN ETMİR — standart dəyər işlədilir,
+            # yəni istifadəçinin REAL qovluğu. HEÇ NƏ SİLİNMİR və HEÇ NƏ
+            # BOŞALDILMIR: əmr sadəcə `mkdir -p` + `cd` + `ls` + `npm install`
+            # edir. Beləliklə istifadəçinin işi toxunulmaz qalır.
+            cixis = islet(a["c"], cwd=pathlib.Path.home(), layihe="")
         else:
             cixis = islet(a["c"]) if a["c"].strip() else ""
         kes["addim"][str(a["no"])] = cixis
@@ -264,6 +251,41 @@ footer { margin-top:3rem; padding-top:1.4rem; border-top:2px solid #e2e8f0;
 """
 
 
+def c_metn(a) -> str:
+    """C blokunu mötərizəyə alır və B fayllarının yerində olduğunu yoxlayır.
+
+    ⚠️ Şagird bir addımda BİRDƏN ÇOX fayl bloku olanda yalnız birini
+    kopyalaya bilər (məsələn ADDIM 5-də «schema.prisma» var, amma
+    «prisma.config.ts» yox). O zaman Prisma anlaşılmaz xəta verir.
+    Bu yoxlama dərhal deyir ki, hansı fayl çatışmır.
+    """
+    c = a["c"].strip("\n")
+    fayllar = a.get("fayllar", [])
+    setir = ['cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"']
+    if fayllar:
+        setir += [
+            '',
+            '# ⚠️ ŞƏRT: bu addımın B blokundaki fayllar yerində olmalıdır',
+            'catmadi=0',
+            'for f in %s; do' % " ".join('"%s"' % f for f in fayllar),
+            '  [ -f "$f" ] || { echo "  ✗ $f YOXDUR"; catmadi=1; }',
+            'done',
+            'if [ "$catmadi" = "1" ]; then',
+            '  echo ""',
+            '  echo "╔══════════════════════════════════════════════════════════╗"',
+            '  echo "║  ⚠️  B BLOKUNDAKI FAYLLAR YOXDUR                         ║"',
+            '  echo "║  HƏLL: bu addımın B blok(lar)ını KOPYALA ilə işlədin,    ║"',
+            '  echo "║        sonra bu addıma qayıdın.                          ║"',
+            '  echo "╚══════════════════════════════════════════════════════════╝"',
+            '  exit 1',
+            'fi',
+            'echo "  ✓ B faylları yerindədir"',
+        ]
+    setir.append('')
+    setir.append(c)
+    return "(\n" + "\n".join(setir) + "\n)"
+
+
 def addim_html(a, kes):
     cixis = kes["addim"].get(str(a["no"]), "")
     anlayis = "".join("<dt>%s</dt><dd>%s</dd>" % (e(k), v)
@@ -321,7 +343,7 @@ def addim_html(a, kes):
         no=a["no"], ad=e(a["ad"]), a=a["a"], anlayis=anlayis, fayllar=fayllar,
         kod_izah=a["kod_izah"],
         c=e(a["c"].strip()),
-        cg=e("(\n" + a["c"].strip() + "\n)"),
+        cg=e(c_metn(a)),
         olmaz=e(a["olmaz"]),
         c_izah=a["c_izah"], cixis=e(cixis), d_izah=a["d_izah"], suallar=suallar)
 
