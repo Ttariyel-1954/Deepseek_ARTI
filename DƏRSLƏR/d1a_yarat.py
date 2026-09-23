@@ -85,8 +85,12 @@ def blok(yol, govde, bashliq=None):
     dir_ = os.path.dirname(yol)
     pre = ("mkdir -p %s\n" % dir_) if dir_ else ""
     ad = bashliq or yol
-    return ('  <p class="fayl-ad">%s</p>\n<pre><code>%s</code></pre>\n'
-            % (e(ad), e(pre + "cat > %s <<'EOF'\n%s\nEOF" % (yol, govde))))
+    kod = pre + "cat > %s <<'EOF'\n%s\nEOF" % (yol, govde)
+    return ('  <div class="kod-blok b-kod">\n'
+            '    <div class="kod-basliq"><span>%s</span>'
+            '<button class="kopyala">KOPYALA</button></div>\n'
+            '<pre><code>%s</code></pre>\n  </div>\n'
+            % (e(ad), e(kod)))
 
 
 # ── İCRA ────────────────────────────────────────────────────────────
@@ -198,6 +202,22 @@ code { font-family:ui-monospace,Menlo,monospace; }
 .test .giris-metn { color:#475569; font-size:.95rem; margin-bottom:1rem; }
 .neticə { background:#065f46; color:#a7f3d0; font-size:.76rem; font-weight:700;
           padding:.35rem .8rem; border-radius:8px 8px 0 0; letter-spacing:.4px; }
+.kod-blok { margin-bottom:.9rem; }
+.kod-basliq { display:flex; justify-content:space-between; align-items:center;
+  background:#334155; color:#cbd5e1; font-size:.76rem; font-weight:700;
+  letter-spacing:.4px; padding:.38rem .85rem; border-radius:8px 8px 0 0;
+  text-transform:uppercase; }
+.kod-blok pre { border-radius:0 0 8px 8px; margin-bottom:0; }
+.kod-basliq.cixis-basliq { background:#4c1d95; color:#ddd6fe; }
+.kopyala, .kopyala-hamisi { background:#0d9488; color:#fff; border:none;
+  padding:.26rem .72rem; border-radius:6px; font-size:.72rem; font-weight:800;
+  cursor:pointer; letter-spacing:.3px; font-family:inherit; }
+.kopyala:hover, .kopyala-hamisi:hover { background:#0f766e; }
+.kopyala.ok, .kopyala-hamisi.ok { background:#16a34a; }
+.kopyala-hamisi { display:block; width:100%; margin:.2rem 0 1rem; padding:.55rem;
+  font-size:.8rem; background:#115e59; }
+.cixis-xeber { background:#fef2f2; border:1px solid #fecaca; color:#b91c1c;
+  border-radius:8px; padding:.55rem .9rem; font-size:.88rem; margin-bottom:.7rem; }
 footer { margin-top:3rem; padding-top:1.4rem; border-top:2px solid #e2e8f0;
          color:#94a3b8; font-size:.85rem; text-align:center; }
 @media print { body{background:#fff;padding:0;} .konteyner{box-shadow:none;padding:0;} }
@@ -224,6 +244,8 @@ def addim_html(a, kes):
 <div class="hisse hisse-b">
   <span class="hisse-basliq">B · Kod</span>
   %(fayllar)s
+  <button class="kopyala-hamisi" data-addim="a%(no)d">
+    ADDIMIN BÜTÜN KODUNU KOPYALA (bütün fayllar bir yerdə)</button>
   <h4 style="margin-top:1rem;color:#334155">Kodun sətir-sətir izahı</h4>
   %(kod_izah)s
 </div>
@@ -231,14 +253,24 @@ def addim_html(a, kes):
 <div class="hisse hisse-c">
   <span class="hisse-basliq">C · Yoxlama — həqiqi çıxış</span>
   <p>Aşağıdaki əmrləri işlədin. Nəticə elə bu dərsin D hissəsində göstərilib:</p>
-  <pre class="komanda"><code>%(c)s</code></pre>
+  <div class="kod-blok">
+    <div class="kod-basliq"><span>Terminal əmrləri</span>
+      <button class="kopyala">KOPYALA</button></div>
+    <pre class="komanda"><code>%(c)s</code></pre>
+  </div>
   <div class="olmaz"><h4>⚠️ Bu kod olmasa nə olardı</h4><pre><code>%(olmaz)s</code></pre>
     <p>%(c_izah)s</p></div>
 </div>
 
 <div class="hisse hisse-d">
   <span class="hisse-basliq">D · Sistemin vəziyyəti — həqiqi çıxış</span>
-  <pre class="cixis"><code>%(cixis)s</code></pre>
+  <p class="cixis-xeber">⚠️ Bu blok <strong>çıxışdır</strong> — kopyalamaq
+  üçün deyil, oxumaq üçündür. Əmrlər C hissəsindədir.</p>
+  <div class="kod-blok">
+    <div class="kod-basliq cixis-basliq">
+      <span>ÇIXIŞ — real nəticə</span></div>
+    <pre class="cixis"><code>%(cixis)s</code></pre>
+  </div>
   <div class="oldu"><h4>✔ Nəticə</h4>%(d_izah)s</div>
 </div>
 
@@ -256,9 +288,12 @@ def test_html(t, kes):
     return """<article class="test" id="t-%(id)s">
   <h3><span class="no">%(no)s</span> %(ad)s</h3>
   <p class="giris-metn">%(giris)s</p>
-  <p class="fayl-ad" style="background:#0f172a">Terminal skripti —
-     fayl: DƏRSLƏR/testler/%(no)s.sh</p>
-<pre><code>%(skript)s</code></pre>
+  <div class="kod-blok">
+    <div class="kod-basliq"><span>Terminal skripti —
+      DƏRSLƏR/testler/%(no)s.sh</span>
+      <button class="kopyala">KOPYALA</button></div>
+    <pre><code>%(skript)s</code></pre>
+  </div>
   <div class="neticə" style="background:%(rəng)s">GÖZLƏNİLƏN NƏTİCƏ — real çıxış (exit %(kod)s)</div>
 <pre class="cixis" style="border-radius:0 0 8px 8px"><code>%(cixis)s</code></pre>
 </article>""" % dict(
@@ -266,6 +301,57 @@ def test_html(t, kes):
         giris=t["giris"], skript=e(sarla(t["skript"]).strip()),
         rəng="#7f1d1d" if xeta else "#065f46", kod=n.get("kod", "?"),
         cixis=e(n.get("cixis", "(icra edilməyib)")))
+
+
+JS = """
+// ⚠️ file:// ilə açıldıqda navigator.clipboard işləmir — ona görə
+// köhnə üsul (execCommand) ehtiyat variant kimi saxlanılır.
+function kopyalaMetn(metn, geri) {
+  function kocur() {
+    var t = document.createElement('textarea');
+    t.value = metn;
+    t.style.position = 'fixed';
+    t.style.top = '-1000px';
+    document.body.appendChild(t);
+    t.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(t);
+    geri();
+  }
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(metn).then(geri).catch(kocur);
+  } else {
+    kocur();
+  }
+}
+
+function qisaGeri(d, metn) {
+  var kohne = d.textContent;
+  d.textContent = metn;
+  d.classList.add('ok');
+  setTimeout(function () { d.textContent = kohne; d.classList.remove('ok'); }, 1800);
+}
+
+document.querySelectorAll('.kopyala').forEach(function (d) {
+  d.addEventListener('click', function () {
+    var kod = d.closest('.kod-blok').querySelector('pre code');
+    kopyalaMetn(kod.innerText, function () { qisaGeri(d, 'KOPYALANDI'); });
+  });
+});
+
+document.querySelectorAll('.kopyala-hamisi').forEach(function (d) {
+  d.addEventListener('click', function () {
+    var addim = document.getElementById(d.dataset.addim);
+    var parcalar = [];
+    addim.querySelectorAll('.b-kod pre code').forEach(function (k) {
+      parcalar.push(k.innerText);
+    });
+    kopyalaMetn(parcalar.join('\\n\\n'), function () {
+      qisaGeri(d, parcalar.length + ' KOD BLOKU KOPYALANDI');
+    });
+  });
+});
+"""
 
 
 def qur(kes):
@@ -339,9 +425,10 @@ onunla tutuşdurun. Testlər bir-birindən asılı deyil.</p>
 </footer>
 
 </div>
+<script>%s</script>
 </body>
 </html>
-""" % (CSS, mund, govde, testler)
+""" % (CSS, mund, govde, testler, JS)
 
 
 ISLEDICI = r'''#!/bin/bash

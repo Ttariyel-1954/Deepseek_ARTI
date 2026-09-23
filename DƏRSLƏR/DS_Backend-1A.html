@@ -80,6 +80,22 @@ code { font-family:ui-monospace,Menlo,monospace; }
 .test .giris-metn { color:#475569; font-size:.95rem; margin-bottom:1rem; }
 .neticə { background:#065f46; color:#a7f3d0; font-size:.76rem; font-weight:700;
           padding:.35rem .8rem; border-radius:8px 8px 0 0; letter-spacing:.4px; }
+.kod-blok { margin-bottom:.9rem; }
+.kod-basliq { display:flex; justify-content:space-between; align-items:center;
+  background:#334155; color:#cbd5e1; font-size:.76rem; font-weight:700;
+  letter-spacing:.4px; padding:.38rem .85rem; border-radius:8px 8px 0 0;
+  text-transform:uppercase; }
+.kod-blok pre { border-radius:0 0 8px 8px; margin-bottom:0; }
+.kod-basliq.cixis-basliq { background:#4c1d95; color:#ddd6fe; }
+.kopyala, .kopyala-hamisi { background:#0d9488; color:#fff; border:none;
+  padding:.26rem .72rem; border-radius:6px; font-size:.72rem; font-weight:800;
+  cursor:pointer; letter-spacing:.3px; font-family:inherit; }
+.kopyala:hover, .kopyala-hamisi:hover { background:#0f766e; }
+.kopyala.ok, .kopyala-hamisi.ok { background:#16a34a; }
+.kopyala-hamisi { display:block; width:100%; margin:.2rem 0 1rem; padding:.55rem;
+  font-size:.8rem; background:#115e59; }
+.cixis-xeber { background:#fef2f2; border:1px solid #fecaca; color:#b91c1c;
+  border-radius:8px; padding:.55rem .9rem; font-size:.88rem; margin-bottom:.7rem; }
 footer { margin-top:3rem; padding-top:1.4rem; border-top:2px solid #e2e8f0;
          color:#94a3b8; font-size:.85rem; text-align:center; }
 @media print { body{background:#fff;padding:0;} .konteyner{box-shadow:none;padding:0;} }
@@ -152,6 +168,8 @@ footer { margin-top:3rem; padding-top:1.4rem; border-top:2px solid #e2e8f0;
 <div class="hisse hisse-b">
   <span class="hisse-basliq">B · Kod</span>
   
+  <button class="kopyala-hamisi" data-addim="a1">
+    ADDIMIN BÜTÜN KODUNU KOPYALA (bütün fayllar bir yerdə)</button>
   <h4 style="margin-top:1rem;color:#334155">Kodun sətir-sətir izahı</h4>
   <p>Bu addımda fayl yaradılmır — yalnız qovluq. Aşağıdaki əmrlər
         qovluğu yaradır və içinə girir:</p>
@@ -171,7 +189,10 @@ footer { margin-top:3rem; padding-top:1.4rem; border-top:2px solid #e2e8f0;
 <div class="hisse hisse-c">
   <span class="hisse-basliq">C · Yoxlama — həqiqi çıxış</span>
   <p>Aşağıdaki əmrləri işlədin. Nəticə elə bu dərsin D hissəsində göstərilib:</p>
-  <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+  <div class="kod-blok">
+    <div class="kod-basliq"><span>Terminal əmrləri</span>
+      <button class="kopyala">KOPYALA</button></div>
+    <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
 
 echo "── Qovluq yerindədirmi? ──"
 pwd
@@ -186,6 +207,7 @@ echo
 echo "── Node hansı qovluqda quraşdırılıb? ──"
 which node
 which npm</code></pre>
+  </div>
   <div class="olmaz"><h4>⚠️ Bu kod olmasa nə olardı</h4><pre><code>$ cd ~/Deepseek_ARTI/DS_Backend
 -bash: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory
 
@@ -206,7 +228,12 @@ which npm</code></pre>
 
 <div class="hisse hisse-d">
   <span class="hisse-basliq">D · Sistemin vəziyyəti — həqiqi çıxış</span>
-  <pre class="cixis"><code>── Qovluq yerindədirmi? ──
+  <p class="cixis-xeber">⚠️ Bu blok <strong>çıxışdır</strong> — kopyalamaq
+  üçün deyil, oxumaq üçündür. Əmrlər C hissəsindədir.</p>
+  <div class="kod-blok">
+    <div class="kod-basliq cixis-basliq">
+      <span>ÇIXIŞ — real nəticə</span></div>
+    <pre class="cixis"><code>── Qovluq yerindədirmi? ──
 /private/tmp/arti1a
 
 ── İçində nə var? (hələ boşdur) ──
@@ -236,6 +263,7 @@ drwxr-xr-x    8 royatalibova  wheel     256 Sep 23 09:29 src
 /opt/homebrew/bin/node
 /opt/homebrew/bin/npm
 bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+  </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>boş bir qovluq</strong> və işləyən
         Node.js. Bu, hələ layihə deyil — sadəcə layihənin yeri. Növbəti addımda
         bu qovluğa <code>package.json</code> əlavə edib onu həqiqi Node.js
@@ -271,7 +299,8 @@ bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or 
 
 <div class="hisse hisse-b">
   <span class="hisse-basliq">B · Kod</span>
-    <p class="fayl-ad">package.json</p>
+    <div class="kod-blok b-kod">
+    <div class="kod-basliq"><span>package.json</span><button class="kopyala">KOPYALA</button></div>
 <pre><code>cat &gt; package.json &lt;&lt;'EOF'
 {
   "name": "ds-backend",
@@ -323,7 +352,10 @@ bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or 
   }
 }
 EOF</code></pre>
+  </div>
 
+  <button class="kopyala-hamisi" data-addim="a2">
+    ADDIMIN BÜTÜN KODUNU KOPYALA (bütün fayllar bir yerdə)</button>
   <h4 style="margin-top:1rem;color:#334155">Kodun sətir-sətir izahı</h4>
   <p><code>package.json</code>-da baxmalı olduğunuz yerlər:</p>
         <p><strong>1) <code>"type": "module"</code></strong> — layihənin müasir
@@ -345,7 +377,10 @@ EOF</code></pre>
 <div class="hisse hisse-c">
   <span class="hisse-basliq">C · Yoxlama — həqiqi çıxış</span>
   <p>Aşağıdaki əmrləri işlədin. Nəticə elə bu dərsin D hissəsində göstərilib:</p>
-  <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+  <div class="kod-blok">
+    <div class="kod-basliq"><span>Terminal əmrləri</span>
+      <button class="kopyala">KOPYALA</button></div>
+    <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
 
 echo "── Layihə haqqında ──"
 python3 -c "
@@ -377,6 +412,7 @@ if [ -d node_modules ]; then
 else
   echo "  ✗ node_modules yoxdur — «npm install» işlədin"
 fi</code></pre>
+  </div>
   <div class="olmaz"><h4>⚠️ Bu kod olmasa nə olardı</h4><pre><code>$ npm run build
 npm error code ENOENT
 npm error syscall open
@@ -404,7 +440,12 @@ npm error Missing script: "test"
 
 <div class="hisse hisse-d">
   <span class="hisse-basliq">D · Sistemin vəziyyəti — həqiqi çıxış</span>
-  <pre class="cixis"><code>── Layihə haqqında ──
+  <p class="cixis-xeber">⚠️ Bu blok <strong>çıxışdır</strong> — kopyalamaq
+  üçün deyil, oxumaq üçündür. Əmrlər C hissəsindədir.</p>
+  <div class="kod-blok">
+    <div class="kod-basliq cixis-basliq">
+      <span>ÇIXIŞ — real nəticə</span></div>
+    <pre class="cixis"><code>── Layihə haqqında ──
   ad       : ds-backend
   versiya  : 0.1.0
   modul tipi: module
@@ -428,6 +469,7 @@ npm error Missing script: "test"
 ── Quraşdırıldımı? ──
   ✓ node_modules var (306 paket)
 bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+  </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: layihə artıq <strong>həqiqi Node.js
         layihəsidir</strong>. <code>npm</code> onu tanıyır, əmrləri işlədə bilir
         və bütün lazımi paketlər <code>node_modules</code>-dadır. Amma hələ
@@ -467,7 +509,8 @@ bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or 
 
 <div class="hisse hisse-b">
   <span class="hisse-basliq">B · Kod</span>
-    <p class="fayl-ad">tsconfig.json</p>
+    <div class="kod-blok b-kod">
+    <div class="kod-basliq"><span>tsconfig.json</span><button class="kopyala">KOPYALA</button></div>
 <pre><code>cat &gt; tsconfig.json &lt;&lt;'EOF'
 {
   "compilerOptions": {
@@ -492,7 +535,9 @@ bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or 
   }
 }
 EOF</code></pre>
-  <p class="fayl-ad">tsconfig.build.json</p>
+  </div>
+  <div class="kod-blok b-kod">
+    <div class="kod-basliq"><span>tsconfig.build.json</span><button class="kopyala">KOPYALA</button></div>
 <pre><code>cat &gt; tsconfig.build.json &lt;&lt;'EOF'
 {
   "extends": "./tsconfig.json",
@@ -503,7 +548,9 @@ EOF</code></pre>
   "exclude": ["node_modules", "test", "dist", "**/*spec.ts"]
 }
 EOF</code></pre>
-  <p class="fayl-ad">nest-cli.json</p>
+  </div>
+  <div class="kod-blok b-kod">
+    <div class="kod-basliq"><span>nest-cli.json</span><button class="kopyala">KOPYALA</button></div>
 <pre><code>cat &gt; nest-cli.json &lt;&lt;'EOF'
 {
   "$schema": "https://json.schemastore.org/nest-cli",
@@ -514,7 +561,10 @@ EOF</code></pre>
   }
 }
 EOF</code></pre>
+  </div>
 
+  <button class="kopyala-hamisi" data-addim="a3">
+    ADDIMIN BÜTÜN KODUNU KOPYALA (bütün fayllar bir yerdə)</button>
   <h4 style="margin-top:1rem;color:#334155">Kodun sətir-sətir izahı</h4>
   <p><strong><code>tsconfig.json</code> — ümumi qaydalar.</strong>
         <code>strict: true</code> bütün sərt yoxlamaları açır. Öyrənmə
@@ -541,7 +591,10 @@ EOF</code></pre>
 <div class="hisse hisse-c">
   <span class="hisse-basliq">C · Yoxlama — həqiqi çıxış</span>
   <p>Aşağıdaki əmrləri işlədin. Nəticə elə bu dərsin D hissəsində göstərilib:</p>
-  <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+  <div class="kod-blok">
+    <div class="kod-basliq"><span>Terminal əmrləri</span>
+      <button class="kopyala">KOPYALA</button></div>
+    <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
 
 echo "── TypeScript-in gördüyü YEKUN ayarlar ──"
 npx tsc --showConfig 2&gt;/dev/null | python3 -c "
@@ -568,6 +621,7 @@ python3 -c "
 import json
 print('  exclude:', json.load(open('tsconfig.build.json')).get('exclude'))
 "</code></pre>
+  </div>
   <div class="olmaz"><h4>⚠️ Bu kod olmasa nə olardı</h4><pre><code>$ npm run build
 src/main.ts:1:1 - error TS1219: Experimental support for decorators is a
 feature that is subject to change in a future release. Set the
@@ -601,7 +655,12 @@ imported from /.../dist/main.js
 
 <div class="hisse hisse-d">
   <span class="hisse-basliq">D · Sistemin vəziyyəti — həqiqi çıxış</span>
-  <pre class="cixis"><code>── TypeScript-in gördüyü YEKUN ayarlar ──
+  <p class="cixis-xeber">⚠️ Bu blok <strong>çıxışdır</strong> — kopyalamaq
+  üçün deyil, oxumaq üçündür. Əmrlər C hissəsindədir.</p>
+  <div class="kod-blok">
+    <div class="kod-basliq cixis-basliq">
+      <span>ÇIXIŞ — real nəticə</span></div>
+    <pre class="cixis"><code>── TypeScript-in gördüyü YEKUN ayarlar ──
   target                   es2023
   module                   nodenext
   moduleResolution         nodenext
@@ -621,6 +680,7 @@ imported from /.../dist/main.js
 ── Yığım nəyi KƏNARDA qoyur? ──
   exclude: ['node_modules', 'test', 'dist', '**/*spec.ts']
 bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+  </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: layihə artıq <strong>TypeScript
         layihəsidir</strong>. Kompilyator decorator-ları tanıyır, sərt tip
         yoxlaması açıqdır və yığım qaydaları ayrılmışdır. Hələ kod yoxdur,
@@ -653,14 +713,17 @@ bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or 
 
 <div class="hisse hisse-b">
   <span class="hisse-basliq">B · Kod</span>
-    <p class="fayl-ad">.env.example</p>
+    <div class="kod-blok b-kod">
+    <div class="kod-basliq"><span>.env.example</span><button class="kopyala">KOPYALA</button></div>
 <pre><code>cat &gt; .env.example &lt;&lt;'EOF'
 # Nümunə — öz dəyərlərinizlə doldurun, bu faylı KOMİT ETMƏYİN
 DATABASE_URL="postgresql://ISTIFADECI:SIFRE@localhost:5432/arti_baza"
 PORT=4000
 NODE_ENV=development
 EOF</code></pre>
-  <p class="fayl-ad">.gitignore</p>
+  </div>
+  <div class="kod-blok b-kod">
+    <div class="kod-basliq"><span>.gitignore</span><button class="kopyala">KOPYALA</button></div>
 <pre><code>cat &gt; .gitignore &lt;&lt;'EOF'
 .env
 .env.*
@@ -670,7 +733,10 @@ dist/
 src/generated/
 *.log
 EOF</code></pre>
+  </div>
 
+  <button class="kopyala-hamisi" data-addim="a4">
+    ADDIMIN BÜTÜN KODUNU KOPYALA (bütün fayllar bir yerdə)</button>
   <h4 style="margin-top:1rem;color:#334155">Kodun sətir-sətir izahı</h4>
   <p><strong><code>.env</code> faylının quruluşu:</strong>
         <code>AD="dəyər"</code>. Dırnaqlar məcburi deyil, amma dəyərdə xüsusi
@@ -695,7 +761,10 @@ EOF</code></pre>
 <div class="hisse hisse-c">
   <span class="hisse-basliq">C · Yoxlama — həqiqi çıxış</span>
   <p>Aşağıdaki əmrləri işlədin. Nəticə elə bu dərsin D hissəsində göstərilib:</p>
-  <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+  <div class="kod-blok">
+    <div class="kod-basliq"><span>Terminal əmrləri</span>
+      <button class="kopyala">KOPYALA</button></div>
+    <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
 unset DATABASE_URL PGHOST
 
 echo "── .env faylı (şifrə GİZLƏDİLİR) ──"
@@ -734,6 +803,7 @@ echo
 echo "── .env həqiqətən qorunurmu? ──"
 cd ~/Deepseek_ARTI &amp;&amp; git check-ignore -v DS_Backend/.env 2&gt;/dev/null || echo "  (layihə hələ git-də deyil)"
 cd ~/Deepseek_ARTI/DS_Backend</code></pre>
+  </div>
   <div class="olmaz"><h4>⚠️ Bu kod olmasa nə olardı</h4><pre><code>$ git add -A &amp;&amp; git commit -m "ilk versiya"
 $ git log --oneline
 a1b2c3d ilk versiya
@@ -760,7 +830,12 @@ const url = 'postgresql://arti_user:arti_secret_2025@localhost:5432/arti_baza';
 
 <div class="hisse hisse-d">
   <span class="hisse-basliq">D · Sistemin vəziyyəti — həqiqi çıxış</span>
-  <pre class="cixis"><code>── .env faylı (şifrə GİZLƏDİLİR) ──
+  <p class="cixis-xeber">⚠️ Bu blok <strong>çıxışdır</strong> — kopyalamaq
+  üçün deyil, oxumaq üçündür. Əmrlər C hissəsindədir.</p>
+  <div class="kod-blok">
+    <div class="kod-basliq cixis-basliq">
+      <span>ÇIXIŞ — real nəticə</span></div>
+    <pre class="cixis"><code>── .env faylı (şifrə GİZLƏDİLİR) ──
   DATABASE_URL       ••••••••••••••••••••••••  (dəyər gizlədilib)
   PORT               4000
   NODE_ENV           development
@@ -785,6 +860,7 @@ const url = 'postgresql://arti_user:arti_secret_2025@localhost:5432/arti_baza';
 .gitignore:6:.env	DS_Backend/.env
 bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory
 bash: line 38: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+  </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>şifrələr koddan ayrılıb</strong>
         və git-dən qorunur. Bu andan etibarən kod yaza bilərik — heç bir yerdə
         şifrə yazmayacağıq, sadəcə <code>process.env.DATABASE_URL</code>
@@ -818,7 +894,8 @@ bash: line 38: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or
 
 <div class="hisse hisse-b">
   <span class="hisse-basliq">B · Kod</span>
-    <p class="fayl-ad">prisma/schema.prisma</p>
+    <div class="kod-blok b-kod">
+    <div class="kod-basliq"><span>prisma/schema.prisma</span><button class="kopyala">KOPYALA</button></div>
 <pre><code>mkdir -p prisma
 cat &gt; prisma/schema.prisma &lt;&lt;'EOF'
 generator client {
@@ -1561,7 +1638,9 @@ model telim_qruplari {
   @@schema("tehsil")
 }
 EOF</code></pre>
-  <p class="fayl-ad">prisma.config.ts</p>
+  </div>
+  <div class="kod-blok b-kod">
+    <div class="kod-basliq"><span>prisma.config.ts</span><button class="kopyala">KOPYALA</button></div>
 <pre><code>cat &gt; prisma.config.ts &lt;&lt;'EOF'
 import 'dotenv/config';
 import { defineConfig, env } from 'prisma/config';
@@ -1572,7 +1651,10 @@ export default defineConfig({
   datasource: { url: env('DATABASE_URL') },
 });
 EOF</code></pre>
+  </div>
 
+  <button class="kopyala-hamisi" data-addim="a5">
+    ADDIMIN BÜTÜN KODUNU KOPYALA (bütün fayllar bir yerdə)</button>
   <h4 style="margin-top:1rem;color:#334155">Kodun sətir-sətir izahı</h4>
   <p><strong>Başlanğıc sxem yalnız iki blokdan ibarətdir:</strong></p>
         <p><code>generator client</code> — hansı kod yaradılsın və hara
@@ -1598,7 +1680,10 @@ EOF</code></pre>
 <div class="hisse hisse-c">
   <span class="hisse-basliq">C · Yoxlama — həqiqi çıxış</span>
   <p>Aşağıdaki əmrləri işlədin. Nəticə elə bu dərsin D hissəsində göstərilib:</p>
-  <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+  <div class="kod-blok">
+    <div class="kod-basliq"><span>Terminal əmrləri</span>
+      <button class="kopyala">KOPYALA</button></div>
+    <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
 unset DATABASE_URL PGHOST
 
 echo "── Sxemanın əsas blokları ──"
@@ -1621,6 +1706,7 @@ echo
 echo "── Yaradılan klient ──"
 echo "  src/generated/prisma: $(ls src/generated/prisma 2&gt;/dev/null | wc -l | tr -d ' ') fayl"
 [ -f src/generated/prisma/client.ts ] &amp;&amp; echo "  ✓ client.ts var" || echo "  ✗ client.ts YOXDUR"</code></pre>
+  </div>
   <div class="olmaz"><h4>⚠️ Bu kod olmasa nə olardı</h4><pre><code>$ npx prisma db pull
 Error: P1012
 
@@ -1658,7 +1744,12 @@ src/prisma/prisma.service.ts:3:10 - error TS2307: Cannot find module
 
 <div class="hisse hisse-d">
   <span class="hisse-basliq">D · Sistemin vəziyyəti — həqiqi çıxış</span>
-  <pre class="cixis"><code>── Sxemanın əsas blokları ──
+  <p class="cixis-xeber">⚠️ Bu blok <strong>çıxışdır</strong> — kopyalamaq
+  üçün deyil, oxumaq üçündür. Əmrlər C hissəsindədir.</p>
+  <div class="kod-blok">
+    <div class="kod-basliq cixis-basliq">
+      <span>ÇIXIŞ — real nəticə</span></div>
+    <pre class="cixis"><code>── Sxemanın əsas blokları ──
 1:generator client {
 2:  provider = "prisma-client"
 3:  output   = "../src/generated/prisma"
@@ -1695,6 +1786,7 @@ src/prisma/prisma.service.ts:3:10 - error TS2307: Cannot find module
   src/generated/prisma: 7 fayl
   ✓ client.ts var
 bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+  </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>baza artıq TypeScript üçün
         tanışdır</strong>. 48 cədvəl, 12 sxem tiplər kimi mövcuddur. Hələ
         bazaya sorğu göndərə bilmirik — bunun üçün bağlantı qurmalıyıq.
@@ -1726,7 +1818,8 @@ bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or 
 
 <div class="hisse hisse-b">
   <span class="hisse-basliq">B · Kod</span>
-    <p class="fayl-ad">src/prisma/prisma.service.ts</p>
+    <div class="kod-blok b-kod">
+    <div class="kod-basliq"><span>src/prisma/prisma.service.ts</span><button class="kopyala">KOPYALA</button></div>
 <pre><code>mkdir -p src/prisma
 cat &gt; src/prisma/prisma.service.ts &lt;&lt;'EOF'
 import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
@@ -1784,7 +1877,10 @@ export class PrismaService
   }
 }
 EOF</code></pre>
+  </div>
 
+  <button class="kopyala-hamisi" data-addim="a6">
+    ADDIMIN BÜTÜN KODUNU KOPYALA (bütün fayllar bir yerdə)</button>
   <h4 style="margin-top:1rem;color:#334155">Kodun sətir-sətir izahı</h4>
   <p><code>@Injectable()</code> işarəsi NestJS-ə deyir: «bu sinfi
         özün yarada bilərsən». Bu olmasa, NestJS onu tanımır.</p>
@@ -1808,7 +1904,10 @@ EOF</code></pre>
 <div class="hisse hisse-c">
   <span class="hisse-basliq">C · Yoxlama — həqiqi çıxış</span>
   <p>Aşağıdaki əmrləri işlədin. Nəticə elə bu dərsin D hissəsində göstərilib:</p>
-  <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+  <div class="kod-blok">
+    <div class="kod-basliq"><span>Terminal əmrləri</span>
+      <button class="kopyala">KOPYALA</button></div>
+    <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
 unset DATABASE_URL PGHOST
 export npm_config_cache=/tmp/npmcache
 
@@ -1830,6 +1929,7 @@ void (async () =&gt; {
   console.log('  bağlantı bağlandı');
 })();
 "</code></pre>
+  </div>
   <div class="olmaz"><h4>⚠️ Bu kod olmasa nə olardı</h4><pre><code>$ npx tsx -e "import { PrismaService } from './src/prisma/prisma.service.ts'; ..."
 Error: PrismaClientInitializationError:
 Prisma Client could not be constructed.
@@ -1859,7 +1959,12 @@ Error: DATABASE_URL təyin olunmayıb — .env faylını yoxlayın
 
 <div class="hisse hisse-d">
   <span class="hisse-basliq">D · Sistemin vəziyyəti — həqiqi çıxış</span>
-  <pre class="cixis"><code>── Fayl yerindədirmi? ──
+  <p class="cixis-xeber">⚠️ Bu blok <strong>çıxışdır</strong> — kopyalamaq
+  üçün deyil, oxumaq üçündür. Əmrlər C hissəsindədir.</p>
+  <div class="kod-blok">
+    <div class="kod-basliq cixis-basliq">
+      <span>ÇIXIŞ — real nəticə</span></div>
+    <pre class="cixis"><code>── Fayl yerindədirmi? ──
 -rw-r--r--  1 royatalibova  wheel  1547 Sep 23 09:29 src/prisma/prisma.service.ts
 
 ── Baza bağlantısını BİRBAŞA yoxlayaq ──
@@ -1869,6 +1974,7 @@ Error: DATABASE_URL təyin olunmayıb — .env faylını yoxlayın
   gecikmə    : 23 ms
   bağlantı bağlandı
 bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+  </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>TypeScript kodu bazaya
         qoşula bilir</strong>. Bu, çox vacib mərhələdir — artıq «kod» ilə
         «məlumat» arasında körpü var. Amma bu servisi hər modulda ayrıca
@@ -1899,7 +2005,8 @@ bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or 
 
 <div class="hisse hisse-b">
   <span class="hisse-basliq">B · Kod</span>
-    <p class="fayl-ad">src/prisma/prisma.module.ts</p>
+    <div class="kod-blok b-kod">
+    <div class="kod-basliq"><span>src/prisma/prisma.module.ts</span><button class="kopyala">KOPYALA</button></div>
 <pre><code>mkdir -p src/prisma
 cat &gt; src/prisma/prisma.module.ts &lt;&lt;'EOF'
 import { Global, Module } from '@nestjs/common';
@@ -1916,7 +2023,10 @@ import { PrismaService } from './prisma.service.js';
 })
 export class PrismaModule {}
 EOF</code></pre>
+  </div>
 
+  <button class="kopyala-hamisi" data-addim="a7">
+    ADDIMIN BÜTÜN KODUNU KOPYALA (bütün fayllar bir yerdə)</button>
   <h4 style="margin-top:1rem;color:#334155">Kodun sətir-sətir izahı</h4>
   <p><code>@Global()</code> — bu modulu qlobal edir. Diqqət
         yetirin: bu işarə <em>yalnız</em> kök modula qoşulan modullar üçün
@@ -1932,7 +2042,10 @@ EOF</code></pre>
 <div class="hisse hisse-c">
   <span class="hisse-basliq">C · Yoxlama — həqiqi çıxış</span>
   <p>Aşağıdaki əmrləri işlədin. Nəticə elə bu dərsin D hissəsində göstərilib:</p>
-  <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+  <div class="kod-blok">
+    <div class="kod-basliq"><span>Terminal əmrləri</span>
+      <button class="kopyala">KOPYALA</button></div>
+    <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
 
 echo "── Modulun məzmunu ──"
 cat src/prisma/prisma.module.ts | sed 's/^/  /'
@@ -1942,6 +2055,7 @@ grep -n '@Global\|exports' src/prisma/prisma.module.ts | sed 's/^/  /'
 echo
 echo "── Kök modul bu modulu qoşubmu? ──"
 grep -n 'PrismaModule' src/app.module.ts 2&gt;/dev/null | sed 's/^/  /' || echo "  (app.module.ts hələ yoxdur — addım 10-da yaradılacaq)"</code></pre>
+  </div>
   <div class="olmaz"><h4>⚠️ Bu kod olmasa nə olardı</h4><pre><code>$ npm run start:prod
 Error: Nest can't resolve dependencies of the SaglamliqService (?).
 Please make sure that the argument PrismaService at index [0] is
@@ -1967,7 +2081,12 @@ Error: Nest can't resolve dependencies of the SaglamliqService (?).
 
 <div class="hisse hisse-d">
   <span class="hisse-basliq">D · Sistemin vəziyyəti — həqiqi çıxış</span>
-  <pre class="cixis"><code>── Modulun məzmunu ──
+  <p class="cixis-xeber">⚠️ Bu blok <strong>çıxışdır</strong> — kopyalamaq
+  üçün deyil, oxumaq üçündür. Əmrlər C hissəsindədir.</p>
+  <div class="kod-blok">
+    <div class="kod-basliq cixis-basliq">
+      <span>ÇIXIŞ — real nəticə</span></div>
+    <pre class="cixis"><code>── Modulun məzmunu ──
   import { Global, Module } from '@nestjs/common';
   import { PrismaService } from './prisma.service.js';
   
@@ -1991,6 +2110,7 @@ Error: Nest can't resolve dependencies of the SaglamliqService (?).
   3:import { PrismaModule } from './prisma/prisma.module.js';
   12:    PrismaModule,
 bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+  </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>baza bağlantısı bütün layihəyə
         açıqdır</strong>. İstənilən modul <code>PrismaService</code>-i
         konstruktorunda istəyə bilər və NestJS onu avtomatik verəcək. Hələ
@@ -2024,7 +2144,8 @@ bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or 
 
 <div class="hisse hisse-b">
   <span class="hisse-basliq">B · Kod</span>
-    <p class="fayl-ad">src/common/filters/all-exceptions.filter.ts</p>
+    <div class="kod-blok b-kod">
+    <div class="kod-basliq"><span>src/common/filters/all-exceptions.filter.ts</span><button class="kopyala">KOPYALA</button></div>
 <pre><code>mkdir -p src/common/filters
 cat &gt; src/common/filters/all-exceptions.filter.ts &lt;&lt;'EOF'
 import {
@@ -2096,7 +2217,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
   }
 }
 EOF</code></pre>
+  </div>
 
+  <button class="kopyala-hamisi" data-addim="a8">
+    ADDIMIN BÜTÜN KODUNU KOPYALA (bütün fayllar bir yerdə)</button>
   <h4 style="margin-top:1rem;color:#334155">Kodun sətir-sətir izahı</h4>
   <p><code>KOD_XERITESI</code> — status kodunu oxunaqlı ada
         çevirir. Niyə? Çünki <code>if (xeta.kod === 'ICAZE_YOXDUR')</code>
@@ -2118,7 +2242,10 @@ EOF</code></pre>
 <div class="hisse hisse-c">
   <span class="hisse-basliq">C · Yoxlama — həqiqi çıxış</span>
   <p>Aşağıdaki əmrləri işlədin. Nəticə elə bu dərsin D hissəsində göstərilib:</p>
-  <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+  <div class="kod-blok">
+    <div class="kod-basliq"><span>Terminal əmrləri</span>
+      <button class="kopyala">KOPYALA</button></div>
+    <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
 
 echo "── Fayl yerindədirmi? ──"
 ls -l src/common/filters/all-exceptions.filter.ts
@@ -2131,6 +2258,7 @@ grep -A8 'cavab.status(status).json' src/common/filters/all-exceptions.filter.ts
 echo
 echo "── Gözlənilməz xəta loqa yazılırmı? ──"
 grep -n 'log.error' src/common/filters/all-exceptions.filter.ts | sed 's/^/  /'</code></pre>
+  </div>
   <div class="olmaz"><h4>⚠️ Bu kod olmasa nə olardı</h4><pre><code>$ curl -s localhost:4000/api/v1/bele-yol-yoxdur
 {"statusCode":404,"message":"Cannot GET /api/v1/bele-yol-yoxdur","error":"Not Found"}
 
@@ -2161,7 +2289,12 @@ $ curl -s localhost:4000/api/v1/struktur/merkezler?limit=500
 
 <div class="hisse hisse-d">
   <span class="hisse-basliq">D · Sistemin vəziyyəti — həqiqi çıxış</span>
-  <pre class="cixis"><code>── Fayl yerindədirmi? ──
+  <p class="cixis-xeber">⚠️ Bu blok <strong>çıxışdır</strong> — kopyalamaq
+  üçün deyil, oxumaq üçündür. Əmrlər C hissəsindədir.</p>
+  <div class="kod-blok">
+    <div class="kod-basliq cixis-basliq">
+      <span>ÇIXIŞ — real nəticə</span></div>
+    <pre class="cixis"><code>── Fayl yerindədirmi? ──
 -rw-r--r--  1 royatalibova  wheel  2121 Sep 23 09:29 src/common/filters/all-exceptions.filter.ts
 
 ── Status → kod xəritəsi ──
@@ -2187,6 +2320,7 @@ $ curl -s localhost:4000/api/v1/struktur/merkezler?limit=500
 ── Gözlənilməz xəta loqa yazılırmı? ──
   52:      this.log.error(`${sorgu.method} ${sorgu.url} — ${xeta.message}`, xeta.stack);
 bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+  </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>bütün xətalar üçün vahid format
         hazırdır</strong>. Hələ heç bir endpoint yoxdur, amma hansı xəta
         gəlirsə-gəlsin, cavabı bu sinif formalaşdıracaq. Növbəti addımda ilk
@@ -2218,7 +2352,8 @@ bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or 
 
 <div class="hisse hisse-b">
   <span class="hisse-basliq">B · Kod</span>
-    <p class="fayl-ad">src/saglamliq/saglamliq.service.ts</p>
+    <div class="kod-blok b-kod">
+    <div class="kod-basliq"><span>src/saglamliq/saglamliq.service.ts</span><button class="kopyala">KOPYALA</button></div>
 <pre><code>mkdir -p src/saglamliq
 cat &gt; src/saglamliq/saglamliq.service.ts &lt;&lt;'EOF'
 import { Injectable } from '@nestjs/common';
@@ -2255,7 +2390,9 @@ export class SaglamliqService {
   }
 }
 EOF</code></pre>
-  <p class="fayl-ad">src/saglamliq/saglamliq.controller.ts</p>
+  </div>
+  <div class="kod-blok b-kod">
+    <div class="kod-basliq"><span>src/saglamliq/saglamliq.controller.ts</span><button class="kopyala">KOPYALA</button></div>
 <pre><code>mkdir -p src/saglamliq
 cat &gt; src/saglamliq/saglamliq.controller.ts &lt;&lt;'EOF'
 import { Controller, Get } from '@nestjs/common';
@@ -2288,7 +2425,9 @@ export class SaglamliqController {
   }
 }
 EOF</code></pre>
-  <p class="fayl-ad">src/saglamliq/saglamliq.module.ts</p>
+  </div>
+  <div class="kod-blok b-kod">
+    <div class="kod-basliq"><span>src/saglamliq/saglamliq.module.ts</span><button class="kopyala">KOPYALA</button></div>
 <pre><code>mkdir -p src/saglamliq
 cat &gt; src/saglamliq/saglamliq.module.ts &lt;&lt;'EOF'
 import { Module } from '@nestjs/common';
@@ -2301,7 +2440,10 @@ import { SaglamliqService } from './saglamliq.service.js';
 })
 export class SaglamliqModule {}
 EOF</code></pre>
+  </div>
 
+  <button class="kopyala-hamisi" data-addim="a9">
+    ADDIMIN BÜTÜN KODUNU KOPYALA (bütün fayllar bir yerdə)</button>
   <h4 style="margin-top:1rem;color:#334155">Kodun sətir-sətir izahı</h4>
   <p><strong>Service</strong> (<code>saglamliq.service.ts</code>) —
         işi görən hissə. <code>this.prisma.yoxla()</code> çağırır və nəticəni
@@ -2325,7 +2467,10 @@ EOF</code></pre>
 <div class="hisse hisse-c">
   <span class="hisse-basliq">C · Yoxlama — həqiqi çıxış</span>
   <p>Aşağıdaki əmrləri işlədin. Nəticə elə bu dərsin D hissəsində göstərilib:</p>
-  <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+  <div class="kod-blok">
+    <div class="kod-basliq"><span>Terminal əmrləri</span>
+      <button class="kopyala">KOPYALA</button></div>
+    <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
 unset DATABASE_URL PGHOST
 export npm_config_cache=/tmp/npmcache
 
@@ -2349,6 +2494,7 @@ void (async () =&gt; {
   await p.onModuleDestroy();
 })();
 "</code></pre>
+  </div>
   <div class="olmaz"><h4>⚠️ Bu kod olmasa nə olardı</h4><pre><code>$ curl -s localhost:4000/api/v1/saglamliq
 curl: (7) Failed to connect to localhost port 4000: Connection refused
 
@@ -2374,7 +2520,12 @@ $ curl -s localhost:4000/api/v1/saglamliq
 
 <div class="hisse hisse-d">
   <span class="hisse-basliq">D · Sistemin vəziyyəti — həqiqi çıxış</span>
-  <pre class="cixis"><code>── Modulun hissələri ──
+  <p class="cixis-xeber">⚠️ Bu blok <strong>çıxışdır</strong> — kopyalamaq
+  üçün deyil, oxumaq üçündür. Əmrlər C hissəsindədir.</p>
+  <div class="kod-blok">
+    <div class="kod-basliq cixis-basliq">
+      <span>ÇIXIŞ — real nəticə</span></div>
+    <pre class="cixis"><code>── Modulun hissələri ──
   saglamliq.controller.ts
   saglamliq.module.ts
   saglamliq.service.ts
@@ -2397,6 +2548,7 @@ $ curl -s localhost:4000/api/v1/saglamliq
     "vaxt": "2026-09-23T05:45:16.738Z"
   }
 bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+  </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>işləyən servis məntiqi var</strong>,
         amma hələ onu HTTP-yə bağlamamışıq. Yəni kod hazırdır, qapı isə
         bağlıdır. Növbəti addımda kök modulu yaradıb bu hissələri bir-birinə
@@ -2430,7 +2582,8 @@ bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or 
 
 <div class="hisse hisse-b">
   <span class="hisse-basliq">B · Kod</span>
-    <p class="fayl-ad">src/app.module.ts</p>
+    <div class="kod-blok b-kod">
+    <div class="kod-basliq"><span>src/app.module.ts</span><button class="kopyala">KOPYALA</button></div>
 <pre><code>mkdir -p src
 cat &gt; src/app.module.ts &lt;&lt;'EOF'
 import { Module } from '@nestjs/common';
@@ -2450,7 +2603,10 @@ import { SaglamliqModule } from './saglamliq/saglamliq.module.js';
 })
 export class AppModule {}
 EOF</code></pre>
+  </div>
 
+  <button class="kopyala-hamisi" data-addim="a10">
+    ADDIMIN BÜTÜN KODUNU KOPYALA (bütün fayllar bir yerdə)</button>
   <h4 style="margin-top:1rem;color:#334155">Kodun sətir-sətir izahı</h4>
   <p><code>import { Module } from '@nestjs/common'</code> —
         <code>@Module()</code> işarəsini gətirir.</p>
@@ -2469,7 +2625,10 @@ EOF</code></pre>
 <div class="hisse hisse-c">
   <span class="hisse-basliq">C · Yoxlama — həqiqi çıxış</span>
   <p>Aşağıdaki əmrləri işlədin. Nəticə elə bu dərsin D hissəsində göstərilib:</p>
-  <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+  <div class="kod-blok">
+    <div class="kod-basliq"><span>Terminal əmrləri</span>
+      <button class="kopyala">KOPYALA</button></div>
+    <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
 
 echo "── Kök modulun məzmunu ──"
 cat -n src/app.module.ts | sed 's/^/  /'
@@ -2482,6 +2641,7 @@ grep -n 'isGlobal' src/app.module.ts | sed 's/^/  /'
 echo
 echo "── Saglamliq modulu qoşulubmu? ──"
 grep -c 'SaglamliqModule' src/app.module.ts | sed 's/^/  sayı: /'</code></pre>
+  </div>
   <div class="olmaz"><h4>⚠️ Bu kod olmasa nə olardı</h4><pre><code>$ curl -s localhost:4000/api/v1/saglamliq
 {"ugur":false,"xeta":{"kod":"TAPILMADI","mesaj":"Cannot GET /api/v1/saglamliq"},"yol":"/api/v1/saglamliq"}
 
@@ -2505,7 +2665,12 @@ Error: Cannot find module '/.../dist/app.module.js'
 
 <div class="hisse hisse-d">
   <span class="hisse-basliq">D · Sistemin vəziyyəti — həqiqi çıxış</span>
-  <pre class="cixis"><code>── Kök modulun məzmunu ──
+  <p class="cixis-xeber">⚠️ Bu blok <strong>çıxışdır</strong> — kopyalamaq
+  üçün deyil, oxumaq üçündür. Əmrlər C hissəsindədir.</p>
+  <div class="kod-blok">
+    <div class="kod-basliq cixis-basliq">
+      <span>ÇIXIŞ — real nəticə</span></div>
+    <pre class="cixis"><code>── Kök modulun məzmunu ──
        1	import { Module } from '@nestjs/common';
        2	import { ConfigModule } from '@nestjs/config';
        3	import { PrismaModule } from './prisma/prisma.module.js';
@@ -2534,6 +2699,7 @@ Error: Cannot find module '/.../dist/app.module.js'
 ── Saglamliq modulu qoşulubmu? ──
   sayı: 2
 bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+  </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>bütün hissələr bir-birinə
         bağlandı</strong>. Baza bağlantısı, xəta filtri və sağlamlıq modulu
         artıq kök modulun tərkibindədir. Amma tətbiqi hələ <em>işə salan</em>
@@ -2571,7 +2737,8 @@ bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or 
 
 <div class="hisse hisse-b">
   <span class="hisse-basliq">B · Kod</span>
-    <p class="fayl-ad">src/main.ts</p>
+    <div class="kod-blok b-kod">
+    <div class="kod-basliq"><span>src/main.ts</span><button class="kopyala">KOPYALA</button></div>
 <pre><code>mkdir -p src
 cat &gt; src/main.ts &lt;&lt;'EOF'
 import 'reflect-metadata';
@@ -2619,7 +2786,10 @@ async function bootstrap(): Promise&lt;void&gt; {
 
 bootstrap();
 EOF</code></pre>
+  </div>
 
+  <button class="kopyala-hamisi" data-addim="a11">
+    ADDIMIN BÜTÜN KODUNU KOPYALA (bütün fayllar bir yerdə)</button>
   <h4 style="margin-top:1rem;color:#334155">Kodun sətir-sətir izahı</h4>
   <p><code>NestFactory.create(AppModule)</code> — kök modulu
         yükləyir və tətbiqi yaradır. Bu andan etibarən bütün modullar,
@@ -2646,7 +2816,10 @@ EOF</code></pre>
 <div class="hisse hisse-c">
   <span class="hisse-basliq">C · Yoxlama — həqiqi çıxış</span>
   <p>Aşağıdaki əmrləri işlədin. Nəticə elə bu dərsin D hissəsində göstərilib:</p>
-  <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
+  <div class="kod-blok">
+    <div class="kod-basliq"><span>Terminal əmrləri</span>
+      <button class="kopyala">KOPYALA</button></div>
+    <pre class="komanda"><code>cd ~/Deepseek_ARTI/DS_Backend
 unset DATABASE_URL PGHOST
 export npm_config_cache=/tmp/npmcache
 
@@ -2692,6 +2865,7 @@ echo
 echo "── Serveri dayandırırıq ──"
 lsof -ti:${PORT:-4000} 2&gt;/dev/null | xargs -r kill 2&gt;/dev/null
 echo "  ✓ dayandırıldı"</code></pre>
+  </div>
   <div class="olmaz"><h4>⚠️ Bu kod olmasa nə olardı</h4><pre><code>$ npm run start:prod
 Error: Cannot find module '/.../dist/main.js'
 
@@ -2724,7 +2898,12 @@ Error: listen EADDRINUSE: address already in use :::4000
 
 <div class="hisse hisse-d">
   <span class="hisse-basliq">D · Sistemin vəziyyəti — həqiqi çıxış</span>
-  <pre class="cixis"><code>── main.ts yerindədirmi? ──
+  <p class="cixis-xeber">⚠️ Bu blok <strong>çıxışdır</strong> — kopyalamaq
+  üçün deyil, oxumaq üçündür. Əmrlər C hissəsindədir.</p>
+  <div class="kod-blok">
+    <div class="kod-basliq cixis-basliq">
+      <span>ÇIXIŞ — real nəticə</span></div>
+    <pre class="cixis"><code>── main.ts yerindədirmi? ──
 -rw-r--r--  1 royatalibova  wheel  1548 Sep 23 09:29 src/main.ts
 ── Build ──
 &gt; nest build
@@ -2777,6 +2956,7 @@ Error: listen EADDRINUSE: address already in use :::4000
 ── Serveri dayandırırıq ──
   ✓ dayandırıldı
 bash: line 0: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory</code></pre>
+  </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p><strong>Təbriklər — 1A dərsi tamamlandı!</strong> Sistemin
         vəziyyəti:</p>
         <p>✅ Baza bağlantısı işləyir və bütün layihəyə açıqdır<br>
@@ -2807,9 +2987,11 @@ onunla tutuşdurun. Testlər bir-birindən asılı deyil.</p>
         olub-olmadığını. Bu fayllardan biri düşsə, sonrakı heç bir addım
         işləmir — build də, server də. Skript həm Node alətlərinin versiyasını,
         həm də hər faylın mövcudluğunu göstərir.</p>
-  <p class="fayl-ad" style="background:#0f172a">Terminal skripti —
-     fayl: DƏRSLƏR/testler/IA.1.sh</p>
-<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+  <div class="kod-blok">
+    <div class="kod-basliq"><span>Terminal skripti —
+      DƏRSLƏR/testler/IA.1.sh</span>
+      <button class="kopyala">KOPYALA</button></div>
+    <pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 
 # ⚠️ Test mötərizə içindədir — `exit` yalnız bu bloku dayandırır.
 (
@@ -2836,6 +3018,7 @@ echo "── Qovluq strukturu ──"
 find . -type f -not -path './node_modules/*' -not -path './src/generated/*' \
        -not -path './dist/*' | sort | sed 's/^/  /'
 )</code></pre>
+  </div>
   <div class="neticə" style="background:#065f46">GÖZLƏNİLƏN NƏTİCƏ — real çıxış (exit 0)</div>
 <pre class="cixis" style="border-radius:0 0 8px 8px"><code>── Alətlər ──
   node  : v26.7.0
@@ -2877,9 +3060,11 @@ find . -type f -not -path './node_modules/*' -not -path './src/generated/*' \
         manifestinin düzgün qurulub-qurulmadığını. <code>package.json</code>
         olmasa npm heç bir əmri işlədə bilmir. Skript həm skriptləri, həm
         asılılıqları, həm də paketlərin həqiqətən quraşdırıldığını yoxlayır.</p>
-  <p class="fayl-ad" style="background:#0f172a">Terminal skripti —
-     fayl: DƏRSLƏR/testler/IA.2.sh</p>
-<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+  <div class="kod-blok">
+    <div class="kod-basliq"><span>Terminal skripti —
+      DƏRSLƏR/testler/IA.2.sh</span>
+      <button class="kopyala">KOPYALA</button></div>
+    <pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 
 # ⚠️ Test mötərizə içindədir — `exit` yalnız bu bloku dayandırır.
 (
@@ -2919,6 +3104,7 @@ else
   echo "  ✗ node_modules YOXDUR — «npm install» işlədin"
 fi
 )</code></pre>
+  </div>
   <div class="neticə" style="background:#065f46">GÖZLƏNİLƏN NƏTİCƏ — real çıxış (exit 0)</div>
 <pre class="cixis" style="border-radius:0 0 8px 8px"><code>── Layihə ──
   ad        : ds-backend
@@ -2950,9 +3136,11 @@ fi
         və <code>emitDecoratorMetadata</code> sönsə, NestJS-in
         <code>@İşarə</code>-ləri tanınmır və heç bir modul işləmir. Skript
         həm də <code>.js</code> uzantı qaydasını yoxlayır.</p>
-  <p class="fayl-ad" style="background:#0f172a">Terminal skripti —
-     fayl: DƏRSLƏR/testler/IA.3.sh</p>
-<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+  <div class="kod-blok">
+    <div class="kod-basliq"><span>Terminal skripti —
+      DƏRSLƏR/testler/IA.3.sh</span>
+      <button class="kopyala">KOPYALA</button></div>
+    <pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 
 # ⚠️ Test mötərizə içindədir — `exit` yalnız bu bloku dayandırır.
 (
@@ -2986,6 +3174,7 @@ echo "  .js ilə     : $say"
 echo "  .js OLMADAN : $yox   ← 0 olmalıdır"
 [ "$yox" = "0" ] &amp;&amp; echo "  ✓ qayda gözlənilir" || echo "  ✗ uzantısız import var!"
 )</code></pre>
+  </div>
   <div class="neticə" style="background:#065f46">GÖZLƏNİLƏN NƏTİCƏ — real çıxış (exit 0)</div>
 <pre class="cixis" style="border-radius:0 0 8px 8px"><code>── TypeScript-in gördüyü YEKUN ayarlar ──
   target                   es2023
@@ -3012,9 +3201,11 @@ echo "  .js OLMADAN : $yox   ← 0 olmalıdır"
         koda yazılmadığını və git-ə düşmədiyini. Şifrə koda yazılsa, onu görən
         hər kəs bazaya girə bilər. Skript şifrənin özünü <em>çap etmir</em> —
         yalnız onun təhlükəsiz saxlandığını təsdiqləyir.</p>
-  <p class="fayl-ad" style="background:#0f172a">Terminal skripti —
-     fayl: DƏRSLƏR/testler/IA.4.sh</p>
-<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+  <div class="kod-blok">
+    <div class="kod-basliq"><span>Terminal skripti —
+      DƏRSLƏR/testler/IA.4.sh</span>
+      <button class="kopyala">KOPYALA</button></div>
+    <pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 
 # ⚠️ Test mötərizə içindədir — `exit` yalnız bu bloku dayandırır.
 (
@@ -3068,6 +3259,7 @@ echo
 echo "── Kod .env-i adı ilə oxuyurmu? ──"
 grep -rn "DATABASE_URL" src/prisma/prisma.service.ts | sed 's/^/  /'
 )</code></pre>
+  </div>
   <div class="neticə" style="background:#065f46">GÖZLƏNİLƏN NƏTİCƏ — real çıxış (exit 0)</div>
 <pre class="cixis" style="border-radius:0 0 8px 8px"><code>── .env dəyişənləri (şifrələr gizlədilir) ──
   DATABASE_URL       ••••••••••••••••••••
@@ -3103,9 +3295,11 @@ grep -rn "DATABASE_URL" src/prisma/prisma.service.ts | sed 's/^/  /'
         bir sətirdə olmasa Prisma <code>P1012</code> xətası verir. Skript həm
         sxemanın etibarlılığını, həm də yaradılan klientin mövcudluğunu
         yoxlayır.</p>
-  <p class="fayl-ad" style="background:#0f172a">Terminal skripti —
-     fayl: DƏRSLƏR/testler/IA.5.sh</p>
-<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+  <div class="kod-blok">
+    <div class="kod-basliq"><span>Terminal skripti —
+      DƏRSLƏR/testler/IA.5.sh</span>
+      <button class="kopyala">KOPYALA</button></div>
+    <pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 
 # ⚠️ Test mötərizə içindədir — `exit` yalnız bu bloku dayandırır.
 (
@@ -3139,6 +3333,7 @@ else
   echo "  ✗ client.ts YOXDUR — «npx prisma generate» işlədin"
 fi
 )</code></pre>
+  </div>
   <div class="neticə" style="background:#065f46">GÖZLƏNİLƏN NƏTİCƏ — real çıxış (exit 0)</div>
 <pre class="cixis" style="border-radius:0 0 8px 8px"><code>── Sxemanın əsas blokları ──
   1:generator client {
@@ -3180,9 +3375,11 @@ fi
         birbaşa işlədirik — beləliklə problem serverdədir, yoxsa bazadadır,
         dərhal bilirik. Prisma 7-də adapter məcburi olduğu üçün bu yoxlama
         xüsusilə vacibdir.</p>
-  <p class="fayl-ad" style="background:#0f172a">Terminal skripti —
-     fayl: DƏRSLƏR/testler/IA.6.sh</p>
-<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+  <div class="kod-blok">
+    <div class="kod-basliq"><span>Terminal skripti —
+      DƏRSLƏR/testler/IA.6.sh</span>
+      <button class="kopyala">KOPYALA</button></div>
+    <pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 
 # ⚠️ Test mötərizə içindədir — `exit` yalnız bu bloku dayandırır.
 (
@@ -3214,6 +3411,7 @@ echo
 echo "── Adapter istifadə olunurmu? ──"
 grep -nE 'PrismaPg|adapter|connectionString' src/prisma/prisma.service.ts | sed 's/^/  /'
 )</code></pre>
+  </div>
   <div class="neticə" style="background:#065f46">GÖZLƏNİLƏN NƏTİCƏ — real çıxış (exit 0)</div>
 <pre class="cixis" style="border-radius:0 0 8px 8px"><code>── PrismaService faylı ──
   -rw-r--r--  1 royatalibova  wheel  1547 Sep 23 09:29 src/prisma/prisma.service.ts
@@ -3240,9 +3438,11 @@ grep -nE 'PrismaPg|adapter|connectionString' src/prisma/prisma.service.ts | sed 
         <code>PrismaService</code>-i tapa bilmir və server belə xəta ilə
         qalxmır: <em>Nest can't resolve dependencies</em>. Skript hər iki
         sətri yoxlayır.</p>
-  <p class="fayl-ad" style="background:#0f172a">Terminal skripti —
-     fayl: DƏRSLƏR/testler/IA.7.sh</p>
-<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+  <div class="kod-blok">
+    <div class="kod-basliq"><span>Terminal skripti —
+      DƏRSLƏR/testler/IA.7.sh</span>
+      <button class="kopyala">KOPYALA</button></div>
+    <pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 
 # ⚠️ Test mötərizə içindədir — `exit` yalnız bu bloku dayandırır.
 (
@@ -3270,6 +3470,7 @@ else
   echo "  (app.module.ts hələ yoxdur — IA.9-a baxın)"
 fi
 )</code></pre>
+  </div>
   <div class="neticə" style="background:#065f46">GÖZLƏNİLƏN NƏTİCƏ — real çıxış (exit 0)</div>
 <pre class="cixis" style="border-radius:0 0 8px 8px"><code>── Modulun tam məzmunu ──
        1	import { Global, Module } from '@nestjs/common';
@@ -3304,9 +3505,11 @@ fi
         format qaytarır və frontend hər dəfə «bu dəfə hansı format gəldi?» deyə
         yoxlamağa məcbur qalır. Skript status-kod xəritəsini və cavabın dörd
         sahəsini yoxlayır.</p>
-  <p class="fayl-ad" style="background:#0f172a">Terminal skripti —
-     fayl: DƏRSLƏR/testler/IA.8.sh</p>
-<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+  <div class="kod-blok">
+    <div class="kod-basliq"><span>Terminal skripti —
+      DƏRSLƏR/testler/IA.8.sh</span>
+      <button class="kopyala">KOPYALA</button></div>
+    <pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 
 # ⚠️ Test mötərizə içindədir — `exit` yalnız bu bloku dayandırır.
 (
@@ -3332,6 +3535,7 @@ echo "── Filter qlobal qoşulubmu? ──"
 grep -n 'useGlobalFilters' src/main.ts 2&gt;/dev/null | sed 's/^/  /' \
   || echo "  (main.ts hələ yoxdur — IA.10-a baxın)"
 )</code></pre>
+  </div>
   <div class="neticə" style="background:#065f46">GÖZLƏNİLƏN NƏTİCƏ — real çıxış (exit 0)</div>
 <pre class="cixis" style="border-radius:0 0 8px 8px"><code>── Fayl ──
   -rw-r--r--  1 royatalibova  wheel  2121 Sep 23 09:29 src/common/filters/all-exceptions.filter.ts
@@ -3368,9 +3572,11 @@ grep -n 'useGlobalFilters' src/main.ts 2&gt;/dev/null | sed 's/^/  /' \
         yoxlamasının bazaya <em>həqiqi</em> sorğu göndərdiyini. Sadəcə
         «işləyirəm» desəydi, baza kəsiləndə də yaşıl işıq yanardı və problem
         gizli qalardı. Skript servisi birbaşa işlədib cavabı göstərir.</p>
-  <p class="fayl-ad" style="background:#0f172a">Terminal skripti —
-     fayl: DƏRSLƏR/testler/IA.9.sh</p>
-<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+  <div class="kod-blok">
+    <div class="kod-basliq"><span>Terminal skripti —
+      DƏRSLƏR/testler/IA.9.sh</span>
+      <button class="kopyala">KOPYALA</button></div>
+    <pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 
 # ⚠️ Test mötərizə içindədir — `exit` yalnız bu bloku dayandırır.
 (
@@ -3408,6 +3614,7 @@ void (async () =&gt; {
 })();
 "
 )</code></pre>
+  </div>
   <div class="neticə" style="background:#065f46">GÖZLƏNİLƏN NƏTİCƏ — real çıxış (exit 0)</div>
 <pre class="cixis" style="border-radius:0 0 8px 8px"><code>── Modulun hissələri ──
   saglamliq.controller.ts
@@ -3436,9 +3643,11 @@ void (async () =&gt; {
         qaldırır, dörd yoxlama aparır və sonda dayandırır — yəni tam
         avtomatikdir. Gözlənilən nəticə: prefiks <code>/api/v1</code>, iki
         marşrut, vahid xəta formatı və açıq Swagger.</p>
-  <p class="fayl-ad" style="background:#0f172a">Terminal skripti —
-     fayl: DƏRSLƏR/testler/IA.10.sh</p>
-<pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+  <div class="kod-blok">
+    <div class="kod-basliq"><span>Terminal skripti —
+      DƏRSLƏR/testler/IA.10.sh</span>
+      <button class="kopyala">KOPYALA</button></div>
+    <pre><code>LAYIHE="${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 
 # ⚠️ Test mötərizə içindədir — `exit` yalnız bu bloku dayandırır.
 (
@@ -3490,6 +3699,7 @@ echo "── Server dayandırılır ──"
 lsof -ti:$PORT 2&gt;/dev/null | xargs -r kill 2&gt;/dev/null
 echo "  ✓ dayandırıldı"
 )</code></pre>
+  </div>
   <div class="neticə" style="background:#065f46">GÖZLƏNİLƏN NƏTİCƏ — real çıxış (exit 0)</div>
 <pre class="cixis" style="border-radius:0 0 8px 8px"><code>── Build ──
   &gt; nest build
@@ -3546,5 +3756,54 @@ echo "  ✓ dayandırıldı"
 </footer>
 
 </div>
+<script>
+// ⚠️ file:// ilə açıldıqda navigator.clipboard işləmir — ona görə
+// köhnə üsul (execCommand) ehtiyat variant kimi saxlanılır.
+function kopyalaMetn(metn, geri) {
+  function kocur() {
+    var t = document.createElement('textarea');
+    t.value = metn;
+    t.style.position = 'fixed';
+    t.style.top = '-1000px';
+    document.body.appendChild(t);
+    t.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(t);
+    geri();
+  }
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(metn).then(geri).catch(kocur);
+  } else {
+    kocur();
+  }
+}
+
+function qisaGeri(d, metn) {
+  var kohne = d.textContent;
+  d.textContent = metn;
+  d.classList.add('ok');
+  setTimeout(function () { d.textContent = kohne; d.classList.remove('ok'); }, 1800);
+}
+
+document.querySelectorAll('.kopyala').forEach(function (d) {
+  d.addEventListener('click', function () {
+    var kod = d.closest('.kod-blok').querySelector('pre code');
+    kopyalaMetn(kod.innerText, function () { qisaGeri(d, 'KOPYALANDI'); });
+  });
+});
+
+document.querySelectorAll('.kopyala-hamisi').forEach(function (d) {
+  d.addEventListener('click', function () {
+    var addim = document.getElementById(d.dataset.addim);
+    var parcalar = [];
+    addim.querySelectorAll('.b-kod pre code').forEach(function (k) {
+      parcalar.push(k.innerText);
+    });
+    kopyalaMetn(parcalar.join('\n\n'), function () {
+      qisaGeri(d, parcalar.length + ' KOD BLOKU KOPYALANDI');
+    });
+  });
+});
+</script>
 </body>
 </html>
