@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""DS_Backend-1A — qurucu.
+"""DS_Backend-1B — qurucu.
 
 Addım 1–11-in geniş izahlarını, real kodunu və HƏQİQİ çıxışlarını bir
 HTML dərsinə yığır. Həm də 10 yekun testi ayrı .sh faylları kimi yazır.
@@ -23,16 +23,16 @@ import sys
 KOK = pathlib.Path(__file__).resolve().parent.parent
 DERS_Q = KOK / "DƏRSLƏR"
 BACKEND = pathlib.Path(os.environ.get("BACKEND", str(KOK / "DS_Backend")))
-CIXIS = DERS_Q / "DS_Backend-1A.html"
+CIXIS = DERS_Q / "DS_Backend-1B.html"
 TEST_Q = DERS_Q / "testler"
-KES = pathlib.Path("/tmp/d1a_kes.json")
+KES = pathlib.Path("/tmp/d1b_kes.json")
 PORT = os.environ.get("TEST_PORT", "4000")
 API = os.environ.get("TEST_A", "http://localhost:%s/api/v1" % PORT)
 
 
 def yukle(ad):
-    p = DERS_Q / ("d1a_%s.py" % ad)
-    spec = importlib.util.spec_from_file_location("d1a_" + ad, p)
+    p = DERS_Q / ("d1b_%s.py" % ad)
+    spec = importlib.util.spec_from_file_location("d1b_" + ad, p)
     m = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(m)
     return m
@@ -433,45 +433,54 @@ def qur(kes):
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Backend 1A — Layihənin təməli və ilk işləyən API</title>
+<title>Backend 1B — Build, canlı yoxlama və testlər</title>
 <style>%s</style>
 </head>
 <body>
 <div class="konteyner">
 
 <header>
-  <h1>Backend 1A — Layihənin təməli və ilk işləyən API</h1>
-  <p class="alt">Addım 1–11: layihə skeleti, TypeScript, <code>.env</code>,
-  Prisma, baza bağlantısı, xəta filtri, sağlamlıq endpointi və serverin
-  qalxması.</p>
-  <p class="meta"><span>11 addım</span><span>10 yekun test</span>
+  <h1>Backend 1B — Build, canlı yoxlama və testlər</h1>
+  <p class="alt">Addım 12–16: kodu yığmaq (<code>build</code>), serveri canlı
+  yoxlamaq, port və proses idarəsi və <strong>test yazmağı öyrənmək</strong> —
+  Vitest ilə həm unit, həm də e2e testlər.</p>
+  <p class="meta"><span>5 addım</span><span>10 yekun test</span>
   <span>I kurs üçün geniş izah</span><span>Hər çıxış realdır</span></p>
 </header>
 
 <div class="giris">
-  <h2>Bu dərs kim üçündür və necə oxunmalıdır</h2>
-  <p>Bu dərs <strong>proqramlaşdırmaya yeni başlayan</strong> tələbələr
-  üçündür. Heç bir NestJS, Prisma və ya TypeScript bilgisi tələb olunmur —
-  hər anlayış yerində izah olunur.</p>
-  <p><strong>Hər addım dörd hissədən ibarətdir:</strong></p>
+  <h2>Bu dərs nədən bəhs edir</h2>
+  <p>Bu, <strong>Backend 1A</strong>-nın davamıdır. 1A-da layihəni qurduq,
+  bazaya qoşulduq və ilk işləyən endpoint-i aldıq. Amma bir şey çatışmır:
+  <strong>yazdığımız kodun düzgün işlədiyini necə BİLİRİK?</strong> Hər dəfə
+  serveri qaldırıb brauzerdə əl ilə yoxlamaq yorucudur və çox vaxt nəyisə
+  unuduruq.</p>
+  <p>Bu dərsdə üç şey öyrənəcəyik:</p>
   <ul>
-    <li><strong>A — niyə:</strong> bu addım nə üçün lazımdır, hansı problemi
-        həll edir.</li>
-    <li><strong>B — kod:</strong> yazılacaq fayllar və <em>hər kodun sətir-sətir
-        izahı</em>.</li>
-    <li><strong>C — yoxlama:</strong> kodu necə yoxlamaq olar və bu kod
-        olmasa nə baş verərdi.</li>
-    <li><strong>D — vəziyyət:</strong> yoxlamanın <em>həqiqi çıxışı</em> və
-        addımdan sonra sistemin vəziyyəti.</li>
+    <li><strong>Build</strong> — TypeScript kodunu işlək JavaScript-ə çevirmək
+        və nəticəni yoxlamaq.</li>
+    <li><strong>Canlı yoxlama</strong> — serveri qaldırıb portu, prefiksi və
+        cavabları yoxlamaq; loqu oxumaq; port məşğul olanda nə etmək.</li>
+    <li><strong>Testlər</strong> — kodu <em>avtomatik</em> yoxlayan skriptlər
+        yazmaq: əvvəl <strong>unit</strong>, sonra <strong>e2e</strong>.</li>
   </ul>
-  <p><strong>Necə oxumalı:</strong> addımları <em>sıra ilə</em> işlədin. Hər
-  addımda əvvəl A-nı oxuyun, sonra B-dəki kodu yazın, sonra C ilə yoxlayın.
-  D hissəsi sizin çıxışınızla üst-üstə düşməlidirsə, düzgün getmisiniz.</p>
-  <p><strong>Dərsin sonunda 10 test var.</strong> Hər test ayrıca Terminal
-  skriptidir və dərsdə öyrəndiyinizi yoxlayır. Onları belə işlədin:</p>
+  <p>⚠️ Test yazmaq bu dərsin <strong>əsas mövzusudur</strong>. Test olmadan
+  hər dəyişiklikdən sonra hər şeyi əl ilə yoxlamaq lazım gəlir; bir yeri
+  düzəldib başqa yeri sındırdığınızı isə yalnız istifadəçi bildirəndə
+  öyrənirsiniz. Test bu problemi həll edir: <em>bir əmr</em> — və hər şey
+  yoxlanılır.</p>
+  <p><strong>Hər addım dörd hissədən ibarətdir:</strong>
+  <strong>A</strong> — niyə, <strong>B</strong> — kod,
+  <strong>C</strong> — yoxlama, <strong>D</strong> — həqiqi çıxış.
+  Əlavə olaraq hər addımda <strong>«Yeni anlayışlar»</strong> lüğəti və
+  <strong>«Tez-tez verilən suallar»</strong> var.</p>
+  <p><strong>Necə oxumalı:</strong> addımları sıra ilə işlədin. Hər addımda
+  B-dəki kodu yazın (KOPYALA düyməsi ilə), C ilə yoxlayın və nəticəni D ilə
+  tutuşdurun.</p>
+  <p><strong>Dərsin sonunda 10 yekun test var.</strong> Onları belə işlədin:</p>
   <p><code>cd ~/Deepseek_ARTI/DƏRSLƏR</code><br>
-  <code>bash testler/yoxla.sh IA</code> — bütün 10 test<br>
-  <code>bash testler/yoxla.sh IA.4</code> — yalnız bir test</p>
+  <code>bash testler/yoxla.sh IB</code> — bütün 10 test<br>
+  <code>bash testler/yoxla.sh IB.4</code> — yalnız bir test</p>
 </div>
 
 <div class="giris" style="background:#fef2f2;border-left-color:#ef4444">
@@ -510,6 +519,71 @@ def qur(kes):
     <dt><code>Nest can't resolve dependencies</code></dt>
     <dd>Modul <code>exports</code> etmir və ya <code>imports</code>-a
         əlavə olunmayıb (ADDIM 7 və 10).</dd>
+
+    <dt style="grid-column:1/-1;border-top:2px dashed #fecaca;padding-top:.6rem;
+               margin-top:.3rem;color:#991b1b;font-weight:800">
+        ⬇︎ 1B dərsinə aid xətalar (build · server · testlər)</dt>
+
+    <dt><code>Cannot find module '/.../dist/main.js'</code><br>
+        <code>MODULE_NOT_FOUND</code></dt>
+    <dd>Build edilməyib. <code>dist/</code> qovluğu yoxdur. Həll:
+        <code>npm run build</code> (ADDIM 12).</dd>
+
+    <dt>Düzəliş etdim, amma heç nə dəyişmir</dt>
+    <dd>Köhnə <code>dist/</code> işlədilir. <code>node dist/main.js</code>
+        həmişə build edilmiş kodu işlədir. Hər dəyişiklikdən sonra
+        <code>npm run build</code> lazımdır (ADDIM 12).</dd>
+
+    <dt><code>error TS2322</code><br><code>Type 'string' is not assignable
+        to type 'number'</code></dt>
+    <dd>Tip uyğunsuzluğu — TypeScript <em>işləyir</em>. Xəta mesajında fayl,
+        sətir və sütun göstərilir. Düzəldin və
+        <code>npx tsc --noEmit</code> ilə təsdiqləyin (ADDIM 12).</dd>
+
+    <dt><code>SyntaxError: Invalid or unexpected token</code><br>
+        (<code>node src/main.ts</code> işlədərkən)</dt>
+    <dd>Node TypeScript-i başa düşmür. Ya <code>npm run start:dev</code>
+        işlədin, ya da <code>npm run build</code> + <code>node dist/main.js</code>
+        (ADDIM 12 və 13).</dd>
+
+    <dt><code>Error: listen EADDRINUSE</code> — yenə, amma başqa səbəbdən</dt>
+    <dd>Əvvəlki test və ya skript serveri söndürməyib. Yoxlayın:
+        <code>lsof -nP -iTCP:4000 -sTCP:LISTEN</code>, sonra
+        <code>kill &lt;PID&gt;</code>. Ya da
+        <code>PORT=4100 bash skriptler/servis_yoxla.sh</code> (ADDIM 13).</dd>
+
+    <dt><code>No test files found, exiting with code 1</code></dt>
+    <dd>Vitest test faylı tapmır. Ya fayl hələ yazılmayıb, ya da
+        <code>include</code> naxışı uyğun deyil. Yoxlayın:
+        <code>npx vitest list --config vitest.config.ts</code> (ADDIM 14).</dd>
+
+    <dt>Testlər keçir, <strong>amma terminal donur</strong></dt>
+    <dd><code>afterAll</code> içində <code>await app.close()</code> yoxdur —
+        Prisma-nın açıq TCP bağlantısı prosesi diri saxlayır. Əlavə edin,
+        sonra <code>Ctrl+C</code> (ADDIM 16).</dd>
+
+    <dt>e2e testdə <code>expected 200 "OK", got 404 "Not Found"</code></dt>
+    <dd><code>main.ts</code>-dəki konfiqurasiya
+        (<code>setGlobalPrefix</code>, <code>ValidationPipe</code>,
+        <code>AllExceptionsFilter</code>) testin
+        <code>beforeAll</code> blokunda təkrarlanmayıb (ADDIM 16).</dd>
+
+    <dt><code>Cannot find module 'supertest/types'</code> /
+        <code>error TS2307</code></dt>
+    <dd><code>import { App } from 'supertest/types'</code> sətri
+        <code>moduleResolution: "nodenext"</code> ilə işləmir, çünki
+        <code>supertest</code> paketində <code>exports</code> bölməsi yoxdur.
+        Həll: həmin importu silin və sadəcə
+        <code>let app: INestApplication;</code> yazın (ADDIM 16).</dd>
+
+    <dt>Testdə rəqəm dəyişdi: <code>cedvel_sayi</code> 48 deyil</dt>
+    <dd>Bazaya cədvəl əlavə olunub. Ya bekimi yeniləyin, ya da testi
+        <code>toBeGreaterThan(40)</code> kimi yazın (ADDIM 16).</dd>
+
+    <dt>Vahid testlər bazasız keçmir</dt>
+    <dd>Saxta <code>PrismaService</code> verilməyib. <code>providers</code>
+        içində <code>{ provide: PrismaService, useValue: prisma }</code>
+        sətri olmalıdır (ADDIM 15).</dd>
   </dl>
   <p style="margin-top:.7rem"><strong>Ümumi qayda:</strong> xəta mətnini
   <em>son sətirindən</em> oxuyun — səbəb adətən orada yazılır. Sonra
@@ -522,13 +596,13 @@ def qur(kes):
 
 <h2 style="margin-top:3rem;border-top:3px solid #0f766e;padding-top:1.4rem">
 Yekun testlər — 10 test</h2>
-<p style="color:#475569;margin-bottom:1.4rem">Aşağıdaki testlər Dərs 1A-da
+<p style="color:#475569;margin-bottom:1.4rem">Aşağıdaki testlər Dərs 1B-də
 öyrəndiyiniz hər şeyi yoxlayır. Hər testin yanında <em>həqiqi çıxış</em> var —
 onunla tutuşdurun. Testlər bir-birindən asılı deyil.</p>
 %s
 
 <footer>
-  ARTİ ERP · Backend 1A · 11 addım · 10 yekun test<br>
+  ARTİ ERP · Backend 1B · 5 addım · 10 yekun test<br>
   Bütün çıxışlar real icradan götürülüb.
 </footer>
 
@@ -543,7 +617,7 @@ ISLEDICI = r'''#!/bin/bash
 # YEKUN TESTLƏR — işlədici
 #   bash testler/yoxla.sh IA       → Dərs 1A-nın 10 testi
 #   bash testler/yoxla.sh IB       → Dərs 1B-nin 10 testi
-#   bash testler/yoxla.sh IA.4     → yalnız bir test
+#   bash testler/yoxla.sh IB.4     → yalnız bir test
 #   bash testler/yoxla.sh --siyahi → testlərin siyahısı
 cd "$(dirname "$0")" || exit 1
 unset DATABASE_URL PGHOST
