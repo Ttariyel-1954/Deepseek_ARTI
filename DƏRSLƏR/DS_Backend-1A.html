@@ -395,9 +395,9 @@ echo "   Bu, XƏTA DEYİL — paketlər düzgün quraşdırılıb."</code></pre>
 
 ── İçində nə var? ──
 total 8
-drwxr-xr-x  3 royatalibova  staff    96 Sep 23 10:49 .
-drwxr-xr-x  9 royatalibova  staff   288 Sep 23 10:49 ..
--rw-r--r--  1 royatalibova  staff  1409 Sep 23 10:49 package.json
+drwxr-xr-x  3 royatalibova  staff    96 Sep 23 12:27 .
+drwxr-xr-x  9 royatalibova  staff   288 Sep 23 12:27 ..
+-rw-r--r--  1 royatalibova  staff  1409 Sep 23 12:27 package.json
 
 ── Alətlərin versiyaları ──
   node: v26.7.0
@@ -408,13 +408,13 @@ drwxr-xr-x  9 royatalibova  staff   288 Sep 23 10:49 ..
 /opt/homebrew/bin/npm
 
 ── package.json yerindədirmi? ──
--rw-r--r--  1 royatalibova  staff  1409 Sep 23 10:49 package.json
+-rw-r--r--  1 royatalibova  staff  1409 Sep 23 12:27 package.json
 
 npm install → paketləri node_modules/ qovluğuna yazır
 (ilk dəfə 1-3 dəqiqə çəkə bilər — paketlər internetdən gəlir)
 
 
-added 431 packages in 1m
+added 431 packages in 2m
 
 101 packages are looking for funding
   run `npm fund` for details
@@ -903,6 +903,17 @@ imported from /.../dist/main.js
         oxuyur: «<code>DATABASE_URL</code> nədir?» Kod heç vaxt şifrənin özünü
         bilmir. Beləliklə eyni kod həm kompüterinizdə, həm serverdə işləyir —
         sadəcə <code>.env</code> faylı fərqli olur.</p>
+        <p><strong>İki fayl var — qarışdırmaq olmaz:</strong></p>
+        <p><code>.env</code> — <em>həqiqi</em> fayldır, içində REAL şifrə
+        olur və <strong>heç vaxt git-ə salınmır</strong>.
+        <code>.env.example</code> — <em>nümunədir</em>, şifrə yerinə
+        <code>ISTIFADECI:SIFRE</code> kimi yer tutucu yazılır və bu fayl
+        git-ə <strong>salınır</strong>. Yeni işçi layihəni götürəndə
+        nümunəni kopyalayıb öz şifrəsini yazır.</p>
+        <p>⚠️ <strong>Diqqət:</strong> bu dərsdəki şifrə
+        (<code>arti_secret_2025</code>) yalnız <em>yerli</em>
+        (<code>localhost</code>) baza üçündür. İstehsalatda tamam başqa,
+        güclü şifrə olmalıdır.</p>
         <p>⚠️ <strong><code>.env</code> git-ə salınmamalıdır.</strong> Bunun
         üçün <code>.gitignore</code> faylı var. Əvəzində
         <code>.env.example</code> saxlanılır — orada şifrə yerinə nümunə olur.
@@ -914,6 +925,17 @@ imported from /.../dist/main.js
 <div class="hisse hisse-b">
   <span class="hisse-basliq">B · Kod</span>
     <div class="kod-blok b-kod">
+    <div class="kod-basliq"><span>.env</span><button class="kopyala">KOPYALA</button></div>
+<pre><code>cat &gt; .env &lt;&lt;'EOF'
+# ── Baza ──────────────────────────────────────────────────────
+DATABASE_URL="postgresql://arti_user:arti_secret_2025@localhost:5432/arti_baza"
+
+# ── Server ────────────────────────────────────────────────────
+PORT=4000
+NODE_ENV=development
+EOF</code></pre>
+  </div>
+  <div class="kod-blok b-kod">
     <div class="kod-basliq"><span>.env.example</span><button class="kopyala">KOPYALA</button></div>
 <pre><code>cat &gt; .env.example &lt;&lt;'EOF'
 # Nümunə — öz dəyərlərinizlə doldurun, bu faylı KOMİT ETMƏYİN
@@ -967,6 +989,11 @@ EOF</code></pre>
     <pre class="komanda"><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 
+echo "── B hissəsindəki fayllar yerindədirmi? ──"
+for f in .env .env.example .gitignore; do
+  if [ -f "$f" ]; then echo "  ✓ $f"; else echo "  ✗ $f YOXDUR — B hissəsini işlədin"; fi
+done
+echo
 echo "── .env faylı (şifrə GİZLƏDİLİR) ──"
 python3 -c "
 import re, pathlib
@@ -1034,7 +1061,12 @@ const url = 'postgresql://arti_user:arti_secret_2025@localhost:5432/arti_baza';
   <div class="kod-blok">
     <div class="kod-basliq cixis-basliq">
       <span>ÇIXIŞ — real nəticə</span></div>
-    <pre class="cixis"><code>── .env faylı (şifrə GİZLƏDİLİR) ──
+    <pre class="cixis"><code>── B hissəsindəki fayllar yerindədirmi? ──
+  ✓ .env
+  ✓ .env.example
+  ✓ .gitignore
+
+── .env faylı (şifrə GİZLƏDİLİR) ──
   DATABASE_URL       ••••••••••••••••••••••••  (dəyər gizlədilib)
   PORT               4000
   NODE_ENV           development
@@ -2164,10 +2196,10 @@ Error: DATABASE_URL təyin olunmayıb — .env faylını yoxlayın
 -rw-r--r--  1 royatalibova  wheel  1547 Sep 23 09:29 src/prisma/prisma.service.ts
 
 ── Baza bağlantısını BİRBAŞA yoxlayaq ──
-[Nest] 73195  - 09/23/2026, 10:50:58 AM     LOG [BAZA] Baza bağlantısı açıldı
+[Nest] 78279  - 09/23/2026, 12:29:25 PM     LOG [BAZA] Baza bağlantısı açıldı
   bağlantı   : quruldu
   cədvəl sayı: 48
-  gecikmə    : 25 ms
+  gecikmə    : 46 ms
   bağlantı bağlandı</code></pre>
   </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>TypeScript kodu bazaya
@@ -2729,7 +2761,7 @@ $ curl -s localhost:4000/api/v1/saglamliq
   22:  @Get('saglamliq')
 
 ── Sağlamlıq yoxlamasını BİRBAŞA sınayaq ──
-[Nest] 73230  - 09/23/2026, 10:50:58 AM     LOG [BAZA] Baza bağlantısı açıldı
+[Nest] 78314  - 09/23/2026, 12:29:26 PM     LOG [BAZA] Baza bağlantısı açıldı
   {
     "status": "saglam",
     "baza": {
@@ -2738,7 +2770,7 @@ $ curl -s localhost:4000/api/v1/saglamliq
       "gecikme_ms": 26
     },
     "versiya": "0.1.0",
-    "vaxt": "2026-09-23T06:50:58.772Z"
+    "vaxt": "2026-09-23T08:29:26.328Z"
   }</code></pre>
   </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>işləyən servis məntiqi var</strong>,
@@ -3105,10 +3137,10 @@ Error: listen EADDRINUSE: address already in use :::4000
   port 4000 boşdur: bəli
 
 ── Server qalxır (arxa planda) ──
-  [Nest] 73281  - 09/23/2026, 10:51:01 AM     LOG [RouterExplorer] Mapped {/api/v1, GET} route +1ms
-  [Nest] 73281  - 09/23/2026, 10:51:01 AM     LOG [RouterExplorer] Mapped {/api/v1/saglamliq, GET} route +0ms
-  [Nest] 73281  - 09/23/2026, 10:51:01 AM     LOG [BAŞLANGIC] API hazırdır → http://localhost:4000/api/v1
-  [Nest] 73281  - 09/23/2026, 10:51:01 AM     LOG [BAŞLANGIC] Sənədləşdirmə → http://localhost:4000/docs
+  [Nest] 78370  - 09/23/2026, 12:29:29 PM     LOG [RouterExplorer] Mapped {/api/v1, GET} route +1ms
+  [Nest] 78370  - 09/23/2026, 12:29:29 PM     LOG [RouterExplorer] Mapped {/api/v1/saglamliq, GET} route +0ms
+  [Nest] 78370  - 09/23/2026, 12:29:29 PM     LOG [BAŞLANGIC] API hazırdır → http://localhost:4000/api/v1
+  [Nest] 78370  - 09/23/2026, 12:29:29 PM     LOG [BAŞLANGIC] Sənədləşdirmə → http://localhost:4000/docs
 
 ── 1) Kök ünvan ──
   {
@@ -3127,7 +3159,7 @@ Error: listen EADDRINUSE: address already in use :::4000
           "gecikme_ms": 3
       },
       "versiya": "0.1.0",
-      "vaxt": "2026-09-23T06:51:02.324Z"
+      "vaxt": "2026-09-23T08:29:30.030Z"
   }
 
 ── 3) Olmayan yol → vahid xəta formatı ──
@@ -3138,7 +3170,7 @@ Error: listen EADDRINUSE: address already in use :::4000
           "mesaj": "Cannot GET /api/v1/bele-yol-yoxdur"
       },
       "yol": "/bele-yol-yoxdur",
-      "vaxt": "2026-09-23T06:51:02.348Z"
+      "vaxt": "2026-09-23T08:29:30.054Z"
   }
 
 ── 4) Swagger sənədləşdirmə ──
@@ -3607,10 +3639,10 @@ grep -nE 'PrismaPg|adapter|connectionString' src/prisma/prisma.service.ts | sed 
   -rw-r--r--  1 royatalibova  wheel  1547 Sep 23 09:29 src/prisma/prisma.service.ts
 
 ── Baza bağlantısını BİRBAŞA sınayırıq ──
-[Nest] 73438  - 09/23/2026, 10:51:03 AM     LOG [BAZA] Baza bağlantısı açıldı
+[Nest] 78527  - 09/23/2026, 12:29:31 PM     LOG [BAZA] Baza bağlantısı açıldı
   bağlantı    : quruldu
   cədvəl sayı : 48
-  gecikmə     : 26 ms
+  gecikmə     : 25 ms
   bağlantı düzgün bağlandı
 
 ── Adapter istifadə olunurmu? ──
@@ -3820,11 +3852,11 @@ void (async () =&gt; {
   sayı: 2
 
 ── Sağlamlıq yoxlaması (birbaşa) ──
-[Nest] 73488  - 09/23/2026, 10:51:04 AM     LOG [BAZA] Baza bağlantısı açıldı
+[Nest] 78577  - 09/23/2026, 12:29:32 PM     LOG [BAZA] Baza bağlantısı açıldı
   status      : saglam
   qoşulub     : true
   cədvəl sayı : 48
-  gecikmə     : 22 ms
+  gecikmə     : 21 ms
   versiya     : 0.1.0</code></pre>
 </article><article class="test" id="t-IA-10">
   <h3><span class="no">IA.10</span> Server qalxır — prefiks, marşrutlar, Swagger</h3>
@@ -3915,10 +3947,10 @@ echo "  ✓ dayandırıldı"
       "baza": {
           "qosulub": true,
           "cedvel_sayi": 48,
-          "gecikme_ms": 3
+          "gecikme_ms": 2
       },
       "versiya": "0.1.0",
-      "vaxt": "2026-09-23T06:51:07.867Z"
+      "vaxt": "2026-09-23T08:29:35.494Z"
   }
 
 ── 3) Olmayan yol → vahid xəta formatı ──
@@ -3929,7 +3961,7 @@ echo "  ✓ dayandırıldı"
           "mesaj": "Cannot GET /api/v1/bele-yol-yoxdur"
       },
       "yol": "/bele-yol-yoxdur",
-      "vaxt": "2026-09-23T06:51:07.891Z"
+      "vaxt": "2026-09-23T08:29:35.519Z"
   }
 
 ── 4) Swagger ──

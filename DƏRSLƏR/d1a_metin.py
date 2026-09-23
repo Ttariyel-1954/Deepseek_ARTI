@@ -441,6 +441,17 @@ imported from /.../dist/main.js
         oxuyur: «<code>DATABASE_URL</code> nədir?» Kod heç vaxt şifrənin özünü
         bilmir. Beləliklə eyni kod həm kompüterinizdə, həm serverdə işləyir —
         sadəcə <code>.env</code> faylı fərqli olur.</p>
+        <p><strong>İki fayl var — qarışdırmaq olmaz:</strong></p>
+        <p><code>.env</code> — <em>həqiqi</em> fayldır, içində REAL şifrə
+        olur və <strong>heç vaxt git-ə salınmır</strong>.
+        <code>.env.example</code> — <em>nümunədir</em>, şifrə yerinə
+        <code>ISTIFADECI:SIFRE</code> kimi yer tutucu yazılır və bu fayl
+        git-ə <strong>salınır</strong>. Yeni işçi layihəni götürəndə
+        nümunəni kopyalayıb öz şifrəsini yazır.</p>
+        <p>⚠️ <strong>Diqqət:</strong> bu dərsdəki şifrə
+        (<code>arti_secret_2025</code>) yalnız <em>yerli</em>
+        (<code>localhost</code>) baza üçündür. İstehsalatda tamam başqa,
+        güclü şifrə olmalıdır.</p>
         <p>⚠️ <strong><code>.env</code> git-ə salınmamalıdır.</strong> Bunun
         üçün <code>.gitignore</code> faylı var. Əvəzində
         <code>.env.example</code> saxlanılır — orada şifrə yerinə nümunə olur.
@@ -472,10 +483,15 @@ imported from /.../dist/main.js
         — çünki mövcud mühit dəyişəni fayldan üstündür. Bu, çaşqınlıq yaradır.
         Ona görə dərslərdə hər dəfə <code>unset DATABASE_URL PGHOST</code>
         işlədilir: «əvvəl təmizlə, sonra fayldan oxu».</p>""",
-        fayllar=[".env.example", ".gitignore"],
+        fayllar=[".env", ".env.example", ".gitignore"],
         c="""cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 
+echo "── B hissəsindəki fayllar yerindədirmi? ──"
+for f in .env .env.example .gitignore; do
+  if [ -f "$f" ]; then echo "  ✓ $f"; else echo "  ✗ $f YOXDUR — B hissəsini işlədin"; fi
+done
+echo
 echo "── .env faylı (şifrə GİZLƏDİLİR) ──"
 python3 -c "
 import re, pathlib
