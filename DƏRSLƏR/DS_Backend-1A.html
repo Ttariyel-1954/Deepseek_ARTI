@@ -399,9 +399,9 @@ echo "   Bu, XƏTA DEYİL — paketlər düzgün quraşdırılıb."</code></pre>
 
 ── İçində nə var? ──
 total 8
-drwxr-xr-x  3 royatalibova  staff    96 Sep 23 12:35 .
+drwxr-xr-x  3 royatalibova  staff    96 Sep 23 15:15 .
 drwxr-xr-x  9 royatalibova  staff   288 Sep 23 12:27 ..
--rw-r--r--  1 royatalibova  staff  1409 Sep 23 12:35 package.json
+-rw-r--r--  1 royatalibova  staff  1409 Sep 23 15:15 package.json
 
 ── Alətlərin versiyaları ──
   node: v26.7.0
@@ -412,20 +412,20 @@ drwxr-xr-x  9 royatalibova  staff   288 Sep 23 12:27 ..
 /opt/homebrew/bin/npm
 
 ── package.json yerindədirmi? ──
--rw-r--r--  1 royatalibova  staff  1409 Sep 23 12:35 package.json
+-rw-r--r--  1 royatalibova  staff  1409 Sep 23 15:15 package.json
 
 npm install → paketləri node_modules/ qovluğuna yazır
 (ilk dəfə 1-3 dəqiqə çəkə bilər — paketlər internetdən gəlir)
 
 
-added 431 packages in 2m
+added 430 packages in 5s
 
 101 packages are looking for funding
   run `npm fund` for details
 
 ── Nəticə ──
   ✓ node_modules: 306 paket
-  ölçüsü        : 505M
+  ölçüsü        : 488M
 
 ── ⚠️ PAKETLƏR HARADA SAXLANILIR? ──
   LAYİHƏ paketləri : ./node_modules      ← LAYİHƏNİN İÇİNDƏ
@@ -1951,6 +1951,20 @@ EOF</code></pre>
     <pre class="komanda"><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 
+echo "═══ 1) BAZANI OXUYURUQ — sxem yaranır ═══"
+echo "  npx prisma db pull → bazadaki cədvəlləri sxemaya yazır"
+echo "  (bu əmr bazanı YALNIZ OXUYUR — heç nə dəyişmir)"
+echo
+npx prisma db pull
+
+echo
+echo "═══ 2) TYPESCRIPT TİPLƏRİNİ YARADIRIQ ═══"
+echo "  npx prisma generate → sxemadan tipləri çıxarır"
+echo "  Nəticə: src/generated/prisma/client.ts"
+echo
+npx prisma generate
+
+echo
 echo "── Sxemanın əsas blokları ──"
 grep -nE '^(generator|datasource)|^  (provider|output|url|schemas)' prisma/schema.prisma | head -8
 echo
@@ -2014,7 +2028,92 @@ src/prisma/prisma.service.ts:3:10 - error TS2307: Cannot find module
   <div class="kod-blok">
     <div class="kod-basliq cixis-basliq">
       <span>ÇIXIŞ — real nəticə</span></div>
-    <pre class="cixis"><code>── Sxemanın əsas blokları ──
+    <pre class="cixis"><code>═══ 1) BAZANI OXUYURUQ — sxem yaranır ═══
+  npx prisma db pull → bazadaki cədvəlləri sxemaya yazır
+  (bu əmr bazanı YALNIZ OXUYUR — heç nə dəyişmir)
+
+Datasource "db": PostgreSQL database "arti_baza", schemas "ai, audit, elm, kadrlar, logistika, maliyye, metodika, ortaq, qiymetlendirme, sened, struktur, tehsil" at "localhost:5432"
+
+- Introspecting based on datasource defined in prisma/schema.prisma
+✔ Introspected 48 models and wrote them into prisma/schema.prisma in 81ms
+      
+*** WARNING ***
+
+These fields were enriched with `@map` information taken from the previous Prisma schema:
+  - Model: "vezife_teyinatlari", field: "t_yinat_tarixi"
+
+These constraints are not supported by Prisma Client, because Prisma currently does not fully support check constraints. Read more: https://pris.ly/d/check-constraints
+  - Model: "emekdaslar", constraint: "emekdaslar_maas_check"
+  - Model: "mezuniyyetler", constraint: "mezuniyyetler_check"
+  - Model: "mezuniyyetler", constraint: "mezuniyyetler_gun_sayi_check"
+  - Model: "budce", constraint: "budce_mebleg_check"
+  - Model: "maliyye_emeliyyatlari", constraint: "maliyye_emeliyyatlari_mebleg_check"
+  - Model: "muqavileler", constraint: "muqavileler_mebleg_check"
+  - Model: "satinalmalar", constraint: "satinalmalar_mebleg_check"
+  - Model: "sertifikasiya", constraint: "sertifikasiya_bal_check"
+
+These objects have comments defined in the database, which is not yet fully supported. Read more: https://pris.ly/d/database-comments
+  - Type: "model", name: "ai_promptlar"
+  - Type: "model", name: "ai_sorghular"
+  - Type: "model", name: "embeddingler"
+  - Type: "model", name: "audit_log"
+  - Type: "model", name: "doktorantlar"
+  - Type: "model", name: "doktorantura_proqramlari"
+  - Type: "model", name: "elmi_tedbirler"
+  - Type: "model", name: "jurnallar"
+  - Type: "model", name: "meqaleler"
+  - Type: "model", name: "neshrler"
+  - Type: "model", name: "tedqiqat_istiqametleri"
+  - Type: "model", name: "tedqiqat_layiheleri"
+  - Type: "model", name: "emekdaslar"
+  - Type: "model", name: "is_tecrubesi"
+  - Type: "model", name: "istifadeciler"
+  - Type: "model", name: "mezuniyyetler"
+  - Type: "model", name: "vezife_teyinatlari"
+  - Type: "model", name: "aktivler"
+  - Type: "model", name: "binalar"
+  - Type: "model", name: "it_sistemleri"
+  - Type: "model", name: "budce"
+  - Type: "model", name: "maliyye_emeliyyatlari"
+  - Type: "model", name: "muqavileler"
+  - Type: "model", name: "satinalmalar"
+  - Type: "model", name: "metodik_vesaitler"
+  - Type: "model", name: "metodik_xidmetler"
+  - Type: "model", name: "cinsiyyet"
+  - Type: "model", name: "elmi_adlar"
+  - Type: "model", name: "elmi_dereceler"
+  - Type: "model", name: "is_statuslari"
+  - Type: "model", name: "beynelxalq_qiymetlendirmeler"
+  - Type: "model", name: "monitorinq_hesabatlari"
+  - Type: "model", name: "statistik_gostericiler"
+  - Type: "model", name: "emrler"
+  - Type: "model", name: "sened_novleri"
+  - Type: "model", name: "senedler"
+  - Type: "model", name: "elmi_shura_iclaslari"
+  - Type: "model", name: "elmi_shura_qerarlari"
+  - Type: "model", name: "elmi_shura_uzvleri"
+  - Type: "model", name: "merkezler"
+  - Type: "model", name: "rehberlik"
+  - Type: "model", name: "shobeler"
+  - Type: "model", name: "vezifeler"
+  - Type: "model", name: "imtahanlar"
+  - Type: "model", name: "sertifikasiya"
+  - Type: "model", name: "telim_istirakcilari"
+  - Type: "model", name: "telim_proqramlari"
+  - Type: "model", name: "telim_qruplari"
+
+Run prisma generate to generate Prisma Client.
+
+
+═══ 2) TYPESCRIPT TİPLƏRİNİ YARADIRIQ ═══
+  npx prisma generate → sxemadan tipləri çıxarır
+  Nəticə: src/generated/prisma/client.ts
+
+
+✔ Generated Prisma Client (7.10.0) to ./src/generated/prisma in 103ms
+
+
+── Sxemanın əsas blokları ──
 1:generator client {
 2:  provider = "prisma-client"
 3:  output   = "../src/generated/prisma"
@@ -2049,7 +2148,13 @@ src/prisma/prisma.service.ts:3:10 - error TS2307: Cannot find module
 
 ── Yaradılan klient ──
   src/generated/prisma: 7 fayl
-  ✓ client.ts var</code></pre>
+  ✓ client.ts var
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma/schema.prisma.
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma/schema.prisma.</code></pre>
   </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>baza artıq TypeScript üçün
         tanışdır</strong>. 48 cədvəl, 12 sxem tiplər kimi mövcuddur. Hələ
@@ -2236,10 +2341,10 @@ Error: DATABASE_URL təyin olunmayıb — .env faylını yoxlayın
 -rw-r--r--  1 royatalibova  wheel  1547 Sep 23 09:29 src/prisma/prisma.service.ts
 
 ── Baza bağlantısını BİRBAŞA yoxlayaq ──
-[Nest] 79468  - 09/23/2026, 12:36:53 PM     LOG [BAZA] Baza bağlantısı açıldı
+[Nest] 82188  - 09/23/2026, 3:15:29 PM     LOG [BAZA] Baza bağlantısı açıldı
   bağlantı   : quruldu
   cədvəl sayı: 48
-  gecikmə    : 23 ms
+  gecikmə    : 27 ms
   bağlantı bağlandı</code></pre>
   </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>TypeScript kodu bazaya
@@ -2821,16 +2926,16 @@ $ curl -s localhost:4000/api/v1/saglamliq
   22:  @Get('saglamliq')
 
 ── Sağlamlıq yoxlamasını BİRBAŞA sınayaq ──
-[Nest] 79503  - 09/23/2026, 12:36:54 PM     LOG [BAZA] Baza bağlantısı açıldı
+[Nest] 82223  - 09/23/2026, 3:15:29 PM     LOG [BAZA] Baza bağlantısı açıldı
   {
     "status": "saglam",
     "baza": {
       "qosulub": true,
       "cedvel_sayi": 48,
-      "gecikme_ms": 24
+      "gecikme_ms": 23
     },
     "versiya": "0.1.0",
-    "vaxt": "2026-09-23T08:36:54.490Z"
+    "vaxt": "2026-09-23T11:15:29.677Z"
   }</code></pre>
   </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>işləyən servis məntiqi var</strong>,
@@ -3117,9 +3222,14 @@ export npm_config_cache=/tmp/npmcache
 echo "── main.ts yerindədirmi? ──"
 ls -l src/main.ts
 
-echo "── Build ──"
+echo "── 1) Build ──"
 npm run build 2&gt;&amp;1 | tail -2
 [ -f dist/main.js ] &amp;&amp; echo "  ✓ dist/main.js yaradıldı" || echo "  ✗ dist/main.js YOXDUR"
+
+echo
+echo "── 2) Tip yoxlaması ──"
+echo "   (build bəzən tip xətalarını gizlədir — bu ayrıca yoxlayır)"
+npx tsc --noEmit -p tsconfig.build.json &amp;&amp; echo "  ✓ tip yoxlaması keçdi"
 
 echo
 echo "── Köhnə prosesi təmizləyirik ──"
@@ -3196,19 +3306,23 @@ Error: listen EADDRINUSE: address already in use :::4000
       <span>ÇIXIŞ — real nəticə</span></div>
     <pre class="cixis"><code>── main.ts yerindədirmi? ──
 -rw-r--r--  1 royatalibova  wheel  1548 Sep 23 09:29 src/main.ts
-── Build ──
+── 1) Build ──
 &gt; nest build
 
   ✓ dist/main.js yaradıldı
+
+── 2) Tip yoxlaması ──
+   (build bəzən tip xətalarını gizlədir — bu ayrıca yoxlayır)
+  ✓ tip yoxlaması keçdi
 
 ── Köhnə prosesi təmizləyirik ──
   port 4000 boşdur: bəli
 
 ── Server qalxır (arxa planda) ──
-  [Nest] 79555  - 09/23/2026, 12:36:57 PM     LOG [RouterExplorer] Mapped {/api/v1, GET} route +0ms
-  [Nest] 79555  - 09/23/2026, 12:36:57 PM     LOG [RouterExplorer] Mapped {/api/v1/saglamliq, GET} route +1ms
-  [Nest] 79555  - 09/23/2026, 12:36:57 PM     LOG [BAŞLANGIC] API hazırdır → http://localhost:4000/api/v1
-  [Nest] 79555  - 09/23/2026, 12:36:57 PM     LOG [BAŞLANGIC] Sənədləşdirmə → http://localhost:4000/docs
+  [Nest] 82288  - 09/23/2026, 3:15:32 PM     LOG [RouterExplorer] Mapped {/api/v1, GET} route +1ms
+  [Nest] 82288  - 09/23/2026, 3:15:32 PM     LOG [RouterExplorer] Mapped {/api/v1/saglamliq, GET} route +0ms
+  [Nest] 82288  - 09/23/2026, 3:15:33 PM     LOG [BAŞLANGIC] API hazırdır → http://localhost:4000/api/v1
+  [Nest] 82288  - 09/23/2026, 3:15:33 PM     LOG [BAŞLANGIC] Sənədləşdirmə → http://localhost:4000/docs
 
 ── 1) Kök ünvan ──
   {
@@ -3224,10 +3338,10 @@ Error: listen EADDRINUSE: address already in use :::4000
       "baza": {
           "qosulub": true,
           "cedvel_sayi": 48,
-          "gecikme_ms": 2
+          "gecikme_ms": 3
       },
       "versiya": "0.1.0",
-      "vaxt": "2026-09-23T08:36:57.981Z"
+      "vaxt": "2026-09-23T11:15:33.801Z"
   }
 
 ── 3) Olmayan yol → vahid xəta formatı ──
@@ -3238,7 +3352,7 @@ Error: listen EADDRINUSE: address already in use :::4000
           "mesaj": "Cannot GET /api/v1/bele-yol-yoxdur"
       },
       "yol": "/bele-yol-yoxdur",
-      "vaxt": "2026-09-23T08:36:58.006Z"
+      "vaxt": "2026-09-23T11:15:33.825Z"
   }
 
 ── 4) Swagger sənədləşdirmə ──
@@ -3707,10 +3821,10 @@ grep -nE 'PrismaPg|adapter|connectionString' src/prisma/prisma.service.ts | sed 
   -rw-r--r--  1 royatalibova  wheel  1547 Sep 23 09:29 src/prisma/prisma.service.ts
 
 ── Baza bağlantısını BİRBAŞA sınayırıq ──
-[Nest] 79709  - 09/23/2026, 12:36:59 PM     LOG [BAZA] Baza bağlantısı açıldı
+[Nest] 82440  - 09/23/2026, 3:15:35 PM     LOG [BAZA] Baza bağlantısı açıldı
   bağlantı    : quruldu
   cədvəl sayı : 48
-  gecikmə     : 21 ms
+  gecikmə     : 22 ms
   bağlantı düzgün bağlandı
 
 ── Adapter istifadə olunurmu? ──
@@ -3920,11 +4034,11 @@ void (async () =&gt; {
   sayı: 2
 
 ── Sağlamlıq yoxlaması (birbaşa) ──
-[Nest] 79760  - 09/23/2026, 12:36:59 PM     LOG [BAZA] Baza bağlantısı açıldı
+[Nest] 82490  - 09/23/2026, 3:15:35 PM     LOG [BAZA] Baza bağlantısı açıldı
   status      : saglam
   qoşulub     : true
   cədvəl sayı : 48
-  gecikmə     : 26 ms
+  gecikmə     : 24 ms
   versiya     : 0.1.0</code></pre>
 </article><article class="test" id="t-IA-10">
   <h3><span class="no">IA.10</span> Server qalxır — prefiks, marşrutlar, Swagger</h3>
@@ -4018,7 +4132,7 @@ echo "  ✓ dayandırıldı"
           "gecikme_ms": 2
       },
       "versiya": "0.1.0",
-      "vaxt": "2026-09-23T08:37:03.429Z"
+      "vaxt": "2026-09-23T11:15:39.225Z"
   }
 
 ── 3) Olmayan yol → vahid xəta formatı ──
@@ -4029,7 +4143,7 @@ echo "  ✓ dayandırıldı"
           "mesaj": "Cannot GET /api/v1/bele-yol-yoxdur"
       },
       "yol": "/bele-yol-yoxdur",
-      "vaxt": "2026-09-23T08:37:03.454Z"
+      "vaxt": "2026-09-23T11:15:39.249Z"
   }
 
 ── 4) Swagger ──

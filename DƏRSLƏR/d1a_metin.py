@@ -618,6 +618,20 @@ const url = 'postgresql://arti_user:arti_secret_2025@localhost:5432/arti_baza';
         c="""cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 unset DATABASE_URL PGHOST
 
+echo "═══ 1) BAZANI OXUYURUQ — sxem yaranır ═══"
+echo "  npx prisma db pull → bazadaki cədvəlləri sxemaya yazır"
+echo "  (bu əmr bazanı YALNIZ OXUYUR — heç nə dəyişmir)"
+echo
+npx prisma db pull
+
+echo
+echo "═══ 2) TYPESCRIPT TİPLƏRİNİ YARADIRIQ ═══"
+echo "  npx prisma generate → sxemadan tipləri çıxarır"
+echo "  Nəticə: src/generated/prisma/client.ts"
+echo
+npx prisma generate
+
+echo
 echo "── Sxemanın əsas blokları ──"
 grep -nE '^(generator|datasource)|^  (provider|output|url|schemas)' prisma/schema.prisma | head -8
 echo
@@ -1220,9 +1234,14 @@ export npm_config_cache=/tmp/npmcache
 echo "── main.ts yerindədirmi? ──"
 ls -l src/main.ts
 
-echo "── Build ──"
+echo "── 1) Build ──"
 npm run build 2>&1 | tail -2
 [ -f dist/main.js ] && echo "  ✓ dist/main.js yaradıldı" || echo "  ✗ dist/main.js YOXDUR"
+
+echo
+echo "── 2) Tip yoxlaması ──"
+echo "   (build bəzən tip xətalarını gizlədir — bu ayrıca yoxlayır)"
+npx tsc --noEmit -p tsconfig.build.json && echo "  ✓ tip yoxlaması keçdi"
 
 echo
 echo "── Köhnə prosesi təmizləyirik ──"
