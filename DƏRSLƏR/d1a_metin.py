@@ -18,7 +18,7 @@ ADIMLAR = [
     # ═══════════════════════════════════════════════════════════════
     dict(
         no=1,
-        ad="Layihə qovluğu və skelet",
+        ad="Layihə qovluğu, package.json və paketlər",
         a="""<p>İlk sual budur: <strong>backend kodu hara yazılır?</strong> Kompüterinizdə
         onlarla layihə ola bilər — hər birinin öz qovluğu olmalıdır. Bu qovluq
         backend-in <em>evi</em>dir: kod, konfiqurasiya, asılılıqlar və testlər
@@ -32,9 +32,17 @@ ADIMLAR = [
         versiyası, hansı paketlərə ehtiyacı olduğu və hansı əmrləri işlədə
         bildiyi orada yazılır. Fayl olmasa, <code>npm</code> layihənin nə
         olduğunu bilmir.</p>
-        <p>Bu addımda hələ kod yazmırıq — sadəcə sahəni hazırlayırıq.
-        Bu, təməl qazmağa bənzəyir: görünən iş yoxdur, amma sonrakı hər şey
-        bundan asılıdır.</p>""",
+        <p><strong>Bu addımda üç şey edirik:</strong>
+        <strong>(1)</strong> qovluğu yaradırıq,
+        <strong>(2)</strong> <code>package.json</code> faylını yazırıq — bu,
+        layihənin «şəxsiyyət vəsiqəsi»dir,
+        <strong>(3)</strong> <code>npm install</code> ilə
+        <strong>paketləri həmin qovluğa yükləyirik</strong>.</p>
+        <p>⚠️ Paketlər başqa yerə YOX — məhz bu qovluğun içindəki
+        <code>node_modules/</code> alt qovluğuna yazılır. Sonda əlimizdə
+        işləməyə hazır bir layihə skeleti olur.</p>
+        <p>Bu, təməl qazmağa bənzəyir: hələ görünən nəticə yoxdur, amma
+        sonrakı hər şey bundan asılıdır.</p>""",
         anlayis=[
             ("Node.js", "JavaScript kodunu brauzerdən kənarda — yəni serverdə — işlədən mühit."),
             ("npm", "Node Package Manager — paketləri quraşdıran və layihə əmrlərini işlədən alət."),
@@ -55,19 +63,20 @@ ADIMLAR = [
         <p>⚠️ <strong>Vacib vərdiş:</strong> hər dəfə yeni terminal açanda ilk
         işiniz <code>cd</code> ilə layihə qovluğuna keçmək olmalıdır. Əks halda
         <code>npm</code> «package.json tapılmadı» deyəcək.</p>""",
-        fayllar=[],
-        c="""# 1) Layihə qovluğunu YARADIRIQ
-#    -p işarəsi: arana qovluqları da yaradır və qovluq artıq
-#    varsa xəta vermir («already exists» deməz).
+        fayllar=["package.json"],
+        c="""# ═══ HİSSƏ 1 · LAYİHƏ QOVLUĞUNU YARADIRIQ ═══
+
+# -p işarəsi: arana qovluqları da yaradır və qovluq artıq
+# varsa xəta vermir («already exists» deməz).
 mkdir -p ~/Deepseek_ARTI/DS_Backend
 
-# 2) İçinə keçirik
+# İçinə keçirik
 cd ~/Deepseek_ARTI/DS_Backend
 
 echo "── Qovluq yerindədirmi? ──"
 pwd
 echo
-echo "── İçində nə var? (hələ boşdur) ──"
+echo "── İçində nə var? ──"
 ls -la
 echo
 echo "── Alətlərin versiyaları ──"
@@ -76,7 +85,54 @@ echo "  npm:  $(npm -v)"
 echo
 echo "── Node hansı qovluqda quraşdırılıb? ──"
 which node
-which npm""",
+which npm
+
+
+# ═══ HİSSƏ 2 · PAKETLƏRİ YÜKLƏYİRİK ═══
+# B hissəsində package.json yazıldı. İndi onun siyahısındaki
+# paketləri LAYİHƏNİN İÇİNƏ yükləyirik.
+
+echo
+echo "── package.json yerindədirmi? ──"
+ls -l package.json
+echo
+echo "npm install → paketləri node_modules/ qovluğuna yazır"
+echo "(ilk dəfə 1-3 dəqiqə çəkə bilər — paketlər internetdən gəlir)"
+echo
+npm install
+echo
+echo "── Nəticə ──"
+if [ -d node_modules ]; then
+  echo "  ✓ node_modules: $(ls node_modules | wc -l | tr -d ' ') paket"
+  echo "  ölçüsü        : $(du -sh node_modules 2>/dev/null | cut -f1)"
+else
+  echo "  ✗ node_modules YOXDUR"
+fi
+
+echo
+echo "── ⚠️ PAKETLƏR HARADA SAXLANILIR? ──"
+echo "  LAYİHƏ paketləri : ./node_modules      ← LAYİHƏNİN İÇİNDƏ"
+echo "  qlobal paketlər  : $(npm root -g 2>/dev/null)"
+echo "  npm keşi         : ~/.npm               ← yüklənmiş faylların surəti"
+echo
+echo "── Bu üçü nə ilə fərqlənir? ──"
+cat <<'IZAH'
+  LAYİHƏ  → package.json-daki «dependencies» buraya yazılır.
+            Yalnız BU layihəyə aiddir. Git-ə salınmır, çünki
+            «npm install» onu istənilən kompüterdə bərpa edir.
+  QLOBAL  → «npm install -g paket» ilə sistemə yazılır.
+            Bütün layihələrdə işləyir (məsələn «nest» əmri).
+  KEŞ     → yüklənmiş faylların surəti. Paket silinib yenidən
+            quraşdırılsa, internetdən YENİDƏN yüklənmir — keşdən gəlir.
+IZAH
+
+echo
+echo "── ⚠️ Sondaki «install-scripts» xəbərdarlığı NORMALDIR ──"
+echo "   Bəzi paketlər quraşdırma zamanı öz hazırlıq skriptini işlədir"
+echo "   (məsələn Prisma öz baza mühərrikini hazırlayır, esbuild ikili"
+echo "   faylını yazır). npm 11 bunu təhlükəsizlik üçün bildirir."
+echo "   Bu, XƏTA DEYİL — paketlər düzgün quraşdırılıb."
+""",
         olmaz="""$ cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 -bash: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory
 
@@ -110,8 +166,11 @@ which npm""",
     # ═══════════════════════════════════════════════════════════════
     dict(
         no=2,
-        ad="package.json və asılılıqlar",
-        a="""<p><code>package.json</code> layihənin <strong>şəxsiyyət
+        ad="package.json-un izahı — skriptlər və asılılıqlar",
+        a="""<p>Bu fayl <strong>ADDIM 1-də yaradıldı</strong> və paketlər
+        orada yükləndi. İndi onu diqqətlə oxuyuruq: nə yazılıb, nə deməkdir
+        və hansı hissə nə üçündür.</p>
+        <p><code>package.json</code> layihənin <strong>şəxsiyyət
         vəsiqəsi</strong>dir. Onda üç vacib şey yazılır: layihənin adı,
         <em>hansı paketlərə ehtiyacı olduğu</em> və <em>hansı əmrləri işlədə
         bildiyi</em>.</p>
@@ -167,7 +226,8 @@ which npm""",
         <p>⚠️ <strong>Diqqət:</strong> bu faylı əl ilə yazmaq əvəzinə adətən
         <code>npm install paket-adi</code> işlədilir və npm faylı özü
         yeniləyir. Bizim dərsdə isə fayl tam verilir ki, hər şey eyni olsun.</p>""",
-        fayllar=["package.json"],
+        fayllar=[],
+        goster=["package.json"],
         c="""cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
 
 echo "── Layihə haqqında ──"
@@ -193,44 +253,14 @@ d = json.load(open('package.json'))
 print('  İŞLƏMƏ üçün (dependencies):', len(d.get('dependencies', {})))
 print('  İNKİŞAF üçün (devDependencies):', len(d.get('devDependencies', {})))
 "
-echo
-echo "═══ PAKETLƏR YÜKLƏNİR ═══"
-echo "  npm install → paketləri node_modules/ qovluğuna yazır"
-echo "  (ilk dəfə 1-3 dəqiqə çəkə bilər — paketlər internetdən gəlir)"
-echo
-npm install
-echo
-echo "── Nəticə ──"
+
+echo "── Paketlər yerindədirmi? (ADDIM 1-də yüklənib) ──"
 if [ -d node_modules ]; then
   echo "  ✓ node_modules: $(ls node_modules | wc -l | tr -d ' ') paket"
   echo "  ölçüsü        : $(du -sh node_modules 2>/dev/null | cut -f1)"
 else
-  echo "  ✗ node_modules YOXDUR"
+  echo "  ✗ node_modules yoxdur — ADDIM 1-dəki «npm install» işlədin"
 fi
-
-echo
-echo "── ⚠️ PAKETLƏR HARADA SAXLANILIR? ──"
-echo "  LAYİHƏ paketləri : ./node_modules      ← LAYİHƏNİN İÇİNDƏ"
-echo "  qlobal paketlər  : $(npm root -g 2>/dev/null)"
-echo "  npm keşi         : ~/.npm               ← yüklənmiş faylların surəti"
-echo
-echo "── Bu üçü nə ilə fərqlənir? ──"
-cat <<'IZAH'
-  LAYİHƏ  → package.json-daki «dependencies» buraya yazılır.
-            Yalnız BU layihəyə aiddir. Git-ə salınmır, çünki
-            «npm install» onu istənilən kompüterdə bərpa edir.
-  QLOBAL  → «npm install -g paket» ilə sistemə yazılır.
-            Bütün layihələrdə işləyir (məsələn «nest» əmri).
-  KEŞ     → yüklənmiş faylların surəti. Paket silinib yenidən
-            quraşdırılsa, internetdən YENİDƏN yüklənmir — keşdən gəlir.
-IZAH
-
-echo
-echo "── ⚠️ Sondaki «install-scripts» xəbərdarlığı NORMALDIR ──"
-echo "   Bəzi paketlər quraşdırma zamanı öz hazırlıq skriptini işlədir"
-echo "   (məsələn Prisma öz baza mühərrikini hazırlayır, esbuild ikili"
-echo "   faylını yazır). npm 11 bunu təhlükəsizlik üçün bildirir."
-echo "   Bu, XƏTA DEYİL — paketlər düzgün quraşdırılıb."
 """,
         olmaz="""$ npm run build
 npm error code ENOENT

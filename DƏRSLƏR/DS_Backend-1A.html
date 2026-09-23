@@ -181,10 +181,10 @@ footer { margin-top:3rem; padding-top:1.4rem; border-top:2px solid #e2e8f0;
   <code>pwd</code> ilə qovluğu, <code>ls</code> ilə faylları yoxlayın.</p>
 </div>
 
-<div class="mund"><h2>Mündəricat</h2><a href="#a1">1. Layihə qovluğu və skelet</a><a href="#a2">2. package.json və asılılıqlar</a><a href="#a3">3. TypeScript konfiqurasiyası</a><a href="#a4">4. .env — baza açarı koddan ayrılır</a><a href="#a5">5. Prisma sxeması — bazanı oxuyub tipləri çıxarmaq</a><a href="#a6">6. PrismaService — baza bağlantısı</a><a href="#a7">7. PrismaModule — @Global() ilə paylaşılan bağlantı</a><a href="#a8">8. AllExceptionsFilter — vahid xəta formatı</a><a href="#a9">9. Sağlamlıq modulu — ilk işləyən endpoint</a><a href="#a10">10. app.module.ts — kök modul</a><a href="#a11">11. main.ts — serveri işə salırıq</a><a href="#t-IA-1">IA.1 Layihə skeleti və konfiqurasiya faylları</a><a href="#t-IA-2">IA.2 package.json — skriptlər və asılılıqlar</a><a href="#t-IA-3">IA.3 TypeScript ayarları — decorator və NodeNext</a><a href="#t-IA-4">IA.4 .env — sirr koddan ayrılıb və qorunur</a><a href="#t-IA-5">IA.5 Prisma sxeması və klientin generasiyası</a><a href="#t-IA-6">IA.6 PrismaService — baza bağlantısı işləyir</a><a href="#t-IA-7">IA.7 PrismaModule — @Global() və exports</a><a href="#t-IA-8">IA.8 AllExceptionsFilter — vahid xəta formatı</a><a href="#t-IA-9">IA.9 Sağlamlıq modulu — ilk endpoint məntiqi</a><a href="#t-IA-10">IA.10 Server qalxır — prefiks, marşrutlar, Swagger</a></div>
+<div class="mund"><h2>Mündəricat</h2><a href="#a1">1. Layihə qovluğu, package.json və paketlər</a><a href="#a2">2. package.json-un izahı — skriptlər və asılılıqlar</a><a href="#a3">3. TypeScript konfiqurasiyası</a><a href="#a4">4. .env — baza açarı koddan ayrılır</a><a href="#a5">5. Prisma sxeması — bazanı oxuyub tipləri çıxarmaq</a><a href="#a6">6. PrismaService — baza bağlantısı</a><a href="#a7">7. PrismaModule — @Global() ilə paylaşılan bağlantı</a><a href="#a8">8. AllExceptionsFilter — vahid xəta formatı</a><a href="#a9">9. Sağlamlıq modulu — ilk işləyən endpoint</a><a href="#a10">10. app.module.ts — kök modul</a><a href="#a11">11. main.ts — serveri işə salırıq</a><a href="#t-IA-1">IA.1 Layihə skeleti və konfiqurasiya faylları</a><a href="#t-IA-2">IA.2 package.json — skriptlər və asılılıqlar</a><a href="#t-IA-3">IA.3 TypeScript ayarları — decorator və NodeNext</a><a href="#t-IA-4">IA.4 .env — sirr koddan ayrılıb və qorunur</a><a href="#t-IA-5">IA.5 Prisma sxeması və klientin generasiyası</a><a href="#t-IA-6">IA.6 PrismaService — baza bağlantısı işləyir</a><a href="#t-IA-7">IA.7 PrismaModule — @Global() və exports</a><a href="#t-IA-8">IA.8 AllExceptionsFilter — vahid xəta formatı</a><a href="#t-IA-9">IA.9 Sağlamlıq modulu — ilk endpoint məntiqi</a><a href="#t-IA-10">IA.10 Server qalxır — prefiks, marşrutlar, Swagger</a></div>
 
 <section class="addim" id="a1">
-<h2 class="addim-basliq"><span class="addim-no">1</span> Layihə qovluğu və skelet</h2>
+<h2 class="addim-basliq"><span class="addim-no">1</span> Layihə qovluğu, package.json və paketlər</h2>
 
 <div class="hisse hisse-a">
   <span class="hisse-basliq">A · Bu addım niyə var</span>
@@ -201,147 +201,18 @@ footer { margin-top:3rem; padding-top:1.4rem; border-top:2px solid #e2e8f0;
         versiyası, hansı paketlərə ehtiyacı olduğu və hansı əmrləri işlədə
         bildiyi orada yazılır. Fayl olmasa, <code>npm</code> layihənin nə
         olduğunu bilmir.</p>
-        <p>Bu addımda hələ kod yazmırıq — sadəcə sahəni hazırlayırıq.
-        Bu, təməl qazmağa bənzəyir: görünən iş yoxdur, amma sonrakı hər şey
-        bundan asılıdır.</p>
+        <p><strong>Bu addımda üç şey edirik:</strong>
+        <strong>(1)</strong> qovluğu yaradırıq,
+        <strong>(2)</strong> <code>package.json</code> faylını yazırıq — bu,
+        layihənin «şəxsiyyət vəsiqəsi»dir,
+        <strong>(3)</strong> <code>npm install</code> ilə
+        <strong>paketləri həmin qovluğa yükləyirik</strong>.</p>
+        <p>⚠️ Paketlər başqa yerə YOX — məhz bu qovluğun içindəki
+        <code>node_modules/</code> alt qovluğuna yazılır. Sonda əlimizdə
+        işləməyə hazır bir layihə skeleti olur.</p>
+        <p>Bu, təməl qazmağa bənzəyir: hələ görünən nəticə yoxdur, amma
+        sonrakı hər şey bundan asılıdır.</p>
   <div class="anlayis"><h4>Yeni anlayışlar</h4><dl><dt>Node.js</dt><dd>JavaScript kodunu brauzerdən kənarda — yəni serverdə — işlədən mühit.</dd><dt>npm</dt><dd>Node Package Manager — paketləri quraşdıran və layihə əmrlərini işlədən alət.</dd><dt>Paket (package)</dt><dd>Başqasının yazdığı hazır kod parçası. Məsələn NestJS bir paketdir.</dd><dt>Asılılıq (dependency)</dt><dd>Layihənizin işləməsi üçün lazım olan paket.</dd><dt>CWD</dt><dd>Current Working Directory — terminalın hazırda «dayandığı» qovluq.</dd></dl></div>
-</div>
-
-<div class="hisse hisse-b">
-  <span class="hisse-basliq">B · Kod</span>
-  
-  <button class="kopyala-hamisi" data-addim="a1">
-    ADDIMIN BÜTÜN KODUNU KOPYALA (bütün fayllar bir yerdə)</button>
-  <h4 style="margin-top:1rem;color:#334155">Kodun sətir-sətir izahı</h4>
-  <p>Bu addımda fayl yaradılmır — yalnız qovluq. Aşağıdaki əmrlər
-        qovluğu yaradır və içinə girir:</p>
-        <p><code>mkdir -p ~/Deepseek_ARTI/DS_Backend</code> — qovluq yaradır.
-        <code>-p</code> işarəsi «arana qovluqları da yarat, varsa xəta vermə»
-        deməkdir. Bu işarə olmasa, <code>Deepseek_ARTI</code> yoxdursa əmr xəta
-        verərdi.</p>
-        <p><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"</code> — terminalı həmin qovluğa
-        keçirir. <code>~</code> işarəsi ev qovluğunuzu bildirir
-        (<code>/Users/royatalibova</code>). Bundan sonra bütün əmrlər bu
-        qovluğun içində işləyəcək.</p>
-        <p>⚠️ <strong>Vacib vərdiş:</strong> hər dəfə yeni terminal açanda ilk
-        işiniz <code>cd</code> ilə layihə qovluğuna keçmək olmalıdır. Əks halda
-        <code>npm</code> «package.json tapılmadı» deyəcək.</p>
-</div>
-
-<div class="hisse hisse-c">
-  <span class="hisse-basliq">C · Yoxlama — həqiqi çıxış</span>
-  <p>Aşağıdaki əmrləri işlədin. Nəticə elə bu dərsin D hissəsində göstərilib:</p>
-  <div class="kod-blok">
-    <div class="kod-basliq"><span>Terminal əmrləri</span>
-      <button class="kopyala">KOPYALA</button></div>
-    <pre class="komanda"><code># 1) Layihə qovluğunu YARADIRIQ
-#    -p işarəsi: arana qovluqları da yaradır və qovluq artıq
-#    varsa xəta vermir («already exists» deməz).
-mkdir -p ~/Deepseek_ARTI/DS_Backend
-
-# 2) İçinə keçirik
-cd ~/Deepseek_ARTI/DS_Backend
-
-echo "── Qovluq yerindədirmi? ──"
-pwd
-echo
-echo "── İçində nə var? (hələ boşdur) ──"
-ls -la
-echo
-echo "── Alətlərin versiyaları ──"
-echo "  node: $(node -v)"
-echo "  npm:  $(npm -v)"
-echo
-echo "── Node hansı qovluqda quraşdırılıb? ──"
-which node
-which npm</code></pre>
-  </div>
-  <div class="olmaz"><h4>⚠️ Bu kod olmasa nə olardı</h4><pre><code>$ cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
--bash: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory
-
-   # ⚠️ Qovluq yoxdursa, sonrakı BÜTÜN addımlar sınır: package.json
-   # yarada bilməzsiniz, npm install işləməz, server qalxmaz.
-   # Xəta mesajı «No such file or directory» olur və səbəb çox vaxt
-   # sadəcə yazı səhvidir (məsələn «DS_Backend» yerinə «DS-Backend»).</code></pre>
-    <p><p><code>pwd</code> əmri «print working directory» deməkdir — hazırda
-        hansı qovluqda olduğunuzu göstərir. Bu, ən çox işlədilən diaqnostika
-        əmridir: nə vaxt «fayl tapılmadı» xətası görsəniz, əvvəlcə
-        <code>pwd</code> yazın.</p>
-        <p><code>ls -la</code> qovluğun içini göstərir. <code>-l</code> uzun
-        format, <code>-a</code> isə gizli faylları da göstərir (<code>.</code>
-        ilə başlayanlar). Yeni qovluqda yalnız <code>.</code> və
-        <code>..</code> görünəcək — bunlar «bu qovluq» və «üst qovluq»
-        deməkdir.</p></p></div>
-</div>
-
-<div class="hisse hisse-d">
-  <span class="hisse-basliq">D · Sistemin vəziyyəti — həqiqi çıxış</span>
-  <p class="cixis-xeber">⚠️ Bu blok <strong>çıxışdır</strong> — kopyalamaq
-  üçün deyil, oxumaq üçündür. Əmrlər C hissəsindədir.</p>
-  <div class="kod-blok">
-    <div class="kod-basliq cixis-basliq">
-      <span>ÇIXIŞ — real nəticə</span></div>
-    <pre class="cixis"><code>── Qovluq yerindədirmi? ──
-/Users/royatalibova/Deepseek_ARTI/DS_Backend
-
-── İçində nə var? (hələ boşdur) ──
-total 0
-drwxr-xr-x  2 royatalibova  staff   64 Sep 23 10:42 .
-drwxr-xr-x  9 royatalibova  staff  288 Sep 23 10:42 ..
-
-── Alətlərin versiyaları ──
-  node: v26.7.0
-  npm:  11.19.0
-
-── Node hansı qovluqda quraşdırılıb? ──
-/opt/homebrew/bin/node
-/opt/homebrew/bin/npm</code></pre>
-  </div>
-  <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>boş bir qovluq</strong> və işləyən
-        Node.js. Bu, hələ layihə deyil — sadəcə layihənin yeri. Növbəti addımda
-        bu qovluğa <code>package.json</code> əlavə edib onu həqiqi Node.js
-        layihəsinə çevirəcəyik.</p></div>
-</div>
-
-<div class="sual"><h4 style="color:#0f766e;font-size:.95rem">Tez-tez verilən suallar</h4>
-<details><summary>Qovluğun adını dəyişsəm nə olar?</summary><p>Heç nə olmaz — sadəcə hər dəfə <code>cd</code> əmrində yeni adı yazmalısınız. Amma dərs boyu eyni adı işlətmək qarışıqlığın qarşısını alır.</p></details><details><summary>Layihəni başqa yerə köçürə bilərəm?</summary><p>Bəli. Amma o zaman bütün <code>cd</code> əmrlərindəki yolu dəyişməlisiniz. Dərslərdə <code>~/Deepseek_ARTI/DS_Backend</code> yolu işlədilir.</p></details><details><summary>Node.js quraşdırılmayıbsa?</summary><p><code>node -v</code> əmri «command not found» versə, nodejs.org saytından LTS versiyanı quraşdırın. Bu dərs Node 22+ tələb edir.</p></details></div>
-</section><section class="addim" id="a2">
-<h2 class="addim-basliq"><span class="addim-no">2</span> package.json və asılılıqlar</h2>
-
-<div class="hisse hisse-a">
-  <span class="hisse-basliq">A · Bu addım niyə var</span>
-  <p><code>package.json</code> layihənin <strong>şəxsiyyət
-        vəsiqəsi</strong>dir. Onda üç vacib şey yazılır: layihənin adı,
-        <em>hansı paketlərə ehtiyacı olduğu</em> və <em>hansı əmrləri işlədə
-        bildiyi</em>.</p>
-        <p><strong>Niyə paketlərə ehtiyac var?</strong> Çünki hər şeyi sıfırdan
-        yazmaq aylar çəkər. NestJS bizə modul, controller, servis kimi hazır
-        quruluşlar verir; Prisma bazaya sorğu göndərməyi asanlaşdırır;
-        class-validator gələn məlumatı yoxlayır. Biz onları <em>istifadə
-        edirik</em>, özümüz yazmırıq.</p>
-        <p><strong>İki növ asılılıq var.</strong> <code>dependencies</code> —
-        proqram işləyərkən lazım olan paketlər (məsələn NestJS). 
-        <code>devDependencies</code> — yalnız <em>işləyərkən inkişaf
-        mərhələsində</em> lazım olanlar (məsələn TypeScript kompilyatoru,
-        test aləti). Server işə salınanda devDependencies yüklənmir — bu,
-        yaddaşa qənaət edir.</p>
-        <p><strong>Skriptlər</strong> isə qısa yollardır: <code>npm run
-        build</code> yazmaq, uzun bir əmri yadda saxlamaqdan asandır.</p>
-        <p><strong>⚠️ Paketlər hara yüklənir?</strong> <code>package.json</code>
-        sadəcə <em>siyahıdır</em> — «mənə bunlar lazımdır» deyir. Həqiqi kod
-        isə <code>npm install</code> əmri ilə yüklənir və layihənin
-        <strong>içindəki</strong> <code>node_modules/</code> qovluğuna yazılır:</p>
-        <p><code>~/Deepseek_ARTI/DS_Backend/node_modules/</code></p>
-        <p>Bu qovluq çox böyük olur (yüzlərlə meqabayt) və <em>git-ə
-        salınmır</em>. Niyə? Çünki <code>package.json</code> kifayətdir ki,
-        başqa kompüterdə <code>npm install</code> eyni paketləri yenidən
-        quraşdırsın. Paketləri git-ə salsaq, hər kiçik dəyişiklikdə minlərlə
-        fayl tarixçəyə düşərdi.</p>
-        <p><code>npm install -g paket</code> isə başqa şeydir: <code>-g</code>
-        işarəsi paketi <em>sistemə</em> yazır (məsələn
-        <code>/opt/homebrew/lib/node_modules</code>) və o, bütün layihələrdə
-        işləyir. Layihə paketləri ilə qarışdırmaq olmaz.</p>
-  <div class="anlayis"><h4>Yeni anlayışlar</h4><dl><dt>package.json</dt><dd>Layihənin manifesti — adı, asılılıqları və əmrləri.</dd><dt>dependencies</dt><dd>Proqramın İŞLƏMƏSİ üçün lazım olan paketlər.</dd><dt>devDependencies</dt><dd>Yalnız inkişaf/mərhələsində lazım olan paketlər (test, kompilyator).</dd><dt>npm script</dt><dd>package.json-da saxlanan qısa əmr. `npm run ad` ilə işlədilir.</dd><dt>semver</dt><dd>Versiya yazılışı: `^4.4.0` = «4.4.0 və yuxarı, amma 5.0.0-dan aşağı».</dd><dt>node_modules</dt><dd>Quraşdırılmış paketlərin fiziki yerləşdiyi qovluq. LAYİHƏNİN İÇİNDƏDİR və git-ə salınmır.</dd><dt>npm install</dt><dd>package.json-daki bütün paketləri node_modules qovluğuna yükləyən əmr.</dd><dt>qlobal paket</dt><dd>`npm install -g` ilə sistemə yazılan paket — layihəyə aid deyil, hər yerdə işləyir.</dd></dl></div>
 </div>
 
 <div class="hisse hisse-b">
@@ -401,6 +272,289 @@ drwxr-xr-x  9 royatalibova  staff  288 Sep 23 10:42 ..
 EOF</code></pre>
   </div>
 
+  <button class="kopyala-hamisi" data-addim="a1">
+    ADDIMIN BÜTÜN KODUNU KOPYALA (bütün fayllar bir yerdə)</button>
+  <h4 style="margin-top:1rem;color:#334155">Kodun sətir-sətir izahı</h4>
+  <p>Bu addımda fayl yaradılmır — yalnız qovluq. Aşağıdaki əmrlər
+        qovluğu yaradır və içinə girir:</p>
+        <p><code>mkdir -p ~/Deepseek_ARTI/DS_Backend</code> — qovluq yaradır.
+        <code>-p</code> işarəsi «arana qovluqları da yarat, varsa xəta vermə»
+        deməkdir. Bu işarə olmasa, <code>Deepseek_ARTI</code> yoxdursa əmr xəta
+        verərdi.</p>
+        <p><code>cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"</code> — terminalı həmin qovluğa
+        keçirir. <code>~</code> işarəsi ev qovluğunuzu bildirir
+        (<code>/Users/royatalibova</code>). Bundan sonra bütün əmrlər bu
+        qovluğun içində işləyəcək.</p>
+        <p>⚠️ <strong>Vacib vərdiş:</strong> hər dəfə yeni terminal açanda ilk
+        işiniz <code>cd</code> ilə layihə qovluğuna keçmək olmalıdır. Əks halda
+        <code>npm</code> «package.json tapılmadı» deyəcək.</p>
+</div>
+
+<div class="hisse hisse-c">
+  <span class="hisse-basliq">C · Yoxlama — həqiqi çıxış</span>
+  <p>Aşağıdaki əmrləri işlədin. Nəticə elə bu dərsin D hissəsində göstərilib:</p>
+  <div class="kod-blok">
+    <div class="kod-basliq"><span>Terminal əmrləri</span>
+      <button class="kopyala">KOPYALA</button></div>
+    <pre class="komanda"><code># ═══ HİSSƏ 1 · LAYİHƏ QOVLUĞUNU YARADIRIQ ═══
+
+# -p işarəsi: arana qovluqları da yaradır və qovluq artıq
+# varsa xəta vermir («already exists» deməz).
+mkdir -p ~/Deepseek_ARTI/DS_Backend
+
+# İçinə keçirik
+cd ~/Deepseek_ARTI/DS_Backend
+
+echo "── Qovluq yerindədirmi? ──"
+pwd
+echo
+echo "── İçində nə var? ──"
+ls -la
+echo
+echo "── Alətlərin versiyaları ──"
+echo "  node: $(node -v)"
+echo "  npm:  $(npm -v)"
+echo
+echo "── Node hansı qovluqda quraşdırılıb? ──"
+which node
+which npm
+
+
+# ═══ HİSSƏ 2 · PAKETLƏRİ YÜKLƏYİRİK ═══
+# B hissəsində package.json yazıldı. İndi onun siyahısındaki
+# paketləri LAYİHƏNİN İÇİNƏ yükləyirik.
+
+echo
+echo "── package.json yerindədirmi? ──"
+ls -l package.json
+echo
+echo "npm install → paketləri node_modules/ qovluğuna yazır"
+echo "(ilk dəfə 1-3 dəqiqə çəkə bilər — paketlər internetdən gəlir)"
+echo
+npm install
+echo
+echo "── Nəticə ──"
+if [ -d node_modules ]; then
+  echo "  ✓ node_modules: $(ls node_modules | wc -l | tr -d ' ') paket"
+  echo "  ölçüsü        : $(du -sh node_modules 2&gt;/dev/null | cut -f1)"
+else
+  echo "  ✗ node_modules YOXDUR"
+fi
+
+echo
+echo "── ⚠️ PAKETLƏR HARADA SAXLANILIR? ──"
+echo "  LAYİHƏ paketləri : ./node_modules      ← LAYİHƏNİN İÇİNDƏ"
+echo "  qlobal paketlər  : $(npm root -g 2&gt;/dev/null)"
+echo "  npm keşi         : ~/.npm               ← yüklənmiş faylların surəti"
+echo
+echo "── Bu üçü nə ilə fərqlənir? ──"
+cat &lt;&lt;'IZAH'
+  LAYİHƏ  → package.json-daki «dependencies» buraya yazılır.
+            Yalnız BU layihəyə aiddir. Git-ə salınmır, çünki
+            «npm install» onu istənilən kompüterdə bərpa edir.
+  QLOBAL  → «npm install -g paket» ilə sistemə yazılır.
+            Bütün layihələrdə işləyir (məsələn «nest» əmri).
+  KEŞ     → yüklənmiş faylların surəti. Paket silinib yenidən
+            quraşdırılsa, internetdən YENİDƏN yüklənmir — keşdən gəlir.
+IZAH
+
+echo
+echo "── ⚠️ Sondaki «install-scripts» xəbərdarlığı NORMALDIR ──"
+echo "   Bəzi paketlər quraşdırma zamanı öz hazırlıq skriptini işlədir"
+echo "   (məsələn Prisma öz baza mühərrikini hazırlayır, esbuild ikili"
+echo "   faylını yazır). npm 11 bunu təhlükəsizlik üçün bildirir."
+echo "   Bu, XƏTA DEYİL — paketlər düzgün quraşdırılıb."</code></pre>
+  </div>
+  <div class="olmaz"><h4>⚠️ Bu kod olmasa nə olardı</h4><pre><code>$ cd "${LAYIHE:-$HOME/Deepseek_ARTI/DS_Backend}"
+-bash: cd: /Users/royatalibova/Deepseek_ARTI/DS_Backend: No such file or directory
+
+   # ⚠️ Qovluq yoxdursa, sonrakı BÜTÜN addımlar sınır: package.json
+   # yarada bilməzsiniz, npm install işləməz, server qalxmaz.
+   # Xəta mesajı «No such file or directory» olur və səbəb çox vaxt
+   # sadəcə yazı səhvidir (məsələn «DS_Backend» yerinə «DS-Backend»).</code></pre>
+    <p><p><code>pwd</code> əmri «print working directory» deməkdir — hazırda
+        hansı qovluqda olduğunuzu göstərir. Bu, ən çox işlədilən diaqnostika
+        əmridir: nə vaxt «fayl tapılmadı» xətası görsəniz, əvvəlcə
+        <code>pwd</code> yazın.</p>
+        <p><code>ls -la</code> qovluğun içini göstərir. <code>-l</code> uzun
+        format, <code>-a</code> isə gizli faylları da göstərir (<code>.</code>
+        ilə başlayanlar). Yeni qovluqda yalnız <code>.</code> və
+        <code>..</code> görünəcək — bunlar «bu qovluq» və «üst qovluq»
+        deməkdir.</p></p></div>
+</div>
+
+<div class="hisse hisse-d">
+  <span class="hisse-basliq">D · Sistemin vəziyyəti — həqiqi çıxış</span>
+  <p class="cixis-xeber">⚠️ Bu blok <strong>çıxışdır</strong> — kopyalamaq
+  üçün deyil, oxumaq üçündür. Əmrlər C hissəsindədir.</p>
+  <div class="kod-blok">
+    <div class="kod-basliq cixis-basliq">
+      <span>ÇIXIŞ — real nəticə</span></div>
+    <pre class="cixis"><code>── Qovluq yerindədirmi? ──
+/Users/royatalibova/Deepseek_ARTI/DS_Backend
+
+── İçində nə var? ──
+total 8
+drwxr-xr-x  3 royatalibova  staff    96 Sep 23 10:49 .
+drwxr-xr-x  9 royatalibova  staff   288 Sep 23 10:49 ..
+-rw-r--r--  1 royatalibova  staff  1409 Sep 23 10:49 package.json
+
+── Alətlərin versiyaları ──
+  node: v26.7.0
+  npm:  11.19.0
+
+── Node hansı qovluqda quraşdırılıb? ──
+/opt/homebrew/bin/node
+/opt/homebrew/bin/npm
+
+── package.json yerindədirmi? ──
+-rw-r--r--  1 royatalibova  staff  1409 Sep 23 10:49 package.json
+
+npm install → paketləri node_modules/ qovluğuna yazır
+(ilk dəfə 1-3 dəqiqə çəkə bilər — paketlər internetdən gəlir)
+
+
+added 431 packages in 1m
+
+101 packages are looking for funding
+  run `npm fund` for details
+
+── Nəticə ──
+  ✓ node_modules: 306 paket
+  ölçüsü        : 505M
+
+── ⚠️ PAKETLƏR HARADA SAXLANILIR? ──
+  LAYİHƏ paketləri : ./node_modules      ← LAYİHƏNİN İÇİNDƏ
+  qlobal paketlər  : /opt/homebrew/lib/node_modules
+  npm keşi         : ~/.npm               ← yüklənmiş faylların surəti
+
+── Bu üçü nə ilə fərqlənir? ──
+  LAYİHƏ  → package.json-daki «dependencies» buraya yazılır.
+            Yalnız BU layihəyə aiddir. Git-ə salınmır, çünki
+            «npm install» onu istənilən kompüterdə bərpa edir.
+  QLOBAL  → «npm install -g paket» ilə sistemə yazılır.
+            Bütün layihələrdə işləyir (məsələn «nest» əmri).
+  KEŞ     → yüklənmiş faylların surəti. Paket silinib yenidən
+            quraşdırılsa, internetdən YENİDƏN yüklənmir — keşdən gəlir.
+
+── ⚠️ Sondaki «install-scripts» xəbərdarlığı NORMALDIR ──
+   Bəzi paketlər quraşdırma zamanı öz hazırlıq skriptini işlədir
+   (məsələn Prisma öz baza mühərrikini hazırlayır, esbuild ikili
+   faylını yazır). npm 11 bunu təhlükəsizlik üçün bildirir.
+   Bu, XƏTA DEYİL — paketlər düzgün quraşdırılıb.
+npm warn install-scripts 4 packages have install scripts not yet covered by allowScripts:
+npm warn install-scripts   prisma@7.10.0 (preinstall: node scripts/preinstall-entry.js)
+npm warn install-scripts   @prisma/engines@7.10.0 (postinstall: node scripts/postinstall.js)
+npm warn install-scripts   @scarf/scarf@1.4.0 (postinstall: node ./report.js)
+npm warn install-scripts   esbuild@0.28.2 (postinstall: node install.js)
+npm warn install-scripts
+npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve &lt;pkg&gt;` to allow.</code></pre>
+  </div>
+  <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>boş bir qovluq</strong> və işləyən
+        Node.js. Bu, hələ layihə deyil — sadəcə layihənin yeri. Növbəti addımda
+        bu qovluğa <code>package.json</code> əlavə edib onu həqiqi Node.js
+        layihəsinə çevirəcəyik.</p></div>
+</div>
+
+<div class="sual"><h4 style="color:#0f766e;font-size:.95rem">Tez-tez verilən suallar</h4>
+<details><summary>Qovluğun adını dəyişsəm nə olar?</summary><p>Heç nə olmaz — sadəcə hər dəfə <code>cd</code> əmrində yeni adı yazmalısınız. Amma dərs boyu eyni adı işlətmək qarışıqlığın qarşısını alır.</p></details><details><summary>Layihəni başqa yerə köçürə bilərəm?</summary><p>Bəli. Amma o zaman bütün <code>cd</code> əmrlərindəki yolu dəyişməlisiniz. Dərslərdə <code>~/Deepseek_ARTI/DS_Backend</code> yolu işlədilir.</p></details><details><summary>Node.js quraşdırılmayıbsa?</summary><p><code>node -v</code> əmri «command not found» versə, nodejs.org saytından LTS versiyanı quraşdırın. Bu dərs Node 22+ tələb edir.</p></details></div>
+</section><section class="addim" id="a2">
+<h2 class="addim-basliq"><span class="addim-no">2</span> package.json-un izahı — skriptlər və asılılıqlar</h2>
+
+<div class="hisse hisse-a">
+  <span class="hisse-basliq">A · Bu addım niyə var</span>
+  <p>Bu fayl <strong>ADDIM 1-də yaradıldı</strong> və paketlər
+        orada yükləndi. İndi onu diqqətlə oxuyuruq: nə yazılıb, nə deməkdir
+        və hansı hissə nə üçündür.</p>
+        <p><code>package.json</code> layihənin <strong>şəxsiyyət
+        vəsiqəsi</strong>dir. Onda üç vacib şey yazılır: layihənin adı,
+        <em>hansı paketlərə ehtiyacı olduğu</em> və <em>hansı əmrləri işlədə
+        bildiyi</em>.</p>
+        <p><strong>Niyə paketlərə ehtiyac var?</strong> Çünki hər şeyi sıfırdan
+        yazmaq aylar çəkər. NestJS bizə modul, controller, servis kimi hazır
+        quruluşlar verir; Prisma bazaya sorğu göndərməyi asanlaşdırır;
+        class-validator gələn məlumatı yoxlayır. Biz onları <em>istifadə
+        edirik</em>, özümüz yazmırıq.</p>
+        <p><strong>İki növ asılılıq var.</strong> <code>dependencies</code> —
+        proqram işləyərkən lazım olan paketlər (məsələn NestJS). 
+        <code>devDependencies</code> — yalnız <em>işləyərkən inkişaf
+        mərhələsində</em> lazım olanlar (məsələn TypeScript kompilyatoru,
+        test aləti). Server işə salınanda devDependencies yüklənmir — bu,
+        yaddaşa qənaət edir.</p>
+        <p><strong>Skriptlər</strong> isə qısa yollardır: <code>npm run
+        build</code> yazmaq, uzun bir əmri yadda saxlamaqdan asandır.</p>
+        <p><strong>⚠️ Paketlər hara yüklənir?</strong> <code>package.json</code>
+        sadəcə <em>siyahıdır</em> — «mənə bunlar lazımdır» deyir. Həqiqi kod
+        isə <code>npm install</code> əmri ilə yüklənir və layihənin
+        <strong>içindəki</strong> <code>node_modules/</code> qovluğuna yazılır:</p>
+        <p><code>~/Deepseek_ARTI/DS_Backend/node_modules/</code></p>
+        <p>Bu qovluq çox böyük olur (yüzlərlə meqabayt) və <em>git-ə
+        salınmır</em>. Niyə? Çünki <code>package.json</code> kifayətdir ki,
+        başqa kompüterdə <code>npm install</code> eyni paketləri yenidən
+        quraşdırsın. Paketləri git-ə salsaq, hər kiçik dəyişiklikdə minlərlə
+        fayl tarixçəyə düşərdi.</p>
+        <p><code>npm install -g paket</code> isə başqa şeydir: <code>-g</code>
+        işarəsi paketi <em>sistemə</em> yazır (məsələn
+        <code>/opt/homebrew/lib/node_modules</code>) və o, bütün layihələrdə
+        işləyir. Layihə paketləri ilə qarışdırmaq olmaz.</p>
+  <div class="anlayis"><h4>Yeni anlayışlar</h4><dl><dt>package.json</dt><dd>Layihənin manifesti — adı, asılılıqları və əmrləri.</dd><dt>dependencies</dt><dd>Proqramın İŞLƏMƏSİ üçün lazım olan paketlər.</dd><dt>devDependencies</dt><dd>Yalnız inkişaf/mərhələsində lazım olan paketlər (test, kompilyator).</dd><dt>npm script</dt><dd>package.json-da saxlanan qısa əmr. `npm run ad` ilə işlədilir.</dd><dt>semver</dt><dd>Versiya yazılışı: `^4.4.0` = «4.4.0 və yuxarı, amma 5.0.0-dan aşağı».</dd><dt>node_modules</dt><dd>Quraşdırılmış paketlərin fiziki yerləşdiyi qovluq. LAYİHƏNİN İÇİNDƏDİR və git-ə salınmır.</dd><dt>npm install</dt><dd>package.json-daki bütün paketləri node_modules qovluğuna yükləyən əmr.</dd><dt>qlobal paket</dt><dd>`npm install -g` ilə sistemə yazılan paket — layihəyə aid deyil, hər yerdə işləyir.</dd></dl></div>
+</div>
+
+<div class="hisse hisse-b">
+  <span class="hisse-basliq">B · Kod</span>
+  <div class="kod-blok">
+    <div class="kod-basliq"><span>package.json (istinad)</span><button class="kopyala">KOPYALA</button></div>
+<pre><code>{
+  "name": "ds-backend",
+  "version": "0.1.0",
+  "description": "Deepseek_ARTI — ARTİ ERP backend (NestJS 12 + Prisma 7 + PostgreSQL)",
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "module",
+  "scripts": {
+    "build": "nest build",
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "start:prod": "node dist/main.js",
+    "prisma:pull": "prisma db pull",
+    "prisma:generate": "prisma generate",
+    "prisma:studio": "prisma studio",
+    "db:yenile": "prisma db pull &amp;&amp; prisma generate",
+    "test": "vitest run",
+    "test:izle": "vitest"
+  },
+  "dependencies": {
+    "@nestjs/common": "^12.0.1",
+    "@nestjs/config": "^12.0.0",
+    "@nestjs/core": "^12.0.1",
+    "@nestjs/platform-express": "^12.0.1",
+    "@nestjs/swagger": "^12.0.1",
+    "@prisma/adapter-pg": "^7.10.0",
+    "@prisma/client": "^7.10.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.4",
+    "dotenv": "^16.6.1",
+    "pg": "^8.23.0",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^12.0.0",
+    "@nestjs/schematics": "^12.0.0",
+    "@nestjs/testing": "^12.0.1",
+    "@types/express": "^5.0.0",
+    "@types/node": "^24.0.0",
+    "@types/supertest": "^7.0.0",
+    "prisma": "^7.10.0",
+    "source-map-support": "^0.5.21",
+    "supertest": "^7.0.0",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.2"
+  }
+}</code></pre>
+  </div>
+
   <button class="kopyala-hamisi" data-addim="a2">
     ADDIMIN BÜTÜN KODUNU KOPYALA (bütün fayllar bir yerdə)</button>
   <h4 style="margin-top:1rem;color:#334155">Kodun sətir-sətir izahı</h4>
@@ -452,44 +606,14 @@ d = json.load(open('package.json'))
 print('  İŞLƏMƏ üçün (dependencies):', len(d.get('dependencies', {})))
 print('  İNKİŞAF üçün (devDependencies):', len(d.get('devDependencies', {})))
 "
-echo
-echo "═══ PAKETLƏR YÜKLƏNİR ═══"
-echo "  npm install → paketləri node_modules/ qovluğuna yazır"
-echo "  (ilk dəfə 1-3 dəqiqə çəkə bilər — paketlər internetdən gəlir)"
-echo
-npm install
-echo
-echo "── Nəticə ──"
+
+echo "── Paketlər yerindədirmi? (ADDIM 1-də yüklənib) ──"
 if [ -d node_modules ]; then
   echo "  ✓ node_modules: $(ls node_modules | wc -l | tr -d ' ') paket"
   echo "  ölçüsü        : $(du -sh node_modules 2&gt;/dev/null | cut -f1)"
 else
-  echo "  ✗ node_modules YOXDUR"
-fi
-
-echo
-echo "── ⚠️ PAKETLƏR HARADA SAXLANILIR? ──"
-echo "  LAYİHƏ paketləri : ./node_modules      ← LAYİHƏNİN İÇİNDƏ"
-echo "  qlobal paketlər  : $(npm root -g 2&gt;/dev/null)"
-echo "  npm keşi         : ~/.npm               ← yüklənmiş faylların surəti"
-echo
-echo "── Bu üçü nə ilə fərqlənir? ──"
-cat &lt;&lt;'IZAH'
-  LAYİHƏ  → package.json-daki «dependencies» buraya yazılır.
-            Yalnız BU layihəyə aiddir. Git-ə salınmır, çünki
-            «npm install» onu istənilən kompüterdə bərpa edir.
-  QLOBAL  → «npm install -g paket» ilə sistemə yazılır.
-            Bütün layihələrdə işləyir (məsələn «nest» əmri).
-  KEŞ     → yüklənmiş faylların surəti. Paket silinib yenidən
-            quraşdırılsa, internetdən YENİDƏN yüklənmir — keşdən gəlir.
-IZAH
-
-echo
-echo "── ⚠️ Sondaki «install-scripts» xəbərdarlığı NORMALDIR ──"
-echo "   Bəzi paketlər quraşdırma zamanı öz hazırlıq skriptini işlədir"
-echo "   (məsələn Prisma öz baza mühərrikini hazırlayır, esbuild ikili"
-echo "   faylını yazır). npm 11 bunu təhlükəsizlik üçün bildirir."
-echo "   Bu, XƏTA DEYİL — paketlər düzgün quraşdırılıb."</code></pre>
+  echo "  ✗ node_modules yoxdur — ADDIM 1-dəki «npm install» işlədin"
+fi</code></pre>
   </div>
   <div class="olmaz"><h4>⚠️ Bu kod olmasa nə olardı</h4><pre><code>$ npm run build
 npm error code ENOENT
@@ -543,47 +667,9 @@ npm error Missing script: "test"
 ── Asılılıqlar ──
   İŞLƏMƏ üçün (dependencies): 13
   İNKİŞAF üçün (devDependencies): 12
-
-═══ PAKETLƏR YÜKLƏNİR ═══
-  npm install → paketləri node_modules/ qovluğuna yazır
-  (ilk dəfə 1-3 dəqiqə çəkə bilər — paketlər internetdən gəlir)
-
-
-added 431 packages in 5s
-
-101 packages are looking for funding
-  run `npm fund` for details
-
-── Nəticə ──
-  ✓ node_modules: 306 paket
-  ölçüsü        : 505M
-
-── ⚠️ PAKETLƏR HARADA SAXLANILIR? ──
-  LAYİHƏ paketləri : ./node_modules      ← LAYİHƏNİN İÇİNDƏ
-  qlobal paketlər  : /opt/homebrew/lib/node_modules
-  npm keşi         : ~/.npm               ← yüklənmiş faylların surəti
-
-── Bu üçü nə ilə fərqlənir? ──
-  LAYİHƏ  → package.json-daki «dependencies» buraya yazılır.
-            Yalnız BU layihəyə aiddir. Git-ə salınmır, çünki
-            «npm install» onu istənilən kompüterdə bərpa edir.
-  QLOBAL  → «npm install -g paket» ilə sistemə yazılır.
-            Bütün layihələrdə işləyir (məsələn «nest» əmri).
-  KEŞ     → yüklənmiş faylların surəti. Paket silinib yenidən
-            quraşdırılsa, internetdən YENİDƏN yüklənmir — keşdən gəlir.
-
-── ⚠️ Sondaki «install-scripts» xəbərdarlığı NORMALDIR ──
-   Bəzi paketlər quraşdırma zamanı öz hazırlıq skriptini işlədir
-   (məsələn Prisma öz baza mühərrikini hazırlayır, esbuild ikili
-   faylını yazır). npm 11 bunu təhlükəsizlik üçün bildirir.
-   Bu, XƏTA DEYİL — paketlər düzgün quraşdırılıb.
-npm warn install-scripts 4 packages have install scripts not yet covered by allowScripts:
-npm warn install-scripts   prisma@7.10.0 (preinstall: node scripts/preinstall-entry.js)
-npm warn install-scripts   @prisma/engines@7.10.0 (postinstall: node scripts/postinstall.js)
-npm warn install-scripts   @scarf/scarf@1.4.0 (postinstall: node ./report.js)
-npm warn install-scripts   esbuild@0.28.2 (postinstall: node install.js)
-npm warn install-scripts
-npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve &lt;pkg&gt;` to allow.</code></pre>
+── Paketlər yerindədirmi? (ADDIM 1-də yüklənib) ──
+  ✓ node_modules: 307 paket
+  ölçüsü        : 505M</code></pre>
   </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: layihə artıq <strong>həqiqi Node.js
         layihəsidir</strong>. <code>npm</code> onu tanıyır, əmrləri işlədə bilir
@@ -2078,10 +2164,10 @@ Error: DATABASE_URL təyin olunmayıb — .env faylını yoxlayın
 -rw-r--r--  1 royatalibova  wheel  1547 Sep 23 09:29 src/prisma/prisma.service.ts
 
 ── Baza bağlantısını BİRBAŞA yoxlayaq ──
-[Nest] 72038  - 09/23/2026, 10:42:24 AM     LOG [BAZA] Baza bağlantısı açıldı
+[Nest] 73195  - 09/23/2026, 10:50:58 AM     LOG [BAZA] Baza bağlantısı açıldı
   bağlantı   : quruldu
   cədvəl sayı: 48
-  gecikmə    : 27 ms
+  gecikmə    : 25 ms
   bağlantı bağlandı</code></pre>
   </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>TypeScript kodu bazaya
@@ -2643,16 +2729,16 @@ $ curl -s localhost:4000/api/v1/saglamliq
   22:  @Get('saglamliq')
 
 ── Sağlamlıq yoxlamasını BİRBAŞA sınayaq ──
-[Nest] 72073  - 09/23/2026, 10:42:25 AM     LOG [BAZA] Baza bağlantısı açıldı
+[Nest] 73230  - 09/23/2026, 10:50:58 AM     LOG [BAZA] Baza bağlantısı açıldı
   {
     "status": "saglam",
     "baza": {
       "qosulub": true,
       "cedvel_sayi": 48,
-      "gecikme_ms": 25
+      "gecikme_ms": 26
     },
     "versiya": "0.1.0",
-    "vaxt": "2026-09-23T06:42:25.214Z"
+    "vaxt": "2026-09-23T06:50:58.772Z"
   }</code></pre>
   </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>işləyən servis məntiqi var</strong>,
@@ -3019,10 +3105,10 @@ Error: listen EADDRINUSE: address already in use :::4000
   port 4000 boşdur: bəli
 
 ── Server qalxır (arxa planda) ──
-  [Nest] 72124  - 09/23/2026, 10:42:27 AM     LOG [RouterExplorer] Mapped {/api/v1, GET} route +1ms
-  [Nest] 72124  - 09/23/2026, 10:42:27 AM     LOG [RouterExplorer] Mapped {/api/v1/saglamliq, GET} route +0ms
-  [Nest] 72124  - 09/23/2026, 10:42:27 AM     LOG [BAŞLANGIC] API hazırdır → http://localhost:4000/api/v1
-  [Nest] 72124  - 09/23/2026, 10:42:27 AM     LOG [BAŞLANGIC] Sənədləşdirmə → http://localhost:4000/docs
+  [Nest] 73281  - 09/23/2026, 10:51:01 AM     LOG [RouterExplorer] Mapped {/api/v1, GET} route +1ms
+  [Nest] 73281  - 09/23/2026, 10:51:01 AM     LOG [RouterExplorer] Mapped {/api/v1/saglamliq, GET} route +0ms
+  [Nest] 73281  - 09/23/2026, 10:51:01 AM     LOG [BAŞLANGIC] API hazırdır → http://localhost:4000/api/v1
+  [Nest] 73281  - 09/23/2026, 10:51:01 AM     LOG [BAŞLANGIC] Sənədləşdirmə → http://localhost:4000/docs
 
 ── 1) Kök ünvan ──
   {
@@ -3038,10 +3124,10 @@ Error: listen EADDRINUSE: address already in use :::4000
       "baza": {
           "qosulub": true,
           "cedvel_sayi": 48,
-          "gecikme_ms": 2
+          "gecikme_ms": 3
       },
       "versiya": "0.1.0",
-      "vaxt": "2026-09-23T06:42:28.748Z"
+      "vaxt": "2026-09-23T06:51:02.324Z"
   }
 
 ── 3) Olmayan yol → vahid xəta formatı ──
@@ -3052,7 +3138,7 @@ Error: listen EADDRINUSE: address already in use :::4000
           "mesaj": "Cannot GET /api/v1/bele-yol-yoxdur"
       },
       "yol": "/bele-yol-yoxdur",
-      "vaxt": "2026-09-23T06:42:28.773Z"
+      "vaxt": "2026-09-23T06:51:02.348Z"
   }
 
 ── 4) Swagger sənədləşdirmə ──
@@ -3521,10 +3607,10 @@ grep -nE 'PrismaPg|adapter|connectionString' src/prisma/prisma.service.ts | sed 
   -rw-r--r--  1 royatalibova  wheel  1547 Sep 23 09:29 src/prisma/prisma.service.ts
 
 ── Baza bağlantısını BİRBAŞA sınayırıq ──
-[Nest] 72277  - 09/23/2026, 10:42:30 AM     LOG [BAZA] Baza bağlantısı açıldı
+[Nest] 73438  - 09/23/2026, 10:51:03 AM     LOG [BAZA] Baza bağlantısı açıldı
   bağlantı    : quruldu
   cədvəl sayı : 48
-  gecikmə     : 23 ms
+  gecikmə     : 26 ms
   bağlantı düzgün bağlandı
 
 ── Adapter istifadə olunurmu? ──
@@ -3734,11 +3820,11 @@ void (async () =&gt; {
   sayı: 2
 
 ── Sağlamlıq yoxlaması (birbaşa) ──
-[Nest] 72327  - 09/23/2026, 10:42:30 AM     LOG [BAZA] Baza bağlantısı açıldı
+[Nest] 73488  - 09/23/2026, 10:51:04 AM     LOG [BAZA] Baza bağlantısı açıldı
   status      : saglam
   qoşulub     : true
   cədvəl sayı : 48
-  gecikmə     : 23 ms
+  gecikmə     : 22 ms
   versiya     : 0.1.0</code></pre>
 </article><article class="test" id="t-IA-10">
   <h3><span class="no">IA.10</span> Server qalxır — prefiks, marşrutlar, Swagger</h3>
@@ -3812,8 +3898,8 @@ echo "  ✓ dayandırıldı"
 ── Köhnə proses təmizlənir ──
 ── Server qalxır (port 4000) ──
   Marşrutlar:
-    {/api/v1, GET} route +0ms
-    {/api/v1/saglamliq, GET} route +1ms
+    {/api/v1, GET} route +1ms
+    {/api/v1/saglamliq, GET} route +0ms
 
 ── 1) Kök ünvan ──
   {
@@ -3829,10 +3915,10 @@ echo "  ✓ dayandırıldı"
       "baza": {
           "qosulub": true,
           "cedvel_sayi": 48,
-          "gecikme_ms": 2
+          "gecikme_ms": 3
       },
       "versiya": "0.1.0",
-      "vaxt": "2026-09-23T06:42:34.298Z"
+      "vaxt": "2026-09-23T06:51:07.867Z"
   }
 
 ── 3) Olmayan yol → vahid xəta formatı ──
@@ -3843,7 +3929,7 @@ echo "  ✓ dayandırıldı"
           "mesaj": "Cannot GET /api/v1/bele-yol-yoxdur"
       },
       "yol": "/bele-yol-yoxdur",
-      "vaxt": "2026-09-23T06:42:34.323Z"
+      "vaxt": "2026-09-23T06:51:07.891Z"
   }
 
 ── 4) Swagger ──

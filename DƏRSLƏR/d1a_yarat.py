@@ -49,6 +49,15 @@ def e(m):
     return html.escape(str(m), quote=False)
 
 
+def goster(yol: str) -> str:
+    """Faylın MƏZMUNUNU göstərir — `cat >` sarğısı olmadan (istinad üçün)."""
+    return ('<div class="kod-blok">\n'
+            '    <div class="kod-basliq"><span>%s (istinad)</span>'
+            '<button class="kopyala">KOPYALA</button></div>\n'
+            '<pre><code>%s</code></pre>\n  </div>\n'
+            % (e(yol), e(fayl(yol))))
+
+
 def sarla(skript: str) -> str:
     """Testi interaktiv shell-ə yapışdırmaq üçün təhlükəsiz hala salır."""
     return (PRELUDE + "\n\n"
@@ -109,19 +118,11 @@ def icra():
             gercek = home_arti / "DS_Backend"
             if gercek.exists():
                 shutil.rmtree(gercek)
-            cixis = islet(a["c"], cwd=home_arti)
-        elif a["no"] == 2 and a["c"].strip():
-            # ⚠️ ADDIM 2 «npm install» işlədir. Şagird bunu İLK DƏFƏ edəcək,
-            # ona görə çıxış TƏMİZ qovluqda götürülməlidir — yoxsa «up to
-            # date» görünər və real yükləmə mənzərəsi gizlənər.
-            import shutil
-            tmp = pathlib.Path("/tmp/d1a_addim2")
-            if tmp.exists():
-                shutil.rmtree(tmp)
-            tmp.mkdir(parents=True)
-            shutil.copy(BACKEND / "package.json", tmp / "package.json")
-            cixis = islet(a["c"], cwd=tmp, layihe=tmp, timeout=1800)
-            shutil.rmtree(tmp, ignore_errors=True)
+            # Şagird B hissəsində package.json yazır, SONRA C-ni işlədir.
+            # Ona görə fayl qovluqda hazır olmalıdır ki, npm install işləsin.
+            gercek.mkdir(parents=True)
+            shutil.copy(BACKEND / "package.json", gercek / "package.json")
+            cixis = islet(a["c"], cwd=home_arti, timeout=1800)
         else:
             cixis = islet(a["c"]) if a["c"].strip() else ""
         kes["addim"][str(a["no"])] = cixis
@@ -254,6 +255,7 @@ def addim_html(a, kes):
     anlayis = "".join("<dt>%s</dt><dd>%s</dd>" % (e(k), v)
                       for k, v in a["anlayis"])
     fayllar = "".join(blok(y, fayl(y)) for y in a["fayllar"])
+    fayllar += "".join(goster(y) for y in a.get("goster", []))
     suallar = "".join(
         "<details><summary>%s</summary><p>%s</p></details>" % (q, c)
         for q, c in a["sual"])
