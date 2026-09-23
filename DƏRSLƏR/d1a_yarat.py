@@ -67,8 +67,11 @@ def muhit():
     return o
 
 
-def islet(emr, timeout=1200, cwd=None):
-    r = subprocess.run(["bash", "-c", emr], cwd=str(cwd or BACKEND), env=muhit(),
+def islet(emr, timeout=1200, cwd=None, layihe=None):
+    m = muhit()
+    if layihe:
+        m["LAYIHE"] = str(layihe)
+    r = subprocess.run(["bash", "-c", emr], cwd=str(cwd or BACKEND), env=m,
                        capture_output=True, text=True, timeout=timeout,
                        encoding="utf-8", errors="replace")
     return re.sub(r"\x1b\[[0-9;]*m", "", r.stdout + r.stderr).rstrip()
@@ -107,6 +110,18 @@ def icra():
             if gercek.exists():
                 shutil.rmtree(gercek)
             cixis = islet(a["c"], cwd=home_arti)
+        elif a["no"] == 2 and a["c"].strip():
+            # ⚠️ ADDIM 2 «npm install» işlədir. Şagird bunu İLK DƏFƏ edəcək,
+            # ona görə çıxış TƏMİZ qovluqda götürülməlidir — yoxsa «up to
+            # date» görünər və real yükləmə mənzərəsi gizlənər.
+            import shutil
+            tmp = pathlib.Path("/tmp/d1a_addim2")
+            if tmp.exists():
+                shutil.rmtree(tmp)
+            tmp.mkdir(parents=True)
+            shutil.copy(BACKEND / "package.json", tmp / "package.json")
+            cixis = islet(a["c"], cwd=tmp, layihe=tmp, timeout=1800)
+            shutil.rmtree(tmp, ignore_errors=True)
         else:
             cixis = islet(a["c"]) if a["c"].strip() else ""
         kes["addim"][str(a["no"])] = cixis

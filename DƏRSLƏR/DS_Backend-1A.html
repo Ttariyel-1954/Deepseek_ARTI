@@ -286,8 +286,8 @@ which npm</code></pre>
 
 ── İçində nə var? (hələ boşdur) ──
 total 0
-drwxr-xr-x  2 royatalibova  staff   64 Sep 23 10:33 .
-drwxr-xr-x  9 royatalibova  staff  288 Sep 23 10:33 ..
+drwxr-xr-x  2 royatalibova  staff   64 Sep 23 10:42 .
+drwxr-xr-x  9 royatalibova  staff  288 Sep 23 10:42 ..
 
 ── Alətlərin versiyaları ──
   node: v26.7.0
@@ -327,7 +327,21 @@ drwxr-xr-x  9 royatalibova  staff  288 Sep 23 10:33 ..
         yaddaşa qənaət edir.</p>
         <p><strong>Skriptlər</strong> isə qısa yollardır: <code>npm run
         build</code> yazmaq, uzun bir əmri yadda saxlamaqdan asandır.</p>
-  <div class="anlayis"><h4>Yeni anlayışlar</h4><dl><dt>package.json</dt><dd>Layihənin manifesti — adı, asılılıqları və əmrləri.</dd><dt>dependencies</dt><dd>Proqramın İŞLƏMƏSİ üçün lazım olan paketlər.</dd><dt>devDependencies</dt><dd>Yalnız inkişaf/mərhələsində lazım olan paketlər (test, kompilyator).</dd><dt>npm script</dt><dd>package.json-da saxlanan qısa əmr. `npm run ad` ilə işlədilir.</dd><dt>semver</dt><dd>Versiya yazılışı: `^4.4.0` = «4.4.0 və yuxarı, amma 5.0.0-dan aşağı».</dd><dt>node_modules</dt><dd>Quraşdırılmış paketlərin fiziki yerləşdiyi qovluq. Git-ə salınmır.</dd></dl></div>
+        <p><strong>⚠️ Paketlər hara yüklənir?</strong> <code>package.json</code>
+        sadəcə <em>siyahıdır</em> — «mənə bunlar lazımdır» deyir. Həqiqi kod
+        isə <code>npm install</code> əmri ilə yüklənir və layihənin
+        <strong>içindəki</strong> <code>node_modules/</code> qovluğuna yazılır:</p>
+        <p><code>~/Deepseek_ARTI/DS_Backend/node_modules/</code></p>
+        <p>Bu qovluq çox böyük olur (yüzlərlə meqabayt) və <em>git-ə
+        salınmır</em>. Niyə? Çünki <code>package.json</code> kifayətdir ki,
+        başqa kompüterdə <code>npm install</code> eyni paketləri yenidən
+        quraşdırsın. Paketləri git-ə salsaq, hər kiçik dəyişiklikdə minlərlə
+        fayl tarixçəyə düşərdi.</p>
+        <p><code>npm install -g paket</code> isə başqa şeydir: <code>-g</code>
+        işarəsi paketi <em>sistemə</em> yazır (məsələn
+        <code>/opt/homebrew/lib/node_modules</code>) və o, bütün layihələrdə
+        işləyir. Layihə paketləri ilə qarışdırmaq olmaz.</p>
+  <div class="anlayis"><h4>Yeni anlayışlar</h4><dl><dt>package.json</dt><dd>Layihənin manifesti — adı, asılılıqları və əmrləri.</dd><dt>dependencies</dt><dd>Proqramın İŞLƏMƏSİ üçün lazım olan paketlər.</dd><dt>devDependencies</dt><dd>Yalnız inkişaf/mərhələsində lazım olan paketlər (test, kompilyator).</dd><dt>npm script</dt><dd>package.json-da saxlanan qısa əmr. `npm run ad` ilə işlədilir.</dd><dt>semver</dt><dd>Versiya yazılışı: `^4.4.0` = «4.4.0 və yuxarı, amma 5.0.0-dan aşağı».</dd><dt>node_modules</dt><dd>Quraşdırılmış paketlərin fiziki yerləşdiyi qovluq. LAYİHƏNİN İÇİNDƏDİR və git-ə salınmır.</dd><dt>npm install</dt><dd>package.json-daki bütün paketləri node_modules qovluğuna yükləyən əmr.</dd><dt>qlobal paket</dt><dd>`npm install -g` ilə sistemə yazılan paket — layihəyə aid deyil, hər yerdə işləyir.</dd></dl></div>
 </div>
 
 <div class="hisse hisse-b">
@@ -439,12 +453,43 @@ print('  İŞLƏMƏ üçün (dependencies):', len(d.get('dependencies', {})))
 print('  İNKİŞAF üçün (devDependencies):', len(d.get('devDependencies', {})))
 "
 echo
-echo "── Quraşdırıldımı? ──"
+echo "═══ PAKETLƏR YÜKLƏNİR ═══"
+echo "  npm install → paketləri node_modules/ qovluğuna yazır"
+echo "  (ilk dəfə 1-3 dəqiqə çəkə bilər — paketlər internetdən gəlir)"
+echo
+npm install
+echo
+echo "── Nəticə ──"
 if [ -d node_modules ]; then
-  echo "  ✓ node_modules var ($(ls node_modules | wc -l | tr -d ' ') paket)"
+  echo "  ✓ node_modules: $(ls node_modules | wc -l | tr -d ' ') paket"
+  echo "  ölçüsü        : $(du -sh node_modules 2&gt;/dev/null | cut -f1)"
 else
-  echo "  ✗ node_modules yoxdur — «npm install» işlədin"
-fi</code></pre>
+  echo "  ✗ node_modules YOXDUR"
+fi
+
+echo
+echo "── ⚠️ PAKETLƏR HARADA SAXLANILIR? ──"
+echo "  LAYİHƏ paketləri : ./node_modules      ← LAYİHƏNİN İÇİNDƏ"
+echo "  qlobal paketlər  : $(npm root -g 2&gt;/dev/null)"
+echo "  npm keşi         : ~/.npm               ← yüklənmiş faylların surəti"
+echo
+echo "── Bu üçü nə ilə fərqlənir? ──"
+cat &lt;&lt;'IZAH'
+  LAYİHƏ  → package.json-daki «dependencies» buraya yazılır.
+            Yalnız BU layihəyə aiddir. Git-ə salınmır, çünki
+            «npm install» onu istənilən kompüterdə bərpa edir.
+  QLOBAL  → «npm install -g paket» ilə sistemə yazılır.
+            Bütün layihələrdə işləyir (məsələn «nest» əmri).
+  KEŞ     → yüklənmiş faylların surəti. Paket silinib yenidən
+            quraşdırılsa, internetdən YENİDƏN yüklənmir — keşdən gəlir.
+IZAH
+
+echo
+echo "── ⚠️ Sondaki «install-scripts» xəbərdarlığı NORMALDIR ──"
+echo "   Bəzi paketlər quraşdırma zamanı öz hazırlıq skriptini işlədir"
+echo "   (məsələn Prisma öz baza mühərrikini hazırlayır, esbuild ikili"
+echo "   faylını yazır). npm 11 bunu təhlükəsizlik üçün bildirir."
+echo "   Bu, XƏTA DEYİL — paketlər düzgün quraşdırılıb."</code></pre>
   </div>
   <div class="olmaz"><h4>⚠️ Bu kod olmasa nə olardı</h4><pre><code>$ npm run build
 npm error code ENOENT
@@ -499,8 +544,46 @@ npm error Missing script: "test"
   İŞLƏMƏ üçün (dependencies): 13
   İNKİŞAF üçün (devDependencies): 12
 
-── Quraşdırıldımı? ──
-  ✓ node_modules var (306 paket)</code></pre>
+═══ PAKETLƏR YÜKLƏNİR ═══
+  npm install → paketləri node_modules/ qovluğuna yazır
+  (ilk dəfə 1-3 dəqiqə çəkə bilər — paketlər internetdən gəlir)
+
+
+added 431 packages in 5s
+
+101 packages are looking for funding
+  run `npm fund` for details
+
+── Nəticə ──
+  ✓ node_modules: 306 paket
+  ölçüsü        : 505M
+
+── ⚠️ PAKETLƏR HARADA SAXLANILIR? ──
+  LAYİHƏ paketləri : ./node_modules      ← LAYİHƏNİN İÇİNDƏ
+  qlobal paketlər  : /opt/homebrew/lib/node_modules
+  npm keşi         : ~/.npm               ← yüklənmiş faylların surəti
+
+── Bu üçü nə ilə fərqlənir? ──
+  LAYİHƏ  → package.json-daki «dependencies» buraya yazılır.
+            Yalnız BU layihəyə aiddir. Git-ə salınmır, çünki
+            «npm install» onu istənilən kompüterdə bərpa edir.
+  QLOBAL  → «npm install -g paket» ilə sistemə yazılır.
+            Bütün layihələrdə işləyir (məsələn «nest» əmri).
+  KEŞ     → yüklənmiş faylların surəti. Paket silinib yenidən
+            quraşdırılsa, internetdən YENİDƏN yüklənmir — keşdən gəlir.
+
+── ⚠️ Sondaki «install-scripts» xəbərdarlığı NORMALDIR ──
+   Bəzi paketlər quraşdırma zamanı öz hazırlıq skriptini işlədir
+   (məsələn Prisma öz baza mühərrikini hazırlayır, esbuild ikili
+   faylını yazır). npm 11 bunu təhlükəsizlik üçün bildirir.
+   Bu, XƏTA DEYİL — paketlər düzgün quraşdırılıb.
+npm warn install-scripts 4 packages have install scripts not yet covered by allowScripts:
+npm warn install-scripts   prisma@7.10.0 (preinstall: node scripts/preinstall-entry.js)
+npm warn install-scripts   @prisma/engines@7.10.0 (postinstall: node scripts/postinstall.js)
+npm warn install-scripts   @scarf/scarf@1.4.0 (postinstall: node ./report.js)
+npm warn install-scripts   esbuild@0.28.2 (postinstall: node install.js)
+npm warn install-scripts
+npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve &lt;pkg&gt;` to allow.</code></pre>
   </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: layihə artıq <strong>həqiqi Node.js
         layihəsidir</strong>. <code>npm</code> onu tanıyır, əmrləri işlədə bilir
@@ -1995,10 +2078,10 @@ Error: DATABASE_URL təyin olunmayıb — .env faylını yoxlayın
 -rw-r--r--  1 royatalibova  wheel  1547 Sep 23 09:29 src/prisma/prisma.service.ts
 
 ── Baza bağlantısını BİRBAŞA yoxlayaq ──
-[Nest] 69307  - 09/23/2026, 10:33:17 AM     LOG [BAZA] Baza bağlantısı açıldı
+[Nest] 72038  - 09/23/2026, 10:42:24 AM     LOG [BAZA] Baza bağlantısı açıldı
   bağlantı   : quruldu
   cədvəl sayı: 48
-  gecikmə    : 24 ms
+  gecikmə    : 27 ms
   bağlantı bağlandı</code></pre>
   </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>TypeScript kodu bazaya
@@ -2560,16 +2643,16 @@ $ curl -s localhost:4000/api/v1/saglamliq
   22:  @Get('saglamliq')
 
 ── Sağlamlıq yoxlamasını BİRBAŞA sınayaq ──
-[Nest] 69342  - 09/23/2026, 10:33:18 AM     LOG [BAZA] Baza bağlantısı açıldı
+[Nest] 72073  - 09/23/2026, 10:42:25 AM     LOG [BAZA] Baza bağlantısı açıldı
   {
     "status": "saglam",
     "baza": {
       "qosulub": true,
       "cedvel_sayi": 48,
-      "gecikme_ms": 24
+      "gecikme_ms": 25
     },
     "versiya": "0.1.0",
-    "vaxt": "2026-09-23T06:33:18.325Z"
+    "vaxt": "2026-09-23T06:42:25.214Z"
   }</code></pre>
   </div>
   <div class="oldu"><h4>✔ Nəticə</h4><p>Sistemin vəziyyəti: <strong>işləyən servis məntiqi var</strong>,
@@ -2936,10 +3019,10 @@ Error: listen EADDRINUSE: address already in use :::4000
   port 4000 boşdur: bəli
 
 ── Server qalxır (arxa planda) ──
-  [Nest] 69398  - 09/23/2026, 10:33:21 AM     LOG [RouterExplorer] Mapped {/api/v1, GET} route +1ms
-  [Nest] 69398  - 09/23/2026, 10:33:21 AM     LOG [RouterExplorer] Mapped {/api/v1/saglamliq, GET} route +0ms
-  [Nest] 69398  - 09/23/2026, 10:33:21 AM     LOG [BAŞLANGIC] API hazırdır → http://localhost:4000/api/v1
-  [Nest] 69398  - 09/23/2026, 10:33:21 AM     LOG [BAŞLANGIC] Sənədləşdirmə → http://localhost:4000/docs
+  [Nest] 72124  - 09/23/2026, 10:42:27 AM     LOG [RouterExplorer] Mapped {/api/v1, GET} route +1ms
+  [Nest] 72124  - 09/23/2026, 10:42:27 AM     LOG [RouterExplorer] Mapped {/api/v1/saglamliq, GET} route +0ms
+  [Nest] 72124  - 09/23/2026, 10:42:27 AM     LOG [BAŞLANGIC] API hazırdır → http://localhost:4000/api/v1
+  [Nest] 72124  - 09/23/2026, 10:42:27 AM     LOG [BAŞLANGIC] Sənədləşdirmə → http://localhost:4000/docs
 
 ── 1) Kök ünvan ──
   {
@@ -2955,10 +3038,10 @@ Error: listen EADDRINUSE: address already in use :::4000
       "baza": {
           "qosulub": true,
           "cedvel_sayi": 48,
-          "gecikme_ms": 3
+          "gecikme_ms": 2
       },
       "versiya": "0.1.0",
-      "vaxt": "2026-09-23T06:33:21.866Z"
+      "vaxt": "2026-09-23T06:42:28.748Z"
   }
 
 ── 3) Olmayan yol → vahid xəta formatı ──
@@ -2969,7 +3052,7 @@ Error: listen EADDRINUSE: address already in use :::4000
           "mesaj": "Cannot GET /api/v1/bele-yol-yoxdur"
       },
       "yol": "/bele-yol-yoxdur",
-      "vaxt": "2026-09-23T06:33:21.891Z"
+      "vaxt": "2026-09-23T06:42:28.773Z"
   }
 
 ── 4) Swagger sənədləşdirmə ──
@@ -3149,7 +3232,7 @@ fi
   inkişaf    (devDependencies): 12
 
 ── Quraşdırılıbmı? ──
-  ✓ node_modules: 306 paket</code></pre>
+  ✓ node_modules: 307 paket</code></pre>
 </article><article class="test" id="t-IA-3">
   <h3><span class="no">IA.3</span> TypeScript ayarları — decorator və NodeNext</h3>
   <p class="giris-metn">Bu test Dərs 1A-nın üçüncü addımını yoxlayır: TypeScript-in
@@ -3438,10 +3521,10 @@ grep -nE 'PrismaPg|adapter|connectionString' src/prisma/prisma.service.ts | sed 
   -rw-r--r--  1 royatalibova  wheel  1547 Sep 23 09:29 src/prisma/prisma.service.ts
 
 ── Baza bağlantısını BİRBAŞA sınayırıq ──
-[Nest] 69551  - 09/23/2026, 10:33:23 AM     LOG [BAZA] Baza bağlantısı açıldı
+[Nest] 72277  - 09/23/2026, 10:42:30 AM     LOG [BAZA] Baza bağlantısı açıldı
   bağlantı    : quruldu
   cədvəl sayı : 48
-  gecikmə     : 28 ms
+  gecikmə     : 23 ms
   bağlantı düzgün bağlandı
 
 ── Adapter istifadə olunurmu? ──
@@ -3651,7 +3734,7 @@ void (async () =&gt; {
   sayı: 2
 
 ── Sağlamlıq yoxlaması (birbaşa) ──
-[Nest] 69603  - 09/23/2026, 10:33:23 AM     LOG [BAZA] Baza bağlantısı açıldı
+[Nest] 72327  - 09/23/2026, 10:42:30 AM     LOG [BAZA] Baza bağlantısı açıldı
   status      : saglam
   qoşulub     : true
   cədvəl sayı : 48
@@ -3729,8 +3812,8 @@ echo "  ✓ dayandırıldı"
 ── Köhnə proses təmizlənir ──
 ── Server qalxır (port 4000) ──
   Marşrutlar:
-    {/api/v1, GET} route +1ms
-    {/api/v1/saglamliq, GET} route +0ms
+    {/api/v1, GET} route +0ms
+    {/api/v1/saglamliq, GET} route +1ms
 
 ── 1) Kök ünvan ──
   {
@@ -3746,10 +3829,10 @@ echo "  ✓ dayandırıldı"
       "baza": {
           "qosulub": true,
           "cedvel_sayi": 48,
-          "gecikme_ms": 1
+          "gecikme_ms": 2
       },
       "versiya": "0.1.0",
-      "vaxt": "2026-09-23T06:33:27.420Z"
+      "vaxt": "2026-09-23T06:42:34.298Z"
   }
 
 ── 3) Olmayan yol → vahid xəta formatı ──
@@ -3760,7 +3843,7 @@ echo "  ✓ dayandırıldı"
           "mesaj": "Cannot GET /api/v1/bele-yol-yoxdur"
       },
       "yol": "/bele-yol-yoxdur",
-      "vaxt": "2026-09-23T06:33:27.446Z"
+      "vaxt": "2026-09-23T06:42:34.323Z"
   }
 
 ── 4) Swagger ──

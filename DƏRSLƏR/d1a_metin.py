@@ -127,14 +127,30 @@ which npm""",
         test aləti). Server işə salınanda devDependencies yüklənmir — bu,
         yaddaşa qənaət edir.</p>
         <p><strong>Skriptlər</strong> isə qısa yollardır: <code>npm run
-        build</code> yazmaq, uzun bir əmri yadda saxlamaqdan asandır.</p>""",
+        build</code> yazmaq, uzun bir əmri yadda saxlamaqdan asandır.</p>
+        <p><strong>⚠️ Paketlər hara yüklənir?</strong> <code>package.json</code>
+        sadəcə <em>siyahıdır</em> — «mənə bunlar lazımdır» deyir. Həqiqi kod
+        isə <code>npm install</code> əmri ilə yüklənir və layihənin
+        <strong>içindəki</strong> <code>node_modules/</code> qovluğuna yazılır:</p>
+        <p><code>~/Deepseek_ARTI/DS_Backend/node_modules/</code></p>
+        <p>Bu qovluq çox böyük olur (yüzlərlə meqabayt) və <em>git-ə
+        salınmır</em>. Niyə? Çünki <code>package.json</code> kifayətdir ki,
+        başqa kompüterdə <code>npm install</code> eyni paketləri yenidən
+        quraşdırsın. Paketləri git-ə salsaq, hər kiçik dəyişiklikdə minlərlə
+        fayl tarixçəyə düşərdi.</p>
+        <p><code>npm install -g paket</code> isə başqa şeydir: <code>-g</code>
+        işarəsi paketi <em>sistemə</em> yazır (məsələn
+        <code>/opt/homebrew/lib/node_modules</code>) və o, bütün layihələrdə
+        işləyir. Layihə paketləri ilə qarışdırmaq olmaz.</p>""",
         anlayis=[
             ("package.json", "Layihənin manifesti — adı, asılılıqları və əmrləri."),
             ("dependencies", "Proqramın İŞLƏMƏSİ üçün lazım olan paketlər."),
             ("devDependencies", "Yalnız inkişaf/mərhələsində lazım olan paketlər (test, kompilyator)."),
             ("npm script", "package.json-da saxlanan qısa əmr. `npm run ad` ilə işlədilir."),
             ("semver", "Versiya yazılışı: `^4.4.0` = «4.4.0 və yuxarı, amma 5.0.0-dan aşağı»."),
-            ("node_modules", "Quraşdırılmış paketlərin fiziki yerləşdiyi qovluq. Git-ə salınmır."),
+            ("node_modules", "Quraşdırılmış paketlərin fiziki yerləşdiyi qovluq. LAYİHƏNİN İÇİNDƏDİR və git-ə salınmır."),
+            ("npm install", "package.json-daki bütün paketləri node_modules qovluğuna yükləyən əmr."),
+            ("qlobal paket", "`npm install -g` ilə sistemə yazılan paket — layihəyə aid deyil, hər yerdə işləyir."),
         ],
         kod_izah="""<p><code>package.json</code>-da baxmalı olduğunuz yerlər:</p>
         <p><strong>1) <code>"type": "module"</code></strong> — layihənin müasir
@@ -178,12 +194,44 @@ print('  İŞLƏMƏ üçün (dependencies):', len(d.get('dependencies', {})))
 print('  İNKİŞAF üçün (devDependencies):', len(d.get('devDependencies', {})))
 "
 echo
-echo "── Quraşdırıldımı? ──"
+echo "═══ PAKETLƏR YÜKLƏNİR ═══"
+echo "  npm install → paketləri node_modules/ qovluğuna yazır"
+echo "  (ilk dəfə 1-3 dəqiqə çəkə bilər — paketlər internetdən gəlir)"
+echo
+npm install
+echo
+echo "── Nəticə ──"
 if [ -d node_modules ]; then
-  echo "  ✓ node_modules var ($(ls node_modules | wc -l | tr -d ' ') paket)"
+  echo "  ✓ node_modules: $(ls node_modules | wc -l | tr -d ' ') paket"
+  echo "  ölçüsü        : $(du -sh node_modules 2>/dev/null | cut -f1)"
 else
-  echo "  ✗ node_modules yoxdur — «npm install» işlədin"
-fi""",
+  echo "  ✗ node_modules YOXDUR"
+fi
+
+echo
+echo "── ⚠️ PAKETLƏR HARADA SAXLANILIR? ──"
+echo "  LAYİHƏ paketləri : ./node_modules      ← LAYİHƏNİN İÇİNDƏ"
+echo "  qlobal paketlər  : $(npm root -g 2>/dev/null)"
+echo "  npm keşi         : ~/.npm               ← yüklənmiş faylların surəti"
+echo
+echo "── Bu üçü nə ilə fərqlənir? ──"
+cat <<'IZAH'
+  LAYİHƏ  → package.json-daki «dependencies» buraya yazılır.
+            Yalnız BU layihəyə aiddir. Git-ə salınmır, çünki
+            «npm install» onu istənilən kompüterdə bərpa edir.
+  QLOBAL  → «npm install -g paket» ilə sistemə yazılır.
+            Bütün layihələrdə işləyir (məsələn «nest» əmri).
+  KEŞ     → yüklənmiş faylların surəti. Paket silinib yenidən
+            quraşdırılsa, internetdən YENİDƏN yüklənmir — keşdən gəlir.
+IZAH
+
+echo
+echo "── ⚠️ Sondaki «install-scripts» xəbərdarlığı NORMALDIR ──"
+echo "   Bəzi paketlər quraşdırma zamanı öz hazırlıq skriptini işlədir"
+echo "   (məsələn Prisma öz baza mühərrikini hazırlayır, esbuild ikili"
+echo "   faylını yazır). npm 11 bunu təhlükəsizlik üçün bildirir."
+echo "   Bu, XƏTA DEYİL — paketlər düzgün quraşdırılıb."
+""",
         olmaz="""$ npm run build
 npm error code ENOENT
 npm error syscall open
