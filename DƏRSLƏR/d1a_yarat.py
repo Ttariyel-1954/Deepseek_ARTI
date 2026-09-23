@@ -408,6 +408,48 @@ def qur(kes):
   <code>bash testler/yoxla.sh IA.4</code> — yalnız bir test</p>
 </div>
 
+<div class="giris" style="background:#fef2f2;border-left-color:#ef4444">
+  <h2 style="color:#b91c1c">⚠️ Tanış xətalar və onların həlli</h2>
+  <p>İşləyərkən bu xətalardan birini görsəniz, panikaya düşməyin —
+  hamısının səbəbi və həlli aşağıdadır:</p>
+  <dl style="display:grid;grid-template-columns:auto 1fr;gap:.5rem 1rem;
+             font-size:.93rem;margin-top:.7rem">
+    <dt><code>ENOENT: uv_cwd</code><br><code>process.cwd failed</code></dt>
+    <dd>Terminalınız <strong>silinmiş bir qovluğun</strong> içindədir — dərs
+        materialı yeniləndiyi üçün köhnə qovluq silinib. Həll:
+        <code>cd ~/Deepseek_ARTI</code> və ya sadəcə yeni Terminal açın.</dd>
+
+    <dt><code>npm error ENOENT ... package.json</code></dt>
+    <dd>Terminal layihə qovluğunda deyil. <code>pwd</code> yazıb harada
+        olduğunuzu yoxlayın, sonra
+        <code>cd ~/Deepseek_ARTI/DS_Backend</code>.</dd>
+
+    <dt><code>listen EADDRINUSE :::4000</code></dt>
+    <dd>Port məşğuldur — köhnə bir server hələ işləyir. Həll:
+        <code>lsof -ti:4000 | xargs kill</code></dd>
+
+    <dt><code>Cannot find module './....js'</code></dt>
+    <dd>İmport-da <code>.js</code> uzantısı unudulub. Bu qayda ADDIM 3-də
+        izah olunub: fayl <code>.ts</code> olsa da, import
+        <code>.js</code> ilə yazılır.</dd>
+
+    <dt><code>PrismaClientInitializationError</code></dt>
+    <dd>Prisma 7-də adapter verilməyib (ADDIM 6) — ya da
+        <code>DATABASE_URL</code> oxunmur. <code>.env</code> faylını və
+        <code>unset DATABASE_URL PGHOST</code> əmrini yoxlayın.</dd>
+
+    <dt><code>TS1219 / TS1206 (decorator)</code></dt>
+    <dd><code>experimentalDecorators</code> ayarı yoxdur (ADDIM 3).</dd>
+
+    <dt><code>Nest can't resolve dependencies</code></dt>
+    <dd>Modul <code>exports</code> etmir və ya <code>imports</code>-a
+        əlavə olunmayıb (ADDIM 7 və 10).</dd>
+  </dl>
+  <p style="margin-top:.7rem"><strong>Ümumi qayda:</strong> xəta mətnini
+  <em>son sətirindən</em> oxuyun — səbəb adətən orada yazılır. Sonra
+  <code>pwd</code> ilə qovluğu, <code>ls</code> ilə faylları yoxlayın.</p>
+</div>
+
 <div class="mund"><h2>Mündəricat</h2>%s</div>
 
 %s

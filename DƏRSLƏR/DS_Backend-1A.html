@@ -139,6 +139,48 @@ footer { margin-top:3rem; padding-top:1.4rem; border-top:2px solid #e2e8f0;
   <code>bash testler/yoxla.sh IA.4</code> — yalnız bir test</p>
 </div>
 
+<div class="giris" style="background:#fef2f2;border-left-color:#ef4444">
+  <h2 style="color:#b91c1c">⚠️ Tanış xətalar və onların həlli</h2>
+  <p>İşləyərkən bu xətalardan birini görsəniz, panikaya düşməyin —
+  hamısının səbəbi və həlli aşağıdadır:</p>
+  <dl style="display:grid;grid-template-columns:auto 1fr;gap:.5rem 1rem;
+             font-size:.93rem;margin-top:.7rem">
+    <dt><code>ENOENT: uv_cwd</code><br><code>process.cwd failed</code></dt>
+    <dd>Terminalınız <strong>silinmiş bir qovluğun</strong> içindədir — dərs
+        materialı yeniləndiyi üçün köhnə qovluq silinib. Həll:
+        <code>cd ~/Deepseek_ARTI</code> və ya sadəcə yeni Terminal açın.</dd>
+
+    <dt><code>npm error ENOENT ... package.json</code></dt>
+    <dd>Terminal layihə qovluğunda deyil. <code>pwd</code> yazıb harada
+        olduğunuzu yoxlayın, sonra
+        <code>cd ~/Deepseek_ARTI/DS_Backend</code>.</dd>
+
+    <dt><code>listen EADDRINUSE :::4000</code></dt>
+    <dd>Port məşğuldur — köhnə bir server hələ işləyir. Həll:
+        <code>lsof -ti:4000 | xargs kill</code></dd>
+
+    <dt><code>Cannot find module './....js'</code></dt>
+    <dd>İmport-da <code>.js</code> uzantısı unudulub. Bu qayda ADDIM 3-də
+        izah olunub: fayl <code>.ts</code> olsa da, import
+        <code>.js</code> ilə yazılır.</dd>
+
+    <dt><code>PrismaClientInitializationError</code></dt>
+    <dd>Prisma 7-də adapter verilməyib (ADDIM 6) — ya da
+        <code>DATABASE_URL</code> oxunmur. <code>.env</code> faylını və
+        <code>unset DATABASE_URL PGHOST</code> əmrini yoxlayın.</dd>
+
+    <dt><code>TS1219 / TS1206 (decorator)</code></dt>
+    <dd><code>experimentalDecorators</code> ayarı yoxdur (ADDIM 3).</dd>
+
+    <dt><code>Nest can't resolve dependencies</code></dt>
+    <dd>Modul <code>exports</code> etmir və ya <code>imports</code>-a
+        əlavə olunmayıb (ADDIM 7 və 10).</dd>
+  </dl>
+  <p style="margin-top:.7rem"><strong>Ümumi qayda:</strong> xəta mətnini
+  <em>son sətirindən</em> oxuyun — səbəb adətən orada yazılır. Sonra
+  <code>pwd</code> ilə qovluğu, <code>ls</code> ilə faylları yoxlayın.</p>
+</div>
+
 <div class="mund"><h2>Mündəricat</h2><a href="#a1">1. Layihə qovluğu və skelet</a><a href="#a2">2. package.json və asılılıqlar</a><a href="#a3">3. TypeScript konfiqurasiyası</a><a href="#a4">4. .env — baza açarı koddan ayrılır</a><a href="#a5">5. Prisma sxeması — bazanı oxuyub tipləri çıxarmaq</a><a href="#a6">6. PrismaService — baza bağlantısı</a><a href="#a7">7. PrismaModule — @Global() ilə paylaşılan bağlantı</a><a href="#a8">8. AllExceptionsFilter — vahid xəta formatı</a><a href="#a9">9. Sağlamlıq modulu — ilk işləyən endpoint</a><a href="#a10">10. app.module.ts — kök modul</a><a href="#a11">11. main.ts — serveri işə salırıq</a><a href="#t-IA-1">IA.1 Layihə skeleti və konfiqurasiya faylları</a><a href="#t-IA-2">IA.2 package.json — skriptlər və asılılıqlar</a><a href="#t-IA-3">IA.3 TypeScript ayarları — decorator və NodeNext</a><a href="#t-IA-4">IA.4 .env — sirr koddan ayrılıb və qorunur</a><a href="#t-IA-5">IA.5 Prisma sxeması və klientin generasiyası</a><a href="#t-IA-6">IA.6 PrismaService — baza bağlantısı işləyir</a><a href="#t-IA-7">IA.7 PrismaModule — @Global() və exports</a><a href="#t-IA-8">IA.8 AllExceptionsFilter — vahid xəta formatı</a><a href="#t-IA-9">IA.9 Sağlamlıq modulu — ilk endpoint məntiqi</a><a href="#t-IA-10">IA.10 Server qalxır — prefiks, marşrutlar, Swagger</a></div>
 
 <section class="addim" id="a1">
