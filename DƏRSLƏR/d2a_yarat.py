@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""DS_Backend-1A — qurucu.
+"""DS_Backend-2A — qurucu.
 
-Addım 1–11-in geniş izahlarını, real kodunu və HƏQİQİ çıxışlarını bir
+Addım 17–21-in geniş izahlarını, real kodunu və HƏQİQİ çıxışlarını bir
 HTML dərsinə yığır. Həm də 10 yekun testi ayrı .sh faylları kimi yazır.
 
 İSTİFADƏ:
-    python3 d1a_yarat.py            # keşdən qur
-    python3 d1a_yarat.py --icra     # hər şeyi yenidən icra et və qur
+    python3 d2a_yarat.py            # keşdən qur
+    python3 d2a_yarat.py --icra     # hər şeyi yenidən icra et və qur
 """
 from __future__ import annotations
 
@@ -23,16 +23,16 @@ import sys
 KOK = pathlib.Path(__file__).resolve().parent.parent
 DERS_Q = KOK / "DƏRSLƏR"
 BACKEND = pathlib.Path(os.environ.get("BACKEND", str(KOK / "DS_Backend")))
-CIXIS = DERS_Q / "DS_Backend-1A.html"
+CIXIS = DERS_Q / "DS_Backend-2A.html"
 TEST_Q = DERS_Q / "testler"
-KES = pathlib.Path("/tmp/d1a_kes.json")
+KES = pathlib.Path("/tmp/d2a_kes.json")
 PORT = os.environ.get("TEST_PORT", "4000")
 API = os.environ.get("TEST_A", "http://localhost:%s/api/v1" % PORT)
 
 
 def yukle(ad):
-    p = DERS_Q / ("d1a_%s.py" % ad)
-    spec = importlib.util.spec_from_file_location("d1a_" + ad, p)
+    p = DERS_Q / ("d2a_%s.py" % ad)
+    spec = importlib.util.spec_from_file_location("d2a_" + ad, p)
     m = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(m)
     return m
@@ -433,87 +433,167 @@ def qur(kes):
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Backend 1A — Layihənin təməli və ilk işləyən API</title>
+<title>Backend 2A — İlk CRUD modulu: əməkdaşlar</title>
 <style>%s</style>
 </head>
 <body>
 <div class="konteyner">
 
 <header>
-  <h1>Backend 1A — Layihənin təməli və ilk işləyən API</h1>
-  <p class="alt">Addım 1–11: layihə skeleti, TypeScript, <code>.env</code>,
-  Prisma, baza bağlantısı, xəta filtri, sağlamlıq endpointi və serverin
-  qalxması.</p>
-  <p class="meta"><span>11 addım</span><span>10 yekun test</span>
+  <h1>Backend 2A — İlk CRUD modulu: əməkdaşlar</h1>
+  <p class="alt">Addım 17–21: <code>emekdaslar</code> cədvəli üçün TAM CRUD —
+DTO və validasiya, BigInt/Decimal problemi, servis, REST controller,
+modul və canlı yoxlama. Dərsin sonunda 14 real əməkdaş üzərində
+işləyən API alacaqsınız.</p>
+  <p class="meta"><span>5 addım</span><span>10 yekun test</span>
   <span>I kurs üçün geniş izah</span><span>Hər çıxış realdır</span></p>
 </header>
 
 <div class="giris">
-  <h2>Bu dərs kim üçündür və necə oxunmalıdır</h2>
-  <p>Bu dərs <strong>proqramlaşdırmaya yeni başlayan</strong> tələbələr
-  üçündür. Heç bir NestJS, Prisma və ya TypeScript bilgisi tələb olunmur —
-  hər anlayış yerində izah olunur.</p>
-  <p><strong>Hər addım dörd hissədən ibarətdir:</strong></p>
+  <h2>Bu dərs nədən bəhs edir</h2>
+  <p>1A və 1B-də <strong>altyapı</strong> qurduq: layihə, Prisma, baza
+  bağlantısı, xəta filtri, sağlamlıq endpointi, build və testlər. İndi
+  nəhayət <strong>əsl biznes məntiqinə</strong> keçirik.</p>
+  <p>Dərsin qəhrəmanı — <code>kadrlar.emekdaslar</code> cədvəlidir. Bazada
+  <strong>14 real əməkdaş</strong> var: Elnur Əliyev (Direktor), Aygün
+  Həsənova (Elmi katib) və başqaları. Onlarla
+  <strong>CRUD</strong> əməliyyatlarını — <em>Create, Read, Update,
+  Delete</em> — HTTP üzərindən edə bilən API yazacağıq.</p>
+  <p>Bu dərsdə beş şey öyrənəcəyik:</p>
   <ul>
-    <li><strong>A — niyə:</strong> bu addım nə üçün lazımdır, hansı problemi
-        həll edir.</li>
-    <li><strong>B — kod:</strong> yazılacaq fayllar və <em>hər kodun sətir-sətir
-        izahı</em>.</li>
-    <li><strong>C — yoxlama:</strong> kodu necə yoxlamaq olar və bu kod
-        olmasa nə baş verərdi.</li>
-    <li><strong>D — vəziyyət:</strong> yoxlamanın <em>həqiqi çıxışı</em> və
-        addımdan sonra sistemin vəziyyəti.</li>
+    <li><strong>DTO və validasiya</strong> — istifadəçidən gələn məlumatı
+        qapıda yoxlamaq, bazaya zibil buraxmamaq.</li>
+    <li><strong>BigInt və Decimal problemi</strong> — PostgreSQL-in
+        <code>bigint</code> və <code>numeric</code> tipləri JavaScript-də
+        <em>JSON-a çevrilmir</em>. Bunu necə həll etmək.</li>
+    <li><strong>Servis</strong> — Prisma ilə səhifələmə, filtr, axtarış,
+        əlaqələrin qoşulması.</li>
+    <li><strong>Controller</strong> — REST prinsipləri, HTTP metodları və
+        status kodları.</li>
+    <li><strong>Xəta idarəsi</strong> — 400 / 404 / 409 kodlarının nə vaxt
+        və necə qaytarılması.</li>
   </ul>
-  <p><strong>Necə oxumalı:</strong> addımları <em>sıra ilə</em> işlədin. Hər
-  addımda əvvəl A-nı oxuyun, sonra B-dəki kodu yazın, sonra C ilə yoxlayın.
-  D hissəsi sizin çıxışınızla üst-üstə düşməlidirsə, düzgün getmisiniz.</p>
-  <p><strong>Dərsin sonunda 10 test var.</strong> Hər test ayrıca Terminal
-  skriptidir və dərsdə öyrəndiyinizi yoxlayır. Onları belə işlədin:</p>
+  <p>⚠️ Dərsin ən mühüm hissəsi <strong>canlı yoxlamadır</strong>: hər
+  addımda yazdığımız kodu həqiqi server və həqiqi baza ilə yoxlayırıq.
+  D hissəsindəki çıxışlar <em>realdır</em> — kopyalayıb özünüzdə də eyni
+  nəticəni alacaqsınız.</p>
+  <p><strong>Hər addım dörd hissədən ibarətdir:</strong>
+  <strong>A</strong> — niyə, <strong>B</strong> — kod,
+  <strong>C</strong> — yoxlama, <strong>D</strong> — həqiqi çıxış.
+  Əlavə olaraq hər addımda <strong>«Yeni anlayışlar»</strong> lüğəti,
+  <strong>«Kodun sətir-sətir izahı»</strong> və
+  <strong>«Tez-tez verilən suallar»</strong> var.</p>
+  <p><strong>Dərsin sonunda 10 yekun test var.</strong> Onları belə işlədin:</p>
   <p><code>cd ~/Deepseek_ARTI/DƏRSLƏR</code><br>
-  <code>bash testler/yoxla.sh IA</code> — bütün 10 test<br>
-  <code>bash testler/yoxla.sh IA.4</code> — yalnız bir test</p>
+  <code>bash testler/yoxla.sh IIA</code> — bütün 10 test<br>
+  <code>bash testler/yoxla.sh IIA.4</code> — yalnız bir test</p>
 </div>
 
 <div class="giris" style="background:#fef2f2;border-left-color:#ef4444">
-  <h2 style="color:#b91c1c">⚠️ Tanış xətalar və onların həlli</h2>
-  <p>İşləyərkən bu xətalardan birini görsəniz, panikaya düşməyin —
-  hamısının səbəbi və həlli aşağıdadır:</p>
-  <dl style="display:grid;grid-template-columns:auto 1fr;gap:.5rem 1rem;
+  <h2 style="color:#b91c1c">⚠️ 2A dərsinə aid tanış xətalar</h2>
+  <p>Bu dərsdə ən çox rast gəlinən xətalar aşağıdadır. Hər birinin
+  səbəbi və həlli yazılıb — panikaya düşməyin.</p>
+  <dl style="display:grid;grid-template-columns:auto 1fr;gap:.6rem 1rem;
              font-size:.93rem;margin-top:.7rem">
-    <dt><code>ENOENT: uv_cwd</code><br><code>process.cwd failed</code></dt>
-    <dd>Terminalınız <strong>silinmiş bir qovluğun</strong> içindədir — dərs
-        materialı yeniləndiyi üçün köhnə qovluq silinib. Həll:
-        <code>cd ~/Deepseek_ARTI</code> və ya sadəcə yeni Terminal açın.</dd>
 
-    <dt><code>npm error ENOENT ... package.json</code></dt>
-    <dd>Terminal layihə qovluğunda deyil. <code>pwd</code> yazıb harada
-        olduğunuzu yoxlayın, sonra
-        <code>cd ~/Deepseek_ARTI/DS_Backend</code>.</dd>
+    <dt><code>Do not know how to serialize a BigInt</code><br>
+        <em>(API 500 qaytarır)</em></dt>
+    <dd>Ən vacib xəta. Bazada <code>id</code> sütunu <code>bigint</code>-dir
+        və Prisma onu JavaScript <code>BigInt</code> kimi qaytarır.
+        <code>JSON.stringify(1n)</code> isə <strong>xəta verir</strong>.
+        Həll: xam sətri olduğu kimi qaytarmayın — <code>hazirla()</code>
+        mapper-indən keçirin (<code>id: String(e.id)</code>).
+        Ətraflı: <strong>ADDIM 18</strong>.</dd>
+
+    <dt><code>Argument `id`: Invalid value provided. Expected BigInt,
+        provided Int.</code></dt>
+    <dd>Prisma sorğusunda <code>id: id</code> yazıbsınız, halbuki
+        <code>id</code> JavaScript <code>number</code>-dir. Həll:
+        <code>where: { id: BigInt(id) }</code>. Səbəb: SQL <code>bigint</code>
+        tipi JavaScript <code>number</code> ilə üst-üstə düşmür
+        (2<sup>53</sup>-dən böyük ədədlər dəqiqliyi itirir). ADDIM 19.</dd>
+
+    <dt><code>Unknown argument 'cinsiyyet'</code><br>
+        <code>Unknown argument 'vezifeler'</code></dt>
+    <dd>Prisma <code>create</code>/<code>update</code> üçün iki tip var:
+        <em>checked</em> (əlaqələr <code>connect</code> ilə) və
+        <em>unchecked</em> (<code>cinsiyyet_id</code> kimi xam sahələrlə).
+        Biz <code>Prisma.emekdaslarUncheckedCreateInput</code> işlədirik.
+        Əgər tipi dəyişsəniz, xam <code>_id</code> sahələri qəbul
+        olunmayacaq. ADDIM 19.</dd>
+
+    <dt><code>P2002</code> → <code>409 TOQQUSMA</code></dt>
+    <dd>Unikal sütunda təkrar dəyər. Bizdə <code>email</code> unikaldır.
+        Xəta mesajı: <em>«Bu email artıq başqa əməkdaşda qeydiyyatdadır»</em>.
+        Xam Prisma xətası 500 deyil, <strong>409</strong> qaytarmalıdır —
+        ona görə <code>cevir()</code> funksiyası var. ADDIM 19.</dd>
+
+    <dt><code>P2003</code> → <code>400 YANLIS_SORGU</code></dt>
+    <dd>Göndərdiyiniz <code>vezife_id</code> (məsələn 99) bazada yoxdur.
+        Xarici açar (foreign key) pozuldu. Həm də
+        <strong>silmə zamanı</strong> bu xəta çıxır: əməkdaşa bağlı qeydlər
+        varsa, PostgreSQL silməyə icazə vermir. ADDIM 19 və 21.</dd>
+
+    <dt><code>P2025</code> → <code>404 TAPILMADI</code></dt>
+    <dd><code>update</code> və ya <code>delete</code> üçün göndərilən ID
+        bazada yoxdur.</dd>
+
+    <dt><code>Foreign key constraint violated on the constraint:
+        emekdaslar_cinsiyyet_id_fkey</code></dt>
+    <dd>Bax <code>P2003</code>. Hansı cədvəlin mane olduğunu mesajın
+        özü deyir — <code>_fkey</code>-dən əvvəlki hissə cədvəlin adıdır.</dd>
+
+    <dt><code>property yoluxucu should not exist</code></dt>
+    <dd>Göndərdiyiniz JSON-da DTO-da olmayan sahə var. Bu,
+        <code>forbidNonWhitelisted: true</code> ayarının nəticəsidir
+        (1A-nın ADDIM 11-i). Yaxşı xüsusiyyətdir: səhv yazılmış sahə
+        sükutla itmir, dərhal xəbərdarlıq alırsınız.</dd>
+
+    <dt><code>limit must not be greater than 100</code></dt>
+    <dd>Sorğuda <code>?limit=500</code> yazmısınız.
+        <code>EmekdasSorguDto</code>-daki <code>@Max(100)</code>
+        işləyir. Bu, təsadüfi yükə qarşı qoruyucudur: biri
+        <code>limit=999999</code> göndərsə, baza çökə bilər. ADDIM 17.</dd>
+
+    <dt><code>Validation failed (numeric string is expected)</code></dt>
+    <dd><code>ParseIntPipe</code> <code>/emekdaslar/abc</code> kimi sorğunu
+        ədədə çevirə bilmədi → 400. Yaxşıdır: <code>abc</code> ilə
+        bazaya sorğu getmir.</dd>
+
+    <dt><code>/emekdaslar/statistika</code> → 400 (halbuki 200 gözləyirdiniz)</dt>
+    <dd>Marşrut sırası problemi. <code>@Get(':id')</code>
+        <code>@Get('statistika')</code>-dan <em>yuxarıda</em> yazılıbsa,
+        «statistika» sözü <code>:id</code> kimi tutulur və
+        <code>ParseIntPipe</code> onu rədd edir. Həll: konkret yolları
+        <code>:id</code>-dən əvvəl yazın. ADDIM 20.</dd>
+
+    <dt><code>date/time field value out of range</code></dt>
+    <dd>Tarix səhv formatdadır. <code>@db.Date</code> sütunları üçün
+        <code>YYYY-MM-DD</code> göndərin. DTO-daki
+        <code>@IsDateString()</code> bunu əvvəlcədən tutur; xəta
+        birbaşa bazadan gəlirsə, DTO-dan yan keçmisiniz.</dd>
+
+    <dt><code>Cannot find module '../../generated/prisma/client.js'</code></dt>
+    <dd>1A-nın ADDIM 3 qaydası: fayl <code>.ts</code>-dir, amma import
+        <code>.js</code> ilə yazılır. Prisma klienti silinibsə:
+        <code>npx prisma generate</code>.</dd>
+
+    <dt><code>Nest can't resolve dependencies of EmekdaslarService</code></dt>
+    <dd><code>PrismaService</code> tapılmır. Səbəb: <code>PrismaModule</code>
+        <code>@Global()</code> deyil, ya da <code>AppModule</code>-a
+        əlavə olunmayıb. 1A-nın ADDIM 7 və 10-u.</dd>
+
+    <dt><code>dist/main.js</code> köhnə davranış göstərir</dt>
+    <dd>Build edilməyib. <code>npm run build</code> (ADDIM 20).</dd>
 
     <dt><code>listen EADDRINUSE :::4000</code></dt>
-    <dd>Port məşğuldur — köhnə bir server hələ işləyir. Həll:
-        <code>lsof -ti:4000 | xargs kill</code></dd>
-
-    <dt><code>Cannot find module './....js'</code></dt>
-    <dd>İmport-da <code>.js</code> uzantısı unudulub. Bu qayda ADDIM 3-də
-        izah olunub: fayl <code>.ts</code> olsa da, import
-        <code>.js</code> ilə yazılır.</dd>
-
-    <dt><code>PrismaClientInitializationError</code></dt>
-    <dd>Prisma 7-də adapter verilməyib (ADDIM 6) — ya da
-        <code>DATABASE_URL</code> oxunmur. <code>.env</code> faylını və
-        <code>unset DATABASE_URL PGHOST</code> əmrini yoxlayın.</dd>
-
-    <dt><code>TS1219 / TS1206 (decorator)</code></dt>
-    <dd><code>experimentalDecorators</code> ayarı yoxdur (ADDIM 3).</dd>
-
-    <dt><code>Nest can't resolve dependencies</code></dt>
-    <dd>Modul <code>exports</code> etmir və ya <code>imports</code>-a
-        əlavə olunmayıb (ADDIM 7 və 10).</dd>
+    <dd>Köhnə server işləyir. <code>lsof -nP -iTCP:4000 -sTCP:LISTEN</code>,
+        sonra <code>kill &lt;PID&gt;</code>. ADDIM 21.</dd>
   </dl>
   <p style="margin-top:.7rem"><strong>Ümumi qayda:</strong> xəta mətnini
-  <em>son sətirindən</em> oxuyun — səbəb adətən orada yazılır. Sonra
-  <code>pwd</code> ilə qovluğu, <code>ls</code> ilə faylları yoxlayın.</p>
+  <em>son sətirindən</em> oxuyun — səbəb adətən orada yazılır. Prisma
+  xətasıdırsa, <strong>koduna</strong> baxın (<code>P2002</code>,
+  <code>P2003</code>, <code>P2025</code>).</p>
 </div>
 
 <div class="mund"><h2>Mündəricat</h2>%s</div>
@@ -522,13 +602,13 @@ def qur(kes):
 
 <h2 style="margin-top:3rem;border-top:3px solid #0f766e;padding-top:1.4rem">
 Yekun testlər — 10 test</h2>
-<p style="color:#475569;margin-bottom:1.4rem">Aşağıdaki testlər Dərs 1A-da
+<p style="color:#475569;margin-bottom:1.4rem">Aşağıdaki testlər Dərs 2A-da
 öyrəndiyiniz hər şeyi yoxlayır. Hər testin yanında <em>həqiqi çıxış</em> var —
 onunla tutuşdurun. Testlər bir-birindən asılı deyil.</p>
 %s
 
 <footer>
-  ARTİ ERP · Backend 1A · 11 addım · 10 yekun test<br>
+  ARTİ ERP · Backend 2A · 5 addım · 10 yekun test<br>
   Bütün çıxışlar real icradan götürülüb.
 </footer>
 

@@ -15,7 +15,9 @@
     "prisma:studio": "prisma studio",
     "db:yenile": "prisma db pull && prisma generate",
     "test": "vitest run",
-    "test:izle": "vitest"
+    "test:izle": "vitest",
+    "test:unit": "vitest run",
+    "test:e2e": "vitest run --config vitest.config.e2e.ts"
   },
   "dependencies": {
     "@nestjs/common": "^12.0.1",

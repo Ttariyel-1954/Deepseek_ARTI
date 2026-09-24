@@ -2,7 +2,8 @@
 # YEKUN TESTLƏR — işlədici
 #   bash testler/yoxla.sh IA       → Dərs 1A-nın 10 testi
 #   bash testler/yoxla.sh IB       → Dərs 1B-nin 10 testi
-#   bash testler/yoxla.sh IB.4     → yalnız bir test
+#   bash testler/yoxla.sh IIA      → Dərs 2A-nın 10 testi
+#   bash testler/yoxla.sh IIA.4    → yalnız bir test
 #   bash testler/yoxla.sh --siyahi → testlərin siyahısı
 cd "$(dirname "$0")" || exit 1
 unset DATABASE_URL PGHOST
